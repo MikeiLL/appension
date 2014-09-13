@@ -112,9 +112,9 @@ def pre_bar(track):
     tatums_in=0
     lead_in = audio.AudioQuantumList()
     for tatum in track.tatums:
-		if tatum.start < track.bars[0].start:
-			tatums_in += 1
-			lead_in.append(tatum)
+        if tatum.start < track.bars[0].start:
+            tatums_in += 1
+            lead_in.append(tatum)
     print("*", tatums_in, "tatum lead in.")
     return {"music": lead_in, "tatum count": tatums_in}
     
@@ -125,7 +125,7 @@ def first_bars(track):
     start_bars = track.bars[:4]
     first_bars = audio.AudioQuantumList()
     for bar in start_bars:
-		first_bars.append(bar)
+        first_bars.append(bar)
     return first_bars
     
 def last_bars(track):
@@ -135,7 +135,7 @@ def last_bars(track):
     end_bars = track.bars[-4:]
     last_bars = audio.AudioQuantumList()
     for bar in end_bars:
-			last_bars.append(bar)
+        last_bars.append(bar)
     return last_bars
 
 def post_bar(track):
@@ -212,7 +212,7 @@ def last_bits(units, num=4):
     num = count - num
     print(num, count)
     for unit in units[num:]:
-    	if num < count:
+        if num < count:
             result.append(units[num])
             num += 1
     return result
