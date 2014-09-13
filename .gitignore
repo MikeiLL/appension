@@ -1,0 +1,16 @@
+echo-nest-remix-examples/*
+*.mp3
+*.en
+*.wav
+*.pyc
+.DS_Store
+audio_full
+*.pkl
+dill/*
+=======
+build/
+dist/
+js/
+remix.egg-info
+*.so
+*.pyc
