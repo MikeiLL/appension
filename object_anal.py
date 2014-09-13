@@ -25,16 +25,14 @@ Example:
 
 try:
     input_filename = sys.argv[1]
-    input_filename2 = sys.argv[2]
 except:
      print(usage)
      sys.exit(-1)
 
-def main(input_filename, input_filename2):
+def main(input_filename):
     """Create Audio Analysis Object for Profiling purposes.
 """
     audiofile = audio.LocalAudioFile(input_filename)
-    audiofile2 = audio.LocalAudioFile(input_filename2)
     
     object_analysis(audiofile)
     get_file_size(input_filename)
@@ -57,4 +55,4 @@ def get_file_size(file):
     print("%s filesize is %s"% (file, statinfo1.st_size))
     
 if __name__ == "__main__":
-    main(input_filename, input_filename2)
+    main(input_filename)
