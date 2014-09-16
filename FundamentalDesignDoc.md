@@ -13,24 +13,27 @@
 ## Phase One
 
 * Web based UI * web server integration or incorporated HTTP engine
-    *Flask
-    *Tornado
+    * Flask
+    * Tornado
     
 * Responsive HTML/CSS Framework
-    *Bootstrap
+    * Bootstrap
     
 * HTML5 Player
-    *Compatible with popular browsers and devices
+    * Compatible with popular browsers and devices
+    * _Are Standard controls (pause, forward, back) feasible_?
      
 * Directory of (large numbers of) MP3 files
 
 * Music files and selection tied into database
     * Echonest.Remix parameters:
-        > id, title, md5, duration, key,   
-        > mode, time_signature,  
-        > danceability, energy,  
-        > loudness, tempo, fingerprint,  
-        > duration  
+    
+            `id, title, md5, duration, key,   
+            mode, time_signature,  
+            danceability, energy,  
+            loudness, tempo, fingerprint,  
+            duration  `
+        
     * Date added
     * Disable/Enable
     * Lyrics
@@ -41,7 +44,7 @@
     * Track Name
     * Artist Bio
     * Artist Image
-    * __Some of the above returned by [pyechonest.artist][p.artist] and [pyechonest.track][p.track]__
+    * _Some of the above returned by [pyechonest.artist][p.artist] and [pyechonest.track][p.track]_
 
 * Analyze Audio Files with Pyechonest/Remix
     * Consider a divide and conquer approach to analysis
@@ -116,8 +119,8 @@
     
 * Lyrics
     * Ultimately from database
-    >Currently single text file containing only some lyrics,
-    >
+    >Currently single text file.
+    
  
  [p.artist]: https://github.com/echonest/pyechonest/blob/master/pyechonest/artist.py
  [p.track]: http://echonest.github.io/pyechonest/track.html
