@@ -1,18 +1,17 @@
 # Appension 
-=========================================
-##Fundamental Design Document
-=========================================
 
-##Description
-===========
+- - - - - - - - - - - - - - - - -
+## Fundamental Design Document
 
-###Appension streaming music player for the   
-###Major Glitch Online Music Project
+## Description
+
+### Appension streaming music player for the   
+### Major Glitch Online Music Project
 
 (_Additional elements of website described below_.)
 
-##Phase One
-==================
+## Phase One
+
 * Web based UI * web server integration or incorporated HTTP engine
     *Flask
     *Tornado
@@ -26,12 +25,12 @@
 * Directory of (large numbers of) MP3 files
 
 * Music files and selection tied into database
-    * Echonest parameters:
-        >id, title, md5, duration, key, 
-        >mode, time_signature, 
-        >danceability, energy, 
-        >loudness, tempo, fingerprint,
-        >duration
+    * Echonest.Remix parameters:
+        > id, title, md5, duration, key,   
+        > mode, time_signature,  
+        > danceability, energy,  
+        > loudness, tempo, fingerprint,  
+        > duration  
     * Date added
     * Disable/Enable
     * Lyrics
@@ -53,8 +52,8 @@
 * Stream concatenation to user
 
 
-##Phase Two
-==================
+## Phase Two
+
 
 * Enable users to direct track assembly:
     * browse
@@ -63,8 +62,8 @@
         * latest additions
         * preset configurations (favorites, top plays, random)
     
-##Phase Three
-==================    
+## Phase Three
+
     
 * Concatenated MP3 files will be tied into tempo grid
 
@@ -76,9 +75,10 @@
     * __track ("segment") title__
     * __date added__
 
-===============================
-Additional Elements of Website
-===============================
+- - - - - - - - - - - - - - - - -
+
+## Additional Elements of Website
+
 
 * Introduction/Welcome
     * longest pop song ever
