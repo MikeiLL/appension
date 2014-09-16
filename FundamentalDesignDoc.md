@@ -1,119 +1,123 @@
-** Appension **
+# Appension 
 =========================================
-*Fundamental Design Document*
+##Fundamental Design Document
 =========================================
 
-Description
+##Description
 ===========
 
-Appension streaming music player for the 
-Major Glitch Online Music Project
+###Appension streaming music player for the   
+###Major Glitch Online Music Project
 
-(Additional elements of website described below.)
+(_Additional elements of website described below_.)
 
-Phase One
+##Phase One
 ==================
-* Web based UI - web server integration or incorporated HTTP engine
-    -Flask
-    -Tornado
+* Web based UI * web server integration or incorporated HTTP engine
+    *Flask
+    *Tornado
     
 * Responsive HTML/CSS Framework
-    -Bootstrap
+    *Bootstrap
     
 * HTML5 Player
-    -Compatible with popular browsers and devices
+    *Compatible with popular browsers and devices
      
 * Directory of (large numbers of) MP3 files
 
 * Music files and selection tied into database
-    -Echonest parameters:
-        id, title, md5, duration, key, 
-        mode, time_signature, 
-        danceability, energy, 
-        loudness, tempo, fingerprint,
-        duration
-    -Date added
-    -Disable/Enable
-    -Lyrics
-    -Keywords
-    -Description
-    -Number of Plays
-    -Sort
-    -Track Name
-    -Artist Bio
-    -Artist Image
-    -Some details returned by pyechonest.artist and pyechonest.track
+    * Echonest parameters:
+        >id, title, md5, duration, key, 
+        >mode, time_signature, 
+        >danceability, energy, 
+        >loudness, tempo, fingerprint,
+        >duration
+    * Date added
+    * Disable/Enable
+    * Lyrics
+    * Keywords
+    * Description
+    * Number of Plays
+    * Sort Order
+    * Track Name
+    * Artist Bio
+    * Artist Image
+    * __Some of the above returned by [pyechonest.artist][p.artist] and [pyechonest.track][p.track]__
 
 * Analyze Audio Files with Pyechonest/Remix
-    -Consider a divide and conquer approach to analysis
+    * Consider a divide and conquer approach to analysis
 
 * Concatenate MP3 files asynchronously
-    - trim silence at start and end of track
+    * trim silence at start and end of track
     
 * Stream concatenation to user
 
 
-Phase Two
+##Phase Two
 ==================
 
 * Enable users to direct track assembly:
-    -browse
-    -sequence
-    -filter
-        -latest additions
-        -preset configurations (favorites, top plays, random)
+    * browse
+    * sequence
+    * filter
+        * latest additions
+        * preset configurations (favorites, top plays, random)
     
-Phase Three
+##Phase Three
 ==================    
     
 * Concatenated MP3 files will be tied into tempo grid
 
-* Crossfade trailing endings and/or fade-in beginnings
+* Crossfade trailing endings and/or fade*in beginnings
 
 * Display track details to user while playing
-    -release_image
-    -artist name
-    -track ("segment") title
-    -date added
+    * __release_image__
+    * __artist name__
+    * __track ("segment") title__
+    * __date added__
 
 ===============================
 Additional Elements of Website
 ===============================
 
 * Introduction/Welcome
-    -longest pop song ever
+    * longest pop song ever
 
 * Project Description
-    -history
+    * history
 
 * Contribution/Submission Section
-    -process explanation/directions
-    -utilities
-        -tie in with to http://www.ujam.com
-        -details like tempo, key of main piece
-    -submission form
+    * process explanation/directions
+    * utilities
+        * tie in with to [uJam](www.ujam.com)
+        * details like tempo, key of [Devil Glitch](www.devilglitch.net)
+    * submission form
     
-# List of Participants
-	-original
-	-subsequent
-	-latest
-	-high profile
+* List of Participants
+	* original
+	* subsequent
+	* latest
+	* high profile
 	
 * The Music
-	-short version: static track
-	-full version: static track
-	-extended version: dynamic track
-	-one minute version: static track
+	* short version: static track
+	* full version: static track
+	* extended version: dynamic track
+	* one minute version: static track
 	
 * Store
-	Tentative
+	* _Tentative_
 	
 * Kudos
-	Rolling Stone Review
+	* Rolling Stone Review
 	
 * Latest Additions
-    -dynamic stream
+    * dynamic stream
     
 * Lyrics
-    Ultimately from database
-    
+    * Ultimately from database
+    >Currently single text file containing only some lyrics,
+    >
+ 
+ [p.artist]: https://github.com/echonest/pyechonest/blob/master/pyechonest/artist.py
+ [p.track]: http://echonest.github.io/pyechonest/track.html
