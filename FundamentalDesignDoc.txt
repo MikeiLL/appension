@@ -1,0 +1,38 @@
+** Appension **
+=========================================
+*Fundamental Design Document*
+=========================================
+
+Description
+===========
+
+Appension streaming music player for the 
+Major Glitch Online Music Project
+
+(Additional elements of website described below.)
+
+Phase One
+==================
+* Web based UI - web server integration or incorporated HTTP engine
+    -Flask
+    -Tornado 
+     
+* Directory of (large numbers of) MP3 files
+
+* Analyze Audio Files with Pyechonest/Remix
+
+* Concatenate  MP3 files asynchronously
+    - trim silence at start and end of track
+    
+* Stream concatenation to user
+
+
+Phase Two
+==================
+* Music files and selection tied into database
+    -browse
+    -select order
+    -filter
+    
+* Concatenated MP3 files will be tied into tempo grid
+    -overlap trailing endings and fade-in beginnings
