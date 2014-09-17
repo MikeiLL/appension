@@ -23,9 +23,11 @@
     * Compatible with popular browsers and devices
     * _Are Standard controls (pause, forward, back) feasible_?
      
-* Directory of (large numbers of) MP3 files
+* Directory of (large numbers of) MP3 files, if not stored in database directly
 
 * Music files and selection tied into database
+    * Reference ID (sequential integer - surrogate key)
+    * File name in above directory, or BLOB of actual MP3 data
     * Echonest.Remix parameters:
     
             `id, title, md5, duration, key,   
@@ -35,7 +37,8 @@
             duration  `
         
     * Date added
-    * Disable/Enable
+    * Disabled/Enabled flag
+    * Visibility status? (eg have newly-uploaded tracks visible only to admins until curated)
     * Lyrics
     * Keywords
     * Description
