@@ -57,6 +57,10 @@
     
 * Stream concatenation to user
 
+* Administrative Backend
+    * multiple admin accounts
+    * maintain page content
+    * view and edit track info in DB
 
 ## Phase Two
 
@@ -67,6 +71,10 @@
     * filter
         * latest additions
         * preset configurations (favorites, top plays, random)
+        
+* Administrative Backend
+    * edit playback features (track sequence, filters)
+
     
 ## Phase Three
 
