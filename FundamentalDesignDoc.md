@@ -61,9 +61,12 @@
     * multiple admin accounts
     * maintain page content
     * view and edit track info in DB
+    
+* Testing Framework
+    * Does code function as expected?
+    * Are we within memory/CPU limits of server?
 
 ## Phase Two
-
 
 * Enable users to direct track assembly:
     * browse
