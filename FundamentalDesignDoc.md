@@ -71,7 +71,7 @@
         * Simplicity. Write the code so it works for a single connected user, then it'll be fine for everyone.
         * Roughly O(n) RAM/CPU usage, with minimal constant factor; there'd be a maximum concurrent users based on hardware, rather than having a high cost regardless of who's using it.
         * Guaranteed well-formed streams - no need to finesse the beginning of a connected client.
-        * Straight-forward restart/reload procedure: new clients get the new code. Follow Minstrel Hall/Gypsum model, if possible.
+        * Straight-forward restart/reload procedure: new clients get the new code. Follow Minstrel Hall/Gypsum model (see RELOADING), if possible.
 
 * Administrative Backend
     * multiple admin accounts
