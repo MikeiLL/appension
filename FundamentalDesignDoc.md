@@ -57,6 +57,17 @@
     * trim silence at start and end of track
     
 * Stream concatenation to user
+    * Jukebox mode or per-user streaming?
+        * Jukebox - when a new user connects, s/he hears whatever's currently playing
+	* Per-user - a stream is created for each user, starting from the beginning, and may be randomized in order
+    * Advantages of jukebox:
+        * Possible savings on encoding/decoding work. Do the work once and send to everyone.
+        * Roughly O(1) RAM and CPU usage, but with a high constant factor.
+    * Advantages of per-user:
+        * Simplicity. Write the code so it works for a single connected user, then it'll be fine for everyone.
+        * Roughly O(n) RAM/CPU usage, with minimal constant factor; there'd be a maximum concurrent users based on hardware, rather than having a high cost regardless of who's using it.
+        * Guaranteed well-formed streams - no need to finesse the beginning of a connected client.
+        * Straight-forward restart/reload procedure: new clients get the new code. Follow Minstrel Hall/Gypsum model, if possible.
 
 * Administrative Backend
     * multiple admin accounts
