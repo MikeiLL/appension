@@ -1,12 +1,11 @@
 Database Fields
 
-PosgreSQL (from Ingres)
-    Start a transaction
-    Do the work
-    Rollback
-    Commit
-    
-psycopg2
-PSQL command client
+Get to know PostgreSQL (name derives from Ingres)
+    Workflow is important:
+      Start a transaction
+      Do the work
+      Rollback or Commit
+    psycopg2
+    psql command-line client
 
-Front end player that expects an mp3 stream
+Choose a front end player that expects an mp3 stream
