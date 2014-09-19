@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>forever.fm monitor</title>
+      	<link rel="shortcut icon" type="image/png" href="/static/img/monitor_favicon.png" />
+        <link href='{{ compiled("monitor.scss") }}' rel='stylesheet' type='text/css' />
+        <script type="text/javascript"
+                src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <script src="{{ compiled("socket.io.js") }}"></script>
+        <script type="text/javascript" src='{{ compiled("jquery.timeago.js") }}'></script>
+        <script type="text/javascript" src="{{ compiled("monitor.coffee") }}"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <meta name="robots" content="noindex" />
+        <meta name="format-detection" content="telephone=no">
+        <meta name="viewport" content = "width=device-width">
+    </head>
+    <body>
+      <div class='queues'>
+      </div>
+      <div class='info'>
+        <div class="started">
+          Started at: &nbsp;&nbsp;&nbsp;&nbsp;
+          <span class='v'></span> (<span class='ago'></span>)
+        </div>
+        <div class="samples">
+          Total samples: &nbsp;
+          <span class='v'></span> (<span class='sec'></span> seconds)
+        </div>
+        <div class="duration">
+          Total duration:&nbsp;
+          <span class='v'></span> (off by <span class="delta"></span>)
+        </div>
+        <div class="width">
+          Total width: &nbsp; &nbsp;
+          <span class='v'></span> (off by <span class="delta"></span>)
+        </div>
+      </div>
+      <div class='relays'>
+      </div>
+    </body>
+</html>
