@@ -13,3 +13,4 @@ js/
 remix.egg-info
 *.so
 *.pyc
+api_keys.yml
