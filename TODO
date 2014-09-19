@@ -1,0 +1,12 @@
+Database Fields
+
+PosgreSQL (from Ingres)
+    Start a transaction
+    Do the work
+    Rollback
+    Commit
+    
+psycopg2
+PSQL command client
+
+Front end player that expects an mp3 stream

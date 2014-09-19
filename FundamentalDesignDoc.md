@@ -14,40 +14,41 @@
 
 * Web based UI * web server integration or incorporated HTTP engine
     * Flask
-    * Tornado
+    * Tornado ?
     
 * Responsive HTML/CSS Framework
-    * Bootstrap
+    * Bootstrap/Boilerplate
     
 * HTML5 Player
-    * Compatible with popular browsers and devices
+    * Compatible with popular browsers and devices ?
     * _Are Standard controls (pause, forward, back) feasible_?
      
-* Directory of (large numbers of) MP3 files, if not stored in database directly
 
 * Music files and selection tied into database
-    * Reference ID (sequential integer - surrogate key)
-    * File name in above directory, or BLOB of actual MP3 data
-    * Echonest.Remix parameters:
+    * PostgreSQL
+        * Blob of MP3 Data
+        * Reference ID (sequential integer - surrogate key)
+        * File name in above directory, or BLOB of actual MP3 data
+        * Echonest.Remix parameters:
     
-            `id, title, md5, duration, key,   
-            mode, time_signature,  
-            danceability, energy,  
-            loudness, tempo, fingerprint,  
-            duration  `
+                `id, title, md5, duration, key,   
+                mode, time_signature,  
+                danceability, energy,  
+                loudness, tempo, fingerprint,  
+                duration`
         
-    * Date added
-    * Disabled/Enabled flag
-    * Visibility status? (eg have newly-uploaded tracks visible only to admins until curated)
-    * Lyrics
-    * Keywords
-    * Description
-    * Number of Plays
-    * Sort Order
-    * Track Name
-    * Artist Bio
-    * Artist Image
-    * _Some of the above returned by [pyechonest.artist][p.artist] and [pyechonest.track][p.track]_
+        * Date added
+        * Disabled/Enabled flag
+        * Visibility status? (eg have newly-uploaded tracks visible only to admins until curated)
+        * Lyrics
+        * Keywords
+        * Description
+        * Number of Plays
+        * Sort Order
+        * Track Name
+        * Artist Bio
+        * Artist Image
+        * _Some of the above returned by [pyechonest.artist][p.artist] and [pyechonest.track][p.track]_
 
 * Analyze Audio Files with Pyechonest/Remix
     * Consider a divide and conquer approach to analysis
