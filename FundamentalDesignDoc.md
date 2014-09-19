@@ -23,12 +23,10 @@
     * Compatible with popular browsers and devices ?
     * _Are Standard controls (pause, forward, back) feasible_?
      
-
-* Music files and selection tied into database
-    * PostgreSQL
-        * Blob of MP3 Data
+* Music files and selection tied into PostgreSQL database
+    * Song table:
         * Reference ID (sequential integer - surrogate key)
-        * File name in above directory, or BLOB of actual MP3 data
+        * BLOB of MP3 Data
         * Echonest.Remix parameters:
     
                 `id, title, md5, duration, key,   
@@ -49,6 +47,12 @@
         * Artist Bio
         * Artist Image
         * _Some of the above returned by [pyechonest.artist][p.artist] and [pyechonest.track][p.track]_
+    * Contributor table?? Keep track of who's submitted tracks.
+    * Other tables?
+    * Note that MVCC means the table with the "Number of Plays" field will see a lot of churn. However, most of the data will be TOASTed.
+        * http://www.postgresql.org/docs/9.3/static/storage-toast.html
+        * Avoid using "SELECT *" if you don't need it; fetching the MP3 data blob will be costly.
+	* If MP3 data is stored, flag it EXTERNAL to tell Postgres not to bother compressing it.
 
 * Analyze Audio Files with Pyechonest/Remix
     * Consider a divide and conquer approach to analysis
