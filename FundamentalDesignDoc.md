@@ -29,7 +29,7 @@
         * BLOB of MP3 Data
         * Echonest.Remix parameters:
     
-                `id, title, md5, duration, key,   
+                `song id, title, md5, duration, key,   
                 mode, time_signature,  
                 danceability, energy,  
                 loudness, tempo, fingerprint,  
@@ -63,7 +63,8 @@
 * Stream concatenation to user
     * Jukebox mode or per-user streaming?
         * Jukebox - when a new user connects, s/he hears whatever's currently playing
-	* Per-user - a stream is created for each user, starting from the beginning, and may be randomized in order
+	    * Per-user - a stream is created for each user, starting from the beginning
+	    
     * Advantages of jukebox:
         * Possible savings on encoding/decoding work. Do the work once and send to everyone.
         * Roughly O(1) RAM and CPU usage, but with a high constant factor.
@@ -149,7 +150,7 @@
     
 * Lyrics
     * Ultimately from database
-    >Currently single text file.
+        > Currently single text file.
     
  
  [p.artist]: https://github.com/echonest/pyechonest/blob/master/pyechonest/artist.py
