@@ -1,0 +1,35 @@
+body {
+  font-family: Inconsolata, Consolas, Courier, monospace; }
+  body .relays {
+    padding: 5px 0; }
+    body .relays .relay {
+      float: left;
+      width: 400px;
+      border: 1px solid #ccc;
+      padding: 20px; }
+      body .relays .relay h1 {
+        font-size: 1.6em;
+        margin: 0; }
+        body .relays .relay h2 {
+          margin: 0; }
+  body .queues .chart {
+    position: relative;
+    width: 100%;
+    height: 24px;
+    overflow: hidden;
+    border: 1px solid #000; }
+    body .queues .chart .name {
+      width: 92px;
+      padding: 4px;
+      position: relative; }
+      body .queues .chart .name.active {
+        background: #dedede; }
+    body .queues .chart .bar {
+      position: absolute;
+      top: 0;
+      left: 100px;
+      width: 0;
+      height: 20px;
+      background-color: #090;
+      padding: 4px 0 0 5px;
+      color: white; }
