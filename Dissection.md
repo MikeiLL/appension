@@ -1,5 +1,5 @@
-*Server*
-    **Main((
+#Server#
+    ##Main##
         Daemon() which only does something IF server is called with an argv beyond the script name
                 potential arguments are start, stop and restart. 
                 If start is passed, subprocess calls module with 'nohup' - written to devnul
@@ -17,7 +17,7 @@
         
         As mixer, instantiate mixer.Mixer(multiprocessing.Process) with in, out and info queues
         
-        **mixer.start() -> mixer.run()**
+        ##mixer.start() -> mixer.run()##
         Iterate through a set of tuples containing an output stream and setting 
             self.oqueue which is v2_queue and self.setting (default = {})
             create instance of lame.Lame(threading.Thread), sending oqueue and setting
@@ -25,7 +25,7 @@
         Append the instance of Lame() to self.encoders[] list
         lame.start()
         
-        **Lame "Live MP3 streamer."**
+        ##Lame "Live MP3 streamer."##
         Instantiates a subprocess.popen calling the lame encoder, piped to stdin, out, err
         Runs the subprocess inside of a new thread
         will finish() when last sample frames have been encoded and adds to opqueue
