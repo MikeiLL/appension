@@ -2,8 +2,7 @@
 ### Main ###
 > `Daemon()` which only does something IF server is called with an argv beyond the script name.
 >       potential arguments are `start`, `stop` and `restart`.  
->       If `start` is passed, subprocess calls server.py is passed to daemon with 'nohup' (written to devnul).  
->        * Can you read from that somewhere?
+>       If `start` is passed as an argument, subprocess calls server.py is passed to daemon with 'nohup' (written to devnul).  
 >       
 > Remove logging.root.handlers & replace with custom MultiprocessingHandler.
 
@@ -29,7 +28,7 @@
 > As mixer, instantiate mixer.Mixer(multiprocessing.Process) with in, out and info queues. 
 
 ### Mixer ###
-> `mixer.start() -> mixer.run()`.
+> `mixer.start() -> mixer.run()` (in new process).
 
 >   Iterate through a set of tuples containing an output stream and setting 
 >   self.oqueue which is v2_queue and self.setting (default = {}). 
@@ -44,9 +43,9 @@
 
 >   Instantiate a subprocess.popen calling the lame encoder, piped to stdin, out, err. 
 
->   Runs the subprocess inside of a new thread. 
+>   Runs the subprocess from of a new thread. 
 
->   will 'finish()' and add to `opqueue` when last sample frames have been encoded. 
+>   will 'finish()' and add to `oqueue` when last sample frames have been encoded. 
 
 ### Mixer ###
 
@@ -63,13 +62,13 @@
 
 ### Capsule_Support ###
 
->   `.initialize` returns a list containg two items:  
+>   `.initialize` returns a `list` containg two items:  
         * fi = Fadein(track, 0, fade_in)  
         * pb = Playback(track, fade_in, inter)  
 
 ### Mixer ###
 
->   * Yield to `mixer.Run()`.  
+>   * Yield `list[fi, pb]` to `mixer.Run()`.  
 
 >   **Else**  
     Get next two items from `tracks[]`  
@@ -337,7 +336,7 @@ So we `hotswap.Hotswap(track_queue.put, brain)`
 
 
 We then `start()` this `Hotswap` thread.  
->   (Does this mean something is being generated now?) 
+>   (Does this mean something is being generated now?) yes.  
 >   Now we call a series of tornado.IOLoops:  
 >   `tornado.ioloop.PeriodicCallback(callback, callback_time, io_loop=None)`  
 >   The callback we send to the first ioLoop is a lambda that uses:  
@@ -400,7 +399,9 @@ We then `start()` this `Hotswap` thread.
 >   **Except**: set `starving=True`  
 #### "Dropping frames! Queue %s is starving!" ####
 >   `sys.exit(RESTART_EXIT_CODE)`  
-
+>   `frame_sender.start()` the `PeriodicCallback` to `StreamHandler.stream_frames`  
+>   which broadcasts all the listener relays.  
+>   Listen to the instance of `tornado.web.Application`
 
 ### Lame ###
 
