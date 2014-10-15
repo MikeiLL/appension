@@ -57,6 +57,7 @@
     calls `self.analysis` on it  
     add the result (analysis object) to `self.tracks[]`  
 #### *"Got a new track."* ####
+#### or *"Track too short! Trying another."* or *"Exception while..."* ####
     grab  `self.tracks[0]`, calculate transition length  
     Send to `capsule_support.initialize`
 
@@ -78,42 +79,46 @@
 ### Capsule_Support ###
 
 - - - 
->   make_transition depends on  
+make_transition depends on  
 
->   resample_features calls:  
+resample_features calls:  
 
->   get_central which returns a tuple containing  
+get_central which returns a tuple containing  
 
-        * members (segments) btwn end_of_fade_in and start_of_fade_out  
-        * index of first member  
+* members (segments) btwn end_of_fade_in and start_of_fade_out  
+* index of first member  
         
->   resample_features returns A dictionary including:  
-        * a numpy matrix of size len(rate) x 12  
-        * a rate (as assigned by argument or default 'tatums')  
-        * an index  
->   The `matrix` is an array of arrays,  
->   One for each audio marker or segment  
->   (start times realigned based on `get_mean_offset`)  
->   each containing the 12 floats outlining the 'timbre' shape of the AudioSegment  
->   (note that [timbre](http://echonest.github.io/remix/apidocs/echonest.remix.audio.AudioSegment-class.html)
+resample_features returns A dictionary including:  
+
+* a numpy matrix of size len(rate) x 12  
+* a rate (as assigned by argument or default 'tatums')  
+* an index  
+        
+The `matrix` is an array of arrays,  
+One for each audio marker or segment  
+(start times realigned based on `get_mean_offset`)  
+each containing the 12 floats outlining the 'timbre' shape of the AudioSegment  
+(note that [timbre](http://echonest.github.io/remix/apidocs/echonest.remix.audio.AudioSegment-class.html)
 is a "twelve-element list with the loudness of each of a principal component of time and/or frequency profile.")  
->   `make_transition` creates one marker for each of the two tracks  
->   holding the 'rate' (tatum, beat, etc - assigned) from the track.resampled dictionary  
->   returned by `resample_features`  
->   Return a tuple of length 2 containing:  
->   * result of `action.Playback()`  
->       which takes track, start and stop and returns  
->       portion of track between start and stop  
->       possibly volume-equalized using `numpy.multiply`  
->       and `cAction.limit`  
->   * if we can `align` track1, track2, mat1, mat2  
->       result of `capsule_support.make_crossmatch` 
->       **else**  
->       result of `capsule_support.make_crossfade`    
->   `capsule_support.make_crossmatch` lines tracks up by 'rate'  
->   using `capsule_support.align`, which takes  
->   * track1, track2, mat1, mat2  
->   mat's are `ret.matrix` for each track. 
+`make_transition` creates one marker for each of the two tracks  
+holding the 'rate' (tatum, beat, etc - assigned) from the track.resampled dictionary  
+returned by `resample_features`  
+Return a tuple of length 2 containing: 
+ 
+* result of `action.Playback()`  
+    which takes track, start and stop and returns  
+    portion of track between start and stop  
+    possibly volume-equalized using `numpy.multiply`  
+    and `cAction.limit`  
+* if we can `align` track1, track2, mat1, mat2  
+    result of `capsule_support.make_crossmatch` 
+    **else**  
+    result of `capsule_support.make_crossfade`    
+`capsule_support.make_crossmatch` lines tracks up by 'rate'  
+using `capsule_support.align`, which takes  
+* track1, track2, mat1, mat2  
+mat's are `ret.matrix` for each track. 
+
  
 - - -  
 
@@ -196,37 +201,41 @@ is a "twelve-element list with the loudness of each of a principal component of 
  't2': <echonest.audio.LocalAudioStream at 0x100420a10>}`  
 >   assigned to `xm` within make_transition
 - - -
->   capsule_support.make_transition  
->   creates an `end_crossmatch` index by adding `n` to `loc` (dividing by rate2)  
->   if the start of final track2 marker is earlier than the one at  
->   * `end_crossmatch` plus `inter` plus `transition`  
->   either reset it to `0` or move it back by the length of `transition`. 
->   We then send the new `inter`, `end_crossmatch` and `track2` back to `move_cursor`  
->   to get current duration and move the cursor forward for subsequent operations  
->   Create a new `start_time` for `Track2` by summing the start time and duration  
->   for `Track1` as returned from the `Crossmatch` object.  
->   Instantiate a `Playback(track, start, duration)` object, `pb`  
->   with `Track2`, `Track2.start_time` and the duration ret. by `move_cursor`.  
->   return `[xm, pb] to `Mixer`.  
+capsule_support.make_transition  
+creates an `end_crossmatch` index by adding `n` to `loc` (dividing by rate2)  
+if the start of final track2 marker is earlier than the one at  
+
+* `end_crossmatch` plus `inter` plus `transition`  
+
+either reset it to `0` or move it back by the length of `transition`. 
+We then send the new `inter`, `end_crossmatch` and `track2` back to `move_cursor`  
+to get current duration and move the cursor forward for subsequent operations  
+Create a new `start_time` for `Track2` by summing the start time and duration  
+for `Track1` as returned from the `Crossmatch` object.  
+Instantiate a `Playback(track, start, duration)` object, `pb`  
+with `Track2`, `Track2.start_time` and the duration ret. by `move_cursor`.  
+return `[xm, pb] to `Mixer`.  
 
 ### Mixer ###
->   `del self.tracks[0].analysis`, `gc.collect()`, and  
->   yield [xm, pb] to `Run()`
->   `Run()`  
->   Else:  
+`del self.tracks[0].analysis`, `gc.collect()`, and  
+yield [xm, pb] to `Run()`
+`Run()`  
+Else:  
 ####"Something failed in mixer.run: traceback###  
->   `Multiprocessing.Process.start()` the mixer.
+`Multiprocessing.Process.start()` the mixer.
 
 ### Server ###  
->   If `stream` (module not called with "frontend" flag)    
->   `hotswap.Hotswap`  
+If `stream` (module not called with "frontend" flag)    
+`hotswap.Hotswap`  
 
 ### hotswap.Hotswap(threading.Thread) ###  
->   Hotswap is used to reload module if it's been updated since last compiled.  
->   `hotswap.Hotswap(out, mod, gen='generate', *args, **kwargs)`
->   So we `hotswap.Hotswap(track_queue.put, brain)`  
->   * `track_queue` is the 1 element multiprocessing.Queue assigned above  
->   * `brain` module interfaces with Soundcloud  
+Hotswap is used to reload module if it's been updated since last compiled.  
+`hotswap.Hotswap(out, mod, gen='generate', *args, **kwargs)`
+So we `hotswap.Hotswap(track_queue.put, brain)`  
+
+* `track_queue` is the 1 element multiprocessing.Queue assigned above  
+ * `brain` module interfaces with Soundcloud  
+
 ### Brain ###  
 >   *test brain by running `python -m forever.brain`*  
 >   Now hotswap is calling `brain.generate()`  
@@ -285,16 +294,113 @@ is a "twelve-element list with the loudness of each of a principal component of 
 >   For each track in `tracks[]`  
 >   if `brain.get_immediate_tracks` yields an `sc.track` object  
 >       based on `config.immediate_track_list`  
->   yield the sc.track object to the `server.queue` set by `Hotswap`  
->   via `Mixer.run()`  
->    
-
->   Then to Hotswap we send `InfoHandler.add, info, 'generate', info_queue, first_frame).start()`  
+>   yield the sc.track object  
+>   otherwise yield next track in `tracks[]`  
+>   to the `server.queue` set by `Hotswap`    
+>   via `server.__name__`  
+>   Move remaining `tracks[]` to `last[]` and clear `tracks[]`.  
+>   Then via **`server`**,   
+>   to `Hotswap` we send `InfoHandler.add, info, 'generate', info_queue, first_frame).start()`  
 ### server.InfoHandler ###
 >   `class InfoHandler(tornado.web.RequestHandler)`  
 >   tornado handler for `/all.json` requests  
 >   which come from `assets/front.coffee` and deal with visual info  
 >   * May examine this later *  
+>   to `Hotswap send `monitor.MonitorSocket.update` as output socket  
+### monitor.MonitorSocket(tornadio2.conn.SocketConnection) ###
+>   * `set()` of monitors  
+>   * dict{} of data  
+>   `Hotswap` also gets `statistician.generate`  
+>   with arguments:  
+>   * lambda: StreamHandler.relays,
+>   * InfoHandler.stats,
+>   * mp3_queue=v2_queue
+
+### statistician.generate(get_relays, get_stats, **queues) ###
+
+>   receives 1. a lambda function that returns  
+>   `server.StreamHandler(tornado.web.RequestHandler).relays`  
+>   which is a list of relays   
+>   as `get_relays` - expected to be callable  
+>   `server.StreamHandler` is the tornado handler reached via `/all.mp3`  
+>   providing the MP3 stream  
+>   2. the `server.InfoHandler.stats` method (as `get_stats`)  
+>   returns a `dict{}` containing: `started, samples, duration, width`  
+>   3. `mp3_queue=v2_queue` which is the `Queue.Queue`  
+>   returned by `bufferedqueue.BufferedReadQueue` (as noted above).  
+>   With a pause set by `config.monitor_update_time`,  
+>   `statistician.generate` yields a dictionary containing:  
+
+>   * "listeners": a list of http header details for client connectons  
+>   * "queues": a list of `queues` and the keys that reference them  
+>   * "info": dictionary returned by `server.InfoHandler.stats`  
+
+
+We then `start()` this `Hotswap` thread.  
+>   (Does this mean something is being generated now?) 
+>   Now we call a series of tornado.IOLoops:  
+>   `tornado.ioloop.PeriodicCallback(callback, callback_time, io_loop=None)`  
+>   The callback we send to the first ioLoop is a lambda that uses:  
+>   `restart.check` comparing `started_at_timestamp` to modification time of  
+>   `restart.txt` and logging errors if necessary.  
+>   This function wil run every `config.restart_timeout * 1000` (3000) milliseconds.  
+>   Second `tornado.ioLoop` calls `server.InfoHandler.clean` every 5000 milliseconds.  
+>   Which looks at `server.InfoHandler.actions[]`, removes *old* items and logs: 
+#### "Removing action that ended at %d (now is %d)." ####
+>   Then every 10 seconds we call `server.StreamHandler.check`, which does nothing.  
+>   We then populate `StreamHandler.relays[]` with:  
+>   `listeners.Listeners(v2_queue, "All", first_frame)`  
+>   A sub-class of `list`, which gets `queue, name, semaphore`.  
+>   and holds a list of tornado streams.  
+>   Queue is, of course, our BufferedQueue, "All" the name,  
+>   and `server.first_frame` is a `threading.Semaphore(0)` object.  
+>   Now we instantiate our `tornado.web.Application`  
+>   Handing the routes with:  
+>   `tornadio2.TornadioRouter(SocketConnection).apply_routes`  
+>   Which takes `connection, user_settings={}, namespace='socket.io', io_loop=None`  
+>   `SocketConnection` sub-classes `tornadio2.conn.SocketConnection`  
+>   With a dictionary of 2 `__endpoints__`: "info" and "monitor", websockets referencing  
+>   `SocketHandler` and `MonitorHandler`.  
+>   Into the `application.__dict__` (for tornadio) we also insert:  
+
+>>   * `socket_io_port` which point to `config.socket_port`   
+>>   * `enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']`  
+
+>   Instantiate `tornado.ioloop.PeriodicCallback` as `frame_sender`  
+>   `PeriodicCallback(StreamHandler.stream_frames, SECONDS_PER_FRAME * 1000)`  
+>   `stream_frames` tries to call `listeners.Listener.broadcast` for the listener instance  
+>   or logs error: ##### "Could not broadcast due to: \n%s" #####  
+### listeners.Listener.broadcast ###
+>   **Try**: to (Set `now` to current time and) call `self.__broadcast`  
+>>   which gets next item from the (audio / BufferedQueue) `Queue` (non-blocking),  
+>>   Increases listener count by one and sets `__starving = False`  
+>>   Then Loop through the list of listeners and:  
+>>   if `request.connection.stream.closed` try to `finish`  
+>>   or try to remove it from the list.  
+>>   if it's not closed `write(self.__packet)` (item from audio queue)  
+>>   and `flush()` out to network.  
+
+>   If this is the first frame (`not self.__first_frame` init as `False`)  
+>   Log:  
+#### Sending first frame for All.####
+>   Assign `__first_send = time.time()` and release `semaphore`  
+>   Subtrack `__first_send` from `now` to get `uptime`  
+>   Every 30 streams,  
+>   multiply `__count` by 1152 to get total number of (mp3) sample frames in queue  
+>   then multiply count by (1152.0 / 44100.0) which gives the  
+>   duration of the audio in the queue (based on pcm sample rate).  
+>   send some details to `log.txt` and `emit/cube`  
+>   Every 2296 frames, log "Sent %d frames over..."  
+>   Then we compare to the amount of held time/frames in the `queue`  
+>   plus `config.drift_limit` to `uptime`, which is time since queue started  
+>   Then as long as the queue is still behind `uptime`  
+>   `self.__broadcast()` again  
+#### "Queue %s drifting by %2.2f ms. Compensating..." ####
+
+>   **Except**: set `starving=True`  
+#### "Dropping frames! Queue %s is starving!" ####
+>   `sys.exit(RESTART_EXIT_CODE)`  
+
 
 ### Lame ###
 
