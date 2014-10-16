@@ -13,7 +13,7 @@ import multiprocessing
 
 from lame import Lame
 from timer import Timer
-from database import Database, merge
+import database
 
 from echonest.audio import LocalAudioStream
 from audio import AudioData
@@ -130,7 +130,6 @@ class Mixer(multiprocessing.Process):
         log.info("Grabbing stream...", uid=x.id)
         laf = LocalAudioStream(self.get_stream(x))
         setattr(laf, "_metadata", x)
-        Database().ensure(merge(x, laf.analysis))
         return self.process(laf)
 
     def add_track(self, track):

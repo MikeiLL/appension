@@ -10,7 +10,7 @@ import traceback
 from cube import emit
 from timer import Timer
 from requests import HTTPError
-from database import Database
+import database
 
 
 log = logging.getLogger(__name__)
@@ -226,7 +226,6 @@ def generate():
         tracks = []
         last = []
         wait = 2  # seconds
-        d = Database()
         counter = 0
         while True:
             # TODO: Fetch from PostgreSQL
