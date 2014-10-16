@@ -1,7 +1,7 @@
-import config
+import apikeys
 import psycopg2
 
-_conn = psycopg2.connect(config.db_connect_string)
+_conn = psycopg2.connect(apikeys.db_connect_string)
 
 def get_mp3(some_specifier):
 	with _conn.cursor():
