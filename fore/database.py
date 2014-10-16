@@ -23,23 +23,7 @@ class cursor():
 
 
 def merge(sc, echonest_analysis):
-    e = echonest_analysis.pyechonest_track
-    t = Track(
-        sc.id,
-        sc.title,
-        e.audio_md5,
-        sc.duration,
-        e.key,
-        e.mode,
-        e.time_signature,
-        e.danceability,
-        e.energy,
-        e.loudness,
-        e.tempo,
-        hashlib.sha1(e.echoprintstring).hexdigest(),
-    )
-    for k, v in t.__dict__.iteritems():
-        sc.obj[k] = v
+    """Neutered"""
     return sc
 
 
