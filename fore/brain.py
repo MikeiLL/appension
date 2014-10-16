@@ -217,6 +217,7 @@ class Magic_Anything(object):
 	def __repr__(self):
 		return "Magic_Anything(" + repr(self._name) + ")"
 	def __getattribute__(self, name):
+		if name == "id": return 0
 		if name.startswith("_"): return object.__getattribute__(self, name)
 		return Magic_Str(repr(self) + "." + name)
 
