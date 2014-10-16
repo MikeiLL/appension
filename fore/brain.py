@@ -51,7 +51,7 @@ class Criteria(object):
         try:
             self.WEIGHT = getattr(config,
                                   self.__class__.__name__.lower() + "_weight")
-        except:
+        except Exception:
             log.warning("Could not update weight for criteria \"%s\":\n%s",
                         self.__class__.__name__, traceback.format_exc())
 
@@ -232,7 +232,7 @@ def generate():
             counter += 1
             yield Magic_Anything("Brain#" + str(counter))
 
-    except:
+    except Exception:
         print traceback.format_exc()
         log.critical("%s", traceback.format_exc())
 

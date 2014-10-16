@@ -35,9 +35,8 @@ def listen(host, port, f="all.mp3"):
             break
         try:
             flen = frame_length(header)
-            if (flen - 4 - off) < 0:
-                raise ValueError()
-        except:
+            if (flen - 4 - off) < 0: continue
+        except Exception:
             continue
         data = s.recv(flen - 4 - off)
         got = time.time()

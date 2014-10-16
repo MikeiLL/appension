@@ -180,10 +180,10 @@ class Lame(threading.Thread):
                         #   Note: this delta will cause drift of 1 second/month.
                         #   TODO: Fix it. Eventually.
                         emit('lame_delta', {"samples": self.delta})
-                    except:
+                    except Exception:
                         log.error("Couldn't render segment due to:\n%s",
                                 traceback.format_exc())
-            except:
+            except Exception:
                 log.critical("Failed to write to Lame:\n%s",
                              traceback.format_exc())
             finally:
@@ -262,7 +262,7 @@ class Lame(threading.Thread):
                         self.callback(True)
                     break
             self.lame.wait()
-        except:
+        except Exception:
             log.error(traceback.format_exc())
             self.finish()
             raise

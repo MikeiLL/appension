@@ -47,7 +47,7 @@ class MonitorSocket(tornadio2.conn.SocketConnection):
         for i, m in enumerate(self.monitors.copy()):
             try:
                 m.send(self.data)
-            except:
+            except Exception:
                 log.error(
                     "Failed to send data to monitor %d due to:\n%s",
                     i, traceback.format_exc()

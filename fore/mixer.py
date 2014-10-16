@@ -235,11 +235,11 @@ class Mixer(multiprocessing.Process):
                             self.encoders[0].add_pcm(a)
                             self.infoqueue.put(generate_metadata(a))
                         log.info("Rendered in %fs!", t.ms)
-                    except:
+                    except Exception:
                         log.error("Could not render %s. Skipping.\n%s", a,
                                   traceback.format_exc())
                 gc.collect()
-        except:
+        except Exception:
             log.error("Something failed in mixer.run:\n%s",
                       traceback.format_exc())
             self.stop()

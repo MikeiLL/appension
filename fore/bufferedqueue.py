@@ -15,7 +15,7 @@ class BufferedReadQueue(Queue.Queue):
         try:
             while True:
                 self.put(self.raw.get())
-        except:
+        except Exception:
             pass
 
     @property

@@ -189,7 +189,7 @@ class AudioData(AudioData):
         except KeyboardInterrupt:
             pass
         """
-        except:
+        except Exception:
             if os.path.exists(vlc_player_path):
                 proc = subprocess.Popen(
                         [vlc_player_path, '-', 'vlc://quit', '-Idummy', '--quiet'],

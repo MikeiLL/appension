@@ -387,7 +387,7 @@ def initialize(track, inter, transition, fade_in=FADE_IN):
         # work backwards to find the exact locations of initial fade in and playback sections
         fi = Fadein(track, markers[track.resampled['index'] + track.resampled['cursor']].start - inter - fade_in, fade_in)
         pb = Playback(track, markers[track.resampled['index'] + track.resampled['cursor']].start - inter, inter)
-    except:
+    except Exception:
         track.resampled['cursor'] = fade_in + inter
         fi = Fadein(track, 0, fade_in)
         pb = Playback(track, fade_in, inter)

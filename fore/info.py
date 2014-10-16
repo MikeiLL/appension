@@ -54,7 +54,7 @@ def generate(iq, first_frame):
                 action['width'] = int(action['duration'] * scwaveform.DEFAULT_SPEED)
                 action['unicode'] = u"\x96\x54"
                 yield action
-            except:
+            except Exception:
                 log.error("Could not generate info!\n%s", traceback.format_exc())
-        except:
+        except Exception:
             log.error("Could not get action!\n%s", traceback.format_exc())

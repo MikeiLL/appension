@@ -81,7 +81,7 @@ class Listeners(list):
                 except (AssertionError, IOError, RuntimeError):
                     try:
                         self.remove(listener)
-                    except:
+                    except ValueError:
                         pass
             else:
                 listener.write(self.__packet)

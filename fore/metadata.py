@@ -42,7 +42,7 @@ class Metadata(object):
                     raise ValueError()
                 fobj = cStringIO.StringIO(self.client.get(art).raw_data)
                 self.__color = colors.colorz(fobj, 1)[0]
-            except:
+            except Exception:
                 log.error("Could not get artwork colour - defaulting to black.\n%s",
                           traceback.format_exc())
                 self.__color = (0, 0, 0)

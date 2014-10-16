@@ -19,13 +19,13 @@ class SocketHandler(tornadio2.conn.SocketConnection):
                 for i, l in enumerate(self.listeners.copy()):
                     try:
                         l.send(data)
-                    except:
+                    except Exception:
                         log.error(
                             "Failed to send data to socket %d due to:\n%s",
                             i, traceback.format_exc()
                         )
                         self.listeners.remove(l)
-        except:
+        except Exception:
             log.error("Could not update sockets due to:\n%s",
                       traceback.format_exc())
 
@@ -38,13 +38,13 @@ class SocketHandler(tornadio2.conn.SocketConnection):
                 for i, l in enumerate(self.listeners.copy()):
                     try:
                         l.send(data)
-                    except:
+                    except Exception:
                         log.error(
                             "Failed to send data to socket %d due to:\n%s",
                             i, traceback.format_exc()
                         )
                         self.listeners.remove(l)
-        except:
+        except Exception:
             log.error("Could not update sockets due to:\n%s",
                       traceback.format_exc())
 

@@ -122,7 +122,7 @@ class InfoHandler(tornado.web.RequestHandler):
                          end, now)
             if before - len(cls.actions) > 0:
                 log.info("Removed %d actions.", before - len(cls.actions))
-        except:
+        except Exception:
             log.error("Error while cleaning up:\n%s", traceback.format_exc())
 
     @classmethod
@@ -151,7 +151,7 @@ class InfoHandler(tornado.web.RequestHandler):
                 self.write(json.dumps([]))
             else:
                 self.write(json.dumps(self.actions, ensure_ascii=False).encode('utf-8'))
-        except:
+        except Exception:
             log.error("Could not send info burst:\n%s", traceback.format_exc())
             log.error("Data:\n%s", self.actions)
             self.write(json.dumps([]))
@@ -181,7 +181,7 @@ class StreamHandler(tornado.web.RequestHandler):
     def stream_frames(cls):
         try:
             cls.relays.broadcast()
-        except:
+        except Exception:
             log.error("Could not broadcast due to: \n%s", traceback.format_exc())
 
     @classmethod
@@ -205,7 +205,7 @@ class StreamHandler(tornado.web.RequestHandler):
                     relay = self.relay_url()
                     log.info("Redirected new listener %s to %s", ip, relay)
                     self.redirect(relay)
-        except:
+        except Exception:
             log.error("Error in stream.head:\n%s", traceback.format_exc())
             tornado.web.RequestHandler.send_error(self, 500)
 
@@ -236,7 +236,7 @@ class StreamHandler(tornado.web.RequestHandler):
                     relay = self.relay_url()
                     log.info("Redirected new listener %s to %s", ip, relay)
                     self.redirect(relay)
-        except:
+        except Exception:
             log.error("Error in stream.get:\n%s", traceback.format_exc())
             tornado.web.RequestHandler.send_error(self, 500)
 

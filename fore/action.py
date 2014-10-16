@@ -99,7 +99,7 @@ class Playback(object):
     def __str__(self):
         try:
             title = self.track.analysis.pyechonest_track.title
-        except:
+        except AttributeError:
             title = "?"
         args = (self.start, self.start + self.duration,
                 self.duration, title)
@@ -386,7 +386,7 @@ class Crossmatch(Blend):
         try:
             args = (self.t1.analysis.pyechonest_track.title,
                     self.t2.analysis.pyechonest_track.title)
-        except:
+        except AttributeError:
             args = ("?", "?")
         return "<Crossmatch '%s' and '%s'>" % args
 
@@ -396,7 +396,7 @@ class Crossmatch(Blend):
         s2, e2 = self.l2[0][0], sum(self.l2[-1])
         try:
             n1, n2 = self.t1.analysis.pyechonest_track.title, self.t2.analysis.pyechonest_track.title   # names
-        except:
+        except AttributeError:
             n1, n2 = "?", "?"
         args = (s1, e2, self.duration, n1, n2)
         return "Crossmatch\t%.3f\t-> %.3f\t (%.3f)\t%s -> %s" % args
