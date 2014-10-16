@@ -121,7 +121,6 @@ class Mixer(multiprocessing.Process):
                 url = x.download_url
             else:
                 url = x.stream_url
-            url += "?client_id=" + apikeys.SOUNDCLOUD_CLIENT_KEY
 
             try:
                 conn = urllib2.urlopen(url)
