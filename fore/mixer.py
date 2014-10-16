@@ -116,6 +116,7 @@ class Mixer(multiprocessing.Process):
         fname = os.path.abspath("cache/%d.mp3" % x.id)
         if os.path.isfile(fname):
             return fname
+        # TODO: Fetch the contents from the database and save to fname
         raise NotImplementedError
 
     def analyze(self, x):
