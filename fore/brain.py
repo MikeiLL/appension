@@ -197,9 +197,13 @@ def get_force_mix_tracks(db):
         yield []
 
 class Magic_Str(str):
-	"""Callable string. If called, it returns itself with () appended."""
+	"""Callable string. If called, it returns itself with () appended.
+	It's also able to be treated as an integer (it'll be zero).
+	"""
 	def __call__(self, *args, **kw):
 		return self+"()"
+	def __int__(self): return 0
+	def __index__(self): return 0
 
 class Magic_Anything(object):
 	"""
