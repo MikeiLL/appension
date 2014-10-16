@@ -196,6 +196,25 @@ def get_force_mix_tracks(db):
         log.error("Got %s when trying to fetch forced tracks!", e)
         yield []
 
+class Magic_Str(str):
+	"""Callable string. If called, it returns itself with () appended."""
+	def __call__(self, *args, **kw):
+		return self+"()"
+
+class Magic_Anything(object):
+	"""
+	Magic class that has every possible method/attribute
+	
+	Actually, there are no methods, per se. When any attribute is sought,
+	a Magic_Str() will be returned.
+	"""
+	def __init__(self, name):
+		self._name = name
+	def __repr__(self):
+		return "Magic_Anything(" + repr(self._name) + ")"
+	def __getattribute__(self, name):
+		if name.startswith("_"): return object.__getattribute__(self, name)
+		return Magic_Str(repr(self) + "." + name)
 
 def generate():
     try:
@@ -203,9 +222,11 @@ def generate():
         last = []
         wait = 2  # seconds
         d = Database()
-        while False:
+        counter = 0
+        while True:
             # TODO: Fetch from PostgreSQL
-            yield d.merge(client.get('/tracks/73783917'))
+            counter += 1
+            yield Magic_Anything("Brain#" + str(counter))
 
     except:
         print traceback.format_exc()
