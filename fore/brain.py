@@ -7,7 +7,6 @@ import apikeys
 import difflib
 import logging
 import traceback
-import soundcloud
 from cube import emit
 from timer import Timer
 from requests import HTTPError
@@ -16,13 +15,6 @@ from database import Database
 
 log = logging.getLogger(__name__)
 test = 'test' in sys.argv
-client = soundcloud.Client(client_id=apikeys.SOUNDCLOUD_CLIENT_KEY)
-
-#   Turn off the excessive "Starting new HTTPS connection (1): i1.sndcdn.com"
-#   logs that happen before every single request:
-soundcloud.request.requests.packages.\
-        urllib3.connectionpool.log.setLevel(logging.CRITICAL)
-
 
 def getIndexOfId(l, value):
     for pos, t in enumerate(l):
@@ -133,20 +125,6 @@ class Loudness(Criteria):
 criteria = [Tag(), Tempo(), Length(), Spread(), Genre(), Danceability(), Energy(), Loudness()]
 
 
-class DeduplicatedTrack(soundcloud.resource.Resource):
-    def __init__(self, o):
-        self.obj = o.obj
-
-    def __eq__(self, other):
-        if self.title.lower() == other.title.lower():
-            return True
-        return hash(self) == hash(other)
-
-    def __hash__(self):
-        #   TODO: This is kind of a hack
-        return hash(self.duration)
-
-
 def distance(a, b):
     values = [c(a, b) for c in criteria]
     return float(sum([n for n, _ in values])) /\
@@ -173,7 +151,7 @@ def cull(tracks):
         for criterion in criteria:
             criterion.precompute(track)
     tracks = filter(lambda x: valid(x, u, t), tracks)
-    tracks = list(set([DeduplicatedTrack(t) for t in tracks]))
+    tracks = list(set(tracks))
     return tracks
 
 
@@ -225,58 +203,10 @@ def generate():
         last = []
         wait = 2  # seconds
         d = Database()
-        while test:
+        while False:
+            # TODO: Fetch from PostgreSQL
             yield d.merge(client.get('/tracks/73783917'))
 
-        while True:
-            log.info("Grabbing fresh tracklist from SoundCloud...")
-            with Timer() as t:
-                while not tracks:
-                    try:
-                        tracks =  client.get('/tracks', order='hotness', limit=200, offset=0)
-                        tracks += client.get('/tracks', order='hotness', limit=200, offset=200)
-                    except Exception as e:
-                        log.warning("Got %s from SoundCloud. Retrying in %2.2f seconds...",
-                                    e, wait)
-                        time.sleep(wait)
-
-            log.info("Got %d tracks in %2.2fms.", len(tracks), t.ms)
-            emit('tracks_fetch', {"count": len(tracks), "ms": t.ms})
-
-            if last and not any([t.id == last[-1].id for t in tracks]):
-                tracks.append(last[-1])
-            tracks = cull(tracks)
-
-            tracks += list(get_force_mix_tracks(d))
-
-            try:
-                tracks = [d.merge(t) for t in tracks]
-            except:
-                log.warning("Could not merge tracks with DB due to:\n%s", traceback.format_exc())
-
-            log.info("Solving TSP on %d tracks...", len(tracks))
-            with Timer() as t:
-                tracks = [tracks[i] for i in tsp.solve(tracks, distance, len(tracks) * config.tsp_mult)]
-            log.info("Solved TSP in %2.2fms.", t.ms)
-            emit('tsp_solve', {"count": len(tracks), "ms": t.ms})
-
-            for track in tracks:
-                for criterion in criteria:
-                    criterion.postcompute(track)
-
-            if last:
-                i = getIndexOfId(tracks, last[-1].id) + 1
-                tracks = tracks[i:] + tracks[:i]
-
-            for track in tracks:
-                for priority in get_immediate_tracks(d):
-                    emit('decide_priority')
-                    yield priority
-                emit('decide_normal')
-                yield track
-
-            last = tracks
-            tracks = []
     except:
         print traceback.format_exc()
         log.critical("%s", traceback.format_exc())

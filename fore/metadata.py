@@ -3,7 +3,6 @@ import apikeys
 import logging
 import cStringIO
 import traceback
-import soundcloud
 
 PIXELS_PER_SECOND = 1
 
@@ -11,7 +10,7 @@ log = logging.getLogger(__name__)
 
 
 class Metadata(object):
-    client = soundcloud.Client(client_id=apikeys.SOUNDCLOUD_CLIENT_KEY)
+    client = None
     __color = None
 
     def __init__(self, obj):

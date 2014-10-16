@@ -26,7 +26,7 @@ class Hotswap(threading.Thread):
         while True:
             if self.current_modtime != self.loaded:
                 log.info("Hot-swapping module: %s", self.mod.__name__)
-                self.mod = reload(self.mod)
+                # self.mod = reload(self.mod)
                 self.loaded = self.current_modtime
                 self.gen = getattr(self.mod, self.genname)(*self.args, **self.kwargs)
             self.handle(self.gen.next())
