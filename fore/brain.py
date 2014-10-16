@@ -252,24 +252,4 @@ def print_table(tracks):
 
 if __name__ == "__main__":
     print "Testing the BRAIN..."
-    d = Database()
-    o = None
-    while not o:
-        try:
-            o  = client.get('/tracks', order='hotness', limit=200)
-            o += client.get('/tracks', order='hotness', limit=200, offset=200)
-        except HTTPError as e:
-            print "Error from SC. (%s) Trying again..." % e
-            pass
-    tracks = cull([d.merge(t) for t in o])
-
-    print "Solving TSP on %d tracks..." % len(tracks)
-
-    with Timer() as t:
-        tracks = [tracks[i] for i in tsp.solve(tracks, distance, len(tracks) * config.tsp_mult)]
-    print "Solved TSP in %2.2fms." % t.ms
-    #   TODO:   Use standard deviation to find the limit of deviation
-    #           for tempo difference in tracks. I.e.: Any tracks that don't
-    #           fit next to their neighbours should be removed, then TSP re-run.
-
-    print_table(tracks)
+    print "The brain returned:",next(generate())
