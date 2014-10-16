@@ -116,22 +116,7 @@ class Mixer(multiprocessing.Process):
         fname = os.path.abspath("cache/%d.mp3" % x.id)
         if os.path.isfile(fname):
             return fname
-        else:
-            if x.downloadable and x.original_format == "mp3":
-                url = x.download_url
-            else:
-                url = x.stream_url
-
-            try:
-                conn = urllib2.urlopen(url)
-            except urllib2.URLError as e:
-                log.warning("Encountered URL error while trying to fetch: %s. Retrying...", e)
-                conn = urllib2.urlopen(url)
-
-            f = open(fname, 'w')
-            f.write(conn.read())
-            f.close()
-            return fname
+        raise NotImplementedError
 
     def analyze(self, x):
         if isinstance(x, list):
