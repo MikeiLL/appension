@@ -155,47 +155,6 @@ def cull(tracks):
     return tracks
 
 
-def get_immediate_tracks(db):
-    try:
-        success = False
-        for track in open(config.immediate_track_list):
-            try:
-                res = client.get('/tracks/%d' % int(track))
-                for criterion in criteria:
-                    criterion.precompute(res)
-                res = db.merge(res)
-                for criterion in criteria:
-                    criterion.postcompute(res)
-                success = True
-                yield res
-            except Exception as e:
-                log.warning("Couldn't add immediate track \"%s\" due to %s!",
-                            track, e)
-        if success:
-            tracklist = open(config.immediate_track_list, 'w')
-            tracklist.write("")
-            tracklist.close()
-    except Exception as e:
-        log.error("Got %s when trying to fetch immediate tracks!", e)
-        yield []
-
-
-def get_force_mix_tracks(db):
-    try:
-        for track in open(config.force_mix_track_list):
-            try:
-                res = client.get('/tracks/%d' % int(track))
-                for criterion in criteria:
-                    criterion.precompute(res)
-                res = db.merge(res)
-                yield res
-            except Exception as e:
-                log.warning("Couldn't add forced track \"%s\" due to %s!",
-                            track, e)
-    except Exception as e:
-        log.error("Got %s when trying to fetch forced tracks!", e)
-        yield []
-
 class Magic_Str(str):
 	"""Callable string. If called, it returns itself with () appended.
 	It's also able to be treated as an integer (it'll be zero).
