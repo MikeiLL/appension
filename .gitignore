@@ -15,3 +15,6 @@ remix.egg-info
 *.pyc
 api_keys.yml
 log.txt
+/static/assets/*
+/remix/*
+/cache/*
