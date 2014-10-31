@@ -14,10 +14,11 @@ def titles(files):
 	for file in files:
 		track = MP3(file)
 		try:
-			print("Track info is: {} - {} - {}".format(
+			print("Track info is: {} - {} - {} - {}".format(
 				track['TPE1'].text, 
 				track['TIT2'].text,
-				track['TALB'].text))
+				track['TALB'].text,
+				track.filename[6:]))
 		except KeyError:
 			pass
 		
