@@ -1,0 +1,1 @@
+create table tracks (id serial primary key, title varchar not null, filename varchar not null);
