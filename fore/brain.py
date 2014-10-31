@@ -13,6 +13,8 @@ import database
 log = logging.getLogger(__name__)
 test = 'test' in sys.argv
 
+magic_log = open("magic.log", "w")
+
 def getIndexOfId(l, value):
     for pos, t in enumerate(l):
         if t.id == value:
@@ -30,6 +32,7 @@ class Magic_Str(str):
 	It's also able to be treated as an integer (it'll be zero).
 	"""
 	def __call__(self, *args, **kw):
+		print >>magic_log, self+"()"
 		return self+"()"
 	def __int__(self): return 0
 	def __index__(self): return 0
@@ -48,6 +51,7 @@ class Magic_Anything(object):
 	def __getattribute__(self, name):
 		if name == "id": return self._id
 		if name.startswith("_"): return object.__getattribute__(self, name)
+		print >>magic_log, repr(self) + "." + name
 		return Magic_Str(repr(self) + "." + name)
 
 def generate():
