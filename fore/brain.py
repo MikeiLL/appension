@@ -41,12 +41,12 @@ class Magic_Anything(object):
 	Actually, there are no methods, per se. When any attribute is sought,
 	a Magic_Str() will be returned.
 	"""
-	def __init__(self, name):
-		self._name = name
+	def __init__(self, id):
+		self._id = id
 	def __repr__(self):
-		return "Magic_Anything(" + repr(self._name) + ")"
+		return "Magic_Anything(" + repr("Brain#" + str(self._id)) + ")"
 	def __getattribute__(self, name):
-		if name == "id": return 0
+		if name == "id": return self._id
 		if name.startswith("_"): return object.__getattribute__(self, name)
 		return Magic_Str(repr(self) + "." + name)
 
@@ -59,7 +59,7 @@ def generate():
         while True:
             # TODO: Fetch from PostgreSQL
             counter += 1
-            yield Magic_Anything("Brain#" + str(counter))
+            yield Magic_Anything(counter)
 
     except Exception:
         print traceback.format_exc()
