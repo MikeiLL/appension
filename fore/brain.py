@@ -1,10 +1,7 @@
 import sys
-import tsp
 import time
-import shlex
 import config
 import apikeys
-import difflib
 import logging
 import traceback
 from cube import emit
@@ -24,136 +21,9 @@ def getIndexOfId(l, value):
     # Matches behavior of list.index
     raise ValueError("list.index(x): x not in list")
 
-
-class Criteria(object):
-    WEIGHT = 1
-
-    def __init__(self):
-        self.update_weight()
-
-    def __call__(self, a, b):
-        try:
-            d = max(min(self.diff(a, b), 1.0), 0.0)
-        except Exception:
-            d = None
-        if d is not None:
-            return (d * self.WEIGHT, self.WEIGHT)
-        else:
-            return (0, 0)
-
-    def precompute(self, track):
-        pass
-
-    def postcompute(self, track):
-        pass
-
-    def update_weight(self):
-        try:
-            self.WEIGHT = getattr(config,
-                                  self.__class__.__name__.lower() + "_weight")
-        except Exception:
-            log.warning("Could not update weight for criteria \"%s\":\n%s",
-                        self.__class__.__name__, traceback.format_exc())
-
-    def diff(self, a, b):
-        raise NotImplementedError()
-
-
-class Tag(Criteria):
-    def precompute(self, track):
-        try:
-            track.obj['_tags'] = set(shlex.split(track.tag_list))
-        except ValueError:
-            track.obj['_tags'] = set()
-
-    def postcompute(self, track):
-        del track.obj['_tags']
-
-    def diff(self, a, b):
-        """
-        Return the number of tags that are uncommon between the two tracks.
-        """
-        if a._tags and b._tags:
-            return (len(a._tags | b._tags) - len(a._tags & b._tags)) / 10.0
-        else:
-            return None
-
-
-class Tempo(Criteria):
-    def diff(self, a, b):
-        a = a.tempo if hasattr(a, 'tempo') else a.bpm
-        b = b.tempo if hasattr(b, 'tempo') else b.bpm
-        if a < 200 and b < 200:
-            return abs(a - b) / 100.0
-
-
-class Length(Criteria):
-    def diff(self, a, b):
-        return abs(a.duration - b.duration) / 100.0
-
-
-class Spread(Criteria):
-    def diff(self, a, b):
-        return int(a.user['username'] == b.user['username'])
-
-
-class Genre(Criteria):
-    def diff(self, a, b):
-        r = difflib.SequenceMatcher(a=a.genre.lower(),
-                                    b=b.genre.lower()).ratio()
-        return (1.0 - r)
-
-
-class Danceability(Criteria):
-    def diff(self, a, b):
-        if hasattr(a, 'danceability') and hasattr(b, 'danceability'):
-            return abs(a.danceability - b.danceability)
-
-
-class Energy(Criteria):
-    def diff(self, a, b):
-        if hasattr(a, 'energy') and hasattr(b, 'energy'):
-            return abs(a.energy - b.energy)
-
-
-class Loudness(Criteria):
-    def diff(self, a, b):
-        if hasattr(a, 'loudness') and hasattr(b, 'loudness'):
-            return abs(a.loudness - b.loudness) / 10.0
-
-
-criteria = [Tag(), Tempo(), Length(), Spread(), Genre(), Danceability(), Energy(), Loudness()]
-
-
-def distance(a, b):
-    values = [c(a, b) for c in criteria]
-    return float(sum([n for n, _ in values])) /\
-           float(sum([d for _, d in values]))
-
-
 def chunks(l, n):
     for i in xrange(0, len(l), n):
         yield l[i:i + n]
-
-
-def valid(track, user_blacklist=set(), tag_blacklist=set()):
-    return (track.streamable or track.downloadable) \
-            and track.duration < (config.max_track_length * 1000) \
-            and track.duration > (config.min_track_length * 1000) \
-            and not track.user['username'] in user_blacklist \
-            and track._tags.isdisjoint(tag_blacklist)
-
-
-def cull(tracks):
-    u = set(config.blacklist['user'])
-    t = set(config.blacklist['tag'])
-    for track in tracks:
-        for criterion in criteria:
-            criterion.precompute(track)
-    tracks = filter(lambda x: valid(x, u, t), tracks)
-    tracks = list(set(tracks))
-    return tracks
-
 
 class Magic_Str(str):
 	"""Callable string. If called, it returns itself with () appended.
