@@ -59,11 +59,10 @@ def generate():
         tracks = []
         last = []
         wait = 2  # seconds
-        counter = 0
         while True:
-            # TODO: Fetch from PostgreSQL
-            counter += 1
-            yield Magic_Anything(counter)
+            tracks = database.get_many_mp3()
+            # yield from tracks # if we were using Python 3.3+
+            for track in tracks: yield track
 
     except Exception:
         print traceback.format_exc()
