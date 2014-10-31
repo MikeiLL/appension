@@ -6,6 +6,8 @@ echo-nest-remix-examples/*
 .DS_Store
 audio_full
 *.pkl
+*~
+api_keys.yml
 =======
 build/
 dist/
