@@ -1,6 +1,7 @@
 """
 Based off of `capsule`, by Tristan Jehan and Jason Sundram.
 Heavily modified by Peter Sobot for integration with forever.fm.
+Again by Mike iLL and Rousav for Infinite Glitch
 """
 import os
 import gc
