@@ -196,23 +196,6 @@ $(document).ready ->
       else
         window.threeSixtyPlayer.handleClick {target: $('a.sm2_link')[0]}
 
-  # Fast hack - wait until the FB button has loaded to prevent style bugs
-  setTimeout(( -> $("#share").css("overflow", "visible")), 2000)
-  w = new Waveform document.getElementById "waveform"
-  
-  connectedly () ->
-    $("#track_#{id} .like").addClass('selected') for id in SC.favorites
-    $("#track_#{id} a.download").addClass('selected') for id in SC.downloaded
-  , false
-
-  $(window).resize ->
-    w.layout()
-    w.draw()
-
-  $.getJSON "all.json", (segments) ->
-    for segment in segments
-      w.process segment
-
   getPing = ->
     start_time = +new Date
     $.getJSON "timing.json", (data) ->
@@ -225,10 +208,7 @@ $(document).ready ->
   s.on 'message', (data) ->
     if typeof data is "string"
       data = JSON.parse(data)
-    if data.segment?
-      w.process data.segment, true
     else if data.listener_count?
       window._listeners = data.listener_count
 
-  window._waveform = w
   window._socket = s
