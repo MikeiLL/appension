@@ -8,7 +8,13 @@ class Track(object):
 	def __init__(self, id, filename):
 		self.id = id
 		self.filename = filename
-		self.obj = utils.Magic_Anything("Track_"+str(id))
+		# Add some stubby metadata (in an attribute that desperately
+		# wants to be renamed to something mildly useful)
+		self.obj = {
+			'id': id,
+			'artist': 'Picasso',
+			'title': 'Your Majesty',
+		}
 
 def get_mp3(some_specifier):
 	with _conn.cursor():
