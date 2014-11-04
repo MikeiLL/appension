@@ -71,6 +71,6 @@ def monitordaemon(relays, get_stats, queues):
 		time.sleep(config.monitor_update_time)
 		MonitorSocket.update({
 			"listeners": [dict(dict(g.request.headers).items() + [("remote_ip", g.request.remote_ip)]) for g in relays],
-			"queues": dict([(n, q.buffered) for n, q in queues.iteritems()]),
+			"queues": {n: q.buffered for n, q in queues.iteritems()},
 			"info": get_stats()
 		})
