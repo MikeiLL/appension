@@ -2,7 +2,6 @@ import time
 import base64
 import logging
 import traceback
-from metadata import Metadata
 
 log = logging.getLogger(__name__)
 
