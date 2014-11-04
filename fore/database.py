@@ -8,6 +8,7 @@ class Track(object):
 	def __init__(self, id, filename):
 		self.id = id
 		self.filename = filename
+		self.obj = utils.Magic_Anything("Track_"+id)
 
 def get_mp3(some_specifier):
 	with _conn.cursor():
