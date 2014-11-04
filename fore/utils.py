@@ -57,9 +57,11 @@ class Magic_Anything(object):
 
 def shuffler(func, gen):
 	"""Call func(next(gen)) repeatedly.
-	
+
 	TODO: Should this become for x in gen: func(x) ?
 	Currently, a StopIteration will bubble unexpectedly.
+
+	Not currently used.
 	"""
 	while True:
 		func(next(gen))

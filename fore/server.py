@@ -29,7 +29,7 @@ import pyechonest.config
 
 from mixer import Mixer
 from daemon import Daemon
-from utils import shuffler, daemonize
+from utils import daemonize
 from listeners import Listeners
 from assetcompiler import compiled
 from sockethandler import SocketHandler
