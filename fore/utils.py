@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
+from __future__ import print_function
 """
 utils.py
 
@@ -30,7 +31,7 @@ class Magic_Str(str):
 	It's also able to be treated as an integer (it'll be zero).
 	"""
 	def __call__(self, *args, **kw):
-		print >>magic_log, self+"()"
+		print(self+"()", file=magic_log); magic_log.flush()
 		return self+"()"
 	def __int__(self): return 0
 	def __index__(self): return 0
@@ -49,5 +50,5 @@ class Magic_Anything(object):
 	def __getattribute__(self, name):
 		if name == "id": return self._id
 		if name.startswith("_"): return object.__getattribute__(self, name)
-		print >>magic_log, repr(self) + "." + name
+		print(repr(self) + "." + name, file=magic_log); magic_log.flush()
 		return Magic_Str(repr(self) + "." + name)
