@@ -1,5 +1,6 @@
 import apikeys
 import psycopg2
+import utils
 
 _conn = psycopg2.connect(apikeys.db_connect_string)
 
