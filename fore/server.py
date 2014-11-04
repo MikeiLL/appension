@@ -30,7 +30,7 @@ import pyechonest.config
 
 from mixer import Mixer
 from daemon import Daemon
-from hotswap import Hotswap
+from utils import shuffle
 from listeners import Listeners
 from assetcompiler import compiled
 from sockethandler import SocketHandler
@@ -267,13 +267,13 @@ if __name__ == "__main__":
                   infoqueue=info_queue)
     mixer.start()
 
-    Hotswap(track_queue.put, brain.generate()).start()
-    Hotswap(InfoHandler.add, info.generate(info_queue, first_frame)).start()
-    Hotswap(MonitorSocket.update,
+    shuffle(track_queue.put, brain.generate())
+    shuffle(InfoHandler.add, info.generate(info_queue, first_frame))
+    shuffle(MonitorSocket.update,
             statistician.generate(
                 lambda: StreamHandler.relays,
                 InfoHandler.stats,
-                mp3_queue=v2_queue)).start()
+                mp3_queue=v2_queue))
 
     tornado.ioloop.PeriodicCallback(InfoHandler.clean, 5 * 1000).start()
     tornado.ioloop.PeriodicCallback(StreamHandler.check, 10 * 1000).start()

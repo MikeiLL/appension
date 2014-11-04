@@ -6,7 +6,9 @@ utils.py
 
 Created by Jason Sundram, on 2010-04-05.
 Copyright (c) 2010 The Echo Nest. All rights reserved.
+Expanded Chris Angelico 2014 with additional utilities.
 """
+import threading
 
 def flatten(l):
     """ Converts a list of tuples to a flat list.
@@ -52,3 +54,18 @@ class Magic_Anything(object):
 		if name.startswith("_"): return object.__getattribute__(self, name)
 		print(repr(self) + "." + name, file=magic_log); magic_log.flush()
 		return Magic_Str(repr(self) + "." + name)
+
+def shuffler(func, gen):
+	"""Call func(next(gen)) repeatedly.
+	
+	TODO: Should this become for x in gen: func(x) ?
+	Currently, a StopIteration will bubble unexpectedly.
+	"""
+	while True:
+		func(next(gen))
+
+def shuffle(func, gen):
+	"""Start a daemon thread to call func(next(gen)) repeatedly."""
+	t = threading.Thread(target=shuffler, args=(func,gen))
+	t.daemon = True
+	t.start()
