@@ -1,7 +1,7 @@
 """
 Based off of `capsule`, by Tristan Jehan and Jason Sundram.
 Heavily modified by Peter Sobot for integration with forever.fm.
-Again by Mike iLL and Rousav for Infinite Glitch
+Again by Mike iLL and Rosuav for Infinite Glitch
 """
 import os
 import gc
@@ -114,9 +114,9 @@ class Mixer(multiprocessing.Process):
         return self.tracks[0]
 
     def get_stream(self, x):
-        fname = os.path.abspath("cache/%d.mp3" % x.id)
-        if os.path.isfile(fname):
-            return fname
+        for fname in (os.path.abspath("cache/%d.mp3" % x.id), x.filename, "audio/"+x.filename):
+            if os.path.isfile(fname):
+                return fname
         # TODO: Fetch the contents from the database and save to fname
         raise NotImplementedError
 
