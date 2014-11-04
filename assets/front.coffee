@@ -122,10 +122,7 @@ class Titular
     if not playing?
       s = window.soundManager.sounds.ui360Sound0
       playing = (s? and s.playState == 1 and not s.paused)
-    if playing
-      document.title = @char + " " + @rot(window._waveform.title())
-    else
-      document.title = @title
+    document.title = @title
 
   rot: (title) ->
     if title != @__title
