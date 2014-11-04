@@ -7,6 +7,7 @@ import config
 import apikeys
 import customlog
 import logging
+import brain
 
 import os
 import sys
@@ -43,8 +44,6 @@ started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
 
 test = 'test' in sys.argv
-frontend = 'frontend' in sys.argv
-stream = not frontend
 SECONDS_PER_FRAME = lame.SAMPLES_PER_FRAME / 44100.0
 
 templates = tornado.template.Loader(config.template_dir)
@@ -268,9 +267,7 @@ if __name__ == "__main__":
                   infoqueue=info_queue)
     mixer.start()
 
-    if stream:
-        import brain
-        Hotswap(track_queue.put, brain.generate()).start()
+    Hotswap(track_queue.put, brain.generate()).start()
     Hotswap(InfoHandler.add, info.generate(info_queue, first_frame)).start()
     Hotswap(MonitorSocket.update,
             statistician.generate(
