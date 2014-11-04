@@ -30,7 +30,7 @@ import pyechonest.config
 
 from mixer import Mixer
 from daemon import Daemon
-from utils import shuffle
+from utils import shuffler, daemonize
 from listeners import Listeners
 from assetcompiler import compiled
 from sockethandler import SocketHandler
@@ -267,9 +267,9 @@ if __name__ == "__main__":
                   infoqueue=info_queue)
     mixer.start()
 
-    shuffle(track_queue.put, brain.generate())
-    shuffle(InfoHandler.add, info.generate(info_queue, first_frame))
-    shuffle(MonitorSocket.update,
+    daemonize(shuffler, track_queue.put, brain.generate())
+    daemonize(shuffler, InfoHandler.add, info.generate(info_queue, first_frame))
+    daemonize(shuffler, MonitorSocket.update,
             statistician.generate(
                 lambda: StreamHandler.relays,
                 InfoHandler.stats,

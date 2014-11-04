@@ -64,8 +64,8 @@ def shuffler(func, gen):
 	while True:
 		func(next(gen))
 
-def shuffle(func, gen):
-	"""Start a daemon thread to call func(next(gen)) repeatedly."""
-	t = threading.Thread(target=shuffler, args=(func,gen))
+def daemonize(target, *args):
+	"""Start a daemon thread to call target(*args)."""
+	t = threading.Thread(target=target, args=args)
 	t.daemon = True
 	t.start()
