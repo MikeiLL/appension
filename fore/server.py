@@ -16,7 +16,6 @@ import copy
 import time
 import info
 import random
-import restart
 import datetime
 import threading
 import traceback
@@ -279,12 +278,6 @@ if __name__ == "__main__":
             InfoHandler.stats,
             mp3_queue=v2_queue).start()
 
-    tornado.ioloop.PeriodicCallback(
-        lambda: restart.check('restart.txt',
-                              started_at_timestamp,
-                              len(StreamHandler.relays)),
-        config.restart_timeout * 1000
-    ).start()
     tornado.ioloop.PeriodicCallback(InfoHandler.clean, 5 * 1000).start()
     tornado.ioloop.PeriodicCallback(StreamHandler.check, 10 * 1000).start()
 
