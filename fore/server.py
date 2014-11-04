@@ -93,7 +93,6 @@ class InfoHandler(tornado.web.RequestHandler):
     started = None
     samples = 0L
     duration = 0.
-    width = 0L
 
     @classmethod
     def add(self, data):
@@ -101,7 +100,6 @@ class InfoHandler(tornado.web.RequestHandler):
             self.started = time.time()
         self.samples += data['samples']
         self.duration += data['duration']
-        self.width += data['width']
 
         self.clean()
         log.info("Adding track info. Currently holding info for %d tracks.",
@@ -131,7 +129,6 @@ class InfoHandler(tornado.web.RequestHandler):
             "started": cls.started,
             "samples": cls.samples,
             "duration": cls.duration,
-            "width": cls.width
         }
 
     def get(self):
@@ -144,7 +141,6 @@ class InfoHandler(tornado.web.RequestHandler):
                     if _action['time'] < now \
                     and _action['time'] + _action['duration'] > now:
                         action = copy.copy(_action)
-                        del action['waveform']
                         self.write(json.dumps({'frame': action, 'now': now},
                                    ensure_ascii=False).encode('utf-8'))
                         return
