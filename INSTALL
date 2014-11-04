@@ -4,6 +4,7 @@ sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install gitk # no required - git graphic
 sudo apt-get install vlc # not required - media player
+sudo apt-get install python-mutagen # adding to requirements
 
 clone psobot remix, submodule init pyechonest setup.py install
 sudo apt-get install libav-tools lame nodejs
