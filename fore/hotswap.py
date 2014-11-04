@@ -15,7 +15,4 @@ class Hotswap(threading.Thread):
 
     def run(self):
         while True:
-            self.handle(self.gen.next())
-
-    def handle(self, elem):
-        self.out(elem)
+            self.out(self.gen.next())
