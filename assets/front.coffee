@@ -41,86 +41,22 @@ class Frame
     @parseMetaData()
 
   parseMetaData: ->
-    matches = @tracks[0].metadata.title.match(/(.*?) by (.*)/i)
-    if matches?
-      [_, @title, @artist] = matches
-      matches = @artist.match(/(.*?)\s+-\s+(.*)/i)
-      [_, @artist, other] = matches if matches?
-    else
-      matches = @tracks[0].metadata.title.match(/(.*?)\s*-\s+(.*)/i)
-      if matches?
-        [_, @artist, @title] = matches
-      else
-        @title = @tracks[0].metadata.title
-        @artist = @tracks[0].metadata.user.username
-    
-    matches = @title.match(/([^\[\]]*?)( - ([^\[\]\(\)]*)|(\[.*\]))/i)
-    if matches?
-      [_, @title, _, other] = matches
-    
-    #   Try to remove "Free Download," "Follow Me" and the like
-    _title = @title.replace MAGIC_REGEX, ""
-    @title = _title if _title.length > 0
-
-    _artist = @artist.replace MAGIC_REGEX, ""
-    @artist = _artist if _artist.length > 0
-
-    if @title[0] == '"' and @title[@title.length - 1] == '"'
-      @title = @title[1...@title.length - 1].trim()
-
-    @img = if @tracks[0].metadata.artwork_url?
-             @tracks[0].metadata.artwork_url
-           else
-             @tracks[0].metadata.user.avatar_url
-
-    # Stats display
-    @playcount   = comma @tracks[0].metadata.playback_count
-    @downloads   = comma @tracks[0].metadata.download_count
-    @favoritings = comma @tracks[0].metadata.favoritings_count
-    @stats = @playcount? and @downloads? and @favoritings
+    artist = @tracks[0].metadata.artist
+    title = @tracks[0].metadata.title
 
     # Buttons
     @buttons = true
     @nid = @tracks[0].metadata.id
-    @download = @tracks[0].metadata.download_url
-
-    @purchaselink = @tracks[0].metadata.purchase_url
-    @purchasetext = @tracks[0].metadata.purchase_title
-    @purchasetext = "Buy" if not @purchasetext?
-
-    @url = @tracks[0].metadata.permalink_url
-
-  twitter: ->
-    text = "Check out this track: #{@url} #{if @playing() then "playing now" else "I found"} on"
-    "http://twitter.com/share?text=#{encodeURIComponent(text)}"
-
+    
   html: (first) ->
     first = false if not first?
     _new = @new
     @new = ''
     """
-    <div class='track #{_new} #{if @played() and not first then "hidden" else ""}' id='#{@id}' target="_blank" href="#{@url}">
-      <a class="coverart" href="#{@url}" target="_blank"><img src="#{@img}" /></a>
-      <div class="text">
+     <div class="text">
         <a class="title" href="#{@url}" target="_blank">#{@title}</a>
         <span class="artist">#{@artist}</span>
       </div>
-      <div class='buttons'>
-        #{if @id then "<a href='#' title='Like \"#{@title}\" on SoundCloud.' data-track='#{@nid}' class='like #{if (SC.favorites? and @nid in SC.favorites) then "selected" else ""}'>&nbsp;</a>
-                       <a href='#' title='Tweet about \"#{@title}\".' target='_blank' class='share'>&nbsp;</a>
-                      " else ""}
-        #{if @download then "<a href='#{@download}' title='Download \"#{@title}\" from SoundCloud.'  class='download #{if (SC.downloaded? and @nid in SC.downloaded) then "selected" else ""}' data-track='#{@nid}'>&nbsp;</a>" else ""}
-        #{if @url then "<a href='#{@url}' title='View \"#{@title}\" on SoundCloud.' target='_blank' class='sc'>&nbsp;</a><a title='Make \"#{@title}\" your new jam.' href='http://www.thisismyjam.com/jam/create?url=#{encodeURIComponent(@url)}' target='_blank' class='jam'>&nbsp;</a>" else ""}
-        #{if @purchaselink and @purchasetext then "<a href='#{@purchaselink}' target='_blank' class='buy'>#{@purchasetext}</a>" else ""}
-      </div>
-      #{if @stats then "
-      <div class='stats'>
-        #{if @playcount? and @playcount != '0' then "<span class='count playback'>#{@playcount}</span>" else ""}
-        #{if @downloads? and @downloads != '0' then "<span class='count download'>#{@downloads}</span>" else ""}
-        #{if @favoritings? and @favoritings != '0' then "<span class='count favoritings'>#{@favoritings}</span>" else ""}
-      </div>
-      " else ""}
-    </div>
     """
 
   played: ->
@@ -167,147 +103,6 @@ class Frame
         , 100
       , 1400
 
-class Waveform
-  speed: 5
-  constructor: (@canvas) ->
-    @delay = 0
-    @_offset = $("#menu").outerWidth()
-    @frames = []
-    @context = @canvas.getContext "2d"
-    @overlap = if navigator.userAgent.match(/chrome/i)? then 0 else 1
-    @layout()
-    @drawloop()
-
-  offset: ->
-    @_offset + @buffered()
-
-  buffered: ->
-    ((window.threeSixtyPlayer.bufferDelay) * @speed / 1000.0) + OFFSET
-
-  layout: ->
-    @canvas.width = window.innerWidth
-
-  drawloop: ->
-    @draw()
-    me = this
-    return if @stop?
-    setTimeout((-> me.drawloop()), 100)
-
-  draw: ->
-    BUFFERED = @buffered()
-    if window.soundManager.sounds.ui360Sound0? && window.soundManager.sounds.ui360Sound0.paused
-      @paused_at = window.serverTime() unless @paused_at?
-      return
-    else if @paused_at?
-      @delay += (window.serverTime() - @paused_at)
-      delete @paused_at
-
-    if @frames[0]?
-      @context.clearRect 0, 0, @canvas.width, @canvas.height
-      nowtime = (window.serverTime() - @delay) / 1000
-      
-      if @frames.length > 1
-        for i in [1...@frames.length]
-          if @frames[i].time + BUFFERED > nowtime
-            frame = @frames[i-1]
-            if not @__current_frame? || @__current_frame != frame
-              @onCurrentFrameChange @__current_frame, frame
-              @__current_frame = frame
-            break
-      else
-        frame = @frames[0]
-        if not @__current_frame? || @__current_frame != frame
-          @onCurrentFrameChange @__current_frame, frame
-          @__current_frame = frame
-
-
-      left = (nowtime - @frames[0].time) * @speed * -1
-      while @offset() + left + @frames[0].image.width < 0
-        @frames.splice(0, 1)
-        return if not @frames[0]?
-        left = (nowtime - @frames[0].time) * @speed * -1
-      right = @offset() + left
-
-      # Actually draw our waveform here
-      for frame in @frames
-        @context.drawImage frame.image, right - @overlap, 0
-        #if @overlap > 0
-          # Clone the last column to prevent visual artifacts on Safari/Firefox
-        # @context.putImageData(@context.getImageData(right - @overlap, 0, @overlap, @canvas.height), right, 0)
-        right += frame.image.width - @overlap
-      @setPlayerColor()
-
-  title: ->
-    if @__current_frame? then @__current_frame.title else "Buffering..."
-
-  __dec2hex: (i) ->
-   (i+0x100).toString(16).substr(-2)
-
-  LIGHTENING: 32
-  setPlayerColor: ->
-    pix = @context.getImageData(@offset(), parseInt(@canvas.height / 2), 1, @canvas.height).data
-    [r, g, b] = [Math.min(pix[0] + @LIGHTENING, 255),
-                 Math.min(pix[1] + @LIGHTENING, 255),
-                 Math.min(pix[2] + @LIGHTENING, 255)]
-    window.threeSixtyPlayer.config.playRingColor = "##{@__dec2hex(r)}#{@__dec2hex(g)}#{@__dec2hex(b)}"
-    window.threeSixtyPlayer.config.backgroundRingColor = window.threeSixtyPlayer.config.playRingColor
-
-  onNewFrame: (frame) ->
-    @frames.push frame
-    frame.render()
-    
-  onCurrentFrameChange: (old, knew) ->
-    if knew.action == "Crossmatch" or knew.action == "Crossfade" or (old? and (old.action == "Playback" and knew.action == "Playback"))
-      setTimeout ->
-        knew.render()
-        old.render() if old?
-      , (if knew.action == "Crossmatch" then knew.duration * 500 else 10)
-    
-  process: (f, from_socket) ->
-    frame = new Frame f, from_socket
-    img = new Image
-    me = this
-    img.onload = ->
-      frame.image = this
-      if window.__spinning
-        window.__spinner.stop()
-        window.__spinning = false
-      me.onNewFrame frame
-    img.src = frame.waveform
-
-if window.location.toString().search("beta.forever.fm") != -1
-  SC.initialize
-    client_id: "cd8a7092051937ab1994fa3868edb911"
-    redirect_uri: "http://beta.forever.fm/static/sc.html"
-else
-  SC.initialize
-    client_id: "b08793cf5964f5571db86e3ca9e5378f"
-    redirect_uri: "http://forever.fm/static/sc.html"
-
-
-connectedly = (callback, authenticate) ->
-  if SC.isConnected()
-    callback()
-  else
-    token = localStorage.getItem "accessToken"
-    if token?
-      SC.accessToken token
-      getPersistent callback
-    else if not authenticate? or authenticate
-      SC.connect (a) ->
-        localStorage.setItem('accessToken', SC.accessToken()) if localStorage?
-        getPersistent callback
-
-getPersistent = (callback) ->
-  _downloaded = localStorage.getItem("downloaded")
-  if _downloaded?
-    SC.downloaded = _downloaded.split(',')
-  else
-    SC.downloaded = []
-    localStorage.setItem('downloaded', SC.downloaded.join(','))
-  SC.get "/me/favorites/", {limit: 1000}, (favoriteds) ->
-    SC.favorites = (track.id for track in favoriteds)
-    callback SC.favorites
 
 class Titular
   char: "\u25b6"
@@ -434,60 +229,6 @@ $(document).ready ->
       w.process data.segment, true
     else if data.listener_count?
       window._listeners = data.listener_count
-
-  $(document).on "click", 'a.like', (e) ->
-    e.preventDefault()
-    me = this
-    trackid = parseInt $(this).data 'track'
-    liked = $(this).hasClass 'selected'
-    $(me).toggleClass 'selected'
-    connectedly ->
-      if liked
-        SC.delete "/me/favorites/#{trackid}", (a) ->
-          if a.status?
-            target = $("#track_#{trackid} .favoritings")
-            target.html(comma(parseInt(target.html().replace(',', '')) - 1))
-            idx = SC.favorites.indexof(trackid)
-            SC.favorites.splice(idx, 1) if idx > -1
-          else
-            $(me).toggleClass 'selected'
-      else
-        SC.put "/me/favorites/#{trackid}", (a) ->
-          if a.status?
-            target = $("#track_#{trackid} .favoritings")
-            target.html(comma(parseInt(target.html().replace(',', '')) + 1))
-            SC.favorites.push trackid
-          else
-            $(me).toggleClass 'selected'
-
-  $(document).on "click", 'a.share', (e) ->
-    e.preventDefault()
-    [_w, _h] = [500, 250]
-    [l, t] = [screen.width / 2 - (_w / 2), screen.height / 2 - (_h / 2)]
-    link = w.__current_frame.twitter()
-    window.open(link, "Twitter", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no, resizable=yes,copyhistory=no,height=#{_h},width=#{_w},top=#{t},left=#{l}")
-    $(this).addClass('selected')
-
-  $(document).on "click", 'a.download', (e) ->
-    e.preventDefault()
-    trackid = parseInt($(this).data 'track')
-    me = this
-    connectedly ->
-      $(me).addClass('selected')
-      me.href += "?oauth_token=#{SC.accessToken()}"
-      window.open(me.href, "Download")
-
-      # Increment download count
-      target = $("#track_#{trackid} .stats .count.download")
-      target.html(comma(parseInt(target.html().replace(',', '')) + 1))
-
-      # Update persistence
-      SC.downloaded.push(trackid)
-      localStorage.setItem('downloaded', SC.downloaded.join(','))
-
-  $(document).on "click", 'a.jam', (e) ->
-    # TODO: Store this action in LocalStorage
-    $(this).addClass('selected')
 
   window._waveform = w
   window._socket = s
