@@ -25,6 +25,11 @@ def get_mp3(some_specifier):
 		pass
 
 def get_many_mp3():
+	"""Get a list of many (possibly all) the tracks in the database.
+
+	Returns a list, guaranteed to be fully realized prior to finishing
+	with the database cursor, for safety.
+	"""
 	with _conn.cursor() as cur:
 		cur.execute("select id,filename,artist,title from tracks order by id")
 		return [Track(*row) for row in cur.fetchall()]
