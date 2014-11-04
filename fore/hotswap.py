@@ -6,9 +6,9 @@ log = logging.getLogger(__name__)
 
 
 class Hotswap(threading.Thread):
-    def __init__(self, out, mod, *args, **kwargs):
+    def __init__(self, out, gen):
         self.out = out
-        self.gen = mod.generate(*args, **kwargs)
+        self.gen = gen
 
         threading.Thread.__init__(self)
         self.daemon = True

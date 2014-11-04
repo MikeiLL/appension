@@ -270,13 +270,13 @@ if __name__ == "__main__":
 
     if stream:
         import brain
-        Hotswap(track_queue.put, brain).start()
-    Hotswap(InfoHandler.add, info, info_queue, first_frame).start()
+        Hotswap(track_queue.put, brain.generate()).start()
+    Hotswap(InfoHandler.add, info.generate(info_queue, first_frame)).start()
     Hotswap(MonitorSocket.update,
-            statistician,
-            lambda: StreamHandler.relays,
-            InfoHandler.stats,
-            mp3_queue=v2_queue).start()
+            statistician.generate(
+                lambda: StreamHandler.relays,
+                InfoHandler.stats,
+                mp3_queue=v2_queue)).start()
 
     tornado.ioloop.PeriodicCallback(InfoHandler.clean, 5 * 1000).start()
     tornado.ioloop.PeriodicCallback(StreamHandler.check, 10 * 1000).start()
