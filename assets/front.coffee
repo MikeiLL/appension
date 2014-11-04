@@ -203,12 +203,3 @@ $(document).ready ->
   window.getPing = getPing
   setInterval getPing, TIMING_INTERVAL
   getPing()
-
-  s = io.connect ":8193/info.websocket"
-  s.on 'message', (data) ->
-    if typeof data is "string"
-      data = JSON.parse(data)
-    else if data.listener_count?
-      window._listeners = data.listener_count
-
-  window._socket = s
