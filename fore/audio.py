@@ -14,7 +14,7 @@ import subprocess
 import uuid
 import gc
 import weakref
-from exceptionthread import ExceptionThread
+import threading
 from monkeypatch import monkeypatch_class
 
 #   Sadly, we need to import * - this is a monkeypatch!
@@ -265,7 +265,7 @@ class LocalAudioFile(LocalAudioFile):
 
         #   Initializing the audio file could be slow. Let's do this in parallel.
         AudioData.__init__(self, filedata=data, rawfiletype=type, verbose=verbose, defer=True, uid=uid)
-        loading = ExceptionThread(target=self.load)
+        loading = threading.Thread(target=self.load)
         loading.start()
 
         start = time.time()
