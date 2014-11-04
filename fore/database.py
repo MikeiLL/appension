@@ -26,5 +26,11 @@ def get_many_mp3():
 		cur.execute("select id,filename,artist,title from tracks order by id")
 		return [Track(*row) for row in cur.fetchall()]
 
-
-# Etcetera.
+def enqueue_tracks(queue):
+	"""Repeatedly enumerate tracks and enqueue them.
+	
+	Designed to be daemonized.
+	"""
+	while True:
+		for track in get_many_mp3():
+			queue.put(track)
