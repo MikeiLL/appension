@@ -7,7 +7,7 @@ import config
 import apikeys
 import customlog
 import logging
-import brain
+import database
 
 import os
 import sys
@@ -267,7 +267,7 @@ if __name__ == "__main__":
                   infoqueue=info_queue)
     mixer.start()
 
-    daemonize(shuffler, track_queue.put, brain.generate())
+    daemonize(database.enqueue_tracks, track_queue)
     daemonize(shuffler, InfoHandler.add, info.generate(info_queue, first_frame))
     daemonize(shuffler, MonitorSocket.update,
             statistician.generate(
