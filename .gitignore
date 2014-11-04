@@ -12,6 +12,7 @@ api_keys.yml
 build/
 dist/
 js/
+remix/
 remix.egg-info
 *.so
 *.pyc
