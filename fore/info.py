@@ -6,7 +6,7 @@ import traceback
 log = logging.getLogger(__name__)
 
 
-def generate(iq, first_frame):
+def generate(iq, first_frame, handler):
     log.info("Info generator waiting on first frame...")
     first_frame.acquire()
     stime = time.time()
@@ -18,6 +18,6 @@ def generate(iq, first_frame):
             action['time'] = stime + (samples / 44100.0)
             samples += action['samples']
             action['unicode'] = u"\x96\x54"
-            yield action
+            handler.add(action)
         except Exception:
             log.error("Could not get action!\n%s", traceback.format_exc())

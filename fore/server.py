@@ -21,7 +21,6 @@ import datetime
 import threading
 import traceback
 import tornado.web
-import statistician
 import tornado.ioloop
 import tornado.template
 import tornadio2.server
@@ -35,7 +34,7 @@ from listeners import Listeners
 from assetcompiler import compiled
 from sockethandler import SocketHandler
 from bufferedqueue import BufferedReadQueue
-from monitor import MonitorHandler, MonitorSocket
+from monitor import MonitorHandler, MonitorSocket, monitordaemon
 
 #   API Key setup
 pyechonest.config.ECHO_NEST_API_KEY = apikeys.ECHO_NEST_API_KEY
@@ -268,17 +267,12 @@ if __name__ == "__main__":
     mixer.start()
 
     daemonize(database.enqueue_tracks, track_queue)
-    daemonize(shuffler, InfoHandler.add, info.generate(info_queue, first_frame))
-    daemonize(shuffler, MonitorSocket.update,
-            statistician.generate(
-                lambda: StreamHandler.relays,
-                InfoHandler.stats,
-                mp3_queue=v2_queue))
+    daemonize(info.generate, info_queue, first_frame, InfoHandler)
+    StreamHandler.relays = Listeners(v2_queue, "All", first_frame)
+    daemonize(monitordaemon,StreamHandler.relays,InfoHandler.stats,{"mp3_queue":v2_queue})
 
     tornado.ioloop.PeriodicCallback(InfoHandler.clean, 5 * 1000).start()
     tornado.ioloop.PeriodicCallback(StreamHandler.check, 10 * 1000).start()
-
-    StreamHandler.relays = Listeners(v2_queue, "All", first_frame)
 
     application = tornado.web.Application(
         tornadio2.TornadioRouter(SocketConnection).apply_routes([

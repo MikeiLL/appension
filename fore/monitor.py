@@ -65,3 +65,11 @@ class MonitorSocket(tornadio2.conn.SocketConnection):
 
     def on_message(self, message):
         pass
+
+def monitordaemon(relays, get_stats, queues):
+    while True:
+        time.sleep(config.monitor_update_time)
+        MonitorSocket.update({"listeners": [dict(dict(g.request.headers).items() + [("remote_ip", g.request.remote_ip)])
+                            for g in relays],
+               "queues": dict([(n, q.buffered) for n, q in queues.iteritems()]),
+               "info": get_stats()})
