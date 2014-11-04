@@ -1,11 +1,14 @@
 import apikeys
 import psycopg2
 import utils
+import logging
 
 _conn = psycopg2.connect(apikeys.db_connect_string)
+log = logging.getLogger(__name__)
 
 class Track(object):
 	def __init__(self, id, filename, artist, title):
+		log.info("Rendering Track(%r, %r, %r, %r)", id, filename, artist, title)
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
