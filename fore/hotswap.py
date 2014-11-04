@@ -6,11 +6,10 @@ log = logging.getLogger(__name__)
 
 
 class Hotswap(threading.Thread):
-    def __init__(self, out, mod, gen='generate', *args, **kwargs):
+    def __init__(self, out, mod, *args, **kwargs):
         self.out = out
         self.mod = mod
-        self.genname = gen
-        self.gen = getattr(mod, self.genname)(*args, **kwargs)
+        self.gen = mod.generate(*args, **kwargs)
         self.loaded = self.current_modtime
         self.args = args
         self.kwargs = kwargs
@@ -28,7 +27,7 @@ class Hotswap(threading.Thread):
                 log.info("Hot-swapping module: %s", self.mod.__name__)
                 # self.mod = reload(self.mod)
                 self.loaded = self.current_modtime
-                self.gen = getattr(self.mod, self.genname)(*self.args, **self.kwargs)
+                self.gen = self.mod.generate(*self.args, **self.kwargs)
             self.handle(self.gen.next())
 
     def handle(self, elem):

@@ -271,9 +271,9 @@ if __name__ == "__main__":
     if stream:
         import brain
         Hotswap(track_queue.put, brain).start()
-    Hotswap(InfoHandler.add, info, 'generate', info_queue, first_frame).start()
+    Hotswap(InfoHandler.add, info, info_queue, first_frame).start()
     Hotswap(MonitorSocket.update,
-            statistician, 'generate',
+            statistician,
             lambda: StreamHandler.relays,
             InfoHandler.stats,
             mp3_queue=v2_queue).start()
