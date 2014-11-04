@@ -3,7 +3,6 @@ import time
 import Queue
 import config
 import logging
-from cube import emit
 from restart import RESTART_EXIT_CODE
 
 LAG_LIMIT = config.lag_limit
@@ -42,14 +41,7 @@ class Listeners(list):
                 samples = self.__count * 1152
                 duration = float(self.__count) * 1152.0 / 44100.0
                 buffered = self.queue.buffered
-                emit('drift', {
-                    'ms': (duration - uptime) * 1000.0,
-                    'rate': (duration / uptime),
-                })
-                emit('buffered', {
-                    'queue': self.__name,
-                    'frames': buffered,
-                })
+                
                 if self.__count > 0 and not self.__count % 2296:
                     log.debug("Sent %d frames (%dsam, %fs) over %fs (%fx).",
                             self.__count, samples, duration, uptime,

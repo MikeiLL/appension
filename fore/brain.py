@@ -4,7 +4,6 @@ import config
 import apikeys
 import logging
 import traceback
-from cube import emit
 from timer import Timer
 from requests import HTTPError
 import database
