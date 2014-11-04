@@ -114,7 +114,9 @@ class Mixer(multiprocessing.Process):
         return self.tracks[0]
 
     def get_stream(self, x):
-        for fname in (os.path.abspath("cache/%d.mp3" % x.id), x.filename, "audio/"+x.filename):
+	print(os.getcwd)
+	print(x.filename)
+        for fname in (x.filename, "audio/"+x.filename):
             if os.path.isfile(fname):
                 return fname
         # TODO: Fetch the contents from the database and save to fname

@@ -13,9 +13,10 @@ import psycopg2
 
 def dbactions(track, cur):
 	cur.execute("INSERT INTO tracks \
-			(title, \
-			filename, \
-			artist) \
+			(artist, \
+			title,	\
+			filename \
+			) \
 			VALUES (%s, %s, %s)",
 		(track['TPE1'].text,
 		track['TIT2'].text,
@@ -27,8 +28,8 @@ def dbactions(track, cur):
 			filename, \
 			artist) \
 			FROM tracks \
-			WHERE 'filename' \
-			LIKE (%s)",
+			WHERE filename \
+			= (%s)",
 		(
 		track.filename[6:],)
 		)
