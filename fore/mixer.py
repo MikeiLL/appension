@@ -130,7 +130,7 @@ class Mixer(multiprocessing.Process):
         if isinstance(x, tuple):
             return self.analyze(*x)
 
-        log.info("Grabbing stream...", uid=x.id)
+        log.info("Grabbing stream [%r]...", x.id)
         laf = LocalAudioStream(self.get_stream(x))
         setattr(laf, "_metadata", x)
         return self.process(laf)
@@ -144,7 +144,7 @@ class Mixer(multiprocessing.Process):
     def process(self, track):
         if not hasattr(track.analysis.pyechonest_track, "title"):
             setattr(track.analysis.pyechonest_track, "title", track._metadata.title)
-        log.info("Resampling features...", uid=track._metadata.id)
+        log.info("Resampling features [%r]...", track._metadata.id)
         track.resampled = resample_features(track, rate='beats')
         track.resampled['matrix'] = timbre_whiten(track.resampled['matrix'])
 
@@ -152,7 +152,7 @@ class Mixer(multiprocessing.Process):
             raise ValueError("Track too short!")
 
         track.gain = self.__db_2_volume(track.analysis.loudness)
-        log.info("Done processing.", uid=track._metadata.id)
+        log.info("Done processing [%r].", track._metadata.id)
         return track
 
     def __db_2_volume(self, loudness):

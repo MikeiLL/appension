@@ -5,7 +5,6 @@ by @psobot, Nov 3 2012
 
 import config
 import apikeys
-import customlog
 import logging
 import database
 
@@ -238,10 +237,6 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 
 if __name__ == "__main__":
     Daemon()
-
-    for handler in logging.root.handlers:
-        logging.root.removeHandler(handler)
-    logging.root.addHandler(customlog.MultiprocessingStreamHandler())
 
     log = logging.getLogger(config.log_name)
     log.info("Starting %s...", config.app_name)
