@@ -1,39 +1,39 @@
 #!/usr/bin/env python
 # encoding: utf=8
-from __future__ import print_function
 
 """
-append.py
+based on capsule.py
 
-Accepts songs on the commandline, order them, optionally abridge, and output an audio file
+accepts songs on the commandline, order them, beatmatch them, and output an audio file
 
-(Abridge is used to make checking transitions easier - cuts out most of middle of track)
-
-Created by Mike iLL / mZoo.org
-Based on Capsule by Tristan Jehan and Jason Sundram.
+Created by Tristan Jehan and Jason Sundram.
 """
 
-usage = """
-Usage: 
-    python append.py <input_filename> <output_filename>
+usage = '''
+Usage: hard_transition.py [options] <list of mp3s>
 
-Example:
-    
-    python append.py -v -e -a -n "long1" audio/Track01.mp3 audio/Track02.mp3 audio/GlitchBit_BJanoff.mp3
-    
-    NOTE: GlitchBit_BJanoff.mp3 tracks returns very little analysis data!
-          malcolmmarsden.mp3 also "interesting"
-    
-"""
+Options:
+  -h, --help            show this help message and exit
+  -t TRANSITION, --transition=TRANSITION
+                        transition (in seconds) default=8
+  -i INTER, --inter=INTER
+                        section that's not transitioning (in seconds)
+                        default=8
+  -o, --order           automatically order tracks
+  -e, --equalize        automatically adjust volumes
+  -v, --verbose         show results on screen
+  -p PDB, --pdb=PDB     dummy; here for not crashing when using nose
+'''
+
 import os
 import sys
 from optparse import OptionParser
-from echonest.remix.action import make_stereo
-from echonest.remix.audio import LocalAudioFile
+
+from fore.action import render, make_stereo
+from fore.audio import LocalAudioFile
 from pyechonest import util
-from append_support import equalize_tracks, appension, abridge, pre_post, display_actions, trim_silence
-from action import render
-from pympler.asizeof import asizeof
+from hard_transition_support import hard_transition
+from fore.capsule_support import order_tracks, equalize_tracks, resample_features, timbre_whiten, initialize, make_transition, terminate, FADE_OUT, display_actions, is_valid
 
 
 def tuples(l, n=2):
@@ -42,7 +42,6 @@ def tuples(l, n=2):
     """
     return zip(*[l[i:] for i in range(n)])
 
-
 def do_work(audio_files, options):
 
     inter = float(options.inter)
@@ -50,66 +49,59 @@ def do_work(audio_files, options):
     order = bool(options.order)
     equal = bool(options.equalize)
     verbose = bool(options.verbose)
-    abridged = bool(options.abridged)
     
+    # Get pyechonest/remix objects
     analyze = lambda x : LocalAudioFile(x, verbose=verbose, sampleRate = 44100, numChannels = 2)
+    tracks = map(analyze, audio_files)
     
-    def analize(x):
-        return LocalAudioFile(x, verbose=verbose, sampleRate = 44100, numChannels = 2)
-        
-    tracks = map(analize, audio_files)
-    for tr in tracks:
-    	track_length = len(tr)
-
     # decide on an initial order for those tracks
     if order == True:
-        if verbose: print("Ordering tracks...")
+        if verbose: print "Ordering tracks..."
         tracks = order_tracks(tracks)
     
     if equal == True:
         equalize_tracks(tracks)
         if verbose:
-
-            print()
+            print
             for track in tracks:
-                print("Vol = %.0f%%\t%s" % (track.gain*100.0, track.filename))
-            print()
-            
-    if abridged == True:
-        abridge(tracks)
-     
-    trim_silence(tracks)
-        
+                print "Vol = %.0f%%\t%s" % (track.gain*100.0, track.filename)
+            print
+    
+    valid = []
     # compute resampled and normalized matrices
     for track in tracks: 
+        if verbose: print "Resampling features for", track.filename
+        track.resampled = resample_features(track, rate='beats')
+        track.resampled['matrix'] = timbre_whiten(track.resampled['matrix'])
+        # remove tracks that are too small
+        if is_valid(track, inter, trans):
+            valid.append(track)
+        # for compatibility, we make mono tracks stereo
         track = make_stereo(track)
-            
+    tracks = valid
+    
     if len(tracks) < 1: return []
     # Initial transition. Should contain 2 instructions: fadein, and playback.
-    #if verbose: print("Computing transitions...")
-    #start = initialize(tracks[0], inter, trans)
+    if verbose: print "Computing transitions..."
+    start = initialize(tracks[0], inter, trans)
     
     # Middle transitions. Should each contain 2 instructions: crossmatch, playback.
     middle = []
-
-    print("%d duplicates"%len([i for i, x in enumerate(middle) if middle.count(x) > 1]))
-    [middle.extend(appension(t)) for t in tracks]
-    print("%d duplicates"%len([i for i, x in enumerate(middle) if middle.count(x) > 1]))
-    # Last chunk. Should contain 1 instruction: fadeout.
-    #end = terminate(tracks[-1], FADE_OUT)
+    [middle.extend(make_transition(t1, t2, inter, trans)) for (t1, t2) in tuples(tracks)]
     
-    return middle
+    # Last chunk. Should contain 1 instruction: fadeout.
+    end = terminate(tracks[-1], FADE_OUT)
+    
+    return start + middle + end
 
 def get_options(warn=False):
     usage = "usage: %s [options] <list of mp3s>" % sys.argv[0]
     parser = OptionParser(usage=usage)
-    parser.add_option("-t", "--transition", default=1, help="transition (in seconds) default=8")
+    parser.add_option("-t", "--transition", default=8, help="transition (in seconds) default=8")
     parser.add_option("-i", "--inter", default=8, help="section that's not transitioning (in seconds) default=8")
     parser.add_option("-o", "--order", action="store_true", help="automatically order tracks")
     parser.add_option("-e", "--equalize", action="store_true", help="automatically adjust volumes")
-    parser.add_option("-v", "--verbose", action="store_true", help="show results on screen")                      
-    parser.add_option("-a", "--abridged", action="store_true", help="cut out center of track (for testing)")           
-    parser.add_option("-n", "--mix_name", default=8888777766665, help="name this mix")      
+    parser.add_option("-v", "--verbose", action="store_true", help="show results on screen")        
     parser.add_option("-p", "--pdb", default=True, help="dummy; here for not crashing when using nose")
     
     (options, args) = parser.parse_args()
@@ -119,23 +111,16 @@ def get_options(warn=False):
     
 def main():
     options, args = get_options(warn=True);
-    for a in args:
-
-        print("track = %s"%a)
-
     actions = do_work(args, options)
     verbose = bool(options.verbose)
     
     if verbose:
         display_actions(actions)
-        print("Output Duration = %.3f sec" % sum(act.duration for act in actions))
+        print "Output Duration = %.3f sec" % sum(act.duration for act in actions)
     
-        print("Rendering...")
+        print "Rendering..."
     # Send to renderer
-    mixname = str(options.mix_name)
-    final_file = mixname + ".mp3"
-    print(final_file)
-    render(actions, final_file, verbose)
+    render(actions, 'capsule.mp3', verbose)
     return 1
     
 if __name__ == "__main__":
