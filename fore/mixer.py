@@ -175,10 +175,8 @@ class Mixer(multiprocessing.Process):
 
         while not self.__stop:
             while len(self.tracks) > 1:
-                stay_time = min(self.tracks[0].analysis.duration
-                                 - self.transition_time * 3,
-                                self.tracks[1].analysis.duration
-                                 - self.transition_time * 3)
+                stay_time = max(self.tracks[0].analysis.duration,
+                                self.tracks[1].analysis.duration)
                 tra = make_transition(self.tracks[0],
                                       self.tracks[1],
                                       stay_time,
