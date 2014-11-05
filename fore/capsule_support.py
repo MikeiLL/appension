@@ -11,6 +11,7 @@ import numpy as np
 from copy import deepcopy
 from action import Crossfade, Playback, Crossmatch, Fadein, Fadeout, humanize_time
 from utils import rows, flatten
+from append_support import abridge, trim_silence
 
 # constants for now
 X_FADE = 3
@@ -318,6 +319,30 @@ def make_crossfade(track1, track2, inter):
     pb = Playback(track2, start2 + X_FADE, dur)
 
     return [xf, pb]
+    
+def hard_transition(track1, track2):
+    inter = track1.analysis.duration
+    markers1 = getattr(track1.analysis, track1.resampled['rate'])
+
+    if len(markers1) < MIN_SEARCH:
+        start1 = track1.resampled['cursor']
+    else:
+        start1 = markers1[track1.resampled['index'] + track1.resampled['cursor']].start
+
+    start2 = max((track2.analysis.duration - (inter + 2 * X_FADE)) / 2, 0)
+    markers2 = getattr(track2.analysis, track2.resampled['rate'])
+
+    if len(markers2) < MIN_SEARCH:
+        track2.resampled['cursor'] = start2 + X_FADE + inter
+        dur = min(track2.analysis.duration - 2 * X_FADE, inter)
+    else:
+        duration, track2.resampled['cursor'] = move_cursor(track2, start2 + X_FADE + inter, 0)
+        dur = markers2[track2.resampled['index'] + track2.resampled['cursor']].start - X_FADE - start2
+
+    xf = Crossfade((track1, track2), (start1, start2), X_FADE)
+    pb = Playback(track2, start2 + X_FADE, dur)
+
+    return [xf, pb]
 
 
 def make_crossmatch(track1, track2, rate1, rate2, loc2, rows):
@@ -338,6 +363,7 @@ def make_transition(track1, track2, inter, transition):
     # the minimal inter is 0 sec
     markers1 = getattr(track1.analysis, track1.resampled['rate'])
     markers2 = getattr(track2.analysis, track2.resampled['rate'])
+    return hard_transition(track1, track2)
 
     if len(markers1) < MIN_SEARCH or len(markers2) < MIN_SEARCH:
         print "Making crossfade instead of transition!"

@@ -23,8 +23,6 @@ from capsule_support import order_tracks, resample_features, \
                             timbre_whiten, initialize, make_transition, terminate, \
                             FADE_OUT, is_valid, LOUDNESS_THRESH
 
-from append_support import abridge, trim_silence
-
 log = logging.getLogger(__name__)
 
 import sys
@@ -179,9 +177,6 @@ class Mixer(multiprocessing.Process):
             while len(self.tracks) > 1:
                 stay_time = max(self.tracks[0].analysis.duration,
                                 self.tracks[1].analysis.duration)
-		# for development:
-		self.tracks[0] = abridge(self.tracks[0])
-		self.tracks[1] = abridge(self.tracks[1])
                 tra = make_transition(self.tracks[0],
                                       self.tracks[1],
                                       stay_time,
