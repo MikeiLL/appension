@@ -10,7 +10,7 @@ Based on Capsule Support created by Tristan Jehan and Jason Sundram.
 
 import numpy as np
 from copy import deepcopy
-from echonest.remix.action import Crossfade, Playback, Crossmatch, Fadein, Fadeout, humanize_time
+from action import Crossfade, Playback, Crossmatch, Fadein, Fadeout, humanize_time
 from utils import rows, flatten
 
 # constants for now
