@@ -23,6 +23,8 @@ from capsule_support import order_tracks, resample_features, \
                             timbre_whiten, initialize, make_transition, terminate, \
                             FADE_OUT, is_valid, LOUDNESS_THRESH
 
+from append_support import abridge, trim_silence
+
 log = logging.getLogger(__name__)
 
 import sys
