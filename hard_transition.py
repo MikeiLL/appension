@@ -29,12 +29,17 @@ import os
 import sys
 from optparse import OptionParser
 
-from fore.action import render, make_stereo
-from fore.audio import LocalAudioFile
+from action import render, make_stereo
+from echonest.remix.audio import LocalAudioFile
 from pyechonest import util
+from pyechonest import config
+import fore.apikeys as apikeys
 from hard_transition_support import hard_transition
-from fore.capsule_support import order_tracks, equalize_tracks, resample_features, timbre_whiten, initialize, make_transition, terminate, FADE_OUT, display_actions, is_valid
-
+from fore.capsule_support import order_tracks, equalize_tracks, resample_features, \
+				timbre_whiten, initialize, make_transition, \
+				terminate, FADE_OUT, \
+				display_actions, is_valid
+config.ECHO_NEST_API_KEY=apikeys.ECHO_NEST_API_KEY
 
 def tuples(l, n=2):
     """ returns n-tuples from l.
@@ -74,7 +79,7 @@ def do_work(audio_files, options):
         track.resampled = resample_features(track, rate='beats')
         track.resampled['matrix'] = timbre_whiten(track.resampled['matrix'])
         # remove tracks that are too small
-        if is_valid(track, inter, trans):
+        if is_valid(track, trans):
             valid.append(track)
         # for compatibility, we make mono tracks stereo
         track = make_stereo(track)
@@ -115,7 +120,7 @@ def main():
     verbose = bool(options.verbose)
     
     if verbose:
-        display_actions(actions)
+        display_actions()
         print "Output Duration = %.3f sec" % sum(act.duration for act in actions)
     
         print "Rendering..."
