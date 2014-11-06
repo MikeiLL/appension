@@ -24,6 +24,140 @@ LOUDNESS_THRESH = -8
 FUSION_INTERVAL = .06   # this is what we use in the analyzer
 AVG_PEAK_OFFSET = 0.025 # Estimated time between onset and peak of segment.
 
+def resample_features(data, rate='tatums', feature='timbre'):
+    """
+    Resample segment features to a given rate within fade boundaries.
+    @param data: analysis object.
+    @param rate: one of the following: segments, tatums, beats, bars.
+    @param feature: either timbre or pitch.
+    @return A dictionary including a numpy matrix of size len(rate) x 12, a rate, and an index
+    """
+    ret = {'rate': rate, 'index': 0, 'cursor': 0, 'matrix': np.zeros((1, 12), dtype=np.float32)}
+    segments, ind = get_central(data.analysis, 'segments')
+    markers, ret['index'] = get_central(data.analysis, rate)
+
+    if len(segments) < 2 or len(markers) < 2:
+        return ret
+        
+    # Find the optimal attack offset
+    meanOffset = get_mean_offset(segments, markers)
+    tmp_markers = deepcopy(markers)
+    
+    # Apply the offset
+    for m in tmp_markers:
+        m.start -= meanOffset
+        if m.start < 0: m.start = 0
+    
+    # Allocate output matrix, give it alias mat for convenience.
+    mat = ret['matrix'] = np.zeros((len(tmp_markers)-1, 12), dtype=np.float32)
+    
+    # Find the index of the segment that corresponds to the first marker
+    f = lambda x: tmp_markers[0].start < x.start + x.duration
+    index = (i for i,x in enumerate(segments) if f(x)).next()
+    
+    # Do the resampling
+    try:
+        for (i, m) in enumerate(tmp_markers):
+            while segments[index].start + segments[index].duration < m.start + m.duration:
+                dur = segments[index].duration
+                if segments[index].start < m.start:
+                    dur -= m.start - segments[index].start
+                
+                C = min(dur / m.duration, 1)
+                
+                mat[i, 0:12] += C * np.array(getattr(segments[index], feature))
+                index += 1
+                
+            C = min( (m.duration + m.start - segments[index].start) / m.duration, 1)
+            mat[i, 0:12] += C * np.array(getattr(segments[index], feature))
+    except IndexError, e:
+        pass # avoid breaking with index > len(segments)
+        
+    return ret
+    
+def column_whiten(mat):
+    """ Zero mean, unit variance on a column basis"""
+    m = mat - np.mean(mat,0)
+    return m / np.std(m,0)
+
+def timbre_whiten(mat):
+    if rows(mat) < 2: return mat
+    m = np.zeros((rows(mat), 12), dtype=np.float32)
+    m[:,0] = mat[:,0] - np.mean(mat[:,0],0)
+    m[:,0] = m[:,0] / np.std(m[:,0],0)
+    m[:,1:] = mat[:,1:] - np.mean(mat[:,1:].flatten(),0)
+    m[:,1:] = m[:,1:] / np.std(m[:,1:].flatten(),0) # use this!
+    return m
+    
+def initialize(track, inter, transition):
+    """find initial cursor location"""
+    mat = track.resampled['matrix']
+    markers = getattr(track.analysis, track.resampled['rate'])
+
+    try:
+        # compute duration of matrix
+        mat_dur = markers[track.resampled['index'] + rows(mat)].start - markers[track.resampled['index']].start
+        start = (mat_dur - inter - transition - FADE_IN) / 2
+        dur = start + FADE_IN + inter
+        # move cursor to transition marker
+        duration, track.resampled['cursor'] = move_cursor(track, dur, 0)
+        # work backwards to find the exact locations of initial fade in and playback sections
+        fi = Fadein(track, markers[track.resampled['index'] + track.resampled['cursor']].start - inter - FADE_IN, FADE_IN)
+        pb = Playback(track, markers[track.resampled['index'] + track.resampled['cursor']].start - inter, inter)
+    except:
+        track.resampled['cursor'] = FADE_IN + inter
+        fi = Fadein(track, 0, FADE_IN)
+        pb = Playback(track, FADE_IN, inter)
+
+    return [fi, pb]
+    
+
+def terminate(track, fade):
+    """ Deal with last fade out"""
+    cursor = track.resampled['cursor']
+    markers = getattr(track.analysis, track.resampled['rate'])
+    if MIN_SEARCH <= len(markers):
+        cursor = markers[track.resampled['index'] + cursor].start
+    return [Fadeout(track, cursor, min(fade, track.duration-cursor))]
+
+    
+def make_transition(track1, track2, inter, transition):
+    # the minimal transition is 2 markers
+    # the minimal inter is 0 sec
+    markers1 = getattr(track1.analysis, track1.resampled['rate'])
+    markers2 = getattr(track2.analysis, track2.resampled['rate'])
+    
+    if len(markers1) < MIN_SEARCH or len(markers2) < MIN_SEARCH:
+        return make_crossfade(track1, track2, inter)
+    
+    # though the minimal transition is 2 markers, the alignment is on at least 3 seconds
+    mat1 = get_mat_out(track1, max(transition, MIN_ALIGN_DURATION))
+    mat2 = get_mat_in(track2, max(transition, MIN_ALIGN_DURATION), inter)
+    
+    try:
+        loc, n, rate1, rate2 = align(track1, track2, mat1, mat2)
+    except:
+        return make_crossfade(track1, track2, inter)
+        
+    if transition < MIN_ALIGN_DURATION:
+        duration, cursor = move_cursor(track2, transition, loc)
+        n = max(cursor-loc, MIN_MARKERS)
+    
+    xm = make_crossmatch(track1, track2, rate1, rate2, loc, n)
+    # loc and n are both in terms of potentially upsampled data. 
+    # Divide by rate here to get end_crossmatch in terms of the original data.
+    end_crossmatch = (loc + n) / rate2
+    
+    if markers2[-1].start < markers2[end_crossmatch].start + inter + transition:
+        inter = max(markers2[-1].start - transition, 0)
+        
+    # move_cursor sets the cursor properly for subsequent operations, and gives us duration.
+    dur, track2.resampled['cursor'] = move_cursor(track2, inter, end_crossmatch)
+    pb = Playback(track2, sum(xm.l2[-1]), dur)
+    
+    return [xm, pb]
+    
+    
 # TODO: this should probably be in actions?
 def display_actions(actions):
     total = 0

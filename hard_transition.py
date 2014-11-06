@@ -29,13 +29,13 @@ import os
 import sys
 from optparse import OptionParser
 
-from action import render, make_stereo
+from echonest.remix.action import render, make_stereo
 from echonest.remix.audio import LocalAudioFile
 from pyechonest import util
 from pyechonest import config
 import fore.apikeys as apikeys
 from hard_transition_support import hard_transition
-from fore.capsule_support import order_tracks, equalize_tracks, resample_features, \
+from hard_transition_support import equalize_tracks, resample_features, \
 				timbre_whiten, initialize, make_transition, \
 				terminate, FADE_OUT, \
 				display_actions, is_valid
@@ -62,7 +62,6 @@ def do_work(audio_files, options):
     # decide on an initial order for those tracks
     if order == True:
         if verbose: print "Ordering tracks..."
-        tracks = order_tracks(tracks)
     
     if equal == True:
         equalize_tracks(tracks)
