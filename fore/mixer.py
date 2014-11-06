@@ -41,22 +41,19 @@ from echonest.remix.support.ffmpeg import ffmpeg
 
 class FFMPEGStreamHandler(threading.Thread):
     def __init__(self, infile, numChannels=2, sampleRate=44100):
-        command = "en-ffmpeg"
+        command = ["en-ffmpeg"]
 
         self.filename = None
         if isinstance(infile, basestring):
             self.filename = infile
 
-        if self.filename:
-            command += " -i %s" % self.filename
-        else:
-            command += " -i pipe:0"
+        command.extend(["-i", self.filename or "pipe:0"])
         if numChannels is not None:
-            command += " -ac " + str(numChannels)
+            command.extend(["-ac", str(numChannels)])
         if sampleRate is not None:
-            command += " -ar " + str(sampleRate)
-        command += " -f s16le -acodec pcm_s16le pipe:1"
-        log.info("Calling ffmpeg: %s", command)
+            command.extend(["-ar",str(sampleRate)])
+        command.extend(["-f","s16le","-acodec","pcm_s16le","pipe:1"])
+        log.info("Calling ffmpeg: %s", ' '.join(command)) # May be an imperfect representation of the command, but close enough
 
         # On Windows, psobot had this not closing FDs, despite doing so on other platforms. (????)
         # There's no os.uname() on Windows, presumably, and this is considered to be a reliable test.
