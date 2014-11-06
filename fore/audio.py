@@ -18,7 +18,7 @@ import threading
 from monkeypatch import monkeypatch_class
 
 #   Sadly, we need to import * - this is a monkeypatch!
-from echonest.audio import AudioAnalysis, AudioData, LocalAudioFile, AudioQuantumList
+from echonest.audio import AudioAnalysis, AudioData, AudioQuantumList
 from echonest.support.ffmpeg import ffmpeg
 
 FFMPEG_ERROR_TIMEOUT = 0.2
@@ -247,55 +247,6 @@ class AudioData(AudioData):
             self.data = numpy.delete(self.data, slice(0, sample), 0)
             self.offset += sample
             gc.collect()
-
-
-class LocalAudioFile(LocalAudioFile):
-    """
-    The basic do-everything class for remixing. Acts as an `AudioData`
-    object, but with an added `analysis` selector which is an
-    `AudioAnalysis` object. It conditianally uploads the file
-    it was initialized with. If the file is already known to the
-    Analyze API, then it does not bother uploading the file.
-    """
-    __metaclass__ = monkeypatch_class
-
-    def __init__(self, data, kind="mp3", uid=None, verbose=False):
-        if not uid:
-            uid = str(uuid.uuid4()).replace('-', '')
-
-        #   Initializing the audio file could be slow. Let's do this in parallel.
-        AudioData.__init__(self, filedata=data, rawfiletype=type, verbose=verbose, defer=True, uid=uid)
-        loading = threading.Thread(target=self.load)
-        loading.start()
-
-        start = time.time()
-        data.seek(0)
-        track_md5 = hashlib.md5(data.read()).hexdigest()
-        data.seek(0)
-
-        if verbose:
-            print >> sys.stderr, "Computed MD5 of file is " + track_md5
-
-        logging.getLogger(__name__).info("Fetching analysis...")
-        try:
-            if verbose:
-                print >> sys.stderr, "Probing for existing analysis"
-            loading.join(FFMPEG_ERROR_TIMEOUT)
-            tempanalysis = AudioAnalysis(str(track_md5))
-        except Exception:
-            if verbose:
-                print >> sys.stderr, "Analysis not found. Uploading..."
-            #   Let's fail faster - check and see if FFMPEG has errored yet, before asking EN
-            loading.join(FFMPEG_ERROR_TIMEOUT)
-            tempanalysis = AudioAnalysis(data, kind)
-
-        logging.getLogger(__name__).info("Fetched analysis in %ss",
-                                         (time.time() - start))
-        loading.join()
-        if self.data is None:
-            raise AssertionError("LocalAudioFile has uninitialized audio data!")
-        self.analysis = tempanalysis
-        self.analysis.source = weakref.ref(self)
 
 
 class AudioQuantumList(AudioQuantumList):
