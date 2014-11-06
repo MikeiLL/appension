@@ -7,7 +7,6 @@ import numpy
 import time
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
 
 """
     Quick and dirty, frame-aware MP3 encoding bridge using LAME.
