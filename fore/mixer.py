@@ -65,7 +65,7 @@ class FFMPEGStreamHandler(threading.Thread):
             shell=True,
             stdin=(subprocess.PIPE if not self.filename else None),
             stdout=subprocess.PIPE,
-            stderr=open(os.devnull, 'w'),
+            #stderr=open(os.devnull, 'w'),
             close_fds=close_fds
         )
 
@@ -334,8 +334,6 @@ class Mixer(multiprocessing.Process):
         return self.tracks[0]
 
     def get_stream(self, x):
-	print(os.getcwd)
-	print(x.filename)
         for fname in (x.filename, "audio/"+x.filename):
             if os.path.isfile(fname):
                 return fname
