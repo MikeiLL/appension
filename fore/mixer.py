@@ -71,7 +71,7 @@ class FFMPEGStreamHandler(threading.Thread):
         self.infile = infile if not self.filename else None
         if not self.filename:
             self.infile.seek(0)
-            ExceptionThread.__init__(self)
+            threading.Thread.__init__(self)
             self.daemon = True
             self.start()
 
