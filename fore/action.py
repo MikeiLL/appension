@@ -8,7 +8,7 @@ Created by Tristan Jehan and Jason Sundram.
 import numpy
 from numpy import zeros, multiply, float32, mean, copy
 
-from echonest.audio import assemble
+from echonest.remix.audio import assemble
 from cAction import limit, crossfade, fadein, fadeout, fade
 from itertools import izip
 import logging

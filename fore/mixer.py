@@ -32,6 +32,7 @@ test = 'test' in sys.argv
 ##########################################
 import hashlib
 import time
+from echonest.audio import AudioAnalysis
 
 from pyechonest.util import EchoNestAPIError
 import pyechonest.util
