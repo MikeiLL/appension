@@ -3,9 +3,11 @@ Forever.fm Server
 by @psobot, Nov 3 2012
 """
 
+import logging
+log = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 import config
 import apikeys
-import logging
 import database
 
 import os
@@ -238,7 +240,6 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 if __name__ == "__main__":
     Daemon()
 
-    log = logging.getLogger(config.log_name)
     log.info("Starting %s...", config.app_name)
 
     track_queue = multiprocessing.Queue(1)

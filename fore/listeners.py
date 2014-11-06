@@ -6,7 +6,6 @@ import logging
 
 LAG_LIMIT = config.lag_limit
 log = logging.getLogger(config.log_name)
-log.setLevel(logging.DEBUG)
 
 
 class Listeners(list):
