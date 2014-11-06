@@ -38,6 +38,7 @@ from echonest.remix.audio import AudioAnalysis
 from pyechonest.util import EchoNestAPIError
 import pyechonest.util
 import weakref
+import numpy
 from echonest.remix.support.ffmpeg import ffmpeg
 
 class FFMPEGStreamHandler(threading.Thread):
