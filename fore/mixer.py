@@ -10,6 +10,7 @@ import logging
 import urllib2
 import traceback
 import threading
+import subprocess
 import multiprocessing
 
 from lame import Lame
