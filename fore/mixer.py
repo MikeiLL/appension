@@ -32,12 +32,12 @@ test = 'test' in sys.argv
 ##########################################
 import hashlib
 import time
-from echonest.audio import AudioAnalysis
+from echonest.remix.audio import AudioAnalysis
 
 from pyechonest.util import EchoNestAPIError
 import pyechonest.util
 import weakref
-from echonest.support.ffmpeg import ffmpeg, FFMPEGStreamHandler
+from echonest.remix.support.ffmpeg import ffmpeg, FFMPEGStreamHandler
 class AudioStream(object):
     """
     Very much like an AudioData, but vastly more memory efficient.

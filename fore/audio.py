@@ -19,7 +19,7 @@ from monkeypatch import monkeypatch_class
 
 #   Sadly, we need to import * - this is a monkeypatch!
 from echonest.remix.audio import AudioAnalysis, AudioData, AudioQuantumList
-from echonest.support.ffmpeg import ffmpeg
+from echonest.remix.support.ffmpeg import ffmpeg
 
 FFMPEG_ERROR_TIMEOUT = 0.2
 
