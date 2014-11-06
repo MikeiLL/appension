@@ -37,7 +37,89 @@ from echonest.remix.audio import AudioAnalysis
 from pyechonest.util import EchoNestAPIError
 import pyechonest.util
 import weakref
-from echonest.remix.support.ffmpeg import ffmpeg, FFMPEGStreamHandler
+from echonest.remix.support.ffmpeg import ffmpeg
+
+class FFMPEGStreamHandler(threading.Thread):
+    def __init__(self, infile, numChannels=2, sampleRate=44100):
+        command = "en-ffmpeg"
+
+        self.filename = None
+        if isinstance(infile, basestring):
+            self.filename = infile
+
+        if self.filename:
+            command += " -i %s" % self.filename
+        else:
+            command += " -i pipe:0"
+        if numChannels is not None:
+            command += " -ac " + str(numChannels)
+        if sampleRate is not None:
+            command += " -ar " + str(sampleRate)
+        command += " -f s16le -acodec pcm_s16le pipe:1"
+        log.info("Calling ffmpeg: %s", command)
+
+        # On Windows, psobot had this not closing FDs, despite doing so on other platforms. (????)
+        # There's no os.uname() on Windows, presumably, and this is considered to be a reliable test.
+        close_fds = hasattr(os, 'uname')
+        self.p = subprocess.Popen(
+            command,
+            shell=True,
+            stdin=(subprocess.PIPE if not self.filename else None),
+            stdout=subprocess.PIPE,
+            stderr=open(os.devnull, 'w'),
+            close_fds=close_fds
+        )
+
+        self.infile = infile if not self.filename else None
+        if not self.filename:
+            self.infile.seek(0)
+            ExceptionThread.__init__(self)
+            self.daemon = True
+            self.start()
+
+    def __del__(self):
+        if hasattr(self, 'p'):
+            self.finish()
+
+    def run(self):
+        try:
+            self.p.stdin.write(self.infile.read())
+        except IOError:
+            pass
+        self.p.stdin.close()
+
+    def finish(self):
+        if self.filename:
+            try:
+                if self.p.stdin:
+                    self.p.stdin.close()
+            except (OSError, IOError):
+                pass
+        try:
+            self.p.stdout.close()
+        except (OSError, IOError):
+            pass
+        try:
+            self.p.kill()
+        except (OSError, IOError):
+            pass
+        self.p.wait()
+
+    #   TODO: Abstract me away from 44100Hz, 2ch 16 bit
+    def read(self, samples=-1):
+        if samples > 0:
+            samples *= 2
+        arr = numpy.fromfile(self.p.stdout,
+                               dtype=numpy.int16,
+                               count=samples)
+        if samples < 0 or len(arr) < samples:
+            self.finish()
+        arr = numpy.reshape(arr, (-1, 2))
+        return arr
+
+    def feed(self, samples):
+        self.p.stdout.read(samples * 4)
+
 class AudioStream(object):
     """
     Very much like an AudioData, but vastly more memory efficient.
