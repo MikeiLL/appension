@@ -62,10 +62,9 @@ class FFMPEGStreamHandler(threading.Thread):
         close_fds = hasattr(os, 'uname')
         self.p = subprocess.Popen(
             command,
-            shell=True,
             stdin=(subprocess.PIPE if not self.filename else None),
             stdout=subprocess.PIPE,
-            #stderr=open(os.devnull, 'w'),
+            stderr=open(os.devnull, 'w'),
             close_fds=close_fds
         )
 
