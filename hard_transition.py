@@ -91,12 +91,14 @@ def do_work(audio_files, options):
     
     # Middle transitions. Should each contain 2 instructions: crossmatch, playback.
     middle = []
-    [middle.extend(make_transition(t1, t2, inter, trans)) for (t1, t2) in tuples(tracks)]
+    
+    for (t1, t2) in tuples(tracks):
+	middle.extend(make_transition(t1, t2)) 
     
     # Last chunk. Should contain 1 instruction: fadeout.
     end = terminate(tracks[-1], FADE_OUT)
     
-    return start + middle + end
+    return middle
 
 def get_options(warn=False):
     usage = "usage: %s [options] <list of mp3s>" % sys.argv[0]
@@ -126,7 +128,7 @@ def main():
     # Send to renderer
     for n, f in enumerate(actions):
 	print("Actions item {} is a {}.".format(n, type(f)))
-    render(actions, 'capsule.mp3', verbose)
+    render(actions, 'capsize.mp3', verbose)
     return 1
     
 if __name__ == "__main__":

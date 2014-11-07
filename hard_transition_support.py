@@ -175,14 +175,14 @@ def initialize(track, inter, transition):
         # move cursor to transition marker
         duration, track.resampled['cursor'] = move_cursor(track, dur, 0)
         # work backwards to find the exact locations of initial fade in and playback sections
-        fi = Fadein(track, markers[track.resampled['index'] + track.resampled['cursor']].start - inter - FADE_IN, FADE_IN)
+        hi = track
         pb = Playback(track, markers[track.resampled['index'] + track.resampled['cursor']].start - inter, inter)
     except:
         track.resampled['cursor'] = FADE_IN + inter
-        fi = Fadein(track, 0, FADE_IN)
+        hi = track
         pb = Playback(track, FADE_IN, inter)
 
-    return [fi, pb]
+    return [hi]
     
 
 def terminate(track, fade):
@@ -191,45 +191,7 @@ def terminate(track, fade):
     markers = getattr(track.analysis, track.resampled['rate'])
     if MIN_SEARCH <= len(markers):
         cursor = markers[track.resampled['index'] + cursor].start
-    return [Fadeout(track, cursor, min(fade, track.duration-cursor))]
-
-    
-def make_transition(track1, track2, inter, transition):
-    # the minimal transition is 2 markers
-    # the minimal inter is 0 sec
-    markers1 = getattr(track1.analysis, track1.resampled['rate'])
-    markers2 = getattr(track2.analysis, track2.resampled['rate'])
-    
-    if len(markers1) < MIN_SEARCH or len(markers2) < MIN_SEARCH:
-        return make_crossfade(track1, track2, inter)
-    
-    # though the minimal transition is 2 markers, the alignment is on at least 3 seconds
-    mat1 = get_mat_out(track1, max(transition, MIN_ALIGN_DURATION))
-    mat2 = get_mat_in(track2, max(transition, MIN_ALIGN_DURATION), inter)
-    
-    try:
-        loc, n, rate1, rate2 = align(track1, track2, mat1, mat2)
-    except:
-        return make_crossfade(track1, track2, inter)
-        
-    if transition < MIN_ALIGN_DURATION:
-        duration, cursor = move_cursor(track2, transition, loc)
-        n = max(cursor-loc, MIN_MARKERS)
-    
-    xm = make_crossmatch(track1, track2, rate1, rate2, loc, n)
-    # loc and n are both in terms of potentially upsampled data. 
-    # Divide by rate here to get end_crossmatch in terms of the original data.
-    end_crossmatch = (loc + n) / rate2
-    
-    if markers2[-1].start < markers2[end_crossmatch].start + inter + transition:
-        inter = max(markers2[-1].start - transition, 0)
-        
-    # move_cursor sets the cursor properly for subsequent operations, and gives us duration.
-    dur, track2.resampled['cursor'] = move_cursor(track2, inter, end_crossmatch)
-    pb = Playback(track2, sum(xm.l2[-1]), dur)
-    
-    return [xm, pb]
-    
+    return [track]
     
 # TODO: this should probably be in actions?
 def display_actions(actions):
@@ -335,7 +297,7 @@ def abridge(track):
         track = cut(track, 4)
 
 def hard_transition(track1, track2):
-    inter = track1.analysis.duration
+    return append(track1, track2) 
     markers1 = getattr(track1.analysis, track1.resampled['rate'])
 
     if len(markers1) < MIN_SEARCH:
@@ -427,9 +389,46 @@ def make_crossmatch(track1, track2, rate1, rate2, loc2, rows):
 
     return Crossmatch((track1, track2), (to_tuples(markers1, start1, rows), to_tuples(markers2, start2, rows)))
 
-def appension(track1):
-    print(track1.filename)
-    return [track1.analysis.segments]
+def make_transition(track1, track2):
+    # the minimal transition is 2 markers
+    # the minimal inter is 0 sec
+    markers1 = getattr(track1.analysis, track1.resampled['rate'])
+    markers2 = getattr(track2.analysis, track2.resampled['rate'])
+    return hard_transition(track1, track2)
+    
+    if len(markers1) < MIN_SEARCH or len(markers2) < MIN_SEARCH:
+        return make_crossfade(track1, track2, inter)
+    
+    # though the minimal transition is 2 markers, the alignment is on at least 3 seconds
+    mat1 = get_mat_out(track1, max(transition, MIN_ALIGN_DURATION))
+    mat2 = get_mat_in(track2, max(transition, MIN_ALIGN_DURATION), inter)
+    
+    try:
+        loc, n, rate1, rate2 = align(track1, track2, mat1, mat2)
+    except:
+        return append(track1, track2)
+        
+    if transition < MIN_ALIGN_DURATION:
+        duration, cursor = move_cursor(track2, transition, loc)
+        n = max(cursor-loc, MIN_MARKERS)
+    
+    xm = make_crossmatch(track1, track2, rate1, rate2, loc, n)
+    # loc and n are both in terms of potentially upsampled data. 
+    # Divide by rate here to get end_crossmatch in terms of the original data.
+    end_crossmatch = (loc + n) / rate2
+    
+    if markers2[-1].start < markers2[end_crossmatch].start + inter + transition:
+        inter = max(markers2[-1].start - transition, 0)
+        
+    # move_cursor sets the cursor properly for subsequent operations, and gives us duration.
+    dur, track2.resampled['cursor'] = move_cursor(track2, inter, end_crossmatch)
+    pb = Playback(track2, sum(xm.l2[-1]), dur)
+    
+    return [xm, pb]
+
+def append(track1, track2):
+    print("{} being appended to {}".format(track1.filename, track2.filename))
+    return [track1 + track2]
     
 
 
