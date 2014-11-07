@@ -10,7 +10,7 @@ Based on Capsule Support created by Tristan Jehan and Jason Sundram.
 
 import numpy as np
 from copy import deepcopy
-from fore.action import Crossfade, Playback, Crossmatch, Fadein, Fadeout, humanize_time
+from echonest.remix.action import Crossfade, Playback, Crossmatch, Fadein, Fadeout, humanize_time
 from hard_trans_utils import rows, flatten
 
 # constants for now
@@ -23,6 +23,47 @@ MIN_ALIGN_DURATION = 3
 LOUDNESS_THRESH = -8
 FUSION_INTERVAL = .06   # this is what we use in the analyzer
 AVG_PEAK_OFFSET = 0.025 # Estimated time between onset and peak of segment.
+
+def move_cursor(track, duration, cursor, buf=MIN_MARKERS):
+    dur = 0
+    while dur < duration and cursor < rows(track.resampled['matrix']) - buf:
+        markers = getattr(track.analysis, track.resampled['rate'])    
+        dur += markers[track.resampled['index'] + cursor].duration
+        cursor += 1
+    return dur, cursor
+
+def get_mat_out(track, transition):
+    """ Find and output the matrix to use in the next alignment.
+        Assumes that track.resampled exists.
+    """
+    cursor = track.resampled['cursor']
+    mat = track.resampled['matrix']
+    # update cursor location to after the transition
+    duration, cursor = move_cursor(track, transition, cursor)
+    # output matrix with a proper number of rows, from beginning of transition
+    return mat[track.resampled['cursor']:cursor,:]
+
+def get_mat_in(track, transition, inter):
+    """ Find and output the search matrix to use in the next alignment.
+        Assumes that track.resampled exists.
+    """
+    # search from the start
+    cursor = 0
+    track.resampled['cursor'] = cursor
+    mat = track.resampled['matrix']
+    
+    # compute search zone by anticipating what's playing after the transition
+    marker_end = getattr(track.analysis, track.resampled['rate'])[track.resampled['index'] + rows(mat)].start
+    marker_start = getattr(track.analysis, track.resampled['rate'])[track.resampled['index']].start
+    search_dur = (marker_end - marker_start) - inter - 2 * transition
+    
+    if search_dur < 0: 
+        return mat[:MIN_MARKERS,:]
+    
+    # find what the location is in rows
+    duration, cursor = move_cursor(track, search_dur, cursor)
+    
+    return mat[:cursor,:]
 
 def resample_features(data, rate='tatums', feature='timbre'):
     """
@@ -75,6 +116,24 @@ def resample_features(data, rate='tatums', feature='timbre'):
         
     return ret
     
+def get_mean_offset(segments, markers):
+    if segments == markers:
+        return 0
+    
+    index = 0
+    offsets = []
+    try:
+        for marker in markers:
+            while segments[index].start < marker.start + FUSION_INTERVAL:
+                offset = abs(marker.start - segments[index].start)
+                if offset < FUSION_INTERVAL:
+                    offsets.append(offset)
+                index += 1
+    except IndexError, e:
+        pass
+    
+    return np.average(offsets) if offsets else AVG_PEAK_OFFSET
+    
 def column_whiten(mat):
     """ Zero mean, unit variance on a column basis"""
     m = mat - np.mean(mat,0)
@@ -88,6 +147,20 @@ def timbre_whiten(mat):
     m[:,1:] = mat[:,1:] - np.mean(mat[:,1:].flatten(),0)
     m[:,1:] = m[:,1:] / np.std(m[:,1:].flatten(),0) # use this!
     return m
+    
+def get_central(analysis, member='segments'):
+    """ Returns a tuple: 
+        1) copy of the members (e.g. segments) between end_of_fade_in and start_of_fade_out.
+        2) the index of the first retained member.
+    """
+    def central(s):
+        return analysis.end_of_fade_in <= s.start and (s.start + s.duration) < analysis.start_of_fade_out
+    
+    members = getattr(analysis, member) # this is nicer than data.__dict__[member]
+    ret = filter(central, members[:]) 
+    index = members.index(ret[0]) if ret else 0
+    
+    return ret, index
     
 def initialize(track, inter, transition):
     """find initial cursor location"""
@@ -318,6 +391,41 @@ def is_valid(track, inter, transition):
         dur = markers[-1].start + markers[-1].duration - markers[0].start
     print("is_valid return", inter, "+ 2 *", transition, " < ", dur, inter + 2 * transition < dur)
     return inter + 2 * transition < dur
+def make_crossfade(track1, track2, inter):
+
+    markers1 = getattr(track1.analysis, track1.resampled['rate'])    
+    
+    if len(markers1) < MIN_SEARCH:
+        start1 = track1.resampled['cursor']
+    else:
+        start1 = markers1[track1.resampled['index'] + track1.resampled['cursor']].start
+
+    start2 = max((track2.analysis.duration - (inter + 2 * X_FADE)) / 2, 0)
+    markers2 = getattr(track2.analysis, track2.resampled['rate'])
+    
+    if len(markers2) < MIN_SEARCH:
+        track2.resampled['cursor'] = start2 + X_FADE + inter
+        dur = min(track2.analysis.duration - 2 * X_FADE, inter)
+    else:
+        duration, track2.resampled['cursor'] = move_cursor(track2, start2+X_FADE+inter, 0)
+        dur = markers2[track2.resampled['index'] + track2.resampled['cursor']].start - X_FADE - start2
+
+    xf = Crossfade((track1, track2), (start1, start2), X_FADE)
+    pb = Playback(track2, start2 + X_FADE, dur)
+
+    return [xf, pb]
+
+def make_crossmatch(track1, track2, rate1, rate2, loc2, rows):
+    markers1 = upsample_list(getattr(track1.analysis, track1.resampled['rate']), rate1)
+    markers2 = upsample_list(getattr(track2.analysis, track2.resampled['rate']), rate2)
+    
+    def to_tuples(l, i, n):
+        return [(t.start, t.duration) for t in l[i : i + n]]
+    
+    start1 = rate1 * (track1.resampled['index'] + track1.resampled['cursor'])
+    start2 = loc2 + rate2 * track2.resampled['index'] # loc2 has already been multiplied by rate2
+
+    return Crossmatch((track1, track2), (to_tuples(markers1, start1, rows), to_tuples(markers2, start2, rows)))
 
 def appension(track1):
     print(track1.filename)
