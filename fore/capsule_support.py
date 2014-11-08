@@ -321,29 +321,12 @@ def make_crossfade(track1, track2, inter):
     return [xf, pb]
     
 def hard_transition(track1, track2):
-    inter = track1.analysis.duration
-    markers1 = getattr(track1.analysis, track1.resampled['rate'])
-
-    if len(markers1) < MIN_SEARCH:
-        start1 = track1.resampled['cursor']
-    else:
-        start1 = markers1[track1.resampled['index'] + track1.resampled['cursor']].start
-
-    start2 = max((track2.analysis.duration - (inter + 2 * X_FADE)) / 2, 0)
-    markers2 = getattr(track2.analysis, track2.resampled['rate'])
-
-    if len(markers2) < MIN_SEARCH:
-        track2.resampled['cursor'] = start2 + X_FADE + inter
-        dur = min(track2.analysis.duration - 2 * X_FADE, inter)
-    else:
-        duration, track2.resampled['cursor'] = move_cursor(track2, start2 + X_FADE + inter, 0)
-        dur = markers2[track2.resampled['index'] + track2.resampled['cursor']].start - X_FADE - start2
-
-    xf = Crossfade((track1, track2), (start1, start2), X_FADE)
-    pb = Playback(track2, start2 + X_FADE, dur)
-
-    return [xf, pb]
-
+    # print("Track one has {} and {}.".format(dir(track1.fobj), dir(track1.analysis)))
+    # print("Appending {} to {}".format(track1.obj.artist, track2.obj.artist))
+    print("These are by {} and {}".format(track1.fobj.title(), track2.fobj.title()))
+    pb1 = Playback(track1, track1.analysis.segments[0].start, track1.analysis.duration)
+    pb2 = Playback(track2, track2.analysis.segments[0].start, track2.analysis.duration)
+    return [pb1, pb2]
 
 def make_crossmatch(track1, track2, rate1, rate2, loc2, rows):
     markers1 = upsample_list(getattr(track1.analysis, track1.resampled['rate']), rate1)
