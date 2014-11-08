@@ -97,12 +97,14 @@ class InfoHandler(tornado.web.RequestHandler):
             self.started = time.time()
         self.samples += data['samples']
         self.duration += data['duration']
-
+	print("We got duration: ")
+	print(data['duration'])
         self.clean()
         log.info("Adding track info. Currently holding info for %d tracks.",
                  len(self.actions))
         self.actions.append(data)
         SocketHandler.on_segment(data)
+	
 
     @classmethod
     def clean(cls):
