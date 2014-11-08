@@ -321,11 +321,15 @@ def make_crossfade(track1, track2, inter):
     return [xf, pb]
     
 def hard_transition(track1, track2):
+    """Return playback instances for track1 all but first segment, track2 only seg1. """
     # print("Track one has {} and {}.".format(dir(track1.fobj), dir(track1.analysis)))
     # print("Appending {} to {}".format(track1.obj.artist, track2.obj.artist))
     print("These are by {} and {}".format(track1.fobj.title(), track2.fobj.title()))
-    pb1 = Playback(track1, track1.analysis.segments[0].start, track1.analysis.duration)
-    pb2 = Playback(track2, track2.analysis.segments[0].start, track2.analysis.duration)
+    tr1_seg1_dur = track1.analysis.segments[1].end - track1.analysis.segments[1].start 
+    tr2_seg1_dur = track2.analysis.segments[1].end - track2.analysis.segments[1].start 
+    pb1 = Playback(track1, track1.analysis.segments[1].start, 
+			track1.analysis.duration - tr1_seg1_dur)
+    pb2 = Playback(track2, track2.analysis.segments[0].start, tr2_seg1_dur)
     return [pb1, pb2]
 
 def make_crossmatch(track1, track2, rate1, rate2, loc2, rows):
