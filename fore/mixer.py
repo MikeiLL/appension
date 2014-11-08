@@ -250,7 +250,7 @@ class LocalAudioStream(AudioStream):
 
 def metadata_of(a):
     if hasattr(a, '_metadata'):
-        return a._metadata.obj
+        return a._metadata.track_details
     if hasattr(a, 'track'):
         return metadata_of(a.track)
     if hasattr(a, 't1') and hasattr(a, 't2'):
@@ -366,7 +366,8 @@ class Mixer(multiprocessing.Process):
         track.resampled['matrix'] = timbre_whiten(track.resampled['matrix'])
 
         if not is_valid(track, self.transition_time):
-            raise ValueError("Track too short!")
+	    log.info("This track doesn't validate.")
+            # raise ValueError("Track too short!")
 
         track.gain = self.__db_2_volume(track.analysis.loudness)
         log.info("Done processing [%r].", track._metadata.id)

@@ -13,7 +13,7 @@ class Track(object):
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
 		# wants to be renamed to something mildly useful)
-		self.obj = {
+		self.track_details = {
 			'id': id,
 			'artist': artist,
 			'title': title,
