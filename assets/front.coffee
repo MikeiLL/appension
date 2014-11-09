@@ -33,7 +33,7 @@ class Frame
     @div = null
     @id = "track_#{@tracks[0].metadata.id}"
     @new = if is_new then 'new' else ''
-
+    concole.log 'anything here'
     # hack for development... don't wanna do this
     while document.getElementById(@id)
       @id += "_"
@@ -41,22 +41,63 @@ class Frame
     @parseMetaData()
 
   parseMetaData: ->
-    artist = @tracks[0].metadata.artist
-    title = @tracks[0].metadata.title
+    matches = @tracks[0].metadata.title.match(/(.*?) by (.*)/i)
+    if matches?
+      [_, @title, @artist] = matches
+      matches = @artist.match(/(.*?)\s+-\s+(.*)/i)
+      [_, @artist, other] = matches if matches?
+    else
+      matches = @tracks[0].metadata.title.match(/(.*?)\s*-\s+(.*)/i)
+      if matches?
+        [_, @artist, @title] = matches
+      else
+        @title = @tracks[0].metadata.title
+        @artist = @tracks[0].metadata.artist
+    
+    matches = @title.match(/([^\[\]]*?)( - ([^\[\]\(\)]*)|(\[.*\]))/i)
+    if matches?
+      [_, @title, _, other] = matches
+    
+    #   Try to remove "Free Download," "Follow Me" and the like
+    _title = @title.replace MAGIC_REGEX, ""
+    @title = _title if _title.length > 0
+
+    _artist = @artist.replace MAGIC_REGEX, ""
+    @artist = _artist if _artist.length > 0
+
+    if @title[0] == '"' and @title[@title.length - 1] == '"'
+      @title = @title[1...@title.length - 1].trim()
+
+    #@img = if @tracks[0].metadata.artwork_url?
+    #         @tracks[0].metadata.artwork_url
+    #       else
+    #         @tracks[0].metadata.user.avatar_url
+
 
     # Buttons
     @buttons = true
     @nid = @tracks[0].metadata.id
-    
+
+
+    @url = @tracks[0].metadata.permalink_url
+
+
   html: (first) ->
     first = false if not first?
     _new = @new
     @new = ''
     """
-     <div class="text">
+    <div class='track #{_new} #{if @played() and not first then "hidden" else ""}' id='#{@id}' target="_blank" href="#{@url}">
+      <a class="coverart" href="#{@url}" target="_blank"><img src="#{@img}" /></a>
+      <div class="text">
         <a class="title" href="#{@url}" target="_blank">#{@title}</a>
         <span class="artist">#{@artist}</span>
       </div>
+
+      #{if @stats then "
+     <h2>NOTHING</h2>
+      " else ""}
+    </div>
     """
 
   played: ->
@@ -102,6 +143,7 @@ class Frame
             , 1000
         , 100
       , 1400
+
 
 
 class Titular
@@ -179,6 +221,7 @@ window.rotate_h2 = ->
   , 5000
 
 $(document).ready ->
+  console.log('document ready yo')
   window.rotate_h2()
   window.__spinner.spin document.getElementById('content')
   window.__spinning = true
@@ -193,6 +236,11 @@ $(document).ready ->
       else
         window.threeSixtyPlayer.handleClick {target: $('a.sm2_link')[0]}
 
+  $.getJSON "all.json", (segments) ->
+    console.log('in getJson')
+    for segment in segments
+      console.log(segment)
+
   getPing = ->
     start_time = +new Date
     $.getJSON "timing.json", (data) ->
@@ -200,3 +248,12 @@ $(document).ready ->
   window.getPing = getPing
   setInterval getPing, TIMING_INTERVAL
   getPing()
+
+  s = io.connect ":8193/info.websocket"
+  s.on 'message', (data) ->
+    if typeof data is "string"
+      data = JSON.parse(data)
+    if data.listener_count?
+      window._listeners = data.listener_count
+
+  window._socket = s
