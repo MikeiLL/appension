@@ -353,8 +353,7 @@ def hard_transition(track1, track2):
     dur1 = viable_duration(track1, start_end1)
     start2 = first_viable(track2) + 1
     tr2_seg1_dur = segs2[start2].end - segs2[start2].start 
-    pb1 = Playback(track1, segs1[1].start, 
-			dur1)
+    pb1 = Playback(track1, segs1[1].start, dur1)
     pb2 = Playback(track2, segs2[start2].start, tr2_seg1_dur)
     return [pb1, pb2]
 
