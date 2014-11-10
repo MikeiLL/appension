@@ -6,12 +6,14 @@ capsule_support.py
 
 Created by Tristan Jehan and Jason Sundram.
 """
-
+import logging
 import numpy as np
 from copy import deepcopy
 from action import Crossfade, Playback, Crossmatch, Fadein, Fadeout, humanize_time
 from utils import rows, flatten
 from append_support import abridge, trim_silence
+
+log = logging.getLogger(__name__)
 
 # constants for now
 X_FADE = 3
@@ -320,16 +322,40 @@ def make_crossfade(track1, track2, inter):
 
     return [xf, pb]
     
+def first_viable(track):
+    """Iterate segs and return the index of first viable one."""
+    first = last = ''
+    for k, v in enumerate(track.analysis.segments):
+	if v.loudness_max > -60:
+	    return k
+	
+def last_viable(track):
+    """Iterate segs backwards and return the index of final viable one."""
+    for i in xrange(len(track.analysis.segments) - 1, -1, -1):
+	element = track.analysis.segments[i]
+	if element.loudness_max > -60: 
+	    return i
+	
+def viable_duration(track, start_end):
+    """Return the difference between start of start and end of end."""
+    segs = track.analysis.segments
+    dur = segs[start_end[1]].end - segs[start_end[0]].start
+    return dur
+    
 def hard_transition(track1, track2):
     """Return playback instances for track1 all but first segment, track2 only seg1. """
     # print("Track one has {} and {}.".format(dir(track1.fobj), dir(track1.analysis)))
     # print("Appending {} to {}".format(track1.obj.artist, track2.obj.artist))
-    print("These are by {} and {}".format(track1.fobj.title(), track2.fobj.title()))
-    tr1_seg1_dur = track1.analysis.segments[1].end - track1.analysis.segments[1].start 
-    tr2_seg1_dur = track2.analysis.segments[1].end - track2.analysis.segments[1].start 
-    pb1 = Playback(track1, track1.analysis.segments[1].start, 
-			track1.analysis.duration - tr1_seg1_dur)
-    pb2 = Playback(track2, track2.analysis.segments[0].start, tr2_seg1_dur)
+    # print("These are by {} and {}".format(track1.fobj.title(), track2.fobj.title()))
+    segs1 = track1.analysis.segments
+    segs2 = track2.analysis.segments
+    start_end1 = [first_viable(track1), last_viable(track1)]
+    dur1 = viable_duration(track1, start_end1)
+    start2 = first_viable(track2) + 1
+    tr2_seg1_dur = segs2[start2].end - segs2[start2].start 
+    pb1 = Playback(track1, segs1[1].start, 
+			dur1)
+    pb2 = Playback(track2, segs2[start2].start, tr2_seg1_dur)
     return [pb1, pb2]
 
 def make_crossmatch(track1, track2, rate1, rate2, loc2, rows):
