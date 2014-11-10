@@ -221,7 +221,6 @@ window.rotate_h2 = ->
   , 5000
 
 $(document).ready ->
-  console.log('document ready yo')
   window.rotate_h2()
   window.__spinner.spin document.getElementById('content')
   window.__spinning = true
@@ -239,7 +238,7 @@ $(document).ready ->
   $.getJSON "all.json", (segments) ->
     console.log('in getJson')
     for segment in segments
-      console.log(segment)
+      console.log(segment.tracks[0].metadata.title, segment.tracks[0].metadata.artist)
 
   getPing = ->
     start_time = +new Date
