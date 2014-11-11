@@ -33,7 +33,6 @@ class Frame
     @div = null
     @id = "track_#{@tracks[0].metadata.id}"
     @new = if is_new then 'new' else ''
-    concole.log 'anything here'
     # hack for development... don't wanna do this
     while document.getElementById(@id)
       @id += "_"
@@ -144,6 +143,113 @@ class Frame
         , 100
       , 1400
 
+class Waveform
+  speed: 5
+  constructor: (@canvas) ->
+    @delay = 0
+    @_offset = $("#menu").outerWidth()
+    @frames = []
+    @context = @canvas.getContext "2d"
+    @overlap = if navigator.userAgent.match(/chrome/i)? then 0 else 1
+    @layout()
+    @drawloop()
+
+  offset: ->
+    @_offset + @buffered()
+
+  buffered: ->
+    ((window.threeSixtyPlayer.bufferDelay) * @speed / 1000.0) + OFFSET
+
+  layout: ->
+    @canvas.width = window.innerWidth
+
+  drawloop: ->
+    @draw()
+    me = this
+    return if @stop?
+    setTimeout((-> me.drawloop()), 100)
+
+  draw: ->
+    BUFFERED = @buffered()
+    if window.soundManager.sounds.ui360Sound0? && window.soundManager.sounds.ui360Sound0.paused
+      @paused_at = window.serverTime() unless @paused_at?
+      return
+    else if @paused_at?
+      @delay += (window.serverTime() - @paused_at)
+      delete @paused_at
+
+    if @frames[0]?
+      @context.clearRect 0, 0, @canvas.width, @canvas.height
+      nowtime = (window.serverTime() - @delay) / 1000
+      
+      if @frames.length > 1
+        for i in [1...@frames.length]
+          if @frames[i].time + BUFFERED > nowtime
+            frame = @frames[i-1]
+            if not @__current_frame? || @__current_frame != frame
+              @onCurrentFrameChange @__current_frame, frame
+              @__current_frame = frame
+            break
+      else
+        frame = @frames[0]
+        if not @__current_frame? || @__current_frame != frame
+          @onCurrentFrameChange @__current_frame, frame
+          @__current_frame = frame
+
+
+      left = (nowtime - @frames[0].time) * @speed * -1
+      while @offset() + left + @frames[0].image.width < 0
+        @frames.splice(0, 1)
+        return if not @frames[0]?
+        left = (nowtime - @frames[0].time) * @speed * -1
+      right = @offset() + left
+
+      # Actually draw our waveform here
+      for frame in @frames
+        @context.drawImage frame.image, right - @overlap, 0
+        #if @overlap > 0
+          # Clone the last column to prevent visual artifacts on Safari/Firefox
+        # @context.putImageData(@context.getImageData(right - @overlap, 0, @overlap, @canvas.height), right, 0)
+        right += frame.image.width - @overlap
+      @setPlayerColor()
+
+  title: ->
+    if @__current_frame? then @__current_frame.title else "Buffering..."
+
+  __dec2hex: (i) ->
+   (i+0x100).toString(16).substr(-2)
+
+  LIGHTENING: 32
+  setPlayerColor: ->
+    pix = @context.getImageData(@offset(), parseInt(@canvas.height / 2), 1, @canvas.height).data
+    [r, g, b] = [Math.min(pix[0] + @LIGHTENING, 255),
+                 Math.min(pix[1] + @LIGHTENING, 255),
+                 Math.min(pix[2] + @LIGHTENING, 255)]
+    window.threeSixtyPlayer.config.playRingColor = "##{@__dec2hex(r)}#{@__dec2hex(g)}#{@__dec2hex(b)}"
+    window.threeSixtyPlayer.config.backgroundRingColor = window.threeSixtyPlayer.config.playRingColor
+
+  onNewFrame: (frame) ->
+    @frames.push frame
+    frame.render()
+    
+  onCurrentFrameChange: (old, knew) ->
+    if knew.action == "Crossmatch" or knew.action == "Crossfade" or (old? and (old.action == "Playback" and knew.action == "Playback"))
+      setTimeout ->
+        knew.render()
+        old.render() if old?
+      , (if knew.action == "Crossmatch" then knew.duration * 500 else 10)
+    
+  process: (f, from_socket) ->
+    frame = new Frame f, from_socket
+    img = new Image
+    me = this
+    img.onload = ->
+      frame.image = this
+      if window.__spinning
+        window.__spinner.stop()
+        window.__spinning = false
+      me.onNewFrame frame
+    img.src = frame.waveform
 
 
 class Titular
@@ -226,7 +332,8 @@ $(document).ready ->
   window.__spinning = true
   window.__titular = new Titular
   window.__heartbeat = $('#endpoint_link').attr('href').replace('all.mp3', 'heartbeat')
-
+  w = new Waveform document.getElementById "waveform"
+  
   $('body').keyup (e) ->
     s = window.soundManager.sounds.ui360Sound0
     if e.keyCode == 32
@@ -236,9 +343,9 @@ $(document).ready ->
         window.threeSixtyPlayer.handleClick {target: $('a.sm2_link')[0]}
 
   $.getJSON "all.json", (segments) ->
-    console.log('in getJson')
     for segment in segments
-      console.log(segment.tracks[0].metadata.title, segment.tracks[0].metadata.artist)
+      # console.log("getJSON here")
+      w.process segment
 
   getPing = ->
     start_time = +new Date
@@ -259,8 +366,9 @@ $(document).ready ->
         console.log(data.segment.tracks[0].metadata.artist)
         console.log(data.segment.tracks[0].metadata.title)
         console.log(data.segment.duration)
-        console.log(data)
       if data.listener_count?
         window._listeners = data.listener_count
       console.log "something happened."
     window._socket = s
+	
+  window._waveform = w
