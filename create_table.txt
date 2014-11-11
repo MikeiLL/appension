@@ -1,4 +1,5 @@
 create table tracks (id serial primary key, 
 		artist varchar not null, 
 		title varchar not null, 
-		filename varchar not null);
+		filename varchar not null, 
+		artwork bytea default '');
