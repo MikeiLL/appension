@@ -256,6 +256,10 @@ $(document).ready ->
     s.on 'message', (data) ->
       if typeof data is "string"
         data = JSON.parse(data)
+        console.log(data.segment.tracks[0].metadata.artist)
+        console.log(data.segment.tracks[0].metadata.title)
+        console.log(data.segment.duration)
+        console.log(data)
       if data.listener_count?
         window._listeners = data.listener_count
       console.log "something happened."
