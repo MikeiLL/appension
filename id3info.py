@@ -15,18 +15,21 @@ def dbactions(track, cur):
 	cur.execute("INSERT INTO tracks \
 			(artist, \
 			title,	\
-			filename \
+			filename, \
+			artwork \
 			) \
 			VALUES (%s, %s, %s)",
-		(track['TPE1'].text,
-		track['TIT2'].text,
-		track.filename[6:])
+		(u', '.join(track['TPE1'].text),
+		u', '.join(track['TIT2'].text),
+		track.filename[6:],
+		track['APIC'].data)
 		)
 	cur.execute("SELECT  \
 			(id, \
 			title, \
 			filename, \
-			artist) \
+			artist, \
+            artwork) \
 			FROM tracks \
 			WHERE filename \
 			= (%s)",
@@ -44,9 +47,10 @@ def titles(files, cur):
 		try:
 			dbactions(track, cur)		
 			print("Inserting: {} - {} - {}".format(
-				track['TPE1'].text, 
-				track['TIT2'].text,
-				track.filename[6:]))
+				u", ".join(track['TPE1'].text), 
+				u", ".join(track['TIT2'].text),
+				track.filename[6:],
+				track['APIC'].data))
 		except KeyError:
 			pass
 	commit = raw_input("Commit?")
