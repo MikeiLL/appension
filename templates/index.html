@@ -30,6 +30,8 @@
 	</head>
   <body>
     <div id="menu">
+	<input id="trackDeets" type="button" value="clickme" onclick="getTrackDetails();" />
+	  
       <div id="logo"></div>
      
       <h1>
@@ -57,8 +59,8 @@
       </div>
     </div>
     <div id="content">
-      {% if open %}
-      <div class="track_container">
+	  {% if open %} 
+	  <div class="track_container">
         <div class="tracks" id="tracks"></div>
       </div>
       <div class="tracks" id="done"></div>

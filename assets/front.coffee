@@ -248,11 +248,15 @@ $(document).ready ->
   setInterval getPing, TIMING_INTERVAL
   getPing()
 
-  s = io.connect ":8193/info.websocket"
-  s.on 'message', (data) ->
-    if typeof data is "string"
-      data = JSON.parse(data)
-    if data.listener_count?
-      window._listeners = data.listener_count
 
-  window._socket = s
+  root = exports ? this
+  root.getTrackDetails = ->
+    console.log("You pressed me.")
+    s = io.connect ":8193/info.websocket"
+    s.on 'message', (data) ->
+      if typeof data is "string"
+        data = JSON.parse(data)
+      if data.listener_count?
+        window._listeners = data.listener_count
+      console.log "something happened."
+    window._socket = s
