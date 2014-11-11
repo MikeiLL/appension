@@ -22,14 +22,14 @@ def dbactions(track, cur):
 		(u', '.join(track['TPE1'].text),
 		u', '.join(track['TIT2'].text),
 		track.filename[6:],
-		track['APIC'].data)
+		track['APIC:'].data if 'APIC:' in track else None)
 		)
 	cur.execute("SELECT  \
 			(id, \
 			title, \
 			filename, \
 			artist, \
-            artwork) \
+			artwork) \
 			FROM tracks \
 			WHERE filename \
 			= (%s)",
