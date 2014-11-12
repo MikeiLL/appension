@@ -12,17 +12,20 @@ import time
 import psycopg2
 
 def dbactions(track, cur):
+	pic=next((k for k in track if k.startswith("APIC:")), None)
+	pic = pic and track[pic].data
+
 	cur.execute("INSERT INTO tracks \
 			(artist, \
 			title,	\
 			filename, \
 			artwork \
 			) \
-			VALUES (%s, %s, %s)",
+			VALUES (%s, %s, %s, %s)",
 		(u', '.join(track['TPE1'].text),
 		u', '.join(track['TIT2'].text),
 		track.filename[6:],
-		track['APIC:'].data if 'APIC:' in track else None)
+		pic if 'APIC:' in track else None)
 		)
 	cur.execute("SELECT  \
 			(id, \
@@ -49,8 +52,7 @@ def titles(files, cur):
 			print("Inserting: {} - {} - {}".format(
 				u", ".join(track['TPE1'].text), 
 				u", ".join(track['TIT2'].text),
-				track.filename[6:],
-				track['APIC'].data))
+				track.filename[6:]))
 		except KeyError:
 			pass
 	commit = raw_input("Commit?")
