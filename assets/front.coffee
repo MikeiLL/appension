@@ -240,8 +240,8 @@ $(document).ready ->
     console.log("InGetJSON")
     console.log(segments)
     for segment in segments
-      document.getElementById('artist').innerHTML = segment.tracks[0].metadata.artist
-      document.getElementById('title').innerHTML = segment.tracks[0].metadata.title
+      document.getElementById('artist').innerHTML = segment.tracks[0].metadata.id
+      # document.getElementById('title').innerHTML = segment.tracks[0].metadata.artist
       window._next_artist = window._next_title = ""
       console.log("Segment")
       console.log(segment)
@@ -263,11 +263,11 @@ $(document).ready ->
         data = JSON.parse(data)
         # TODO Be safe against embedded HTML tags
         nexttrack = data.segment.tracks[0].metadata.artist
-        document.getElementById('artist').innerHTML = window._next_artist
+        # document.getElementById('artist').innerHTML = window._next_artist
         document.getElementById('artist_next').innerHTML = "Up next: " + nexttrack
-	window._next_artist = nexttrack
+        window._next_artist = nexttrack
         console.log("GetTrackDets Data:")
-        console.log(data)
+        console.log(data.segment.tracks[0].metadata.id)
       if data.listener_count?
         window._listeners = data.listener_count
     window._socket = s
