@@ -240,9 +240,8 @@ $(document).ready ->
     console.log("InGetJSON")
     console.log(segments)
     for segment in segments
-      document.getElementById('artist').innerHTML = segment.tracks[0].metadata.artist
-      # document.getElementById('title').innerHTML = segment.tracks[0].metadata.title
-      window._next_artist = window._next_title = ""
+      document.getElementById('artist').innerHTML = window._next_artist = segment.tracks[0].metadata.artist
+      # document.getElementById('title').innerHTML = window._next_title = segment.tracks[0].metadata.title
       window._track_id = segment.tracks[0].metadata.id
       console.log("Segment")
       console.log(segment)
