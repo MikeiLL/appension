@@ -52,6 +52,9 @@ class Frame
       else
         @title = @tracks[0].metadata.title
         @artist = @tracks[0].metadata.artist
+    console.log(matches)
+    console.log(@artist)
+    console.log(@title)
     
     matches = @title.match(/([^\[\]]*?)( - ([^\[\]\(\)]*)|(\[.*\]))/i)
     if matches?
@@ -234,8 +237,13 @@ $(document).ready ->
         window.threeSixtyPlayer.handleClick {target: $('a.sm2_link')[0]}
 
   $.getJSON "all.json", (segments) ->
+    console.log("InGetJSON")
+    console.log(segments)
     for segment in segments
-      console.log("getJSON here")
+      document.getElementById('artist').innerHTML = segment.tracks[0].metadata.artist
+      document.getElementById('title').innerHTML = segment.tracks[0].metadata.title
+      console.log("Segment")
+      console.log(segment)
 
   getPing = ->
     start_time = +new Date
@@ -253,12 +261,12 @@ $(document).ready ->
       if typeof data is "string"
         data = JSON.parse(data)
         # TODO Be safe against embedded HTML tags
-        document.getElementById('artist').innerHTML = data.segment.tracks[0].metadata.artist
-        document.getElementById('title').innerHTML = data.segment.tracks[0].metadata.title
-        document.getElementById('duration').innerHTML = data.segment.duration
+        nexttrack = data.segment.tracks[0].metadata.artist
+        document.getElementById('artist_next').innerHTML = "Up next: " + nexttrack
+        console.log("GetTrackDets Data:")
+        console.log(data)
       if data.listener_count?
         window._listeners = data.listener_count
-      console.log "something happened."
     window._socket = s
   setTimeout getTrackDetails, 1000
 	
