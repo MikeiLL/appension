@@ -55,7 +55,7 @@ function ThreeSixtyPlayer() {
   this.peakDataHistory = [];
   this.firstBuffering = true;
   this.firstPlayTime = null;
-  this.bufferDelay = 0;
+  this.bufferDelay = 1;
 
   // 360player configuration options
   this.config = {
@@ -90,14 +90,14 @@ function ThreeSixtyPlayer() {
 
     // "spectrum frequency" option
     useEQData: true,
-    eqDataColor: '#d5d5d5',
+    eqDataColor: '#c79594',
     eqDataDownsample: 1, // use only one in X (of 256 values)
     eqDataOutside: true,
     eqDataLineRatio: 1,
 
     // enable "amplifier" (canvas pulses like a speaker) effect
     usePeakData: true,
-    peakDataColor: '#d5d5d5',
+    peakDataColor: '#c79594',
     peakDataOutside: true,
     peakDataLineRatio: 0.5,
 
