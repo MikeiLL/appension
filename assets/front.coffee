@@ -242,6 +242,7 @@ $(document).ready ->
     for segment in segments
       document.getElementById('artist').innerHTML = segment.tracks[0].metadata.artist
       document.getElementById('title').innerHTML = segment.tracks[0].metadata.title
+      window._next_artist = window._next_title = ""
       console.log("Segment")
       console.log(segment)
 
@@ -262,7 +263,9 @@ $(document).ready ->
         data = JSON.parse(data)
         # TODO Be safe against embedded HTML tags
         nexttrack = data.segment.tracks[0].metadata.artist
+        document.getElementById('artist').innerHTML = window._next_artist
         document.getElementById('artist_next').innerHTML = "Up next: " + nexttrack
+	window._next_artist = nexttrack
         console.log("GetTrackDets Data:")
         console.log(data)
       if data.listener_count?
