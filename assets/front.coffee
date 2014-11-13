@@ -240,9 +240,10 @@ $(document).ready ->
     console.log("InGetJSON")
     console.log(segments)
     for segment in segments
-      document.getElementById('artist').innerHTML = segment.tracks[0].metadata.id
-      # document.getElementById('title').innerHTML = segment.tracks[0].metadata.artist
+      document.getElementById('artist').innerHTML = segment.tracks[0].metadata.artist
+      # document.getElementById('title').innerHTML = segment.tracks[0].metadata.title
       window._next_artist = window._next_title = ""
+      window._track_id = segment.tracks[0].metadata.id
       console.log("Segment")
       console.log(segment)
 
@@ -261,15 +262,15 @@ $(document).ready ->
     s.on 'message', (data) ->
       if typeof data is "string"
         data = JSON.parse(data)
-        # TODO Be safe against embedded HTML tags
-        nexttrack = data.segment.tracks[0].metadata.artist
-        # document.getElementById('artist').innerHTML = window._next_artist
-        document.getElementById('artist_next').innerHTML = "Up next: " + nexttrack
-        window._next_artist = nexttrack
+        if data.segment.tracks[0].metadata.id != window._track_id
+          window._track_id = data.segment.tracks[0].metadata.id
+          # TODO Be safe against embedded HTML tags
+          document.getElementById('artist').innerHTML = window._next_artist
+          window._next_artist = data.segment.tracks[0].metadata.artist
+          document.getElementById('artist_next').innerHTML = "Up next: " + window._next_artist
         console.log("GetTrackDets Data:")
         console.log(data.segment.tracks[0].metadata.id)
       if data.listener_count?
         window._listeners = data.listener_count
     window._socket = s
   setTimeout getTrackDetails, 1000
-	
