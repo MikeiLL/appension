@@ -232,7 +232,7 @@ $(document).ready ->
     s = window.soundManager.sounds.ui360Sound0
     if e.keyCode == 32
       if s?
-        s.togglePause()
+        s.toggleMute()
       else
         window.threeSixtyPlayer.handleClick {target: $('a.sm2_link')[0]}
 
