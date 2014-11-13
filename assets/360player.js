@@ -63,15 +63,15 @@ function ThreeSixtyPlayer() {
     playNext: false,   // stop after one sound, or play through list until end
     autoPlay: false,   // start playing the first sound right away
     allowMultiple: false,  // let many sounds play at once (false = only one sound playing at a time)
-    loadRingColor: '#d5d5d5', // how much has loaded
-    playRingColor: '#d5d5d5', // how much has played
-    backgroundRingColor: '#d5d5d5', // color shown underneath load + play ("not yet loaded" color)
+    loadRingColor: '#c79594', // how much has loaded
+    playRingColor: '#c79594', // how much has played
+    backgroundRingColor: '#c79594', // color shown underneath load + play ("not yet loaded" color)
 
     // optional segment/annotation (metadata) stuff..
-    segmentRingColor: '#d5d5d5', // metadata/annotation (segment) colors
-    segmentRingColorAlt: '#d5d5d5',
-    loadRingColorMetadata: '#d5d5d5', // "annotations" load color
-    playRingColorMetadata: '#d5d5d5', // how much has played when metadata is present
+    segmentRingColor: '#c79594', // metadata/annotation (segment) colors
+    segmentRingColorAlt: '#c79594',
+    loadRingColorMetadata: '#c79594', // "annotations" load color
+    playRingColorMetadata: '#c79594', // how much has played when metadata is present
 
     circleDiameter: 256, // set dynamically according to values from CSS
     circleRadius: 128,
@@ -82,7 +82,7 @@ function ThreeSixtyPlayer() {
 
     // optional: spectrum or EQ graph in canvas (not supported in IE <9, too slow via ExCanvas)
     useWaveformData: false,
-    waveformDataColor: '#d5d5d5',
+    waveformDataColor: '#c79594',
     waveformDataDownsample: 3, // use only one in X (of a set of 256 values) - 1 means all 256
     waveformDataOutside: false,
     waveformDataConstrain: false, // if true, +ve values only - keep within inside circle
