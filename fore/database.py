@@ -31,7 +31,7 @@ def get_many_mp3():
 	with the database cursor, for safety.
 	"""
 	with _conn.cursor() as cur:
-		cur.execute("select id,filename,artist,title from tracks where id <> 39")
+		cur.execute("select id,filename,artist,title from tracks where id <> 95")
 		return [Track(*row) for row in cur.fetchall()]
 
 def enqueue_tracks(queue):
