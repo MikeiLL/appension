@@ -253,9 +253,10 @@ $(document).ready ->
 				else
 					document.getElementById('artist').innerHTML = segment.tracks[0].metadata.artist
 					document.getElementById('length').innerHTML = minutes + ":" + seconds
-				window._track_id = segment.tracks[0].metadata.id
+					window._track_id = segment.tracks[0].metadata.id
 			console.log("Segment" + window._count_getJSON + ": ")
-			console.log(segment)
+			console.log(segment.tracks[0].metadata.artist)
+			console.log(segment.tracks[0].metadata.id)
 			window._count_getJSON++
 
 	getPing = ->
@@ -280,11 +281,12 @@ $(document).ready ->
 					window._next_artist = data.segment.tracks[0].metadata.artist
 					document.getElementById('artist_next').innerHTML = "Up next: " + window._next_artist
 				console.log("GetTrackDets Data " + window._count_TrackDeets + ": ")
-				console.log(data)
+				console.log(data.segment.tracks[0].metadata.artist)
+				console.log(data.segment.tracks[0].metadata.id)
+				window._count_TrackDeets++
 			if data.listener_count?
 				window._listeners = data.listener_count
 		window._socket = s
-		window._count_TrackDeets++
 	
 	setTimeout getTrackDetails, 1000
 	window._count_getJSON = 1
