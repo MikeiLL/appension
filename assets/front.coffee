@@ -251,8 +251,8 @@ $(document).ready ->
 					window._next_artist = segment.tracks[0].metadata.artist
 					window._next_length = minutes + ":" + seconds
 				else
-					document.getElementById('artist').innerHTML = segment.tracks[0].metadata.artist
-					document.getElementById('length').innerHTML = minutes + ":" + seconds
+					document.getElementById('artist').innerHTML = window._next_artist = segment.tracks[0].metadata.artist
+					document.getElementById('length').innerHTML = window._next_length = minutes + ":" + seconds
 					window._track_id = segment.tracks[0].metadata.id
 			console.log("Segment" + window._count_getJSON + ": ")
 			console.log(segment.tracks[0].metadata.artist)
