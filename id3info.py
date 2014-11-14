@@ -14,25 +14,29 @@ import psycopg2
 def dbactions(track, cur):
 	pic=next((k for k in track if k.startswith("APIC:")), None)
 	pic = pic and track[pic].data
+	print("length of pic: {}".format(len(pic)))
 
 	cur.execute("INSERT INTO tracks \
 			(artist, \
 			title,	\
 			filename, \
-			artwork \
+			artwork, \
+			length \
 			) \
-			VALUES (%s, %s, %s, %s)",
+			VALUES (%s, %s, %s, %s, %s)",
 		(u', '.join(track['TPE1'].text),
 		u', '.join(track['TIT2'].text),
 		track.filename[6:],
-		pic if 'APIC:' in track else None)
+		pic if 'APIC:' in track else None,
+		track.info.length)
 		)
 	cur.execute("SELECT  \
 			(id, \
 			title, \
 			filename, \
 			artist, \
-			artwork) \
+			artwork, \
+			length) \
 			FROM tracks \
 			WHERE filename \
 			= (%s)",
@@ -49,10 +53,11 @@ def titles(files, cur):
 		track = MP3(file)
 		try:
 			dbactions(track, cur)		
-			print("Inserting: {} - {} - {}".format(
+			print("Inserting: {} - {} - {} - {}".format(
 				u", ".join(track['TPE1'].text), 
 				u", ".join(track['TIT2'].text),
-				track.filename[6:]))
+				track.filename[6:],
+				track.info.length))
 		except KeyError:
 			pass
 	commit = raw_input("Commit?")

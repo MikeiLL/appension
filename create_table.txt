@@ -2,4 +2,10 @@ create table tracks (id serial primary key,
 		artist varchar not null, 
 		title varchar not null, 
 		filename varchar not null, 
-		artwork bytea default '');
+		artwork bytea default '',
+		length varchar not null,
+		x_in varchar(10) default '',
+		x_out varchar(10) default '',
+		lyrics text  default '',
+		story text  default '',
+		status smallint default 1);

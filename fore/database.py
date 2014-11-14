@@ -7,8 +7,8 @@ _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
 
 class Track(object):
-	def __init__(self, id, filename, artist, title):
-		log.info("Rendering Track(%r, %r, %r, %r)", id, filename, artist, title)
+	def __init__(self, id, filename, artist, title, length):
+		log.info("Rendering Track(%r, %r, %r, %r, %r)", id, filename, artist, title, length)
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
@@ -17,6 +17,7 @@ class Track(object):
 			'id': id,
 			'artist': artist,
 			'title': title,
+			'length': length,
 		}
 
 def get_mp3(some_specifier):
@@ -31,7 +32,7 @@ def get_many_mp3():
 	with the database cursor, for safety.
 	"""
 	with _conn.cursor() as cur:
-		cur.execute("select id,filename,artist,title from tracks where id <> 95")
+		cur.execute("SELECT id,filename,artist,title,length FROM tracks WHERE status = 1")
 		return [Track(*row) for row in cur.fetchall()]
 
 def enqueue_tracks(queue):
