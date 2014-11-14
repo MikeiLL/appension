@@ -340,8 +340,8 @@ def viable_duration(track, start_end):
     """Return the difference between start of start and end of end."""
     segs = track.analysis.segments
     dur = segs[start_end[1]].end - segs[start_end[0]].start
-    return dur
-    
+    return dur	
+
 def hard_transition(track1, track2):
     """Return playback instances for track1 all but first segment, track2 only seg1. """
     # print("Track one has {} and {}.".format(dir(track1.fobj), dir(track1.analysis)))
@@ -357,6 +357,22 @@ def hard_transition(track1, track2):
     log.info("Track2 duration: %r", tr2_seg1_dur)
     pb1 = Playback(track1, segs1[1].start, dur1)
     pb2 = Playback(track2, segs2[start2].start, tr2_seg1_dur)
+    return [pb1, pb2]
+	
+def hard_transition_r(track1, track2):
+    """Return playback instances for track1 first segment, track2 all but final. """
+    # print("Track one has {} and {}.".format(dir(track1.fobj), dir(track1.analysis)))
+    log.info("Appending %s to %s", track1.fobj.title(), track2.fobj.title())
+    # print("These are by {} and {}".format(track1.fobj.title(), track2.fobj.title()))
+    segs1 = track1.analysis.segments
+    segs2 = track2.analysis.segments
+    end1 = last_viable(track1)
+    tr1_seg1_dur = segs1[end1].end - segs1[end1].start
+    start_end2 = [first_viable(track2), last_viable(track2) - 1]
+    start2 = first_viable(track2)
+    dur2 = viable_duration(track2, start_end2)
+    pb1 = Playback(track1, segs1[end1].start, tr1_seg1_dur)
+    pb2 = Playback(track2, segs2[start2].start, dur2)
     return [pb1, pb2]
 
 def make_crossmatch(track1, track2, rate1, rate2, loc2, rows):
@@ -377,7 +393,7 @@ def make_transition(track1, track2, inter, transition):
     # the minimal inter is 0 sec
     markers1 = getattr(track1.analysis, track1.resampled['rate'])
     markers2 = getattr(track2.analysis, track2.resampled['rate'])
-    return hard_transition(track1, track2)
+    return hard_transition_r(track1, track2)
 
     if len(markers1) < MIN_SEARCH or len(markers2) < MIN_SEARCH:
         print "Making crossfade instead of transition!"
