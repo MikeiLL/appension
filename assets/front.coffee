@@ -240,8 +240,12 @@ $(document).ready ->
     console.log("InGetJSON")
     console.log(segments)
     for segment in segments
+      length = segment.tracks[0].metadata.length
+	  minutes = Math.floor(length/60)
+      seconds = length%60
+      if seconds < 10: seconds = "0" + seconds
       document.getElementById('artist').innerHTML = window._next_artist = segment.tracks[0].metadata.artist
-      # document.getElementById('title').innerHTML = window._next_title = segment.tracks[0].metadata.title
+      document.getElementById('length').innerHTML = window._next_title = minutes + ":" + seconds
       window._track_id = segment.tracks[0].metadata.id
       console.log("Segment" + window._count_getJSON + ": ")
       console.log(segment)
