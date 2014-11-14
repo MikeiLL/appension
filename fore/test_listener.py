@@ -23,9 +23,13 @@ def listen(host, port, f="all.mp3"):
 			off = len(start) - i - 4
 			start = start[i:i + 4]
 			break
+		else:
+			print("start: %r", start)
+			break
 
 	while True:
 		if start:
+			print("we have start")
 			header = start
 			start = None
 		else:
