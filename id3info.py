@@ -27,7 +27,7 @@ def dbactions(track, cur):
 		(u', '.join(track['TPE1'].text),
 		u', '.join(track['TIT2'].text),
 		track.filename[6:],
-		pic if 'APIC:' in track else None,
+		pic,
 		track.info.length)
 		)
 	cur.execute("SELECT  \
