@@ -267,7 +267,7 @@ def generate_metadata(a):
 	m = metadata_of(a)
 	if isinstance(m, tuple):
 		m1, m2 = m
-	log.info("HERE: ", m1.artist)
+		log.info("HERE: ", m1.artist)
 		d['tracks'] = [{
 			"metadata": m1,
 			"start": a.s1,
@@ -367,7 +367,7 @@ class Mixer(multiprocessing.Process):
 		track.resampled['matrix'] = timbre_whiten(track.resampled['matrix'])
 
 		if not is_valid(track, self.transition_time):
-		log.info("This track doesn't validate.")
+			log.info("This track doesn't validate.")
 			# raise ValueError("Track too short!")
 
 		track.gain = self.__db_2_volume(track.analysis.loudness)
@@ -389,7 +389,7 @@ class Mixer(multiprocessing.Process):
 						  traceback.format_exc())
 
 		# Initial transition. Should contain 2 instructions: fadein, and playback.
-	inter = self.tracks[0].analysis.duration
+		inter = self.tracks[0].analysis.duration
 		yield initialize(self.tracks[0], inter, self.transition_time, 10)
 
 		while not self.__stop:

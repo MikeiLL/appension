@@ -326,15 +326,15 @@ def first_viable(track):
 	"""Iterate segs and return the index of first viable one."""
 	first = last = ''
 	for k, v in enumerate(track.analysis.segments):
-	if v.loudness_max > -60:
-		return k
+		if v.loudness_max > -60:
+			return k
 	
 def last_viable(track):
 	"""Iterate segs backwards and return the index of final viable one."""
 	for i in xrange(len(track.analysis.segments) - 1, -1, -1):
-	element = track.analysis.segments[i]
-	if element.loudness_max > -60: 
-		return i
+		element = track.analysis.segments[i]
+		if element.loudness_max > -60: 
+			return i
 	
 def viable_duration(track, start_end):
 	"""Return the difference between start of start and end of end."""

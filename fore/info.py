@@ -17,13 +17,13 @@ def generate(iq, first_frame, handler):
 			action = iq.get()
 			action['time'] = stime + (samples / 44100.0)
 			samples += action['samples']
-		'''for k, v in enumerate(action):
-			print("Action contains: ", k, v)
-		0,1,2,3,4 action, duration, tracks, samples, time'''
-		'''for t in action['tracks']:
-		for k in enumerate(t):
-			print("It be: {}".format(k))
-		0,1,2 start, end, metadata
+			'''for k, v in enumerate(action):
+				print("Action contains: ", k, v)
+			0,1,2,3,4 action, duration, tracks, samples, time'''
+			'''for t in action['tracks']:
+			for k in enumerate(t):
+				print("It be: {}".format(k))
+			0,1,2 start, end, metadata
 			'''
 			action['unicode'] = u"\x96\x54"
 			handler.add(action)
