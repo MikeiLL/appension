@@ -239,15 +239,21 @@ $(document).ready ->
 	$.getJSON "all.json", (segments) ->
 		console.log("InGetJSON")
 		console.log(segments)
+		window._track_id = 0 # Assume we'll never actually get a track ID of zero
 		for segment in segments
-			length = segment.tracks[0].metadata.length
-			minutes = Math.floor(length/60)
-			seconds = Math.floor(length%60)
-			if seconds < 10
-				seconds = "0" + seconds
-			document.getElementById('artist').innerHTML = window._next_artist = segment.tracks[0].metadata.artist
-			document.getElementById('length').innerHTML = window._next_title = minutes + ":" + seconds
-			window._track_id = segment.tracks[0].metadata.id
+			if segment.tracks[0].metadata.id != window._track_id
+				length = segment.tracks[0].metadata.length
+				minutes = Math.floor(length/60)
+				seconds = Math.floor(length%60)
+				if seconds < 10
+					seconds = "0" + seconds
+				if window._track_id
+					window._next_artist = segment.tracks[0].metadata.artist
+					window._next_length = minutes + ":" + seconds
+				else
+					document.getElementById('artist').innerHTML = segment.tracks[0].metadata.artist
+					document.getElementById('length').innerHTML = minutes + ":" + seconds
+				window._track_id = segment.tracks[0].metadata.id
 			console.log("Segment" + window._count_getJSON + ": ")
 			console.log(segment)
 			window._count_getJSON++
