@@ -389,7 +389,7 @@ class Mixer(multiprocessing.Process):
                           traceback.format_exc())
 
         # Initial transition. Should contain 2 instructions: fadein, and playback.
-	inter = self.tracks[0].analysis.duration
+    inter = self.tracks[0].analysis.duration
         yield initialize(self.tracks[0], inter, self.transition_time, 10)
 
         while not self.__stop:
