@@ -276,8 +276,17 @@ $(document).ready ->
 				data = JSON.parse(data)
 				if data.segment.send_next_track
 					console.log("Send next track!")
-					console.log(data.segment.metadata0)
-					console.log(data.segment.metadata1)
+					console.log(data.segment.prev_track)
+					console.log(data.segment.next_track)
+					# Temporarily tagging the artist so we know it came from send_next_track
+					document.getElementById('artist').innerHTML = "[snt] " + data.segment.next_track.artist
+					document.getElementById('artist_next').innerHTML = "Up next: (unknown)"
+					length = segment.tracks[0].metadata.length
+					minutes = Math.floor(length/60)
+					seconds = Math.floor(length%60)
+					if seconds < 10
+						seconds = "0" + seconds
+					document.getElementById('length').innerHTML = minutes + ":" + seconds
 					return
 				if data.segment.tracks[0].metadata.id != window._track_id
 					window._track_id = data.segment.tracks[0].metadata.id
