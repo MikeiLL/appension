@@ -288,18 +288,14 @@ def generate_metadata(a):
 
 class Mixer(multiprocessing.Process):
 	def __init__(self, iqueue, oqueues, infoqueue,
-				 settings=({},), initial=None,
+				 initial=None,
 				 max_play_time=300, transition_time=30 if not test else 5,
 				 samplerate=44100):
 		self.iqueue = iqueue
 		self.infoqueue = infoqueue
 
 		self.encoders = []
-		if len(oqueues) != len(settings):
-			raise ValueError("Differing number of output queues and settings!")
-
 		self.oqueues = oqueues
-		self.settings = settings
 
 		self.__track_lock = threading.Lock()
 		self.__tracks = []
@@ -423,8 +419,8 @@ class Mixer(multiprocessing.Process):
 		yield terminate(self.tracks[-1], FADE_OUT)
 
 	def run(self):
-		for oqueue, settings in zip(self.oqueues, self.settings):
-			e = Lame(oqueue=oqueue, **settings)
+		for oqueue in self.oqueues:
+			e = Lame(oqueue=oqueue)
 			self.encoders.append(e)
 			e.start()
 
