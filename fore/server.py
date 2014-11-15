@@ -249,7 +249,7 @@ if __name__ == "__main__":
 	info_queue = multiprocessing.Queue()
 
 	mixer = Mixer(iqueue=track_queue,
-				  oqueues=(v2_queue.raw,),
+				  oqueue=v2_queue.raw,
 				  infoqueue=info_queue)
 	mixer.start()
 

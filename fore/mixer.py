@@ -287,12 +287,12 @@ def generate_metadata(a):
 
 
 class Mixer(multiprocessing.Process):
-	def __init__(self, iqueue, oqueues, infoqueue):
+	def __init__(self, iqueue, oqueue, infoqueue):
 		self.iqueue = iqueue
 		self.infoqueue = infoqueue
 
-		self.encoders = []
-		self.oqueues = oqueues
+		self.encoder = None
+		self.oqueue = oqueue
 
 		self.__track_lock = threading.Lock()
 		self.__tracks = []
@@ -406,10 +406,8 @@ class Mixer(multiprocessing.Process):
 		yield terminate(self.tracks[-1], FADE_OUT)
 
 	def run(self):
-		for oqueue in self.oqueues:
-			e = Lame(oqueue=oqueue)
-			self.encoders.append(e)
-			e.start()
+		self.encoder = Lame(oqueue=oqueue)
+		self.encoder.start()
 
 		try:
 			self.ctime = None
@@ -421,7 +419,7 @@ class Mixer(multiprocessing.Process):
 							#   TODO: Move the "multiple encoding" support into
 							#   LAME itself - it should be able to multiplex the
 							#   streams itself.
-							self.encoders[0].add_pcm(a)
+							self.encoder.add_pcm(a)
 							self.infoqueue.put(generate_metadata(a))
 						log.info("Rendered in %fs!", t.ms)
 					except Exception:
