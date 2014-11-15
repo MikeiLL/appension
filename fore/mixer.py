@@ -288,7 +288,7 @@ def generate_metadata(a):
 
 class Mixer(multiprocessing.Process):
 	def __init__(self, iqueue, oqueues, infoqueue,
-				 max_play_time=300, transition_time=30 if not test else 5,
+				 transition_time=30 if not test else 5,
 				 samplerate=44100):
 		self.iqueue = iqueue
 		self.infoqueue = infoqueue
@@ -299,7 +299,6 @@ class Mixer(multiprocessing.Process):
 		self.__track_lock = threading.Lock()
 		self.__tracks = []
 
-		self.max_play_time = max_play_time
 		self.transition_time = transition_time
 		self.samplerate = 44100
 		self.__stop = False
