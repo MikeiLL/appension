@@ -288,7 +288,6 @@ def generate_metadata(a):
 
 class Mixer(multiprocessing.Process):
 	def __init__(self, iqueue, oqueues, infoqueue,
-				 initial=None,
 				 max_play_time=300, transition_time=30 if not test else 5,
 				 samplerate=44100):
 		self.iqueue = iqueue
@@ -304,11 +303,6 @@ class Mixer(multiprocessing.Process):
 		self.transition_time = transition_time
 		self.samplerate = 44100
 		self.__stop = False
-
-		if isinstance(initial, list):
-			self.add_tracks(initial)
-		elif isinstance(initial, AudioData):
-			self.add_track(initial)
 
 		multiprocessing.Process.__init__(self)
 
@@ -351,9 +345,6 @@ class Mixer(multiprocessing.Process):
 
 	def add_track(self, track):
 		self.tracks.append(self.analyze(track))
-
-	def add_tracks(self, tracks):
-		self.tracks += order_tracks(self.analyze(tracks))
 
 	def process(self, track):
 		if not hasattr(track.analysis.pyechonest_track, "title"):
