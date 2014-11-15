@@ -248,9 +248,7 @@ if __name__ == "__main__":
 	v2_queue = BufferedReadQueue(int(config.frontend_buffer / SECONDS_PER_FRAME))
 	info_queue = multiprocessing.Queue()
 
-	mixer = Mixer(iqueue=track_queue,
-				  oqueue=v2_queue.raw,
-				  infoqueue=info_queue)
+	mixer = Mixer(track_queue,v2_queue.raw,info_queue)
 	mixer.start()
 
 	daemonize(database.enqueue_tracks, track_queue)
