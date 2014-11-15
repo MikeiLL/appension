@@ -121,26 +121,6 @@ def equalize_tracks(tracks):
 		loudness = track.analysis.loudness
 		track.gain = db_2_volume(loudness)
 
-
-def order_tracks(tracks):
-	""" Finds the smoothest ordering between tracks, based on tempo only."""
-	tempos = [track.analysis.tempo['value'] for track in tracks]
-	median = np.median(tempos)
-
-	def fold(t):
-		q = np.log2(t / median)
-		if  q < -.5:
-			return t * 2.0
-		elif q > .5:
-			return t / 2.0
-		else:
-			return t
-
-	new_tempos = map(fold, tempos)
-	order = np.argsort(new_tempos)
-	return [tracks[i] for i in order]
-
-
 def is_valid(track, transition):
 	markers = getattr(track.analysis, track.resampled['rate'])
 	if len(markers) < 1:

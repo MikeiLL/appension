@@ -19,9 +19,9 @@ import database
 
 from audio import AudioData
 
-from capsule_support import order_tracks, resample_features, \
-							timbre_whiten, initialize, make_transition, terminate, \
-							FADE_OUT, is_valid, LOUDNESS_THRESH
+from capsule_support import resample_features, \
+	timbre_whiten, initialize, make_transition, terminate, \
+	FADE_OUT, is_valid, LOUDNESS_THRESH
 
 log = logging.getLogger(__name__)
 
