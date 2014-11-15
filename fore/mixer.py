@@ -388,7 +388,11 @@ class Mixer(multiprocessing.Process):
 				gc.collect()
 				yield tra
 				log.debug("Finishing track 0 [%r]",self.tracks[0])
-				self.infoqueue.put({"send_next_track":1,"samples":0,"duration":0})
+				self.infoqueue.put({"send_next_track":1,"samples":0,"duration":0, # Headers to make a magic packet
+					"next_track":"(stub)", # and will have next artist, next duration, whatever else
+					# maybe also current track/artist/duration/etc
+					"metadata":metadata_of(self.tracks[0]),
+				})
 				self.tracks[0].finish()
 				del self.tracks[0]
 				gc.collect()
