@@ -377,7 +377,8 @@ class Mixer(multiprocessing.Process):
 	def __db_2_volume(self, loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
 
-	def loop(self):
+	def generate_tracks(self):
+		"""Yield a series of lists of track segments - helper for run()"""
 		while len(self.tracks) < 2:
 			log.info("Waiting for a new track.")
 			track = self.iqueue.get()
@@ -386,7 +387,7 @@ class Mixer(multiprocessing.Process):
 				log.info("Got a new track.")
 			except Exception:
 				log.error("Exception while trying to add new track:\n%s",
-						  traceback.format_exc())
+					traceback.format_exc())
 
 		# Initial transition. Should contain 2 instructions: fadein, and playback.
 		inter = self.tracks[0].analysis.duration
@@ -395,14 +396,15 @@ class Mixer(multiprocessing.Process):
 		while not self.__stop:
 			while len(self.tracks) > 1:
 				stay_time = max(self.tracks[0].analysis.duration,
-								self.tracks[1].analysis.duration)
+					self.tracks[1].analysis.duration)
 				tra = make_transition(self.tracks[0],
-									  self.tracks[1],
-									  stay_time,
-									  self.transition_time)
+					self.tracks[1],
+					stay_time,
+					self.transition_time)
 				del self.tracks[0].analysis
 				gc.collect()
 				yield tra
+				log.debug("Finishing track 0 [%r]",self.tracks[0])
 				self.tracks[0].finish()
 				del self.tracks[0]
 				gc.collect()
@@ -414,7 +416,7 @@ class Mixer(multiprocessing.Process):
 				log.warning("Track too short! Trying another.")
 			except Exception:
 				log.error("Exception while trying to add new track:\n%s",
-						  traceback.format_exc())
+					traceback.format_exc())
 
 		log.error("Stopping!")
 		# Last chunk. Should contain 1 instruction: fadeout.
@@ -428,7 +430,7 @@ class Mixer(multiprocessing.Process):
 
 		try:
 			self.ctime = None
-			for i, actions in enumerate(self.loop()):
+			for actions in self.generate_tracks():
 				log.info("Rendering audio data for %d actions.", len(actions))
 				for a in actions:
 					try:
