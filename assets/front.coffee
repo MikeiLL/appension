@@ -281,7 +281,7 @@ $(document).ready ->
 					# Temporarily tagging the artist so we know it came from send_next_track
 					document.getElementById('artist').innerHTML = "[snt] " + data.segment.next_track.artist
 					document.getElementById('artist_next').innerHTML = "Up next: (unknown)"
-					length = data.segment.tracks[0].metadata.length
+					length = data.segment.next_track.length
 					minutes = Math.floor(length/60)
 					seconds = Math.floor(length%60)
 					if seconds < 10
