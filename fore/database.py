@@ -32,7 +32,7 @@ def get_many_mp3():
 	with the database cursor, for safety.
 	"""
 	with _conn.cursor() as cur:
-		cur.execute("SELECT id,filename,artist,title,length FROM tracks WHERE status = 1")
+		cur.execute("SELECT id,filename,artist,title,length FROM tracks WHERE status = 1 ORDER BY length")
 		return [Track(*row) for row in cur.fetchall()]
 
 def enqueue_tracks(queue):
