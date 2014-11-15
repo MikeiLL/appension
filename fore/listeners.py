@@ -47,10 +47,10 @@ class Listeners(list):
 
 			if (float(self.__count) * 1152.0 / 44100.0) \
 					+ self.__drift_limit < uptime:
-				log.warning("Queue %s drifting by %2.2f ms. Compensating...",
-					self.__name,
-					1000 * (uptime - (float(self.__count) * 1152.0 / 44100.0))
-				)
+				# log.warning("Queue %s drifting by %2.2f ms. Compensating...",
+				#	self.__name,
+				#	1000 * (uptime - (float(self.__count) * 1152.0 / 44100.0))
+				# )
 				while (float(self.__count) * 1152.0 / 44100.0) < uptime:
 					self.__broadcast()
 		except Queue.Empty:
