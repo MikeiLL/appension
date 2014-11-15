@@ -5,7 +5,7 @@ import config
 import logging
 
 LAG_LIMIT = config.lag_limit
-log = logging.getLogger(config.log_name)
+log = logging.getLogger(__name__)
 
 
 class Listeners(list):
@@ -56,7 +56,7 @@ class Listeners(list):
 		except Queue.Empty:
 			if self.__packet and not self.__starving:
 				self.__starving = True
-				log.critical("Dropping frames! Queue %s is starving!", self.__name)
+				log.critical("Dropping frames! Queue %r is starving!", self.__name)
 				log.critical("Committing suicide.")
 				sys.exit(0)
 
