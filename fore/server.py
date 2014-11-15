@@ -5,7 +5,7 @@ by @psobot, Nov 3 2012
 
 import logging
 log = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG,format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 import config
 import apikeys
 import database
