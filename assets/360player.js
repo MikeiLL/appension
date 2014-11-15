@@ -437,7 +437,8 @@ function ThreeSixtyPlayer() {
     sm._writeDebug('handleClick()');
     soundURL = (o.href);
     thisSound = self.getSoundByURL(soundURL);
-
+	// thisSound.setVolume(20);
+	
     if (thisSound) {
 
       // already exists
