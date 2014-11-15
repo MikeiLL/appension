@@ -276,7 +276,8 @@ $(document).ready ->
 				data = JSON.parse(data)
 				if data.segment.send_next_track
 					console.log("Send next track!")
-					console.log(data.segment.metadata)
+					console.log(data.segment.metadata0)
+					console.log(data.segment.metadata1)
 					return
 				if data.segment.tracks[0].metadata.id != window._track_id
 					window._track_id = data.segment.tracks[0].metadata.id
