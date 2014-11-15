@@ -388,6 +388,7 @@ class Mixer(multiprocessing.Process):
 				gc.collect()
 				yield tra
 				log.debug("Finishing track 0 [%r]",self.tracks[0])
+				self.infoqueue.put({"send_next_track":1})
 				self.tracks[0].finish()
 				del self.tracks[0]
 				gc.collect()
