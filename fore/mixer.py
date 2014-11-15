@@ -406,7 +406,7 @@ class Mixer(multiprocessing.Process):
 		yield terminate(self.tracks[-1], FADE_OUT)
 
 	def run(self):
-		self.encoder = Lame(oqueue=oqueue)
+		self.encoder = Lame(oqueue=self.oqueue)
 		self.encoder.start()
 
 		try:
