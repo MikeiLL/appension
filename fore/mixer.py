@@ -386,7 +386,7 @@ class Mixer(multiprocessing.Process):
 				log.info("Got a new track.")
 			except Exception:
 				log.error("Exception while trying to add new track:\n%s",
-						  traceback.format_exc())
+					traceback.format_exc())
 
 		# Initial transition. Should contain 2 instructions: fadein, and playback.
 		inter = self.tracks[0].analysis.duration
@@ -395,11 +395,11 @@ class Mixer(multiprocessing.Process):
 		while not self.__stop:
 			while len(self.tracks) > 1:
 				stay_time = max(self.tracks[0].analysis.duration,
-								self.tracks[1].analysis.duration)
+					self.tracks[1].analysis.duration)
 				tra = make_transition(self.tracks[0],
-									  self.tracks[1],
-									  stay_time,
-									  self.transition_time)
+					self.tracks[1],
+					stay_time,
+					self.transition_time)
 				del self.tracks[0].analysis
 				gc.collect()
 				yield tra
@@ -414,7 +414,7 @@ class Mixer(multiprocessing.Process):
 				log.warning("Track too short! Trying another.")
 			except Exception:
 				log.error("Exception while trying to add new track:\n%s",
-						  traceback.format_exc())
+					traceback.format_exc())
 
 		log.error("Stopping!")
 		# Last chunk. Should contain 1 instruction: fadeout.
