@@ -19,9 +19,9 @@ import database
 
 from audio import AudioData
 
-from capsule_support import order_tracks, resample_features, \
-							timbre_whiten, initialize, make_transition, terminate, \
-							FADE_OUT, is_valid, LOUDNESS_THRESH
+from capsule_support import resample_features, \
+	timbre_whiten, initialize, make_transition, terminate, \
+	FADE_OUT, is_valid, LOUDNESS_THRESH
 
 log = logging.getLogger(__name__)
 
@@ -287,32 +287,18 @@ def generate_metadata(a):
 
 
 class Mixer(multiprocessing.Process):
-	def __init__(self, iqueue, oqueues, infoqueue,
-				 settings=({},), initial=None,
-				 max_play_time=300, transition_time=30 if not test else 5,
-				 samplerate=44100):
+	def __init__(self, iqueue, oqueue, infoqueue):
 		self.iqueue = iqueue
 		self.infoqueue = infoqueue
 
-		self.encoders = []
-		if len(oqueues) != len(settings):
-			raise ValueError("Differing number of output queues and settings!")
-
-		self.oqueues = oqueues
-		self.settings = settings
+		self.encoder = None
+		self.oqueue = oqueue
 
 		self.__track_lock = threading.Lock()
 		self.__tracks = []
 
-		self.max_play_time = max_play_time
-		self.transition_time = transition_time
-		self.samplerate = 44100
+		self.transition_time = 30 if not test else 5
 		self.__stop = False
-
-		if isinstance(initial, list):
-			self.add_tracks(initial)
-		elif isinstance(initial, AudioData):
-			self.add_track(initial)
 
 		multiprocessing.Process.__init__(self)
 
@@ -356,9 +342,6 @@ class Mixer(multiprocessing.Process):
 	def add_track(self, track):
 		self.tracks.append(self.analyze(track))
 
-	def add_tracks(self, tracks):
-		self.tracks += order_tracks(self.analyze(tracks))
-
 	def process(self, track):
 		if not hasattr(track.analysis.pyechonest_track, "title"):
 			setattr(track.analysis.pyechonest_track, "title", track._metadata.title)
@@ -377,7 +360,8 @@ class Mixer(multiprocessing.Process):
 	def __db_2_volume(self, loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
 
-	def loop(self):
+	def generate_tracks(self):
+		"""Yield a series of lists of track segments - helper for run()"""
 		while len(self.tracks) < 2:
 			log.info("Waiting for a new track.")
 			track = self.iqueue.get()
@@ -386,7 +370,7 @@ class Mixer(multiprocessing.Process):
 				log.info("Got a new track.")
 			except Exception:
 				log.error("Exception while trying to add new track:\n%s",
-						  traceback.format_exc())
+					traceback.format_exc())
 
 		# Initial transition. Should contain 2 instructions: fadein, and playback.
 		inter = self.tracks[0].analysis.duration
@@ -395,14 +379,15 @@ class Mixer(multiprocessing.Process):
 		while not self.__stop:
 			while len(self.tracks) > 1:
 				stay_time = max(self.tracks[0].analysis.duration,
-								self.tracks[1].analysis.duration)
+					self.tracks[1].analysis.duration)
 				tra = make_transition(self.tracks[0],
-									  self.tracks[1],
-									  stay_time,
-									  self.transition_time)
+					self.tracks[1],
+					stay_time,
+					self.transition_time)
 				del self.tracks[0].analysis
 				gc.collect()
 				yield tra
+				log.debug("Finishing track 0 [%r]",self.tracks[0])
 				self.tracks[0].finish()
 				del self.tracks[0]
 				gc.collect()
@@ -414,21 +399,19 @@ class Mixer(multiprocessing.Process):
 				log.warning("Track too short! Trying another.")
 			except Exception:
 				log.error("Exception while trying to add new track:\n%s",
-						  traceback.format_exc())
+					traceback.format_exc())
 
 		log.error("Stopping!")
 		# Last chunk. Should contain 1 instruction: fadeout.
 		yield terminate(self.tracks[-1], FADE_OUT)
 
 	def run(self):
-		for oqueue, settings in zip(self.oqueues, self.settings):
-			e = Lame(oqueue=oqueue, **settings)
-			self.encoders.append(e)
-			e.start()
+		self.encoder = Lame(oqueue=oqueue)
+		self.encoder.start()
 
 		try:
 			self.ctime = None
-			for i, actions in enumerate(self.loop()):
+			for actions in self.generate_tracks():
 				log.info("Rendering audio data for %d actions.", len(actions))
 				for a in actions:
 					try:
@@ -436,7 +419,7 @@ class Mixer(multiprocessing.Process):
 							#   TODO: Move the "multiple encoding" support into
 							#   LAME itself - it should be able to multiplex the
 							#   streams itself.
-							self.encoders[0].add_pcm(a)
+							self.encoder.add_pcm(a)
 							self.infoqueue.put(generate_metadata(a))
 						log.info("Rendered in %fs!", t.ms)
 					except Exception:
