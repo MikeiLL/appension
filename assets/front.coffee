@@ -276,6 +276,7 @@ $(document).ready ->
 				data = JSON.parse(data)
 				if data.segment.send_next_track
 					console.log("Send next track!")
+					console.log(Date())
 					console.log(data.segment.prev_track)
 					console.log(data.segment.next_track)
 					# Temporarily tagging the artist so we know it came from send_next_track
