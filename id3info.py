@@ -14,7 +14,7 @@ import psycopg2
 def dbactions(track, cur):
 	pic=next((k for k in track if k.startswith("APIC:")), None)
 	pic = pic and track[pic].data
-	print("length of pic: {}".format(len(pic)))
+	if pic: print("length of pic: {}".format(len(pic)))
 
 	cur.execute("INSERT INTO tracks \
 			(artist, \
