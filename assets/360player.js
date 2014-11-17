@@ -55,7 +55,7 @@ function ThreeSixtyPlayer() {
   this.peakDataHistory = [];
   this.firstBuffering = true;
   this.firstPlayTime = null;
-  this.bufferDelay = 1;
+  this.bufferDelay = 0;
 
   // 360player configuration options
   this.config = {
