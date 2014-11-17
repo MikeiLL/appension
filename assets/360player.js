@@ -65,7 +65,7 @@ function ThreeSixtyPlayer() {
     allowMultiple: false,  // let many sounds play at once (false = only one sound playing at a time)
     loadRingColor: '#c79594', // how much has loaded
     playRingColor: '#c79594', // how much has played
-    backgroundRingColor: '#c79594', // color shown underneath load + play ("not yet loaded" color)
+    backgroundRingColor: '#999', // color shown underneath load + play ("not yet loaded" color)
 
     // optional segment/annotation (metadata) stuff..
     segmentRingColor: '#c79594', // metadata/annotation (segment) colors
@@ -1283,7 +1283,7 @@ if (navigator.userAgent.match(/webkit/i) && navigator.userAgent.match(/mobile/i)
 soundManager.setup({
   html5PollingInterval: 50, // increased framerate for whileplaying() etc.
   debugMode: true, // disable or enable debug output
-  consoleOnly: true,
+  consoleOnly: false,
   flashVersion: 9,
   useHighPerformance: true,
   useFlashBlock: true
