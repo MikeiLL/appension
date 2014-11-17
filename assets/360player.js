@@ -162,7 +162,7 @@ function ThreeSixtyPlayer() {
 		if (typeof tagNames !== 'undefined' && typeof tagNames !== 'string') {
 			for (i=tagNames.length; i--;) {
 				if (!nodes || !nodes[tagNames[i]]) {
-				  nodes[tagNames[i]] = doc.getElementsByTagName(tagNames[i]);
+					nodes[tagNames[i]] = doc.getElementsByTagName(tagNames[i]);
 				}
 			}
 		} else if (tagNames) {
@@ -173,15 +173,15 @@ function ThreeSixtyPlayer() {
 		if (typeof(tagNames)!=='string') {
 			for (i=tagNames.length; i--;) {
 				for (j=nodes[tagNames[i]].length; j--;) {
-				  if (self.hasClass(nodes[tagNames[i]][j],className)) {
-				    matches.push(nodes[tagNames[i]][j]);
-				  }
+					if (self.hasClass(nodes[tagNames[i]][j],className)) {
+					  matches.push(nodes[tagNames[i]][j]);
+					}
 				}
 			}
 		} else {
 			for (i=0; i<nodes.length; i++) {
 				if (self.hasClass(nodes[i],className)) {
-				  matches.push(nodes[i]);
+					matches.push(nodes[i]);
 				}
 			}
 		}
@@ -350,7 +350,7 @@ function ThreeSixtyPlayer() {
 			if (pl.config.playNext) {
 				nextLink = (pl.indexByURL[this._360data.oLink.href]+1);
 				if (nextLink<pl.links.length) {
-				  pl.handleClick({'target':pl.links[nextLink]});
+					pl.handleClick({'target':pl.links[nextLink]});
 				}
 			}
 		},
@@ -451,7 +451,7 @@ function ThreeSixtyPlayer() {
 				thisSound.toggleMute(); // start playing current
 				sm._writeDebug('sound different than last sound: '+self.lastSound.id);
 				if (!self.config.allowMultiple && self.lastSound) {
-				  self.stopSound(self.lastSound);
+					self.stopSound(self.lastSound);
 				}
 			}
 
@@ -507,31 +507,31 @@ function ThreeSixtyPlayer() {
 				width:0,
 				widthMax: diameter*0.4, // width of the outer ring
 				lastValues: {
-				  bytesLoaded: 0,
-				  bytesTotal: 0,
-				  position: 0,
-				  durationEstimate: 0
+					bytesLoaded: 0,
+					bytesTotal: 0,
+					position: 0,
+					durationEstimate: 0
 				}, // used to track "last good known" values before sound finish/reset for anim
 				animating: false,
 				oAnim: new window.Animator({
-				  duration: self.config.animDuration,
-				  transition:self.config.animTransition,
-				  onComplete: function() {
-				    // var thisSound = this;
-				    // thisSound._360data.didFinish = false; // reset full circle
-				  }
+					duration: self.config.animDuration,
+					transition:self.config.animTransition,
+					onComplete: function() {
+					  // var thisSound = this;
+					  // thisSound._360data.didFinish = false; // reset full circle
+					}
 				}),
 				oAnimProgress: function(nProgress) {
-				  var thisSound = this;
-				  thisSound._360data.radius = parseInt(thisSound._360data.radiusMax*thisSound._360data.amplifier*nProgress, 10);
-				  thisSound._360data.width = parseInt(thisSound._360data.widthMax*thisSound._360data.amplifier*nProgress, 10);
-				  if (thisSound._360data.scaleFont && thisSound._360data.fontSizeMax !== null) {
-				    thisSound._360data.oTiming.style.fontSize = parseInt(Math.max(1,thisSound._360data.fontSizeMax*nProgress), 10)+'px';
-				    thisSound._360data.oTiming.style.opacity = nProgress;
-				  }
-				  if (thisSound.paused || thisSound.playState === 0 || thisSound._360data.lastValues.bytesLoaded === 0 || thisSound._360data.lastValues.position === 0) {
-				    self.updatePlaying.apply(thisSound);
-				  }
+					var thisSound = this;
+					thisSound._360data.radius = parseInt(thisSound._360data.radiusMax*thisSound._360data.amplifier*nProgress, 10);
+					thisSound._360data.width = parseInt(thisSound._360data.widthMax*thisSound._360data.amplifier*nProgress, 10);
+					if (thisSound._360data.scaleFont && thisSound._360data.fontSizeMax !== null) {
+					  thisSound._360data.oTiming.style.fontSize = parseInt(Math.max(1,thisSound._360data.fontSizeMax*nProgress), 10)+'px';
+					  thisSound._360data.oTiming.style.opacity = nProgress;
+					}
+					if (thisSound.paused || thisSound.playState === 0 || thisSound._360data.lastValues.bytesLoaded === 0 || thisSound._360data.lastValues.position === 0) {
+					  self.updatePlaying.apply(thisSound);
+					}
 				},
 				fps: 0
 			};
@@ -826,7 +826,7 @@ function ThreeSixtyPlayer() {
 				endAngle = startAngle+perItemAngle;
 				waveData = oSound.waveformData.left[i];
 				if (waveData<0 && self.config.waveformDataConstrain) {
-				  waveData = Math.abs(waveData);
+					waveData = Math.abs(waveData);
 				}
 				self.drawSolidArc(oSound._360data.oCanvas,self.config.waveformDataColor,oSound._360data.width*innerRadius*(2-self.config.scaleArcWidth),oSound._360data.radius*scale*1.25*waveData,endAngle,startAngle,true);
 			}
@@ -861,7 +861,7 @@ function ThreeSixtyPlayer() {
 				// GIANT HACK: use EQ spectrum data for bass frequencies
 				eqSamples = 3;
 				for (i=0; i<eqSamples; i++) {
-				  nPeak = (nPeak||oSound.eqData[i]);
+					nPeak = (nPeak||oSound.eqData[i]);
 				}
 				oSound._360data.amplifier = (self.config.useAmplifier?(0.9+(nPeak*0.1)):1);
 				oSound._360data.radiusMax = oSound._360data.circleDiameter*0.175*oSound._360data.amplifier;
@@ -984,19 +984,19 @@ function ThreeSixtyPlayer() {
 				oUI = oLinks[i].parentNode.insertBefore((is_vis?self.oUITemplateVis:self.oUITemplate).cloneNode(true),oLinks[i]);
 
 				if (isIE && typeof window.G_vmlCanvasManager !== 'undefined') { // IE only
-				  o = oLinks[i].parentNode;
-				  o2 = document.createElement('canvas');
-				  o2.className = 'sm2-canvas';
-				  oID = 'sm2_canvas_'+parseInt(Math.random()*1048576, 10);
-				  o2.id = oID;
-				  o2.width = diameter;
-				  o2.height = diameter;
-				  oUI.appendChild(o2);
-				  window.G_vmlCanvasManager.initElement(o2); // Apply ExCanvas compatibility magic
-				  oCanvas = document.getElementById(oID);
+					o = oLinks[i].parentNode;
+					o2 = document.createElement('canvas');
+					o2.className = 'sm2-canvas';
+					oID = 'sm2_canvas_'+parseInt(Math.random()*1048576, 10);
+					o2.id = oID;
+					o2.width = diameter;
+					o2.height = diameter;
+					oUI.appendChild(o2);
+					window.G_vmlCanvasManager.initElement(o2); // Apply ExCanvas compatibility magic
+					oCanvas = document.getElementById(oID);
 				} else { 
-				  // add a handler for the button
-				  oCanvas = oLinks[i].parentNode.getElementsByTagName('canvas')[0];
+					// add a handler for the button
+					oCanvas = oLinks[i].parentNode.getElementsByTagName('canvas')[0];
 				}
 				oCover = self.getElementsByClassName('sm2-cover','div',oLinks[i].parentNode)[0];
 				oBtn = oLinks[i].parentNode.getElementsByTagName('span')[0];
@@ -1194,9 +1194,9 @@ ThreeSixtyPlayer.prototype.Metadata = function(oSound, oParent) {
 		whileplaying: function() {
 
 			var width = oSound._360data.width,
-				  radius = oSound._360data.radius,
-				  fullDuration = (oSound.durationEstimate||(me.totalTime*1000)),
-				  isAlt = null, i, j, d;
+					radius = oSound._360data.radius,
+					fullDuration = (oSound.durationEstimate||(me.totalTime*1000)),
+					isAlt = null, i, j, d;
 
 			for (i=0,j=me.data.length; i<j; i++) {
 				isAlt = (i%2===0);
