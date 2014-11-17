@@ -67,6 +67,10 @@ def frame_length(header):
 	return int((float(SAMPLES_PER_FRAME) / sample_rate)
 			   * ((bitrate / 8) * 1000)) + padding
 
+def synchsafe(n):
+	"""Return four bytes as synchsafe encoded version of the 28-bit number n."""
+	# TODO: Simplify/optimize this.
+	return str(bytearray([n>>21,(n>>14)&127,(n>>7)&127,n&127]))
 
 class Lame(threading.Thread):
 	"""
@@ -124,8 +128,7 @@ class Lame(threading.Thread):
 		"""
 		if self.lame.returncode is not None:
 			return False
-		# TODO: Implement me
-		#self.markers.append((self.in_samples, marker))
+		if marker: self.markers.append((self.in_samples, marker))
 		self.encode.acquire()
 		if isinstance(data, numpy.ndarray):
 			samples = len(data)
@@ -240,9 +243,11 @@ class Lame(threading.Thread):
 						self.ofile.flush()
 					if self.callback:
 						self.callback(False)
-					#if self.syncqueue and \
-					#   self.markers and self.markers[0][0] < self.out_samples:
-					#    self.syncqueue.put(self.markers.pop(0)[1])
+					if self.markers and self.markers[0][0] <= self.out_samples:
+						msg = self.markers.pop(0)[1];
+						log.info("Adding marker: %r", msg)
+						frame = "TIT2"+synchsafe(len(msg))+"\0\0"+msg;
+						self.oqueue.put("ID3\4\0\0"+synchsafe(len(frame))+frame)
 					if self.oqueue:
 						self.oqueue.put(buf)
 					if self.real_time and self.sent:
