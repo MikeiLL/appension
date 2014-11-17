@@ -437,16 +437,17 @@ function ThreeSixtyPlayer() {
     sm._writeDebug('handleClick()');
     soundURL = (o.href);
     thisSound = self.getSoundByURL(soundURL);
-	// thisSound.setVolume(20);
+	
 	
     if (thisSound) {
-
       // already exists
       if (thisSound === self.lastSound) {
         // and was playing (or paused)
+		thisSound.setVolume(5);
         thisSound.toggleMute();
       } else {
         // different sound
+		thisSound.setVolume(5);
         thisSound.toggleMute(); // start playing current
         sm._writeDebug('sound different than last sound: '+self.lastSound.id);
         if (!self.config.allowMultiple && self.lastSound) {
