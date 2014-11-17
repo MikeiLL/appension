@@ -249,7 +249,7 @@ class Lame(threading.Thread):
 						if isinstance(msg, unicode): msg=msg.encode("utf-8")
 						msg = "\3" + msg # Prepend the UTF-8 encoding marker. If msg was already bytes, it MUST be valid UTF-8.
 						frame = "TIT2"+synchsafe(len(msg))+"\0\0"+msg;
-						self.oqueue.put("ID3\4\0\0"+synchsafe(len(frame))+frame)
+						self.oqueue.put("ID3\3\0\0"+synchsafe(len(frame))+frame)
 					if self.oqueue:
 						self.oqueue.put(buf)
 					if self.real_time and self.sent:
