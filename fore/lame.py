@@ -246,6 +246,8 @@ class Lame(threading.Thread):
 					if self.markers and self.markers[0][0] <= self.out_samples:
 						msg = self.markers.pop(0)[1];
 						log.info("Adding marker: %r", msg)
+						if isinstance(msg, unicode): msg=msg.encode("utf-8")
+						msg = "\3" + msg # Prepend the UTF-8 encoding marker. If msg was already bytes, it MUST be valid UTF-8.
 						frame = "TIT2"+synchsafe(len(msg))+"\0\0"+msg;
 						self.oqueue.put("ID3\4\0\0"+synchsafe(len(frame))+frame)
 					if self.oqueue:
