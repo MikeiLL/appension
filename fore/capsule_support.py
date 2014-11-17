@@ -325,7 +325,7 @@ def viable_duration(track, start_end):
 def hard_transition(track1, track2):
 	"""Return playback instances for track1 all but first segment, track2 only seg1. """
 	# print("Track one has {} and {}.".format(dir(track1.fobj), dir(track1.analysis)))
-	log.info("Appending %s to %s", track1.fobj.title(), track2.fobj.title())
+	log.info("Appending %s and %s", track1.fobj.title(), track2.fobj.title())
 	# print("These are by {} and {}".format(track1.fobj.title(), track2.fobj.title()))
 	segs1 = track1.analysis.segments
 	segs2 = track2.analysis.segments
@@ -342,7 +342,7 @@ def hard_transition(track1, track2):
 def hard_transition_r(track1, track2):
 	"""Return playback instances for track1 first segment, track2 all but final. """
 	# print("Track one has {} and {}.".format(dir(track1.fobj), dir(track1.analysis)))
-	log.info("Appending %s to %s", track1.fobj.title(), track2.fobj.title())
+	log.info("Appending %s and %s", track1.fobj.title(), track2.fobj.title())
 	# print("These are by {} and {}".format(track1.fobj.title(), track2.fobj.title()))
 	segs1 = track1.analysis.segments
 	segs2 = track2.analysis.segments
