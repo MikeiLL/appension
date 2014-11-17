@@ -10,3 +10,5 @@ clone psobot remix, submodule init pyechonest setup.py install
 sudo apt-get install libav-tools lame nodejs
 sudo ln -s `which avconv` /usr/local/bin/en-ffmpeg
 maybe:
+node required
+coffeescript required

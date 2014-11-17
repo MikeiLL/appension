@@ -27,7 +27,7 @@ def dbactions(track, cur):
 		(u', '.join(track['TPE1'].text),
 		u', '.join(track['TIT2'].text),
 		track.filename[6:],
-		pic,
+		memoryview(pic),
 		track.info.length)
 		)
 	cur.execute("SELECT  \
@@ -51,13 +51,13 @@ def titles(files, cur):
 	print(len(files))
 	for file in files:
 		track = MP3(file)
-		try:
-			dbactions(track, cur)		
+		try:	
 			print("Inserting: {} - {} - {} - {}".format(
 				u", ".join(track['TPE1'].text), 
 				u", ".join(track['TIT2'].text),
 				track.filename[6:],
 				track.info.length))
+			dbactions(track, cur)	
 		except KeyError:
 			pass
 	commit = raw_input("Commit?")
