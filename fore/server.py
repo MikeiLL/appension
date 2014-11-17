@@ -227,7 +227,7 @@ class StreamHandler(tornado.web.RequestHandler):
 		if self in self.relays:
 			self.relays.remove(self)
 			ip = self.request.headers.get('X-Real-Ip', self.request.remote_ip)
-			log.info("Removed relay at %s with weight %d.", ip, self.weight)
+			log.info("Removed relay at %s with weight %d.", ip, getattr(self,"weight",0))
 
 
 class SocketConnection(tornadio2.conn.SocketConnection):
