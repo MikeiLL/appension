@@ -283,4 +283,8 @@ if __name__ == "__main__":
 	frame_sender.start()
 
 	application.listen(config.http_port)
-	tornadio2.server.SocketServer(application)
+	try:
+		tornadio2.server.SocketServer(application)
+	except KeyboardInterrupt:
+		mixer.terminate()
+		raise
