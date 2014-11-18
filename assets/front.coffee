@@ -289,16 +289,15 @@ $(document).ready ->
 						seconds = "0" + seconds
 					document.getElementById('length').innerHTML = minutes + ":" + seconds
 					return
-				if data.segment.tracks?
-					if data.segment.tracks[0].metadata.id != window._track_id
-						window._track_id = data.segment.tracks[0].metadata.id
-						# TODO Be safe against embedded HTML tags
-						document.getElementById('artist').innerHTML = window._next_artist
-						window._next_artist = data.segment.tracks[0].metadata.artist
-						document.getElementById('artist_next').innerHTML = "Up next: " + window._next_artist
-					# console.log("GetTrackDets Data " + window._count_TrackDeets + ": ")
-					# console.log(data.segment.tracks[0].metadata.artist)
-					# console.log(data.segment.tracks[0].metadata.id)
+				if data.segment.tracks[0].metadata.id != window._track_id
+					window._track_id = data.segment.tracks[0].metadata.id
+					# TODO Be safe against embedded HTML tags
+					document.getElementById('artist').innerHTML = window._next_artist
+					window._next_artist = data.segment.tracks[0].metadata.artist
+					document.getElementById('artist_next').innerHTML = "Up next: " + window._next_artist
+				# console.log("GetTrackDets Data " + window._count_TrackDeets + ": ")
+				# console.log(data.segment.tracks[0].metadata.artist)
+				# console.log(data.segment.tracks[0].metadata.id)
 				window._count_TrackDeets++
 			if data.listener_count?
 				window._listeners = data.listener_count

@@ -571,7 +571,6 @@ function ThreeSixtyPlayer() {
 		thisSound.onPosition(3.5, function(eventPosition) {
 			// console.log('the sound ' + this.id + ' is now at position ' + this.position + ' (event position: ' + eventPosition + ')');
 		});
-		thisSound.onid3()
 		
 		self.lastSound = thisSound; // reference for next call
 
