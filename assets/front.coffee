@@ -241,22 +241,23 @@ $(document).ready ->
 		console.log(segments)
 		window._track_id = 0 # Assume we'll never actually get a track ID of zero
 		for segment in segments
-			if segment.tracks[0].metadata.id != window._track_id
-				length = segment.tracks[0].metadata.length
-				minutes = Math.floor(length/60)
-				seconds = Math.floor(length%60)
-				if seconds < 10
-					seconds = "0" + seconds
-				if window._track_id
-					window._next_artist = segment.tracks[0].metadata.artist
-					window._next_length = minutes + ":" + seconds
-				else
-					document.getElementById('artist').innerHTML = window._next_artist = segment.tracks[0].metadata.artist
-					document.getElementById('length').innerHTML = window._next_length = minutes + ":" + seconds
-					window._track_id = segment.tracks[0].metadata.id
-			console.log("Segment" + window._count_getJSON + ": ")
-			console.log(segment.tracks[0].metadata.artist)
-			console.log(segment.tracks[0].metadata.id)
+			if segment.tracks?
+				if segment.tracks[0].metadata.id != window._track_id
+					length = segment.tracks[0].metadata.length
+					minutes = Math.floor(length/60)
+					seconds = Math.floor(length%60)
+					if seconds < 10
+						seconds = "0" + seconds
+					if window._track_id
+						window._next_artist = segment.tracks[0].metadata.artist
+						window._next_length = minutes + ":" + seconds
+					else
+						document.getElementById('artist').innerHTML = window._next_artist = segment.tracks[0].metadata.artist
+						document.getElementById('length').innerHTML = window._next_length = minutes + ":" + seconds
+						window._track_id = segment.tracks[0].metadata.id
+				console.log("Segment" + window._count_getJSON + ": ")
+			# console.log(segment.tracks[0].metadata.artist)
+			# console.log(segment.tracks[0].metadata.id)
 			window._count_getJSON++
 
 	getPing = ->
@@ -269,7 +270,6 @@ $(document).ready ->
 
 
 	getTrackDetails = ->
-		console.log("You pressed me.")
 		s = io.connect ":8193/info.websocket"
 		s.on 'message', (data) ->
 			if typeof data is "string"
@@ -289,15 +289,16 @@ $(document).ready ->
 						seconds = "0" + seconds
 					document.getElementById('length').innerHTML = minutes + ":" + seconds
 					return
-				if data.segment.tracks[0].metadata.id != window._track_id
-					window._track_id = data.segment.tracks[0].metadata.id
-					# TODO Be safe against embedded HTML tags
-					document.getElementById('artist').innerHTML = window._next_artist
-					window._next_artist = data.segment.tracks[0].metadata.artist
-					document.getElementById('artist_next').innerHTML = "Up next: " + window._next_artist
-				console.log("GetTrackDets Data " + window._count_TrackDeets + ": ")
-				console.log(data.segment.tracks[0].metadata.artist)
-				console.log(data.segment.tracks[0].metadata.id)
+				if data.segment.tracks?
+					if data.segment.tracks[0].metadata.id != window._track_id
+						window._track_id = data.segment.tracks[0].metadata.id
+						# TODO Be safe against embedded HTML tags
+						document.getElementById('artist').innerHTML = window._next_artist
+						window._next_artist = data.segment.tracks[0].metadata.artist
+						document.getElementById('artist_next').innerHTML = "Up next: " + window._next_artist
+					# console.log("GetTrackDets Data " + window._count_TrackDeets + ": ")
+					# console.log(data.segment.tracks[0].metadata.artist)
+					# console.log(data.segment.tracks[0].metadata.id)
 				window._count_TrackDeets++
 			if data.listener_count?
 				window._listeners = data.listener_count
