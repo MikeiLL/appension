@@ -365,6 +365,10 @@ function ThreeSixtyPlayer() {
 			self.updatePlaying.apply(this);
 			this._360data.fps++;
 		},
+		
+		onid3: function() {
+			console.log('line 378 here');
+		},
 
 		bufferchange: function() {
 			if (this.isBuffering) {
@@ -474,6 +478,7 @@ function ThreeSixtyPlayer() {
 			 onbufferchange:self.events.bufferchange,
 			 whileloading:self.events.whileloading,
 			 whileplaying:self.events.whileplaying,
+			 onid3:self.events.onid3,
 			 useWaveformData:(has_vis && self.config.useWaveformData),
 			 useEQData:(has_vis && self.config.useEQData),
 			 usePeakData:(has_vis && self.config.usePeakData)
@@ -562,7 +567,12 @@ function ThreeSixtyPlayer() {
 			thisSound.play();
 
 		}
-
+		console.log(thisSound) //MikeiLL
+		thisSound.onPosition(3.5, function(eventPosition) {
+			// console.log('the sound ' + this.id + ' is now at position ' + this.position + ' (event position: ' + eventPosition + ')');
+		});
+		thisSound.onid3()
+		
 		self.lastSound = thisSound; // reference for next call
 
 		if (typeof e !== 'undefined' && typeof e.preventDefault !== 'undefined') {
@@ -970,7 +980,7 @@ function ThreeSixtyPlayer() {
 
 		for (i=0,j=oLinks.length; i<j; i++) {
 			if (sm.canPlayLink(oLinks[i])) {
-				console.log("playable link.")
+				console.log("playable link.") //MikeiLL
 			}
 			if (sm.canPlayLink(oLinks[i]) && !self.hasClass(oLinks[i],self.excludeClass) && !self.hasClass(oLinks[i],self.css.sDefault)) {
 				self.addClass(oLinks[i],self.css.sDefault); // add default CSS decoration
@@ -1210,9 +1220,11 @@ ThreeSixtyPlayer.prototype.Metadata = function(oSound, oParent) {
 				me.refresh();
 				me.lastWPExec = d;
 			}
-
+		},
+		
+		onid3: function() {
+			console.log('sound '+this.id+' ID3 data received'); //MikeiLL
 		}
-
 	};
 
 	this.refresh = function() {
