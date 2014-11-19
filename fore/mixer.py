@@ -346,12 +346,14 @@ class Mixer(multiprocessing.Process):
 		if not hasattr(track.analysis.pyechonest_track, "title"):
 			setattr(track.analysis.pyechonest_track, "title", track._metadata.title)
 		log.info("Resampling features [%r]...", track._metadata.id)
-		track.resampled = resample_features(track, rate='beats')
-		track.resampled['matrix'] = timbre_whiten(track.resampled['matrix'])
-
-		if not is_valid(track, self.transition_time):
-			log.info("This track doesn't validate.")
-			# raise ValueError("Track too short!")
+		if len(track.analysis.beats) > 0:
+			track.resampled = resample_features(track, rate='beats')
+			track.resampled['matrix'] = timbre_whiten(track.resampled['matrix'])
+			if not is_valid(track, self.transition_time):
+				raise ValueError("Track too short!")
+		else:
+			log.info("no beats returned for this track.")
+			track.resampled = {"rate":'beats', "matrix": []}
 
 		track.gain = self.__db_2_volume(track.analysis.loudness)
 		log.info("Done processing [%r].", track._metadata.id)
@@ -405,7 +407,7 @@ class Mixer(multiprocessing.Process):
 			except ValueError:
 				log.warning("Track too short! Trying another.")
 			except Exception:
-				log.error("Exception while trying to add new track:\n%s",
+				log.error("Got an Exception while trying to add new track:\n%s",
 					traceback.format_exc())
 
 		log.error("Stopping!")
