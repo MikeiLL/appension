@@ -223,8 +223,6 @@ window.rotate_h2 = ->
 
 $(document).ready ->
 	window.rotate_h2()
-	window.__spinner.spin document.getElementById('content')
-	window.__spinning = true
 	window.__titular = new Titular
 	window.__heartbeat = $('#endpoint_link').attr('href').replace('all.mp3', 'heartbeat')
 	
