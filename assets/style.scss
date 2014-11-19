@@ -1,3 +1,4 @@
+
 $min_height = 470px;
 
 html { width: 100%; position: relative; height: 100%; }
@@ -12,142 +13,6 @@ body {
   overflow-x: hidden;
   min-height: $min_height;
 
-  a#banner {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 300px;
-    height: 300px;
-    background: url(/static/img/banner.png) no-repeat;
-    z-index: 1000;
-  }
-
-  .button, .buttons a {
-    display: inline-block;
-    position: relative;
-    margin: 0;
-    border: 1px solid #E1E1E1;
-    border-radius: 4px;
-    background-color: #FCFCFC;
-    background-image: -webkit-linear-gradient(top,
-                                              rgba(255, 255, 255, .0) 0%,
-                                              rgba(235, 235, 235, .3) 60%,
-                                              rgba(225, 225, 225, .6) 100%);
-    background-image: -moz-linear-gradient(top,
-                                           rgba(255, 255, 255, .0) 0%,
-                                           rgba(235, 235, 235, .3) 60%,
-                                           rgba(225, 225, 225, .6) 100%);
-    background-image: -o-linear-gradient(top,
-                                         rgba(255, 255, 255, .0) 0%,
-                                         rgba(235, 235, 235, .3) 60%,
-                                         rgba(225, 225, 225, .6) 100%);
-    background-image: linear-gradient(top,
-                                      rgba(255, 255, 255, .0) 0%,
-                                      rgba(235, 235, 235, .3) 60%,
-                                      rgba(225, 225, 225, .6) 100%);
-    background-clip: padding;
-    cursor: pointer;
-    overflow: hidden;
-    color: #333;
-    text-shadow: 0 1px 0 white;
-    font-size: 10px;
-    line-height: 18px;
-    white-space: nowrap;
-    text-align: center;
-    vertical-align: baseline;
-
-    -webkit-box-shadow:(0 1px 2px rgba(0, 0, 0, .02),
-                 inset 0 1px 0 rgba(255, 255, 255, 1),
-                 inset -1px 0 0 rgba(255, 255, 255, 1),
-                 inset 0 -1px 0 rgba(255, 255, 255, .5),
-                 inset 1px 0 0 rgba(255, 255, 255, 1));
-    -moz-box-shadow:(0 1px 2px rgba(0, 0, 0, .02),
-                 inset 0 1px 0 rgba(255, 255, 255, 1),
-                 inset -1px 0 0 rgba(255, 255, 255, 1),
-                 inset 0 -1px 0 rgba(255, 255, 255, .5),
-                 inset 1px 0 0 rgba(255, 255, 255, 1));
-    -o-box-shadow:(0 1px 2px rgba(0, 0, 0, .02),
-                 inset 0 1px 0 rgba(255, 255, 255, 1),
-                 inset -1px 0 0 rgba(255, 255, 255, 1),
-                 inset 0 -1px 0 rgba(255, 255, 255, .5),
-                 inset 1px 0 0 rgba(255, 255, 255, 1));
-    box-shadow:(0 1px 2px rgba(0, 0, 0, .02),
-                 inset 0 1px 0 rgba(255, 255, 255, 1),
-                 inset -1px 0 0 rgba(255, 255, 255, 1),
-                 inset 0 -1px 0 rgba(255, 255, 255, .5),
-                 inset 1px 0 0 rgba(255, 255, 255, 1));
-
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-
-    -webkit-transition: color .3s,background-color .3s,border-color .3s,text-shadow .3s,-webkit-box-shadow .3s;
-    -moz-transition:    color .3s,background-color .3s,border-color .3s,text-shadow .3s,-webkit-box-shadow .3s;
-    -o-transition:      color .3s,background-color .3s,border-color .3s,text-shadow .3s,-webkit-box-shadow .3s;
-    transition:         color .3s,background-color .3s,border-color .3s,text-shadow .3s,-webkit-box-shadow .3s;
-    text-decoration: none;
-    padding: 1px 11px;
-
-    &.like::before, &.share::before, &.download::before, &.sc::before, &.jam::before {
-      content: "";
-      display: block;
-      position: absolute;
-      background-repeat: no-repeat;
-      width: 20px;
-      height: 20px;
-      top: 1px;
-      left: 2px;
-    }
-
-    &.sc {
-      padding: 1px 14px;
-      &:before {
-        width: 28px;
-      }
-    }
-
-    &.jam {
-      padding: 1px 14px;
-      margin-left: 4px;
-      &:before {
-        width: 29px;
-      }
-    }
-
-    &.selected {
-      text-shadow: none;
-      border: 1px solid #C8C8C8;
-      background-color: #EEE;
-      -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .0),inset 0 2px 2px rgba(0, 0, 0, .05),inset 0 1px 1px rgba(0, 0, 0, .08),inset -2px 0 2px rgba(0, 0, 0, .03),inset 0 -1px 0 rgba(0, 0, 0, .02),inset 2px 0 2px rgba(0, 0, 0, .03);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .0),inset 0 2px 2px rgba(0, 0, 0, .05),inset 0 1px 1px rgba(0, 0, 0, .08),inset -2px 0 2px rgba(0, 0, 0, .03),inset 0 -1px 0 rgba(0, 0, 0, .02),inset 2px 0 2px rgba(0, 0, 0, .03);
-
-      &.sc, &.like {
-        background-color: #ffad40;
-      }
-      &.share {
-        background-color: #00dcff;
-      }
-      &.download, &.buy {
-        background-color: #b5dc5b;
-      }
-      &.jam {
-        background-color: #ffff00; 
-      }
-    }
-
-    &:hover, &:focus {
-      color:#333;
-      outline:0;
-      background-color:#f9f9f9;
-      border-color:rgba(0,0,0,.04) rgba(0,0,0,.13) rgba(0,0,0,.23);
-      -webkit-box-shadow:0 1px 3px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,1),inset -1px 0 0 rgba(248,248,248,1),inset 0 -1px 0 rgba(248,248,248,.5),inset 1px 0 0 rgba(248,248,248,1);
-      box-shadow:0 1px 3px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,1),inset -1px 0 0 rgba(248,248,248,1),inset 0 -1px 0 rgba(248,248,248,.5),inset 1px 0 0 rgba(248,248,248,1);text-shadow:-1px -1px 0 #fcfcfc,1px -1px 0 #fcfcfc,-1px 1px 0 #fcfcfc,1px 1px 0 #fff}
-    }
-  }
 
   #menu {
     background: rgba(1.0, 1.0, 1.0, 0.55);
@@ -158,73 +23,11 @@ body {
     bottom: 0;
     z-index: 5;
     min-height: $min_height;
-    
-    #logo {
-      height: 250px;
-      width: 250px;
-      margin: 23px auto 6px;
-      background: url(/static/img/logo.png) no-repeat bottom center;  // 246 px high
-
-      -webkit-transition: height 0.5s ease-in-out;
-      -moz-transition:    height 0.5s ease-in-out;
-      -o-transition:      height 0.5s ease-in-out;
-      transition:         height 0.5s ease-in-out;
-    }
-
-    h1 {
-      text-align: center;
-      font-weight: 300;
-
-      margin: 0 auto 0px;
-      font-size: 54px;
-      height: 67px;
-
-      text-transform: lowercase;
-      display: block;
-      opacity: 1;
-      overflow: hidden;
-
-      -webkit-transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-      -moz-transition:    height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-      -o-transition:      height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-      transition:         height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-    }
-
-    h2 {
-      font-weight: 100;
-      text-align: center;
-      color: #ccc;
-      font-size: 35px;
-      margin: -20px 0 0 0;
-      text-transform: lowercase;
-      overflow: hidden;
-      height: 40px;
-      opacity: 1;
-
-      -webkit-transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-      -moz-transition:    height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-      -o-transition:      height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-      transition:         height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-    }
-
-    #social {
-      margin: 0 auto;
-      width: 192px;
-      height: 23px;
-      overflow: hidden;
-      iframe {
-        width: 107px;
-        height: 20px;
-        float: left;
-        display: inline;
-        text-align: center;
-      }
-      .fb-like {
-        margin: 0 auto;
-        text-align: center;
-        float: left;
-      }
-    }
+	
+	#trackdetails{
+		#artist .title #length {color:#fff;}
+		.h3 {color:#fff;}
+	}
 
     #player {
       width: 256px;
@@ -243,16 +46,6 @@ body {
       padding: 15px 0;
       z-index: 125;
 
-      a {
-        text-decoration: none;
-        border-bottom: 1px dashed #ccc;
-        color: #ccc;
-        margin-left: 10px;
-        &:first-child {
-          margin-left: 0;
-        }
-      }
-
       .affiliates {
         margin: 10px auto 0;
         height: 27px;
@@ -260,30 +53,6 @@ body {
         .powered {
           display: inline-block;
           margin: 5px 15px 0 0;
-        }
-
-        .soundcloud {
-          display: inline-block;
-          background: url(/static/img/soundcloud_gray.png) no-repeat bottom center;
-          width: 58px;
-          height: 25px;
-          border: none;
-          margin: 0 5px -6px 0;
-          span {
-            background: url(/static/img/soundcloud.png) no-repeat bottom center;
-          }
-        }
-
-        .echonest {
-          display: inline-block;
-          background: url(/static/img/echonest_gray.png) no-repeat bottom center;
-          width: 25px;
-          height: 25px;
-          margin: 0 0 -6px;
-          border: none;
-          span {
-            background: url(/static/img/echonest.png) no-repeat bottom center;
-          }
         }
 
         span {
@@ -300,13 +69,14 @@ body {
     }
   }
   
+  
   #content {
     position: absolute;
     top: 0;
-    left: 0;
+    left: 320px;
     bottom: 0;
     z-index: 0;
-    width: 100%;
+    width: 700px;
     overflow-x: hidden;
     overflow-y: visible;
 
@@ -319,252 +89,7 @@ body {
       opacity: 0.3;
       z-index: 0;
     }
-
-    .track_container {
-      position: relative;
-      height: 450px;
-
-      -webkit-transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-      -moz-transition:    height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-      -o-transition:      height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-      transition:         height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-
-    }
-
-    .tracks {
-      position: absolute;
-      left: 284px;
-      right: 0;
-      padding: 40px 0 40px 40px;
-      .track {
-        height: 40px;
-        margin: 10px 0;
-        text-decoration: none;
-        color: #000;
-        overflow: hidden;
-        
-        &.new { margin-bottom: 500px; opacity: 0; }
-
-        -webkit-transition: opacity 1s ease-out, height 1s, margin-bottom 1s ease-out;
-        -moz-transition:    opacity 1s ease-out, height 1s, margin-bottom 1s ease-out;
-        -o-transition:      opacity 1s ease-out, height 1s, margin-bottom 1s ease-out;
-        transition:         opacity 1s ease-out, height 1s, margin-bottom 1s ease-out;
-        
-        &.hidden, &.ending {
-          height: 0;
-          opacity: 0;
-          margin: 0;
-        }
-
-        .coverart {
-          position: relative;
-          float: left;
-          margin: 0 10px 0 0;
-          height: 40px;
-          width: 100px;
-          -webkit-transition: height 1s;
-          -moz-transition:    height 1s;
-          -o-transition:      height 1s;
-          transition:         height 1s;
-          overflow: hidden;
-          img {
-            -webkit-transition: margin-top 1s;
-            -moz-transition:    margin-top 1s;
-            -o-transition:      margin-top 1s;
-            transition:         margin-top 1s;
-            margin-top: -30px;
-          }
-        }
-        .text {
-          padding-top: 0;
-          -webkit-transition: padding-top 1s;
-          -moz-transition:    padding-top 1s;
-          -o-transition:      padding-top 1s;
-          transition:         padding-top 1s;
-
-          font-size: 32px;
-          width: 500%;
-
-          .title {
-            color: #000;
-            text-decoration: none;
-            -webkit-transition: font-size 1s;
-            -moz-transition:    font-size 1s;
-            -o-transition:      font-size 1s;
-            transition:         font-size 1s;
-            margin-bottom: -7px;
-          }
-          .artist {
-            opacity: 0.3;
-          }
-        }
-        .stats {
-          -webkit-transition: height 1s, margin-top 1s, opacity 1s linear 2s;
-          -moz-transition:    height 1s, margin-top 1s, opacity 1s linear 2s;
-          -o-transition:      height 1s, margin-top 1s, opacity 1s linear 2s;
-          transition:         height 1s, margin-top 1s, opacity 1s linear 2s;
-
-          height: 0;
-          margin-top: 0;
-          opacity: 0;
-          overflow: hidden;
-
-          color: #a4a4a4;
-          font-size: 10pt;
-
-          span.count {
-            padding: 0px 5px 0 15px;
-          }
-          span.playback.count {
-            background: url(/static/img/sc_play.png) left center no-repeat;
-          }
-          span.download.count {
-            background: url(/static/img/sc_down.png) left center no-repeat;
-          }
-          span.favoritings.count {
-            background: url(/static/img/sc_heart.png) left center no-repeat;
-          }
-        }
-        .buttons {
-          height: 0;
-          max-width: 0;
-          overflow: hidden;
-          float: left;
-          opacity: 0;
-          transition:         max-width 2.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) .9s, opacity 2s linear 1s;
-          -webkit-transition: max-width 2.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) .9s, opacity 2s linear 1s;
-          -moz-transition:    max-width 2.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) .9s, opacity 2s linear 1s;
-          -o-transition:      max-width 2.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) .9s, opacity 2s linear 1s;
-        }
-      }
-    }
-
-    .tracks#tracks {
-      bottom: 0;
-
-      .track {
-        height: 0;
-        display: none;
-      }
-
-      @for $i from 0 through 5 {
-        .track:nth-last-child($i) {
-          opacity: (1 - $i/6);
-          height: 40px;
-          display: block;
-        }
-      }
-
-      .track:hover {
-        height: 100px;
-        .coverart {
-          height: 100px;
-          img {
-            margin-top: 0;
-          }
-        }
-        .text {
-          padding-top: 28px;
-        }
-        .stats {
-          height: 16px;
-          margin-top: 4px;
-          opacity: 1;
-        }
-      }
-
-      .track:last-child, .track.next {
-        height: 100px;
-        opacity: 1;
-        .coverart {
-          height: 100px;
-          img {
-            margin-top: 0;
-          }
-        }
-        .text {
-          padding-top: 0;
-          height: 72px;
-          .title {
-            display: block;
-            font-size: 40px;
-          }
-          .artist {
-            display: block;
-            opacity: 0.5;
-            font-size: 20px;
-            padding: 0 3px;
-            float: left;
-            max-width: 700px;  // HACK
-            height: 29px;
-            overflow: hidden;
-          }
-        }
-        .stats {
-          display: block;
-          height: 24px;
-          margin: 0;
-          padding: 5px;
-          opacity: 1;
-        }
-        .buttons {
-          height: 26px;
-          max-width: 100%;
-          opacity: 1;
-        }
-      }
-
-      .track.hidden, .track.ending {
-        height: 0;
-        opacity: 0;
-        margin: 0;
-      }
-
-    }
-
-    .tracks#done {
-      position: absolute;
-      top: 710px;
-      left: 284px;
-      right: 0;
-      overflow: hidden;
-      padding: 0 0 20px 40px;
-
-      -webkit-transition:   top 0.5s ease-in-out;
-      -moz-transition:      top 0.5s ease-in-out;
-      -o-transition:        top 0.5s ease-in-out;
-      transition:           top 0.5s ease-in-out;
-
-      .track {
-        display: none;
-      }
-
-      @for $i from 0 through 5 {
-        .track:nth-child($i) {
-          opacity: (0.5 - $i/12);
-          height: 40px;
-          display: block;
-        }
-      }
-
-      .track.hidden, .track.ending {
-        height: 0;
-        opacity: 0;
-        margin: 0;
-      }
-    }
-
-    #waveform {
-      position: absolute;
-      top: 409px;
-      left: 0;
-      height: 280px;
-
-      -webkit-transition:   top 0.5s ease-in-out;
-      -moz-transition:      top 0.5s ease-in-out;
-      -o-transition:        top 0.5s ease-in-out;
-      transition:           top 0.5s ease-in-out;
-    }
+  }
 }
 
 @media (max-height: 700px) {
@@ -584,19 +109,7 @@ body {
           }
         }
       }
-      #waveform {
-        top: 407px - 20px - (60px * 1);
-      }
-      .tracks#done {
-        top: 710px - 20px - (60px * 1);
-        @for $i from 2 through 5 {
-          .track:nth-child($i) {
-            opacity: 0;
-            height: 0;
-          }
-        }
-      }
-    }
+	}
   }
 }
 
@@ -621,12 +134,6 @@ body {
           }
         }
       }
-      #waveform {
-        top: 409px - 20px - (62px * 2);
-      }
-      .tracks#done {
-        top: 710px - 20px - (62px * 2);
-      }
     }
   }
 }
@@ -648,12 +155,6 @@ body {
             height: 0;
           }
         }
-      }
-      #waveform {
-        top: 409px - 20px - (62px * 3);
-      }
-      .tracks#done {
-        top: 710px - 20px - (62px * 3);
       }
     }
   }
