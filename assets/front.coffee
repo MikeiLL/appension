@@ -222,9 +222,6 @@ window.rotate_h2 = ->
 	, 5000
 
 $(document).ready ->
-	window.rotate_h2()
-	window.__titular = new Titular
-	window.__heartbeat = $('#endpoint_link').attr('href').replace('all.mp3', 'heartbeat')
 	
 	$('body').keyup (e) ->
 		s = window.soundManager.sounds.ui360Sound0
