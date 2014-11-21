@@ -43,3 +43,11 @@ def enqueue_tracks(queue):
 	while True:
 		for track in get_many_mp3():
 			queue.put(track)
+			
+def get_complete_length():
+	"""Get the sum of length of all active tracks."""
+	with _conn.cursor() as cur:
+		cur.execute("SELECT sum(length) FROM tracks WHERE status = 1")
+		return cur.fetchone()
+
+		

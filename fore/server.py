@@ -65,7 +65,8 @@ class MainHandler(tornado.web.RequestHandler):
 			'debug': debug,
 			'compiled': compiled,
 			'open': len(StreamHandler.relays) > 0 or debug,
-			'endpoint': StreamHandler.relay_url() if not debug else "/all.mp3"
+			'endpoint': StreamHandler.relay_url() if not debug else "/all.mp3",
+			'complete_length': database.get_complete_length()
 		}
 		try:
 			if os.path.getmtime(config.template_dir + self.template) > self.mtime:
