@@ -74,7 +74,7 @@ def titles(files, cur):
 if __name__ == "__main__":
 	print("ID3 Process:")
 	files = glob.glob('audio/*.mp3')
-	conn = psycopg2.connect("dbname=mikekilmer")
+	conn = psycopg2.connect("")
 	cur = conn.cursor()
 	try:
 		titles(files, cur)
