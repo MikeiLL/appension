@@ -246,6 +246,12 @@ $(document).ready ->
 					# artist0, the next new track ID go into artist1, etc; any track
 					# with the same ID as a previously-seen track will be ignored.
 					# Signed: Chris Angelico (Rosuav).
+					now = window.serverTime()/1000
+					if now > segment.time+segment.duration
+						console.log("Segment ["+id+"] is in the past")
+						continue # Voorbij is nu voorbij :)
+					else
+						console.log("Segment ["+id+"] is in the future")
 					isnew = 1
 					for t in trackids
 						if t == id
