@@ -12,6 +12,10 @@ import time
 import psycopg2
 
 def dbactions(track, cur):
+	cur.execute("SELECT id FROM tracks WHERE filename = %s", (track.filename[6:],))
+	if cur.fetchone():
+		print("Skipping - already present in database.")
+		return
 	pic=next((k for k in track if k.startswith("APIC:")), None)
 	pic = pic and track[pic].data
 	if pic: print("length of pic: {}".format(len(pic)))
@@ -30,21 +34,6 @@ def dbactions(track, cur):
 		pic and memoryview(pic),
 		track.info.length)
 		)
-	cur.execute("SELECT  \
-			(id, \
-			title, \
-			filename, \
-			artist, \
-			artwork, \
-			length) \
-			FROM tracks \
-			WHERE filename \
-			= (%s)",
-		(
-		track.filename[6:],)
-		)
-	cur.fetchone()
-	time.sleep(.3)
 	return
 		
 def titles(files, cur):
