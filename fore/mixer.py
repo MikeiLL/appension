@@ -417,7 +417,6 @@ class Mixer(multiprocessing.Process):
 	def run(self):
 		self.encoder = Lame(oqueue=self.oqueue)
 		self.encoder.start()
-		marker = "MARKER MARKER"
 
 		try:
 			self.ctime = None
@@ -429,8 +428,7 @@ class Mixer(multiprocessing.Process):
 							#   TODO: Move the "multiple encoding" support into
 							#   LAME itself - it should be able to multiplex the
 							#   streams itself.
-							self.encoder.add_pcm(a,marker)
-							marker += " MARKER"
+							self.encoder.add_pcm(a)
 							self.infoqueue.put(generate_metadata(a))
 						log.info("Rendered in %fs!", t.ms)
 					except Exception:
