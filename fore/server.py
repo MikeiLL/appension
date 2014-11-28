@@ -240,9 +240,13 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 	}
 
 class Userform(tornado.web.RequestHandler):
-    def get(self):
-        self.render("fileuploadform.html")
-
+	templates = tornado.template.Loader(config.template_dir)
+	templates.autoescape = None
+	template = "fileuploadform.html"
+	
+	def get(self):
+		kwargs = {}
+		self.write(templates.load(self.template).generate(**kwargs))
 
 class Upload(tornado.web.RequestHandler):
     def post(self):
