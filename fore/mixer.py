@@ -392,11 +392,6 @@ class Mixer(multiprocessing.Process):
 				log.debug("Finishing track 0 [%r]",self.tracks[0])
 				from datetime import datetime
 				now = datetime.now().time()
-				self.infoqueue.put({"send_next_track":1,"samples":0,"duration":0, # Headers to make a magic packet
-					"prev_track":metadata_of(self.tracks[0]), # Track just finishing
-					"next_track":metadata_of(self.tracks[1]), # Track about to start
-					"current_time": str(now)
-				})
 				self.tracks[0].finish()
 				del self.tracks[0]
 				gc.collect()
