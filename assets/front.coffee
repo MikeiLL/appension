@@ -274,6 +274,16 @@ $(document).ready ->
 							document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
 				# console.log(segment.tracks[0].metadata.artist)
 				# console.log(segment.tracks[0].metadata.id)
+			# Sorry, subsequent maintainer, more bad code here. -- Rosuav
+			tag = trackids.length
+			while 1
+				tag = tag + 1
+				artist = document.getElementById('artist'+tag)
+				if artist
+					artist.innerHTML = ""
+					document.getElementById('length'+tag).innerHTML = ""
+				else
+					break
 	setTimeout getTrackInfo, 1000
 	setInterval getTrackInfo, TIMING_INTERVAL
 
