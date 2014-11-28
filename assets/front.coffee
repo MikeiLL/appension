@@ -231,29 +231,43 @@ $(document).ready ->
 			else
 				window.threeSixtyPlayer.handleClick {target: $('a.sm2_link')[0]}
 
-	$.getJSON "all.json", (segments) ->
-		console.log("InGetJSON")
-		console.log(segments)
-		window._track_id = 0 # Assume we'll never actually get a track ID of zero
-		for segment in segments
-			if segment.tracks?
-				if segment.tracks[0].metadata.id != window._track_id
-					length = segment.tracks[0].metadata.length
-					minutes = Math.floor(length/60)
-					seconds = Math.floor(length%60)
-					if seconds < 10
-						seconds = "0" + seconds
-					if window._track_id
-						window._next_artist = segment.tracks[0].metadata.artist
-						window._next_length = minutes + ":" + seconds
-					else
-						document.getElementById('artist').innerHTML = window._next_artist = segment.tracks[0].metadata.artist
-						document.getElementById('length').innerHTML = window._next_length = minutes + ":" + seconds
-						window._track_id = segment.tracks[0].metadata.id
-				console.log("Segment" + window._count_getJSON + ": ")
-			# console.log(segment.tracks[0].metadata.artist)
-			# console.log(segment.tracks[0].metadata.id)
-			window._count_getJSON++
+	getTrackInfo = ->
+		$.getJSON "all.json", (segments) ->
+			console.log("getTrackInfo")
+			console.log(segments)
+			curtrack = nexttrack = 0 # Assume we'll never actually get a track ID of zero
+			for segment in segments
+				if segment.tracks?
+					id = segment.tracks[0].metadata.id
+					# To the subsequent maintainer: I apologize humbly - this is bad
+					# code. I am not a CoffeeScript programmer, and it shows. The
+					# idea here (and you're *most* welcome to edit the code to better
+					# express that) is to have the first new track ID go into
+					# curtrack, and the next new track ID go into nexttrack; any track
+					# with the same ID as either of them will be ignored.
+					# Signed: Chris Angelico (Rosuav).
+					tag = 0
+					if id != curtrack and id != nexttrack
+						if curtrack
+							nexttrack = id
+							tag = "_next"
+						else
+							curtrack = id
+							tag = ""
+						tag = ""
+					if tag != 0
+						length = segment.tracks[0].metadata.length
+						minutes = Math.floor(length/60)
+						seconds = Math.floor(length%60)
+						if seconds < 10
+							seconds = "0" + seconds
+						document.getElementById('artist'+tag).innerHTML = segment.tracks[0].metadata.artist
+						document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
+						console.log("Recording artist"+tag+" as "+segment.tracks[0].metadata.artist)
+				# console.log(segment.tracks[0].metadata.artist)
+				# console.log(segment.tracks[0].metadata.id)
+	getTrackInfo()
+	setInterval getTrackInfo, TIMING_INTERVAL
 
 	getPing = ->
 		start_time = +new Date
@@ -290,15 +304,15 @@ $(document).ready ->
 					document.getElementById('artist').innerHTML = window._next_artist
 					window._next_artist = data.segment.tracks[0].metadata.artist
 					document.getElementById('artist_next').innerHTML = "Up next: " + window._next_artist
-				# console.log("GetTrackDets Data " + window._count_TrackDeets + ": ")
-				# console.log(data.segment.tracks[0].metadata.artist)
-				# console.log(data.segment.tracks[0].metadata.id)
+				console.log("GetTrackDets Data " + window._count_TrackDeets + ": ")
+				console.log(data.segment.tracks[0].metadata.artist)
+				console.log(data.segment.tracks[0].metadata.id)
 				window._count_TrackDeets++
 			if data.listener_count?
 				window._listeners = data.listener_count
 		window._socket = s
 	
-	setTimeout getTrackDetails, 1000
+	# setTimeout getTrackDetails, 1000 # Not in use currently
 	window._count_getJSON = 1
 	if not window._count_TrackDeets?
 		window._count_TrackDeets = 1
