@@ -13,6 +13,7 @@ build/
 dist/
 js/
 remix/
+uploads/*
 remix.egg-info
 *.so
 *.pyc
