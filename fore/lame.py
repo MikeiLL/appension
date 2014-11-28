@@ -244,7 +244,11 @@ class Lame(threading.Thread):
 					if self.callback:
 						self.callback(False)
 					if self.markers and self.markers[0][0] <= self.out_samples:
-						msg = self.markers.pop(0)[1];
+						# NOTE: This causes some players to glitch out badly, so this whole
+						# section of code is never actually called (add_pcm is never given
+						# a marker to store). If, in the future, this begins to be useful,
+						# consider reenabling it.
+						msg = self.markers.pop(0)[1]
 						log.info("Adding marker: %r", msg)
 						if isinstance(msg, unicode): msg=msg.encode("utf-8")
 						msg = "\3" + msg # Prepend the UTF-8 encoding marker. If msg was already bytes, it MUST be valid UTF-8.
