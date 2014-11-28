@@ -24,9 +24,12 @@ body {
     z-index: 5;
     min-height: $min_height;
 	
-	#trackdetails{
-		#artist .title #length {color:#fff;}
-		.h3 {color:#fff;}
+	#trackdetails {
+		width:200px;
+		margin-left:10px;
+		.artist, .length {margin:0px 8px 0px 8px; color:#fff;}
+		.artist {float:left}
+		.length {float:right}
 	}
 
     #player {
