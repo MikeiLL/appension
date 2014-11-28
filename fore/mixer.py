@@ -346,11 +346,9 @@ class Mixer(multiprocessing.Process):
 		if not hasattr(track.analysis.pyechonest_track, "title"):
 			setattr(track.analysis.pyechonest_track, "title", track._metadata.title)
 		log.info("Resampling features [%r]...", track._metadata.id)
-		if len(track.analysis.beats) > 0:
+		if len(track.analysis.beats):
 			track.resampled = resample_features(track, rate='beats')
 			track.resampled['matrix'] = timbre_whiten(track.resampled['matrix'])
-			if not is_valid(track, self.transition_time):
-				raise ValueError("Track too short!")
 		else:
 			log.info("no beats returned for this track.")
 			track.resampled = {"rate":'beats', "matrix": []}
