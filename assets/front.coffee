@@ -246,16 +246,13 @@ $(document).ready ->
 					# curtrack, and the next new track ID go into nexttrack; any track
 					# with the same ID as either of them will be ignored.
 					# Signed: Chris Angelico (Rosuav).
-					tag = 0
 					if id != curtrack and id != nexttrack
-						if curtrack
+						if curtrack != 0
 							nexttrack = id
 							tag = "_next"
 						else
 							curtrack = id
 							tag = ""
-						tag = ""
-					if tag != 0
 						length = segment.tracks[0].metadata.length
 						minutes = Math.floor(length/60)
 						seconds = Math.floor(length%60)
@@ -266,7 +263,7 @@ $(document).ready ->
 						console.log("Recording artist"+tag+" as "+segment.tracks[0].metadata.artist)
 				# console.log(segment.tracks[0].metadata.artist)
 				# console.log(segment.tracks[0].metadata.id)
-	getTrackInfo()
+	setTimeout getTrackInfo, 1000
 	setInterval getTrackInfo, TIMING_INTERVAL
 
 	getPing = ->
