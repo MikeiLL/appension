@@ -235,7 +235,7 @@ $(document).ready ->
 		$.getJSON "all.json", (segments) ->
 			console.log("getTrackInfo")
 			console.log(segments)
-			curtrack = nexttrack = 0 # Assume we'll never actually get a track ID of zero
+			trackids = []
 			for segment in segments
 				if segment.tracks?
 					id = segment.tracks[0].metadata.id
@@ -243,24 +243,29 @@ $(document).ready ->
 					# code. I am not a CoffeeScript programmer, and it shows. The
 					# idea here (and you're *most* welcome to edit the code to better
 					# express that) is to have the first new track ID go into
-					# curtrack, and the next new track ID go into nexttrack; any track
-					# with the same ID as either of them will be ignored.
+					# artist0, the next new track ID go into artist1, etc; any track
+					# with the same ID as a previously-seen track will be ignored.
 					# Signed: Chris Angelico (Rosuav).
-					if id != curtrack and id != nexttrack
-						if curtrack != 0
-							nexttrack = id
-							tag = "_next"
-						else
-							curtrack = id
-							tag = ""
+					isnew = 1
+					for t in trackids
+						if t == id
+							isnew = 0
+					if isnew
+						trackids.push(id)
+						tag = trackids.length
 						length = segment.tracks[0].metadata.length
 						minutes = Math.floor(length/60)
 						seconds = Math.floor(length%60)
 						if seconds < 10
 							seconds = "0" + seconds
-						document.getElementById('artist'+tag).innerHTML = segment.tracks[0].metadata.artist
-						document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
 						console.log("Recording artist"+tag+" as "+segment.tracks[0].metadata.artist)
+						artist = document.getElementById('artist'+tag)
+						if artist
+							# Eventually we'll run out of objects to stash info into - that's fine.
+							# Assume that every artistN has corresponding other stash-targets lengthN
+							# and (eventually) titleN.
+							artist.innerHTML = segment.tracks[0].metadata.artist
+							document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
 				# console.log(segment.tracks[0].metadata.artist)
 				# console.log(segment.tracks[0].metadata.id)
 	setTimeout getTrackInfo, 1000
