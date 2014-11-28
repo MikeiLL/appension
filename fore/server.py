@@ -291,7 +291,7 @@ if __name__ == "__main__":
 
 			(r"/monitor", MonitorHandler),
 			(r"/", MainHandler),
-			(r"/", Userform),
+			(r"/submit", Userform),
 			(r"/upload", Upload),
 		]),
 		socket_io_port=config.socket_port,
