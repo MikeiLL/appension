@@ -17,6 +17,7 @@ import lame
 import copy
 import time
 import info
+import uuid
 import random
 import datetime
 import threading
@@ -50,6 +51,7 @@ templates = tornado.template.Loader(config.template_dir)
 templates.autoescape = None
 first_frame = threading.Semaphore(0)
 
+__UPLOADS__ = "uploads/"
 
 class MainHandler(tornado.web.RequestHandler):
 	mtime = 0
@@ -237,6 +239,22 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 		"/monitor.websocket": MonitorSocket
 	}
 
+class Userform(tornado.web.RequestHandler):
+    def get(self):
+        self.render("fileuploadform.html")
+
+
+class Upload(tornado.web.RequestHandler):
+    def post(self):
+        fileinfo = self.request.files['filearg'][0]
+        print "fileinfo is", fileinfo
+        fname = fileinfo['filename']
+        extn = os.path.splitext(fname)[1]
+        cname = str(uuid.uuid4()) + extn
+        fh = open(__UPLOADS__ + cname, 'w')
+        fh.write(fileinfo['body'])
+        self.finish(cname + " is uploaded!! Check %s folder" %__UPLOADS__)
+
 
 if __name__ == "__main__":
 	Daemon()
@@ -273,6 +291,8 @@ if __name__ == "__main__":
 
 			(r"/monitor", MonitorHandler),
 			(r"/", MainHandler),
+			(r"/", Userform),
+			(r"/upload", Upload),
 		]),
 		socket_io_port=config.socket_port,
 		enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
