@@ -66,9 +66,13 @@ def create_track(mp3data, filename):
 		pic=next((k for k in track if k.startswith("APIC:")), None)
 		pic = pic and track[pic].data
 		if pic: print("length of pic: {}".format(len(pic)))
+		try: artist = u', '.join(track['TPE1'].text)
+		except KeyError: artist = u'(unknown artist)'
+		try: title = u', '.join(track['TIT2'].text)
+		except KeyError: title = u'(unknown title)'
 		cur.execute("UPDATE tracks SET artist=%s, title=%s, filename=%s, artwork=%s, length=%s WHERE id=%s",
-			(u', '.join(track['TPE1'].text),
-			u', '.join(track['TIT2'].text),
+			(artist,
+			title,
 			track.filename[6:],
 			pic and memoryview(pic),
 			track.info.length,
