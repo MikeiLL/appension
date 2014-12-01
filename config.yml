@@ -21,4 +21,4 @@ min_track_length: 90
 
 #   Default values when nothing exists
 no_bpm_diff: 20
-relay_ua: "foreverfm-relay"
+relay_ua: "glitch-relay"
