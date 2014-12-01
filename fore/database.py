@@ -52,7 +52,11 @@ def get_complete_length():
 		return cur.fetchone()
 
 def create_track(mp3data, filename, info):
-	"""Save a blob of MP3 data to the specified file and registers it in the database"""
+	"""Save a blob of MP3 data to the specified file and registers it in the database.
+
+	Note that this function breaks encapsulation horribly. The third argument is
+	assumed to be a request object dictionary, with all its quirks. The file is saved
+	to disk as well as being registered with the database. TODO: Clean me up."""
 	with _conn, _conn.cursor() as cur:
 		# We have a chicken-and-egg problem here. We can't (AFAIK) get the ID3 data
 		# until we have a file, and we want to name the file based on the track ID.
