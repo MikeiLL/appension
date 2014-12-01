@@ -51,8 +51,6 @@ templates = tornado.template.Loader(config.template_dir)
 templates.autoescape = None
 first_frame = threading.Semaphore(0)
 
-__UPLOADS__ = "uploads/"
-
 class MainHandler(tornado.web.RequestHandler):
 	mtime = 0
 	template = 'index.html'
@@ -249,16 +247,10 @@ class Userform(tornado.web.RequestHandler):
 		self.write(templates.load(self.template).generate(**kwargs))
 
 class Upload(tornado.web.RequestHandler):
-    def post(self):
-        fileinfo = self.request.files['filearg'][0]
-        print "fileinfo is", fileinfo
-        fname = fileinfo['filename']
-        extn = os.path.splitext(fname)[1]
-        cname = str(uuid.uuid4()) + extn
-        fh = open(__UPLOADS__ + cname, 'w')
-        fh.write(fileinfo['body'])
-        self.finish(cname + " is uploaded!! Check %s folder" %__UPLOADS__)
-
+	def post(self):
+		fileinfo = self.request.files['filearg'][0]
+		database.create_track(fileinfo['body'], fileinfo['filename'])
+		self.finish("Thank you for your submission.")
 
 if __name__ == "__main__":
 	Daemon()
