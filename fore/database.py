@@ -21,7 +21,7 @@ class Track(object):
 		}
 
 def get_mp3(some_specifier):
-	with _conn.cursor():
+	with _conn, _conn.cursor():
 		# TODO: Fetch an MP3 and return its raw data
 		pass
 
@@ -31,7 +31,7 @@ def get_many_mp3():
 	Returns a list, guaranteed to be fully realized prior to finishing
 	with the database cursor, for safety.
 	"""
-	with _conn.cursor() as cur:
+	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id,filename,artist,title,length FROM tracks WHERE status = 1 ORDER BY length")
 		return [Track(*row) for row in cur.fetchall()]
 
@@ -46,8 +46,6 @@ def enqueue_tracks(queue):
 			
 def get_complete_length():
 	"""Get the sum of length of all active tracks."""
-	with _conn.cursor() as cur:
+	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT sum(length) FROM tracks WHERE status = 1")
 		return cur.fetchone()
-
-		
