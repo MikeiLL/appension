@@ -51,14 +51,16 @@ def get_complete_length():
 		cur.execute("SELECT sum(length) FROM tracks WHERE status = 1")
 		return cur.fetchone()
 
-def create_track(mp3data, filename):
+def create_track(mp3data, filename, info):
 	"""Save a blob of MP3 data to the specified file and registers it in the database"""
 	with _conn, _conn.cursor() as cur:
 		# We have a chicken-and-egg problem here. We can't (AFAIK) get the ID3 data
 		# until we have a file, and we want to name the file based on the track ID.
 		# Resolution: Either save the file to a temporary name and then rename it,
 		# or insert a dummy row and then update it. Using the latter approach.
-		cur.execute("INSERT INTO tracks (artist, title, filename, artwork, length) VALUES ('', '', '', '', 0) RETURNING id")
+		cur.execute("""INSERT INTO tracks (artist, title, filename, artwork, length, submitter, submitteremail, lyrics, story)
+			VALUES ('', '', '', '', 0, %s, %s, %s, %s) RETURNING id""",
+			(info.get("SubmitterName",[""])[0], info.get("Email",[""])[0], info.get("Lyrics",[""])[0], info.get("Story",[""])[0]))
 		id = cur.fetchone()[0]
 		filename = "audio/%d %s"%(id, filename)
 		with open(filename, "wb") as f: f.write(mp3data)

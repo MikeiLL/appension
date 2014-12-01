@@ -249,7 +249,7 @@ class Userform(tornado.web.RequestHandler):
 class Upload(tornado.web.RequestHandler):
 	def post(self):
 		fileinfo = self.request.files['filearg'][0]
-		database.create_track(fileinfo['body'], fileinfo['filename'])
+		database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
 		self.finish("Thank you for your submission.")
 
 if __name__ == "__main__":
