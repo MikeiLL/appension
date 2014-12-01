@@ -251,6 +251,15 @@ class Upload(tornado.web.RequestHandler):
 		fileinfo = self.request.files['filearg'][0]
 		database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
 		self.finish("Thank you for your submission.")
+	
+class AdminRender(tornado.web.RequestHandler):
+	templates = tornado.template.Loader(config.template_dir)
+	templates.autoescape = None
+	template = "administration.html"
+	
+	def get(self):
+		kwargs = {'all_tracks': database.show_all_mp3(),}
+		self.write(templates.load(self.template).generate(**kwargs))
 
 if __name__ == "__main__":
 	Daemon()
@@ -289,6 +298,7 @@ if __name__ == "__main__":
 			(r"/", MainHandler),
 			(r"/submit", Userform),
 			(r"/upload", Upload),
+			(r"/gmin", AdminRender),
 		]),
 		socket_io_port=config.socket_port,
 		enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
