@@ -53,9 +53,9 @@ first_frame = threading.Semaphore(0)
 
 __UPLOADS__ = "uploads/"
 
-class MainHandler(tornado.web.RequestHandler):
+class AuditionHandler(tornado.web.RequestHandler):
 	mtime = 0
-	template = 'index.html'
+	template = 'audition.html'
 
 	def __gen(self):
 		debug = self.get_argument('__debug', None)
@@ -239,27 +239,6 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 		"/monitor.websocket": MonitorSocket
 	}
 
-class Userform(tornado.web.RequestHandler):
-	templates = tornado.template.Loader(config.template_dir)
-	templates.autoescape = None
-	template = "fileuploadform.html"
-	
-	def get(self):
-		kwargs = {}
-		self.write(templates.load(self.template).generate(**kwargs))
-
-class Upload(tornado.web.RequestHandler):
-    def post(self):
-        fileinfo = self.request.files['filearg'][0]
-        print "fileinfo is", fileinfo
-        fname = fileinfo['filename']
-        extn = os.path.splitext(fname)[1]
-        cname = str(uuid.uuid4()) + extn
-        fh = open(__UPLOADS__ + cname, 'w')
-        fh.write(fileinfo['body'])
-        self.finish(cname + " is uploaded!! Check %s folder" %__UPLOADS__)
-
-
 if __name__ == "__main__":
 	Daemon()
 
@@ -292,11 +271,7 @@ if __name__ == "__main__":
 
 			(r"/all.json", InfoHandler),
 			(r"/all.mp3", StreamHandler),
-
-			(r"/monitor", MonitorHandler),
-			(r"/", MainHandler),
-			(r"/submit", Userform),
-			(r"/upload", Upload),
+			(r"/audition", AuditionHandler),
 		]),
 		socket_io_port=config.audition_socket_port,
 		enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']

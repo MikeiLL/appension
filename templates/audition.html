@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Infinite Glitch</title>
+		
+		<link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
+        <link rel="image_src" type="image/png" href="/static/img/icon.png" />
+        <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
+        <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
+		<link href='{{ compiled('tabs.scss') }}' rel='stylesheet' type='text/css' />
+        <link href='{{ compiled(
+          'sprites.css',
+          'flashblock.css',
+          '360player.css',
+          '360player-visualization.css'
+        ) }}' rel='stylesheet' type='text/css' />
+
+        <script type="text/javascript"
+          src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
+        {% if open %}
+        <script type="text/javascript" src='{{ compiled(
+          'spin.min.js',
+          'soundmanager2-nodebug-jsmin.js',
+          'berniecode-animator.js',
+          '360player.js'
+          ) }}'></script>
+        <script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+        <script type="text/javascript" src='{{ compiled('raf.coffee', 'audition.coffee') }}'></script>
+        {% end %}
+       
+	</head>
+  <body>
+    <div id="menu">
+      <h1>
+        Infinite Glitch
+      </h1>
+      <div id="player">
+        <div id="sm2-container"></div>
+        <div class="ui360 ui360-vis">
+          <a id="endpoint_link" href="{{ endpoint }}" type="audio/mpeg"></a>
+        </div>
+      </div>
+	  <div id="trackdetails">
+	  <h3>Playing now(ish):</h3>
+	    <div id="artist1" class="artist"></div>
+	    <div id="length1" class="length"></div>
+		<br/>
+	    <div id="artist2" class="artist"></div>
+	    <div id="length2" class="length"></div>
+		<br/>
+	    <div id="artist3" class="artist"></div>
+	    <div id="length3" class="length"></div>
+		<br/>
+	    <div id="artist4" class="artist"></div>
+	    <div id="length4" class="length"></div>
+		<br/>
+	    <div id="artist5" class="artist"></div>
+	    <div id="length5" class="length"></div>
+	  </div>
+	  <div>Entire piece length:{{ complete_length }}</div>
+      <div id="footer">
+        by Chris Butler
+        <div class="affiliates">
+          <div class="powered">powered by:</div>
+          
+          <a class="echonest"
+             target="_blank"
+             href="http://the.echonest.com"
+             title="Audio analysis by the Echo Nest"><span class="echonest"></span></a>
+        </div>
+      </div>
+    </div>
+	<div id="content" style="z-index:0">
+	<div class="css3-tabstrip">
+    <ul>
+        <li>
+            <input type="radio" name="css3-tabstrip-0" checked="checked" id="css3-tabstrip-0-0" /><label for="css3-tabstrip-0-0">Details</label>
+            <div>
+                <h3>Devil Glitchery</h3>
+                <p>Chris Butler's "The Devil Glitch" was released in 1996, and the next year was certified by the Guinness Book of World Records as the longest pop song ever, practically filling an entire CD.
+Well, now he's making it even longer, with your help. Add your contribution here, join in the Forums, or just listen and learn about the project.</p>
+            </div>
+        </li><li>
+            <input type="radio" name="css3-tabstrip-0" id="css3-tabstrip-0-1" /><label for="css3-tabstrip-0-1">What?!?!?</label>
+            <div>
+                <h3>What's it all about?</h3>
+                <p>Ten years ago, I recorded a project called "The Devil Glitch," which got certified by The Guinness Book of Records as the World’s Longest Pop Song.*</p>
+
+				<p>The tune was constructed by passing out a 2-3 minute chunk with a 114 Beats-Per-Minute click track/an acoustic guitar track (the chords are A Bm D6) and a portion of the 500+ choruses. I then asked folks to add a backing track – synths, spoons, tuned vacuum cleaners…whatever – then stitched the whole thing together on a computer (kudos to engineer Scott Anthony for this).</p>
+
+				<p>Also, ten years ago, the most recording time on a commercially pressed CD was 74 minutes. Today, thanks to the internet – there is NO time limit, so I’m in the process of expanding the song, making an online version that hopefully will go on for hours and hours…and would love it if you could record something and get it back to me in an MP3 format. </p>
+
+				<p>Feel free to explore the rest of this site – there are composition tools, spare lyrics for you to use (and contribute to), the original versions of the song, the latest submissions and of course – the entire, current Major Glitch.</p>
+
+				<p>Note: - the part that I’d like for you to expand upon is the ending vamp where every lyric line begins “Sometimes you can fix something by…”.</p>
+
+				<p>Other than that – anything goes!</p>
+
+				<p>If you’re up for this and/or need more info, please contact me here.</p>
+
+				<p>PLEASE PASS THIS URL ON TO ANYONE YOU THINK MIGHT LIKE TO PARTICIPATE. </p>
+
+				<p>(Musical ability not necessary...in fact, it's probably a hindrance!)</p>
+
+				<p>Have fun, and I’m looking forward to hearing what you come up with!</p>
+
+				<p>Best…</p>
+
+				<p>Chris Butler – 8/07</p>
+
+				<p>*(Writing a 69-minute pop song is one thing...proving that it's the longest is quite another. Guinness asked for independent verification, and although I knew it to be a valid claim, getting others to confirm it became a "computer era" question, where information becomes available only if the question is phrased correctly. For example, neither the Library of Congress (where American copyrights are registered), BMI and ASCAP (the USA's major performance rights organizations) nor The Harry Fox Agency (collector of mechanical rights) can search their databases for length...only by title and author. Luckily, David Sanjek of the BMI Archives was able to confirm my claim stating that "I know of no other commercial piece of music that received sufficient public distribution that comes close to "The Devil Glitch" in length and scope." William Shurck, the Sound Recordings Archivist at Bowling Green State University's Music Library and Sound Archive, also saw no reason to dispute my claim, based on his "...40-plus years of working with popular music.")</p>
+
+		</div>
+        </li><li>
+            <input type="radio" name="css3-tabstrip-0" id="css3-tabstrip-0-2" /><label for="css3-tabstrip-0-2">World Records</label>
+            <div>
+                <h3>Where does it come from?</h3>
+                The Devil Glitch<br/>
+				world's longest pop song - 69 minutes<br/>
+				July 11th, 1997,<br/>
+				Guinness Book of World Records<br/>
+				declares "The Devil Glitch" to be<br/>
+				THE WORLDS'S LONGEST POP SONG.<br/>
+
+				<p>"Then there's ex-Waitress CHRIS BUTLER'S 69-minute (!) single, "The Devil Glitch" (Future Fossil, CD), a screwy swinger with an hour's worth of Butler lyrically vamping on the end chorus as friends, old band mates, and relatives (including Freedy Johnston, Kramer, and Butler's mom) mess with the music. Weird, long-winded, wonderful."</p>
+
+				<p>David Fricke, Rolling Stone Magazine, June 26, 1997, p.56</p>
+
+            </div>
+        </li><li>
+            <input type="radio" name="css3-tabstrip-0" id="css3-tabstrip-0-3" disabled="disabled" /><label for="css3-tabstrip-0-3">Contact Us</label>
+            <div>
+                <h3>Where can I get some?</h3>
+                <p>There are many variations of passages of Lorem Ipsum available,
+                    but the majority have suffered alteration in some form,
+                    by injected humour, or randomised words which don't look
+                    even slightly believable. If you are going to use a
+                    passage of Lorem Ipsum, you need to be sure there isn't
+                    anything embarrassing hidden in the middle of text. All
+                    the Lorem Ipsum generators on the Internet tend to
+                    repeat predefined chunks as necessary, making this the
+                    first true generator on the Internet. It uses a dictionary
+                    of over 200 Latin words, combined with a handful of model
+                    sentence structures, to generate Lorem Ipsum which looks
+                    reasonable. The generated Lorem Ipsum is therefore
+                    always free from repetition, injected humour, or
+                    non-characteristic words etc.</p>
+            </div>
+        </li>
+    </ul>
+	</div><!--End Content Div -->
+	  {% if open %} 
+	  <div class="soundmanager-debug">
+      </div>
+      {% else %}
+      <div id="message" style="width: 80%; margin: 15% 0 0 15%; text-align: center; font-size: 2em;">
+	  <h1>We're sorry...</h1>
+      <p>
+            Infinite Glitch is currently <strong>over capacity</strong>.
+            Please check back soon!
+      </p>
+      </div>
+    {% end %}
+    </div>
+	</body>
+</html>
+
