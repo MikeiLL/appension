@@ -298,7 +298,7 @@ if __name__ == "__main__":
 			(r"/submit", Userform),
 			(r"/upload", Upload),
 		]),
-		socket_io_port=config.socket_port,
+		socket_io_port=config.audition_socket_port,
 		enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
 	)
 
@@ -307,7 +307,7 @@ if __name__ == "__main__":
 	)
 	frame_sender.start()
 
-	application.listen(config.http_port)
+	application.listen(config.audition_http_port)
 	try:
 		tornadio2.server.SocketServer(application)
 	except KeyboardInterrupt:
