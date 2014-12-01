@@ -1,19 +1,21 @@
-<html>
-<head> 
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
-<title>Submit Track</title>
-</head>
-<body>
+{% extends main.html %}
+{% block head %}
+    <title>The Major Glitch - Track Submission Form</title>
+	<meta name="description" content="Submit Track to Major Glitch">
+{% end %}
+{% block content %}
 <p><h1>Submit Track</h1></p>
 <form enctype="multipart/form-data" action="/upload" method="post">
-Your Name: <input type="text" name="SubmitterName" /><br/>
-Email: <input type="text" name="Email" /><br/>
-Artist Name: <input type="text" name="Artist" /><br/>
-Track Title: <input type="text" name="Track" /><br/>
-Story behind the track: <textarea rows=10 cols=80 name="Story"></textarea><br/>
-Lyrics: <textarea rows=10 cols=80  name="Lyrics"></textarea><br/>
-MP3 File: <input type="file" name="filearg" />
-<br />
-<br />
-<input type="submit" value="upload" />
+<table class="submission_form">
+<tr><td width="200px">Your Name:</td><td> <input type="text" name="SubmitterName" /></td></tr>
+<tr><td>Email: </td><td><input type="text" name="Email" /></td></tr>
+<tr><td>Artist Name: </td><td><input type="text" name="Artist" /></td></tr>
+<tr><td>Track Title: </td><td><input type="text" name="Track" /></td></tr>
+<tr><td colspan="2">Story behind the track:<br/> <textarea rows=10 cols=80 name="Story"></textarea></td></tr>
+<tr><td colspan="2">Lyrics: <br/><textarea rows=10 cols=80  name="Lyrics"></textarea></td></tr>
+<tr><td>MP3 File: <input type="file" name="filearg" /></td></tr>
+
+<tr><td colspan="2" align="right"><input type="submit" value="upload" /></td></tr>
+</table>
 </form>
+{% end %}
