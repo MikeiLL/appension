@@ -8,8 +8,8 @@ _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
 
 class Track(object):
-	def __init__(self, id, filename, artist, title, length):
-		log.info("Rendering Track(%r, %r, %r, %r, %r)", id, filename, artist, title, length)
+	def __init__(self, id, filename, artist, title, length, status):
+		log.info("Rendering Track(%r, %r, %r, %r, %r, %r)", id, filename, artist, title, length, status)
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
@@ -19,6 +19,7 @@ class Track(object):
 			'artist': artist,
 			'title': title,
 			'length': length,
+			'status': status,
 		}
 
 def get_mp3(some_specifier):
@@ -32,8 +33,12 @@ def get_many_mp3(status=1, order_by='length'):
 	Returns a list, guaranteed to be fully realized prior to finishing
 	with the database cursor, for safety.
 	"""
-	query_clause = {'columns': 'id,filename,artist,title,length',
-	'where_clause': 'status = ' + str(status),
+	if status == "all":
+		where_clause = 'id is NOT NULL'
+	else:
+		where_clause = 'status = ' + str(status)
+	query_clause = {'columns': 'id,filename,artist,title,length, status',
+	'where_clause': where_clause,
 	'order_choice': order_by
 	}
 	query = """SELECT {columns} 

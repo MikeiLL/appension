@@ -258,7 +258,7 @@ class AdminRender(tornado.web.RequestHandler):
 	template = "administration.html"
 	
 	def get(self):
-		kwargs = {'all_tracks': database.show_all_mp3(),}
+		kwargs = {'all_tracks': database.get_many_mp3(status="all", order_by='id'),}
 		self.write(templates.load(self.template).generate(**kwargs))
 
 if __name__ == "__main__":
