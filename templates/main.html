@@ -24,7 +24,22 @@
 	{% block content %}{% end %}
 </content>
 <footer>
-	{% block footer %}<a href="/">Home</a> &copy; 2014 Future Fossil <a href="mailto:beezwax@aol.com">Contact</a>{% end %}
+	{% block footer %}	<a href="/">Home</a> &copy; 2014 Future Fossil <a href="mailto:beezwax@aol.com">Contact</a>
+	<link href='{{ compiled(
+          'sprites.css',
+          'flashblock.css',
+          '360player.css',
+          '360player-visualization.css'
+        ) }}' rel='stylesheet' type='text/css' />
+	<script type="text/javascript" src='{{ compiled(
+          'spin.min.js',
+          'soundmanager2-nodebug-jsmin.js',
+          'berniecode-animator.js',
+          '360player.js'
+          ) }}'></script>
+	<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+	<script type="text/javascript" src='{{ compiled('front.coffee') }}'></script>
+	{% end %}
 </footer>
 </body>
 </html>

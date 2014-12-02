@@ -20,11 +20,11 @@
 	<td>{{ track.track_details['status'] }}</td>
 	<td>
 	<div class="sm2-360ui">
-<canvas class="sm2-canvas" height="256" width="256"></canvas>
-<span class="sm2-360btn sm2-360btn-default"></span>
-<div class="sm2-timing"></div>
-<div class="sm2-cover"></div>
-</div>
+	<canvas class="sm2-canvas" height="30" width="30"></canvas>
+	<span class="sm2-360btn sm2-360btn-default"></span>
+	<div class="sm2-timing"></div>
+	<div class="sm2-cover"></div>
+	</div>
         <div id="sm2-container"></div>
 		<div class="ui360 ui360-vis2">
           <a id="endpoint_link" href="/audio/{{ track.filename }}" type="audio/mpeg"></a>
@@ -40,18 +40,5 @@
         return confirm('Are you sure?');
     });
 </script>
-	<link href='{{ compiled(
-          'sprites.css',
-          'flashblock.css',
-          '360player.css',
-          '360player-visualization.css'
-        ) }}' rel='stylesheet' type='text/css' />
-	<script type="text/javascript" src='{{ compiled(
-          'spin.min.js',
-          'soundmanager2-nodebug-jsmin.js',
-          'berniecode-animator.js',
-          '360player.js'
-          ) }}'></script>
-	<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
-	<script type="text/javascript" src='{{ compiled('front.coffee') }}'></script>
+
 {% end %}
