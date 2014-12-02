@@ -256,13 +256,14 @@ class DeleteTrack(tornado.web.RequestHandler):
 	templates = tornado.template.Loader(config.template_dir)
 	templates.autoescape = None
 	template = "administration.html"
-			
+
 	def get(self, input):
+		input = int(input) # TODO: If intification fails, send back a tidy error message, rather than just quietly deleting nothing
 		log.info("Yo we got input: %r", input)
-		# database.delete_track(input)
+		database.delete_track(input)
 		self.write(templates.load(self.template).generate(
 			all_tracks=database.get_many_mp3(status="all", order_by='id'),
-			deleted=input
+			deleted=input, updated=0,
 		))
 		
 class EditTrack(tornado.web.RequestHandler):
