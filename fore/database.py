@@ -37,7 +37,7 @@ def get_many_mp3(status=1, order_by='length'):
 		where_clause = 'id is NOT NULL'
 	else:
 		where_clause = 'status = ' + str(status)
-	query_clause = {'columns': 'id,filename,artist,title,length, status',
+	query_clause = {'columns': 'id,filename,artist,title,length,status',
 	'where_clause': where_clause,
 	'order_choice': order_by
 	}
