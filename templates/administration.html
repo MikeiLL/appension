@@ -2,20 +2,6 @@
 {% block head %}
     <title>The Major Glitch - Track Submission Form</title>
 	<meta name="description" content="Submit Track to Major Glitch">
-	<link href='{{ compiled(
-          'sprites.css',
-          'flashblock.css',
-          '360player.css',
-          '360player-visualization.css'
-        ) }}' rel='stylesheet' type='text/css' />
-	<script type="text/javascript" src='{{ compiled(
-          'spin.min.js',
-          'soundmanager2-nodebug-jsmin.js',
-          'berniecode-animator.js',
-          '360player.js'
-          ) }}'></script>
-	<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
-	<script type="text/javascript" src='{{ compiled('front.coffee') }}'></script>
 {% end %}
 {% block content %}
 <p><h1>All Tracks</h1></p>
@@ -54,4 +40,18 @@
         return confirm('Are you sure?');
     });
 </script>
+	<link href='{{ compiled(
+          'sprites.css',
+          'flashblock.css',
+          '360player.css',
+          '360player-visualization.css'
+        ) }}' rel='stylesheet' type='text/css' />
+	<script type="text/javascript" src='{{ compiled(
+          'spin.min.js',
+          'soundmanager2-nodebug-jsmin.js',
+          'berniecode-animator.js',
+          '360player.js'
+          ) }}'></script>
+	<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+	<script type="text/javascript" src='{{ compiled('front.coffee') }}'></script>
 {% end %}
