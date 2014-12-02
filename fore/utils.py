@@ -26,7 +26,7 @@ def rows(m):
 	"""returns the # of rows in a numpy matrix"""
 	return m.shape[0]
 
-magic_log = open("magic.log", "w")
+magic_log = None
 
 class Magic_Str(str):
 	"""Callable string. If called, it returns itself with () appended.
@@ -47,6 +47,7 @@ class Magic_Anything(object):
 	"""
 	def __init__(self, id):
 		self._id = id
+		if not magic_log: magic_log = open("magic.log", "w")
 	def __repr__(self):
 		return "Magic_Anything(" + repr(self._id) + ")"
 	def __getattribute__(self, name):
