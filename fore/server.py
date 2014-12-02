@@ -242,10 +242,10 @@ class Upload(tornado.web.RequestHandler):
 		database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
 		self.finish("Thank you for your submission.")
 
-def admin_page():
+def admin_page(deleted=0, updated=0):
 	return templates.load("administration.html").generate(
 		all_tracks=database.get_many_mp3(status="all", order_by='id'),
-		deleted=0, updated=0, compiled=compiled,
+		deleted=deleted, updated=updated, compiled=compiled,
 	)
 
 class DeleteTrack(tornado.web.RequestHandler):
@@ -253,10 +253,7 @@ class DeleteTrack(tornado.web.RequestHandler):
 		input = int(input) # TODO: If intification fails, send back a tidy error message, rather than just quietly deleting nothing
 		log.info("Yo we got input: %r", input)
 		database.delete_track(input)
-		self.write(templates.load("administration.html").generate(
-			all_tracks=database.get_many_mp3(status="all", order_by='id'),
-			deleted=input, updated=0,
-		))
+		self.write(admin_page(deleted=input))
 		
 class EditTrack(tornado.web.RequestHandler):
 	def get(self, input):
