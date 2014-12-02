@@ -10,8 +10,8 @@
 {% if deleted %}
 	<h2> Track number {{ deleted }} deleted. </h2>
 {% end %}
-{% if filename %}
-	<h2> Track info for {{ filename }} updated. </h2>
+{% if updated %}
+	<h2> Track info for {{ updated }} updated. </h2>
 {% end %}
 <tr><td>ID</td><td>Artist</td><td>Filename</td><td>Track Length</td><td>status</td></tr>
 {% for track in all_tracks %}
