@@ -252,7 +252,7 @@ class Upload(tornado.web.RequestHandler):
 		database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
 		self.finish("Thank you for your submission.")
 		
-class TrackAdmin(tornado.web.RequestHandler):
+class DeleteTrack(tornado.web.RequestHandler):
 	templates = tornado.template.Loader(config.template_dir)
 	templates.autoescape = None
 	template = "administration.html"
@@ -263,6 +263,18 @@ class TrackAdmin(tornado.web.RequestHandler):
 		kwargs = {'all_tracks': database.get_many_mp3(status="all", order_by='id'),
 		'deleted': input}
 		self.write(templates.load(self.template).generate(**kwargs))
+		
+class EditTrack(tornado.web.RequestHandler):
+	templates = tornado.template.Loader(config.template_dir)
+	templates.autoescape = None
+	template = "audition.html"
+			
+	def get(self, input):
+		log.info("Yo we got input: %r", str(input))
+		# database.delete_track(input)
+		kwargs = {'track': database.get_single_track(the_track_id=input),}
+
+		self.write(templates.load(self.template).generate(**kwargs))
 	
 class AdminRender(tornado.web.RequestHandler):
 	templates = tornado.template.Loader(config.template_dir)
@@ -271,7 +283,13 @@ class AdminRender(tornado.web.RequestHandler):
 	
 	def get(self):
 		kwargs = {'all_tracks': database.get_many_mp3(status="all", order_by='id'),
-		'deleted': '',}
+		'deleted': '',
+		'updated': '',}
+		self.write(templates.load(self.template).generate(**kwargs))
+		
+	def post(self):
+		kwargs = {'track': database.get_single_track(the_track_id=id),
+		'updated': self.request.arguments['filename'],}
 		self.write(templates.load(self.template).generate(**kwargs))
 
 if __name__ == "__main__":
@@ -312,7 +330,8 @@ if __name__ == "__main__":
 			(r"/submit", Userform),
 			(r"/upload", Upload),
 			(r"/gmin", AdminRender),
-			(r"/xdeletex/([0-9]+)", TrackAdmin),
+			(r"/xdeletex/([0-9]+)", DeleteTrack),
+			(r"/xeditx/([0-9]+)", EditTrack),
 		]),
 		socket_io_port=config.socket_port,
 		enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']

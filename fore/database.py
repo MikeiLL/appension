@@ -8,8 +8,10 @@ _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
 
 class Track(object):
-	def __init__(self, id, filename, artist, title, length, status):
-		log.info("Rendering Track(%r, %r, %r, %r, %r, %r)", id, filename, artist, title, length, status)
+	def __init__(self, id, filename, artist, title, length, status, 
+				submitter, submitteremail, submitted, lyrics, story):
+		log.info("Rendering Track(%r, %r, %r, %r, %r, %r)", id, filename, artist, 
+															title, length, status)
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
@@ -20,6 +22,18 @@ class Track(object):
 			'title': title,
 			'length': length,
 			'status': status,
+		}
+		self.full_track_details = {
+			'id': id,
+			'artist': artist,
+			'title': title,
+			'length': length,
+			'status': status,
+			'submitter': submitter,
+			'submitted': submitted,
+			'submitteremail': submitteremail,
+			'lyrics': lyrics,
+			'story': story,
 		}
 
 def get_mp3(some_specifier):
@@ -37,7 +51,7 @@ def get_many_mp3(status=1, order_by='length'):
 		where_clause = 'id is NOT NULL'
 	else:
 		where_clause = 'status = ' + str(status)
-	query_clause = {'columns': 'id,filename,artist,title,length,status',
+	query_clause = {'columns': 'id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story',
 	'where_clause': where_clause,
 	'order_choice': order_by
 	}
@@ -47,6 +61,22 @@ def get_many_mp3(status=1, order_by='length'):
 	with _conn, _conn.cursor() as cur:
 		cur.execute(query)
 		return [Track(*row) for row in cur.fetchall()]
+		
+def get_single_track(the_track_id):
+	"""Get a list of details for single track matching id parameter.
+
+	Returns a list, guaranteed to be fully realized prior to finishing
+	with the database cursor, for safety.
+	"""
+	
+	query_clause = {'columns': 'id,filename,artist,title,length,status,submitter,submitted,submitteremail,lyrics,story',
+	'the_track_id': the_track_id}
+	query = """SELECT {columns} 
+				FROM tracks 
+				WHERE id = {the_track_id}""".format(**query_clause)
+	with _conn, _conn.cursor() as cur:
+		cur.execute(query)
+		return Track(*cur.fetchone())
 
 def enqueue_tracks(queue):
 	"""Repeatedly enumerate tracks and enqueue them.
