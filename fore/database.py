@@ -62,7 +62,7 @@ def get_many_mp3(status=1, order_by='length'):
 		cur.execute(query)
 		return [Track(*row) for row in cur.fetchall()]
 		
-def get_single_track(the_track_id):
+def get_single_track(track_id):
 	"""Get a list of details for single track matching id parameter.
 
 	Returns a list, guaranteed to be fully realized prior to finishing
@@ -70,10 +70,10 @@ def get_single_track(the_track_id):
 	"""
 	
 	query_clause = {'columns': 'id,filename,artist,title,length,status,submitter,submitted,submitteremail,lyrics,story',
-	'the_track_id': the_track_id}
+	'track_id': track_id}
 	query = """SELECT {columns} 
 				FROM tracks 
-				WHERE id = {the_track_id}""".format(**query_clause)
+				WHERE id = {track_id}""".format(**query_clause)
 	with _conn, _conn.cursor() as cur:
 		cur.execute(query)
 		return Track(*cur.fetchone())

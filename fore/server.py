@@ -272,7 +272,7 @@ class EditTrack(tornado.web.RequestHandler):
 	def get(self, input):
 		log.info("Yo we got input: %r", str(input))
 		# database.delete_track(input)
-		kwargs = {'track': database.get_single_track(the_track_id=input),}
+		kwargs = {'track': database.get_single_track(track_id=input),}
 
 		self.write(templates.load(self.template).generate(**kwargs))
 	
@@ -288,7 +288,7 @@ class AdminRender(tornado.web.RequestHandler):
 		self.write(templates.load(self.template).generate(**kwargs))
 		
 	def post(self):
-		kwargs = {'track': database.get_single_track(the_track_id=id),
+		kwargs = {'track': database.get_single_track(track_id=id),
 		'updated': self.request.arguments['filename'],}
 		self.write(templates.load(self.template).generate(**kwargs))
 
