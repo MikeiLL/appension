@@ -98,7 +98,7 @@ def get_complete_length():
 	"""Get the sum of length of all active tracks."""
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT sum(length) FROM tracks WHERE status = 1")
-		return cur.fetchone()
+		return cur.fetchone()[0]
 
 def create_track(mp3data, filename, info):
 	"""Save a blob of MP3 data to the specified file and registers it in the database.
