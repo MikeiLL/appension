@@ -7,6 +7,14 @@ from mutagen.mp3 import MP3
 _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
 
+# Enable Unicode return values for all database queries
+# This would be the default in Python 3, but in Python 2, we
+# need to enable these two extensions.
+# http://initd.org/psycopg/docs/usage.html#unicode-handling
+import psycopg2.extensions
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
+
 class Track(object):
 	def __init__(self, id, filename, artist, title, length, status, 
 				submitter, submitteremail, submitted, lyrics, story):
