@@ -26,14 +26,21 @@ def get_mp3(some_specifier):
 		# TODO: Fetch an MP3 and return its raw data
 		pass
 
-def get_many_mp3():
+def get_many_mp3(status=1, order_by='length'):
 	"""Get a list of many (possibly all) the tracks in the database.
 
 	Returns a list, guaranteed to be fully realized prior to finishing
 	with the database cursor, for safety.
 	"""
+	query_clause = {'columns': 'id,filename,artist,title,length',
+	'where_clause': 'status = ' + str(status),
+	'order_choice': order_by
+	}
+	query = """SELECT {columns} 
+				FROM tracks 
+				WHERE {where_clause} ORDER BY {order_choice}""".format(**query_clause)
 	with _conn, _conn.cursor() as cur:
-		cur.execute("SELECT id,filename,artist,title,length FROM tracks WHERE status = 1 ORDER BY length")
+		cur.execute(query)
 		return [Track(*row) for row in cur.fetchall()]
 
 def enqueue_tracks(queue):
