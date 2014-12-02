@@ -120,7 +120,7 @@ def create_track(mp3data, filename, info):
 			(artist,
 			title,
 			track.filename[6:],
-			pic and memoryview(pic),
+			memoryview(pic) if pic else "",
 			track.info.length,
 			id)
 		)
