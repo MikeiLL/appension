@@ -1,0 +1,19 @@
+{% extends main.html %}
+{% block head %}
+    <title>The Major Glitch - Track Submission Form</title>
+	<meta name="description" content="Submit Track to Major Glitch">
+{% end %}
+{% block content %}
+<p><h1>All Tracks</h1></p>
+<form enctype="multipart/form-data" action="/update" method="post">
+<table border="1">
+<tr><td>ID</td><td>Artist</td><td>Filename</td><td>Track Length</td><td>status</td></tr>
+{% for track in all_tracks %}
+	<tr><td>{{ track.id }}</td><td>{{ track.track_details['artist'] }}</td>
+	<td>{{ track.filename }}</td><td>{{ track.track_details['length'] }}</td>
+	<td>{{ track.track_details['status'] }}</td>
+	</tr>
+{% end %}
+</table>
+</form>
+{% end %}
