@@ -97,13 +97,3 @@ def create_track(mp3data, filename, info):
 			id)
 		)
 		return id
-
-def show_all_mp3():
-	"""Get a list of all the tracks in the database.
-
-	Returns a list, guaranteed to be fully realized prior to finishing
-	with the database cursor, for safety.
-	"""
-	with _conn, _conn.cursor() as cur:
-		cur.execute("SELECT id,filename,artist,title,length FROM tracks ORDER BY id")
-		return [Track(*row) for row in cur.fetchall()]
