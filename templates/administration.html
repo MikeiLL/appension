@@ -31,7 +31,7 @@
 	<td>{{ track.filename }}</td><td>{{ track.track_details['length'] }}</td>
 	<td>{{ track.track_details['status'] }}</td>
 	<td><div class="ui360 ui360-vis">
-          <a id="endpoint_link" href="{{ track.filename }}" type="audio/mpeg"></a>
+          <a id="endpoint_link" href="/audio/{{ track.filename }}" type="audio/mpeg"></a>
         </div></td>
 	<td><a href="/xdeletex/{{ track.id }}" class="confirmation">delete</a></td>
 	<td><a href="/xeditx/{{ track.id }}">edit</a></td>
