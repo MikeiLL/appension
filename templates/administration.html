@@ -14,6 +14,8 @@
           'berniecode-animator.js',
           '360player.js'
           ) }}'></script>
+	<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+	<script type="text/javascript" src='{{ compiled('front.coffee') }}'></script>
 {% end %}
 {% block content %}
 <p><h1>All Tracks</h1></p>
@@ -30,7 +32,15 @@
 	<tr><td>{{ track.id }}</td><td>{{ track.track_details['artist'] }}</td>
 	<td>{{ track.filename }}</td><td>{{ track.track_details['length'] }}</td>
 	<td>{{ track.track_details['status'] }}</td>
-	<td><div class="ui360 ui360-vis">
+	<td>
+	<div class="sm2-360ui">
+<canvas class="sm2-canvas" height="256" width="256"></canvas>
+<span class="sm2-360btn sm2-360btn-default"></span>
+<div class="sm2-timing"></div>
+<div class="sm2-cover"></div>
+</div>
+        <div id="sm2-container"></div>
+		<div class="ui360 ui360-vis">
           <a id="endpoint_link" href="/audio/{{ track.filename }}" type="audio/mpeg"></a>
         </div></td>
 	<td><a href="/xdeletex/{{ track.id }}" class="confirmation">delete</a></td>
