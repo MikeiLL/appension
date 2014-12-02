@@ -258,11 +258,12 @@ class DeleteTrack(tornado.web.RequestHandler):
 	template = "administration.html"
 			
 	def get(self, input):
-		log.info("Yo we got input: %r", str(input))
+		log.info("Yo we got input: %r", input)
 		# database.delete_track(input)
-		kwargs = {'all_tracks': database.get_many_mp3(status="all", order_by='id'),
-		'deleted': input}
-		self.write(templates.load(self.template).generate(**kwargs))
+		self.write(templates.load(self.template).generate(
+			all_tracks=database.get_many_mp3(status="all", order_by='id'),
+			deleted=input
+		))
 		
 class EditTrack(tornado.web.RequestHandler):
 	templates = tornado.template.Loader(config.template_dir)
