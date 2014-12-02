@@ -29,8 +29,8 @@ class Track(object):
 			'title': title,
 			'length': length,
 			'status': status,
-			'submitter': submitter,
 			'submitted': submitted,
+			'submitter': submitter,
 			'submitteremail': submitteremail,
 			'lyrics': lyrics,
 			'story': story,
@@ -51,7 +51,7 @@ def get_many_mp3(status=1, order_by='length'):
 		where_clause = 'id is NOT NULL'
 	else:
 		where_clause = 'status = ' + str(status)
-	query_clause = {'columns': 'id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story',
+	query_clause = {'columns': 'id,filename,artist,title,length,status,submitted,submitted,submitteremail,lyrics,story',
 	'where_clause': where_clause,
 	'order_choice': order_by
 	}
@@ -69,7 +69,7 @@ def get_single_track(track_id):
 	with the database cursor, for safety.
 	"""
 	
-	query_clause = {'columns': 'id,filename,artist,title,length,status,submitter,submitted,submitteremail,lyrics,story',
+	query_clause = {'columns': 'id,filename,artist,title,length,status,submitted,submitter,submitteremail,lyrics,story',
 	'track_id': track_id}
 	query = """SELECT {columns} 
 				FROM tracks 
