@@ -54,35 +54,17 @@ def get_many_mp3(status=1, order_by='length'):
 	Returns a list, guaranteed to be fully realized prior to finishing
 	with the database cursor, for safety.
 	"""
-	if status == "all":
-		where_clause = 'id is NOT NULL'
-	else:
-		where_clause = 'status = ' + str(status)
-	query_clause = {'columns': 'id,filename,artist,title,length,status,submitted,submitted,submitteremail,lyrics,story',
-	'where_clause': where_clause,
-	'order_choice': order_by
-	}
-	query = """SELECT {columns} 
-				FROM tracks 
-				WHERE {where_clause} ORDER BY {order_choice}""".format(**query_clause)
+	query = """SELECT id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story
+		FROM tracks WHERE {col}=%s ORDER BY {ord}""".format(col=("'all'" if status=='all' else 'status'), ord=order_by)
 	with _conn, _conn.cursor() as cur:
-		cur.execute(query)
+		cur.execute(query, (status,))
 		return [Track(*row) for row in cur.fetchall()]
 		
 def get_single_track(track_id):
-	"""Get a list of details for single track matching id parameter.
-
-	Returns a list, guaranteed to be fully realized prior to finishing
-	with the database cursor, for safety.
-	"""
-	
-	query_clause = {'columns': 'id,filename,artist,title,length,status,submitted,submitter,submitteremail,lyrics,story',
-	'track_id': track_id}
-	query = """SELECT {columns} 
-				FROM tracks 
-				WHERE id = {track_id}""".format(**query_clause)
+	"""Get details for a single track by its ID"""
 	with _conn, _conn.cursor() as cur:
-		cur.execute(query)
+		cur.execute("""SELECT id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story
+		FROM tracks WHERE id=%s""", (track_id,))
 		return Track(*cur.fetchone())
 
 def enqueue_tracks(queue):
