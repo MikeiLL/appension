@@ -13,14 +13,14 @@
 	<td>{{ track.filename }}</td><td>{{ track.full_track_details['length'] }}</td>
 	<td>
 		<select>
-		<option value="0" {% if track.full_track_details['status'] == 0 %}selected{% end %}>0</option>
-		<option value="1" {% if track.full_track_details['status'] == 1 %}selected{% end %}>1</option>
+		<option value="0" {% if track.full_track_details['status'] == 0 %}selected{% end %}>Inactive</option>
+		<option value="1" {% if track.full_track_details['status'] == 1 %}selected{% end %}>Active</option>
 		</select> 
 	</td>
 	</tr>
-	<tr><td colspan="5"><textarea rows=10 cols=80 name="lyrics">
+	<tr><td colspan="5">Lyrics:<br><textarea rows=10 cols=80 name="lyrics">
 	{{ track.full_track_details['lyrics'] }}</textarea></td></tr>
-	<tr><td colspan="5">
+	<tr><td colspan="5">Story:<br>
 	<textarea rows=10 cols=80 name="Story">{{ track.full_track_details['story'] }}</textarea></td></tr>
 	<input type="hidden" name="filename" value="{{ track.filename }}">
 	<tr><td colspan="2">{{ track.full_track_details['submitter'] }}</td>
