@@ -251,6 +251,18 @@ class Upload(tornado.web.RequestHandler):
 		fileinfo = self.request.files['filearg'][0]
 		database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
 		self.finish("Thank you for your submission.")
+		
+class TrackAdmin(tornado.web.RequestHandler):
+	templates = tornado.template.Loader(config.template_dir)
+	templates.autoescape = None
+	template = "administration.html"
+			
+	def get(self, input):
+		log.info("Yo we got input: %r", str(input))
+		# database.delete_track(input)
+		kwargs = {'all_tracks': database.get_many_mp3(status="all", order_by='id'),
+		'deleted': input}
+		self.write(templates.load(self.template).generate(**kwargs))
 	
 class AdminRender(tornado.web.RequestHandler):
 	templates = tornado.template.Loader(config.template_dir)
@@ -258,7 +270,8 @@ class AdminRender(tornado.web.RequestHandler):
 	template = "administration.html"
 	
 	def get(self):
-		kwargs = {'all_tracks': database.get_many_mp3(status="all", order_by='id'),}
+		kwargs = {'all_tracks': database.get_many_mp3(status="all", order_by='id'),
+		'deleted': '',}
 		self.write(templates.load(self.template).generate(**kwargs))
 
 if __name__ == "__main__":
@@ -299,6 +312,7 @@ if __name__ == "__main__":
 			(r"/submit", Userform),
 			(r"/upload", Upload),
 			(r"/gmin", AdminRender),
+			(r"/xdeletex/([0-9]+)", TrackAdmin),
 		]),
 		socket_io_port=config.socket_port,
 		enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']

@@ -7,13 +7,21 @@
 <p><h1>All Tracks</h1></p>
 <form enctype="multipart/form-data" action="/update" method="post">
 <table border="1">
+{% if deleted %}
+	<h2> Track number {{ deleted }} deleted. </h2>
+{% end %}
 <tr><td>ID</td><td>Artist</td><td>Filename</td><td>Track Length</td><td>status</td></tr>
 {% for track in all_tracks %}
 	<tr><td>{{ track.id }}</td><td>{{ track.track_details['artist'] }}</td>
 	<td>{{ track.filename }}</td><td>{{ track.track_details['length'] }}</td>
-	<td>{{ track.track_details['status'] }}</td>
+	<td>{{ track.track_details['status'] }}</td><td><a href="/xdeletex/{{ track.id }}" class="confirmation">delete</a></td>
 	</tr>
 {% end %}
 </table>
 </form>
+<script type="text/javascript">
+    $('.confirmation').on('click', function () {
+        return confirm('Are you sure?');
+    });
+</script>
 {% end %}
