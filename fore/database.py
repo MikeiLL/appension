@@ -75,12 +75,19 @@ def enqueue_tracks(queue):
 	while True:
 		for track in get_many_mp3():
 			queue.put(track)
-			
+
 def get_complete_length():
 	"""Get the sum of length of all active tracks."""
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT sum(length) FROM tracks WHERE status = 1")
 		return cur.fetchone()
+
+def get_track_artwork(id):
+	"""Get the artwork for one track, or None if no track, or '' if no artwork."""
+	with _conn, _conn.cursor() as cur:
+		cur.execute("SELECT artwork FROM tracks WHERE id=%s", (id,))
+		row = cur.fetchone()
+		return row and row[0]
 
 def create_track(mp3data, filename, info):
 	"""Save a blob of MP3 data to the specified file and registers it in the database.

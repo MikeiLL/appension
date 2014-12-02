@@ -254,7 +254,7 @@ class DeleteTrack(tornado.web.RequestHandler):
 		log.info("Yo we got input: %r", input)
 		database.delete_track(input)
 		self.write(admin_page(deleted=input))
-		
+
 class EditTrack(tornado.web.RequestHandler):
 	def get(self, input):
 		log.info("Yo we got input: %r", str(input))
@@ -269,6 +269,15 @@ class AdminRender(tornado.web.RequestHandler):
 		kwargs = {'track': database.get_single_track(track_id=id),
 		'updated': self.request.arguments['filename'],}
 		self.write(templates.load("administration.html").generate(**kwargs))
+
+class TrackArtwork(tornado.web.RequestHandler):
+	def get(self, id):
+		art = database.get_track_artwork(int(id))
+		if art is None:
+			self.send_error(404)
+		else:
+			self.set_header("Content-Type","image/jpeg")
+			self.write(str(art))
 
 if __name__ == "__main__":
 	Daemon()
@@ -311,6 +320,7 @@ if __name__ == "__main__":
 			(r"/gmin", AdminRender),
 			(r"/xdeletex/([0-9]+)", DeleteTrack),
 			(r"/xeditx/([0-9]+)", EditTrack),
+			(r"/artwork/([0-9]+).jpg", TrackArtwork),
 		]),
 		socket_io_port=config.socket_port,
 		enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
