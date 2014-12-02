@@ -299,6 +299,7 @@ if __name__ == "__main__":
 			# Static assets for local development
 			(r"/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"}),
 			(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static/"}),
+			(r"/audio/(.*)", tornado.web.StaticFileHandler, {"path": "audio/"}),
 
 			(r"/timing\.json", TimingHandler),
 
