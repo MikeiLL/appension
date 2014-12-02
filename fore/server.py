@@ -318,13 +318,13 @@ if __name__ == "__main__":
 	application = tornado.web.Application(
 		tornadio2.TornadioRouter(SocketConnection).apply_routes([
 			# Static assets for local development
-			(r"/(favicon.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"}),
+			(r"/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"}),
 			(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static/"}),
 
-			(r"/timing.json", TimingHandler),
+			(r"/timing\.json", TimingHandler),
 
-			(r"/all.json", InfoHandler),
-			(r"/all.mp3", StreamHandler),
+			(r"/all\.json", InfoHandler),
+			(r"/all\.mp3", StreamHandler),
 
 			(r"/monitor", MonitorHandler),
 			(r"/", MainHandler),
