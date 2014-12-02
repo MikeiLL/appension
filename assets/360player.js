@@ -448,7 +448,7 @@ function ThreeSixtyPlayer() {
 			if (thisSound === self.lastSound) {
 				// and was playing (or paused)
 		thisSound.setVolume(5);
-				thisSound.toggleMute();
+				thisSound.toggleMute(); //TODO parameterize to use as pause for audition section
 			} else {
 				// different sound
 		thisSound.setVolume(5);

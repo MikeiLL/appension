@@ -8,6 +8,13 @@
  height:256px;
 }
 
+.ui360-vis2,
+.sm2-inline-list .ui360-vis2 {
+ /* size of the container for the circle, etc. */
+ width:50px;
+ height:50px;
+}
+
 .ui360-vis {
  position:relative;
  /* a little extra spacing */
