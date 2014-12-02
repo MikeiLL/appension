@@ -29,8 +29,8 @@
 		<div class="ui360 ui360-vis">
           <a id="endpoint_link" href="/audio/{{ track.filename }}" type="audio/mpeg"></a>
         </div></td>
-	<td><a href="/xdeletex/{{ track.id }}" class="confirmation">delete</a></td>
-	<td><a href="/xeditx/{{ track.id }}">edit</a></td>
+	<td><a href="{{ delete_url }}/{{ track.id }}" class="confirmation">delete</a></td>
+	<td><a href="{{ edit_url }}/{{ track.id }}">edit</a></td>
 	</tr>
 {% end %}
 </table>

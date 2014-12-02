@@ -5,7 +5,7 @@
 {% end %}
 {% block content %}
 <p><h2>{{ track.filename }}</h2></p>
-<form enctype="multipart/form-data" action="/gmin" method="post">
+<form enctype="multipart/form-data" action="{{ admin_url }}" method="post">
 <table border="1" width="600px">
 	<tr><td>id</td><td>Artist</td><td>Filename</td><td>Length</td><td>Status</td></tr>
 	<tr><td>{{ track.id }}</td><td>
