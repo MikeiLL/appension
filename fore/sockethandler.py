@@ -13,8 +13,7 @@ class SocketHandler(tornadio2.conn.SocketConnection):
 	@classmethod
 	def on_segment(self, data):
 		try:
-			data = json.dumps({"segment": data},
-							  ensure_ascii=False).encode('utf-8')
+			data = json.dumps({"segment": data}, ensure_ascii=False).encode('utf-8')
 			if self.listeners:
 				for i, l in enumerate(self.listeners.copy()):
 					try:

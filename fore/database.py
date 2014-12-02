@@ -10,8 +10,7 @@ log = logging.getLogger(__name__)
 class Track(object):
 	def __init__(self, id, filename, artist, title, length, status, 
 				submitter, submitteremail, submitted, lyrics, story):
-		log.info("Rendering Track(%r, %r, %r, %r, %r, %r)", id, filename, artist, 
-															title, length, status)
+		log.info("Rendering Track(%r, %r, %r, %r, %r, %r)", id, filename, artist, title, length, status)
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
