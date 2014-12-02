@@ -246,6 +246,7 @@ def admin_page(deleted=0, updated=0):
 	return templates.load("administration.html").generate(
 		all_tracks=database.get_many_mp3(status="all", order_by='id'),
 		deleted=deleted, updated=updated, compiled=compiled,
+		delete_url=apikeys.delete_url, edit_url=apikeys.edit_url,
 	)
 
 class DeleteTrack(tornado.web.RequestHandler):
@@ -258,7 +259,7 @@ class DeleteTrack(tornado.web.RequestHandler):
 class EditTrack(tornado.web.RequestHandler):
 	def get(self, input):
 		log.info("Yo we got input: %r", str(input))
-		self.write(templates.load("audition.html").generate(track=database.get_single_track(int(input))))
+		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, track=database.get_single_track(int(input))))
 	
 class AdminRender(tornado.web.RequestHandler):
 	def get(self):
@@ -316,9 +317,9 @@ if __name__ == "__main__":
 			(r"/", MainHandler),
 			(r"/submit", Userform),
 			(r"/upload", Upload),
-			(r"/gmin", AdminRender),
-			(r"/xdeletex/([0-9]+)", DeleteTrack),
-			(r"/xeditx/([0-9]+)", EditTrack),
+			(apikeys.admin_url, AdminRender),
+			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
+			(apikeys.edit_url+"/([0-9]+)", EditTrack),
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
 		]),
 		socket_io_port=config.socket_port,
