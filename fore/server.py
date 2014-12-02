@@ -259,7 +259,8 @@ class DeleteTrack(tornado.web.RequestHandler):
 class EditTrack(tornado.web.RequestHandler):
 	def get(self, input):
 		log.info("Yo we got input: %r", str(input))
-		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, track=database.get_single_track(int(input))))
+		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
+		track=database.get_single_track(int(input)), compiled=compiled))
 	
 class AdminRender(tornado.web.RequestHandler):
 	def get(self):
