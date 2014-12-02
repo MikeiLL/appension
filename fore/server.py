@@ -238,13 +238,9 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 	}
 
 class Userform(tornado.web.RequestHandler):
-	templates = tornado.template.Loader(config.template_dir)
-	templates.autoescape = None
-	template = "fileuploadform.html"
-	
 	def get(self):
 		kwargs = {}
-		self.write(templates.load(self.template).generate(**kwargs))
+		self.write(templates.load("fileuploadform.html").generate(**kwargs))
 
 class Upload(tornado.web.RequestHandler):
 	def post(self):
@@ -253,45 +249,33 @@ class Upload(tornado.web.RequestHandler):
 		self.finish("Thank you for your submission.")
 		
 class DeleteTrack(tornado.web.RequestHandler):
-	templates = tornado.template.Loader(config.template_dir)
-	templates.autoescape = None
-	template = "administration.html"
-
 	def get(self, input):
 		input = int(input) # TODO: If intification fails, send back a tidy error message, rather than just quietly deleting nothing
 		log.info("Yo we got input: %r", input)
 		database.delete_track(input)
-		self.write(templates.load(self.template).generate(
+		self.write(templates.load("administration.html").generate(
 			all_tracks=database.get_many_mp3(status="all", order_by='id'),
 			deleted=input, updated=0,
 		))
 		
 class EditTrack(tornado.web.RequestHandler):
-	templates = tornado.template.Loader(config.template_dir)
-	templates.autoescape = None
-	template = "audition.html"
-			
 	def get(self, input):
 		log.info("Yo we got input: %r", str(input))
 		# database.delete_track(input)
 		kwargs = {'track': database.get_single_track(track_id=input),}
-		self.write(templates.load(self.template).generate(**kwargs))
+		self.write(templates.load("audition.html").generate(**kwargs))
 	
 class AdminRender(tornado.web.RequestHandler):
-	templates = tornado.template.Loader(config.template_dir)
-	templates.autoescape = None
-	template = "administration.html"
-	
 	def get(self):
 		kwargs = {'all_tracks': database.get_many_mp3(status="all", order_by='id'),
 		'deleted': '',
 		'updated': '',}
-		self.write(templates.load(self.template).generate(**kwargs))
+		self.write(templates.load("administration.html").generate(**kwargs))
 		
 	def post(self):
 		kwargs = {'track': database.get_single_track(track_id=id),
 		'updated': self.request.arguments['filename'],}
-		self.write(templates.load(self.template).generate(**kwargs))
+		self.write(templates.load("administration.html").generate(**kwargs))
 
 if __name__ == "__main__":
 	Daemon()
