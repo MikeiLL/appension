@@ -241,16 +241,19 @@ class Upload(tornado.web.RequestHandler):
 		fileinfo = self.request.files['filearg'][0]
 		database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
 		self.finish("Thank you for your submission.")
-		
+
+def admin_page(deleted=0, updated=0):
+	return templates.load("administration.html").generate(
+		all_tracks=database.get_many_mp3(status="all", order_by='id'),
+		deleted=deleted, updated=updated, compiled=compiled,
+	)
+
 class DeleteTrack(tornado.web.RequestHandler):
 	def get(self, input):
 		input = int(input) # TODO: If intification fails, send back a tidy error message, rather than just quietly deleting nothing
 		log.info("Yo we got input: %r", input)
 		database.delete_track(input)
-		self.write(templates.load("administration.html").generate(
-			all_tracks=database.get_many_mp3(status="all", order_by='id'),
-			deleted=input, updated=0,
-		))
+		self.write(admin_page(deleted=input))
 		
 class EditTrack(tornado.web.RequestHandler):
 	def get(self, input):
@@ -261,13 +264,10 @@ class EditTrack(tornado.web.RequestHandler):
 	
 class AdminRender(tornado.web.RequestHandler):
 	def get(self):
-		kwargs = {'all_tracks': database.get_many_mp3(status="all", order_by='id'),
-		'deleted': '',
-		'updated': '',
-		'compiled': compiled,}
-		self.write(templates.load("administration.html").generate(**kwargs))
-		
+		self.write(admin_page())
+
 	def post(self):
+		# This looks broken atm (??)
 		kwargs = {'track': database.get_single_track(track_id=id),
 		'updated': self.request.arguments['filename'],}
 		self.write(templates.load("administration.html").generate(**kwargs))
