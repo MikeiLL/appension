@@ -1,6 +1,5 @@
 REQUIREMENTS
-        Work out Segment Info Display Timing (also change image on mute button)
--- Might be hard but is very necessary.
+        Change image on mute button
         Add Navigation and Informational Pages (everything on current site)
         Simple Design and Design Implementation
         Ensure we have all of the Correct Tracks and Versions without Duplicates
@@ -8,18 +7,9 @@ REQUIREMENTS
         Test (load testing, various platforms, browsers)
         Fix issues
         Point Domain Name to it and “publish”
--- All this should be easy enough, and necessary.
-        Status/heartbeat URL endpoint
-        Monitor: ping heartbeat, email if unsuccessful (for any definition of "unsuccessful")
 
 RECOMMENDATIONS
-        Dynamically publish Entire Piece Duration (increases with each new track)
--- Easy, just the sum of the lengths. SELECT sum(length) FROM tracks [WHERE status=1]
-        Have all the info pages load in tabs so users can stay on front page with track playing
-        Form so users can submit tracks and track details, as opposed to dropbox/email
         Auto-email admin(s) when tracks are submitted
-        Admin section to confirm new tracks into the mix
--- Yep, only admins can change status. We just look for that in the filtering.
         Fine-tune player (tracks that fade out get cross-faded, etc)
 
 STRONG DESIRES
@@ -30,8 +20,9 @@ STRONG DESIRES
 ../stories/%d.txt
         A less simple Design and Design Implementation
         Offer users a UJam.com template to play with in creating their own segment
-        Add lyrics from each segment to database, which could be displayed individually or all together
--- Displayed all together is easy enough. Just a pile of textual metadata like the story/artist info. Displaying individually would be rather harder - sync issues beset us already, let's not make 'em worse.
+        Add lyrics from each segment to database (won't be aligned to beats, just a block of text as per story)
+        Status/heartbeat URL endpoint
+        Monitor: ping heartbeat, email if unsuccessful (for any definition of "unsuccessful")
 
 REALLY COOL
         Allow Users to Browse or Search tracks based on tags (style, attitude, instrumentation) and insert into the queue
