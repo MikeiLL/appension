@@ -68,15 +68,10 @@ class MainHandler(tornado.web.RequestHandler):
 			'endpoint': StreamHandler.relay_url() if not debug else "/all.mp3",
 			'complete_length': datetime.timedelta(seconds=database.get_complete_length()[0], microseconds=0)
 		}
-		try:
-			if os.path.getmtime(config.template_dir + self.template) > self.mtime:
-				templates.reset()
-				self.mtime = time.time()
-			return templates.load(self.template).generate(**kwargs)
-		except Exception, e:
-			log.error(e)
-			tornado.web.RequestHandler.send_error(self, 500)
-			return
+		if os.path.getmtime(config.template_dir + self.template) > self.mtime:
+			templates.reset()
+			self.mtime = time.time()
+		return templates.load(self.template).generate(**kwargs)
 
 	def head(self):
 		self.__gen()
