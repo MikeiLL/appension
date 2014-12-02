@@ -273,7 +273,6 @@ class EditTrack(tornado.web.RequestHandler):
 		log.info("Yo we got input: %r", str(input))
 		# database.delete_track(input)
 		kwargs = {'track': database.get_single_track(track_id=input),}
-
 		self.write(templates.load(self.template).generate(**kwargs))
 	
 class AdminRender(tornado.web.RequestHandler):
