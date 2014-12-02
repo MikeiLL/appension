@@ -2,6 +2,12 @@
 {% block head %}
     <title>The Major Glitch - Track Submission Form</title>
 	<meta name="description" content="Submit Track to Major Glitch">
+	<script type="text/javascript" src='{{ compiled(
+          'spin.min.js',
+          'soundmanager2-nodebug-jsmin.js',
+          'berniecode-animator.js',
+          '360player.js'
+          ) }}'></script>
 {% end %}
 {% block content %}
 <p><h1>All Tracks</h1></p>
@@ -18,6 +24,9 @@
 	<tr><td>{{ track.id }}</td><td>{{ track.track_details['artist'] }}</td>
 	<td>{{ track.filename }}</td><td>{{ track.track_details['length'] }}</td>
 	<td>{{ track.track_details['status'] }}</td>
+	<td><div class="ui360 ui360-vis">
+          <a id="endpoint_link" href="{{ track.filename }}" type="audio/mpeg"></a>
+        </div></td>
 	<td><a href="/xdeletex/{{ track.id }}" class="confirmation">delete</a></td>
 	<td><a href="/xeditx/{{ track.id }}">edit</a></td>
 	</tr>
