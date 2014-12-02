@@ -100,9 +100,9 @@ def create_track(mp3data, filename, info):
 		# until we have a file, and we want to name the file based on the track ID.
 		# Resolution: Either save the file to a temporary name and then rename it,
 		# or insert a dummy row and then update it. Using the latter approach.
-		cur.execute("""INSERT INTO tracks (submitter, submitteremail, lyrics, story)
+		cur.execute("""INSERT INTO tracks (submitter, submitteremail, lyrics, story, notes)
 			VALUES (%s, %s, %s, %s) RETURNING id""",
-			(info.get("SubmitterName",[""])[0], info.get("Email",[""])[0], info.get("Lyrics",[""])[0], info.get("Story",[""])[0]))
+			(info.get("SubmitterName",[""])[0], info.get("Email",[""])[0], info.get("Lyrics",[""])[0], info.get("Story",[""])[0]), info.get("Comments",[""])[0])
 		id = cur.fetchone()[0]
 		filename = "audio/%d %s"%(id, filename)
 		with open(filename, "wb") as f: f.write(mp3data)
@@ -114,12 +114,13 @@ def create_track(mp3data, filename, info):
 		except KeyError: artist = u'(unknown artist)'
 		try: title = u', '.join(track['TIT2'].text)
 		except KeyError: title = u'(unknown title)'
-		cur.execute("UPDATE tracks SET artist=%s, title=%s, filename=%s, artwork=%s, length=%s WHERE id=%s",
+		cur.execute("UPDATE tracks SET artist=%s, title=%s, filename=%s, artwork=%s, length=%s, comments=%s WHERE id=%s",
 			(artist,
 			title,
 			track.filename[6:],
 			pic and memoryview(pic),
 			track.info.length,
+			comments,
 			id)
 		)
 		return id
