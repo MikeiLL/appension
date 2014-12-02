@@ -110,12 +110,11 @@ def create_track(mp3data, filename, info):
 		pic=next((k for k in track if k.startswith("APIC:")), None)
 		pic = pic and track[pic].data
 		if pic: print("length of pic: {}".format(len(pic)))
-		# Note: These two do not use a second parameter to get(), so that
-		# a blank value will be replaced with the given string too.
+		# Note: These need to fold absent and blank both to the given string.
 		try: artist = u', '.join(track['TPE1'].text)
-		except KeyError: artist = info.get("Artist") or u'(unknown artist)'
+		except KeyError: artist = info.get("Artist",[""])[0] or u'(unknown artist)'
 		try: title = u', '.join(track['TIT2'].text)
-		except KeyError: title = info.get("Track") or u'(unknown title)'
+		except KeyError: title = info.get("Track",[""])[0] or u'(unknown title)'
 		cur.execute("UPDATE tracks SET artist=%s, title=%s, filename=%s, artwork=%s, length=%s WHERE id=%s",
 			(artist,
 			title,
