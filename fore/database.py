@@ -129,3 +129,14 @@ def delete_track(input):
 	"""Delete the given track ID - no confirmation"""
 	with _conn, _conn.cursor() as cur:
 		cur.execute("""DELETE FROM tracks WHERE id = %s""", (input,))
+
+def update_track(id, info):
+	"""Update the given track ID based on the info mapping.
+
+	This breaks encapsulation just as create_track() does."""
+	with _conn, _conn.cursor() as cur:
+		# Enumerate all updateable fields. If they're not provided, they won't be updated;
+		# any other fields will be ignored. This is basically set intersection on a dict.
+		fields = ("artist", "status", "lyrics", "story")
+		param = {k:info[k][0] for k in fields if k in info}
+		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
