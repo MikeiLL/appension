@@ -265,10 +265,9 @@ class AdminRender(tornado.web.RequestHandler):
 		self.write(admin_page())
 
 	def post(self):
-		# This looks broken atm (??)
-		kwargs = {'track': database.get_single_track(track_id=id),
-		'updated': self.request.arguments['filename'],}
-		self.write(templates.load("administration.html").generate(**kwargs))
+		id=int(self.request.arguments['id'][0])
+		database.update_track(id, self.request.arguments)
+		self.write(admin_page(updated=id))
 
 if __name__ == "__main__":
 	Daemon()
