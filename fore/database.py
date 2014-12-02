@@ -101,8 +101,8 @@ def create_track(mp3data, filename, info):
 		# Resolution: Either save the file to a temporary name and then rename it,
 		# or insert a dummy row and then update it. Using the latter approach.
 		cur.execute("""INSERT INTO tracks (submitter, submitteremail, lyrics, story, comments)
-			VALUES (%s, %s, %s, %s) RETURNING id""",
-			(info.get("SubmitterName",[""])[0], info.get("Email",[""])[0], info.get("Lyrics",[""])[0], info.get("Story",[""])[0]), info.get("Comments",[""])[0])
+			VALUES (%s, %s, %s, %s, %s) RETURNING id""",
+			(info.get("SubmitterName",[""])[0], info.get("Email",[""])[0], info.get("Lyrics",[""])[0], info.get("Story",[""])[0], info.get("Comments",[""])[0]))
 		id = cur.fetchone()[0]
 		filename = "audio/%d %s"%(id, filename)
 		with open(filename, "wb") as f: f.write(mp3data)
