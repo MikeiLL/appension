@@ -137,31 +137,15 @@ class TimingHandler(tornado.web.RequestHandler):
 
 
 class StreamHandler(tornado.web.RequestHandler):
-	relays = []
+	clients = []
 	listeners = []
-
-	@classmethod
-	def relay_url(cls):
-		if len(cls.relays) == 1:
-			return cls.relays[0].url
-		elif len(cls.relays) > 1:
-			choices = [relay for relay in cls.relays for _ in xrange(0, relay.weight)]
-			return random.choice(choices).url
-		else:
-			return ""
 
 	@classmethod
 	def stream_frames(cls):
 		try:
-			cls.relays.broadcast()
+			cls.clients.broadcast()
 		except Exception:
 			log.error("Could not broadcast due to: \n%s", traceback.format_exc())
-
-	@classmethod
-	def check(cls):
-		#   TODO: This should do HTTP requests to ensure that all relays are
-		#   still up
-		pass
 
 	def head(self):
 		try:
@@ -173,19 +157,14 @@ class StreamHandler(tornado.web.RequestHandler):
 
 	@tornado.web.asynchronous
 	def get(self):
-		try:
-			log.info("Added new listener at %s.", self.request.remote_ip)
-			self.set_header("Content-Type", "audio/mpeg")
-			self.relays.append(self)
-		except Exception:
-			log.error("Error in stream.get:\n%s", traceback.format_exc())
-			tornado.web.RequestHandler.send_error(self, 500)
+		log.info("Added new listener at %s.", self.request.remote_ip)
+		self.set_header("Content-Type", "audio/mpeg")
+		self.clients.append(self)
 
 	def on_finish(self):
-		if self in self.relays:
-			self.relays.remove(self)
-			ip = self.request.headers.get('X-Real-Ip', self.request.remote_ip)
-			log.info("Removed relay at %s with weight %d.", ip, getattr(self,"weight",0))
+		if self in self.clients:
+			self.clients.remove(self)
+			log.info("Removed client at %s", self.request.remote_ip)
 
 
 class SocketConnection(tornadio2.conn.SocketConnection):
@@ -258,8 +237,8 @@ if __name__ == "__main__":
 
 	daemonize(database.enqueue_tracks, track_queue)
 	daemonize(info.generate, info_queue, first_frame, InfoHandler)
-	StreamHandler.relays = Listeners(v2_queue, "All", first_frame)
-	daemonize(monitordaemon,StreamHandler.relays,InfoHandler.stats,{"mp3_queue":v2_queue})
+	StreamHandler.clients = Listeners(v2_queue, "All", first_frame)
+	daemonize(monitordaemon,StreamHandler.clients,InfoHandler.stats,{"mp3_queue":v2_queue})
 
 	tornado.ioloop.PeriodicCallback(InfoHandler.clean, 5 * 1000).start()
 	tornado.ioloop.PeriodicCallback(StreamHandler.check, 10 * 1000).start()
