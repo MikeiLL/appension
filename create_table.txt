@@ -12,5 +12,5 @@ create table tracks (id serial primary key,
 		submitted timestamptz not null default now(),
 		submitter varchar not null default '',
 		submitteremail varchar not null default '',
-		comments varchar not null default '',
+		comments varchar not null default ''
 );
