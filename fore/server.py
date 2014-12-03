@@ -241,7 +241,6 @@ if __name__ == "__main__":
 	daemonize(monitordaemon,StreamHandler.clients,InfoHandler.stats,{"mp3_queue":v2_queue})
 
 	tornado.ioloop.PeriodicCallback(InfoHandler.clean, 5 * 1000).start()
-	tornado.ioloop.PeriodicCallback(StreamHandler.check, 10 * 1000).start()
 
 	application = tornado.web.Application(
 		tornadio2.TornadioRouter(SocketConnection).apply_routes([
