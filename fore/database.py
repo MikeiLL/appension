@@ -79,7 +79,7 @@ def enqueue_tracks(queue):
 def get_complete_length():
 	"""Get the sum of length of all active tracks."""
 	with _conn, _conn.cursor() as cur:
-		cur.execute("SELECT sum(length) FROM tracks WHERE status = 1")
+		cur.execute("SELECT coalesce(sum(length),0) FROM tracks WHERE status = 1")
 		return cur.fetchone()[0]
 
 def get_track_artwork(id):
