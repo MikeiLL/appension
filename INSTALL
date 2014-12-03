@@ -1,0 +1,15 @@
+sudo -e /etc/apt/sources.list
+deb http://ftp.us.debian.org/debian wheezy-backports main
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install gitk # no required - git graphic
+sudo apt-get install vlc # not required - media player
+sudo apt-get install python-mutagen # adding to requirements
+
+clone psobot remix, submodule init pyechonest setup.py install
+sudo apt-get install libav-tools lame nodejs
+sudo ln -s `which avconv` /usr/local/bin/en-ffmpeg
+maybe:
+node required
+coffeescript required
+mutagen may need to be installed with apt-get as opposed to pip

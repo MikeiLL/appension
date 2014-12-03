@@ -4,7 +4,7 @@ from liveyamlfile import LiveYamlFile
 
 
 class APIKeys(LiveYamlFile):
-    pass
+	pass
 
 # This is a dirty, dirty hack, but lets you just do:
 #   import apikeys

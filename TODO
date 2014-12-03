@@ -1,3 +1,47 @@
+REQUIREMENTS
+        Change image on mute button
+        Add Navigation and Informational Pages (everything on current site)
+        Simple Design and Design Implementation
+        Ensure we have all of the Correct Tracks and Versions without Duplicates
+        Deploy to World Wide Web (including server configuration)
+        Test (load testing, various platforms, browsers)
+        Fix issues
+        Point Domain Name to it and “publish”
+
+RECOMMENDATIONS
+        Auto-email admin(s) when tracks are submitted
+        Fine-tune player (tracks that fade out get cross-faded, etc)
+
+STRONG DESIRES
+        Add the story and/or artist info for each segment to show when user clicks on it as it goes by in player
+-- Shouldn't be too hard, is a good reason to use pointers rather than all data in ID3
+-- Curating the data is the time-consuming part
+-- Might be worth storing some of this in git, rather than the database - GitHub + PRs rather than writing your own edit screens
+../stories/%d.txt
+        A less simple Design and Design Implementation
+        Offer users a UJam.com template to play with in creating their own segment
+        Add lyrics from each segment to database (won't be aligned to beats, just a block of text as per story)
+        Status/heartbeat URL endpoint
+        Monitor: ping heartbeat, email if unsuccessful (for any definition of "unsuccessful")
+
+REALLY COOL
+        Allow Users to Browse or Search tracks based on tags (style, attitude, instrumentation) and insert into the queue
+-- That's a lot more work, leave that for later
+-- have to be concerned with spammers and trolls
+        Stats on how often a particular track has been inserted - a simple popularity contest
+        List of "Hidden gems" - tracks with low popularity
+
+Some html5 players:
+antimatter15.com/player/player.html - html5 player with id3
+https://github.com/payden/html5-mp3-id3-reader
+http://firezenk.github.io/html5player/
+https://github.com/FireZenk/html5player
+http://www.nacodes.com/2013/04/01/JavaScript-ID3-Reader-MP3-files-and-display-their-ID3-meta-data
+http://jonhall.info/how_to/create_id3_tags_using_ffmpeg
+
+
+Completed:
+
 Database Fields
 
 Get to know PostgreSQL (name derives from Ingres)

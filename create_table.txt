@@ -1,0 +1,16 @@
+create table tracks (id serial primary key,
+		artist varchar not null default '',
+		title varchar not null default '',
+		filename varchar not null default '',
+		artwork bytea not null default '',
+		length double precision not null default 0,
+		x_in varchar(10) not null default '',
+		x_out varchar(10) not null default '',
+		lyrics text not null default '',
+		story text not null default '',
+		status smallint not null default 0,
+		submitted timestamptz not null default now(),
+		submitter varchar not null default '',
+		submitteremail varchar not null default '',
+		comments varchar not null default ''
+);
