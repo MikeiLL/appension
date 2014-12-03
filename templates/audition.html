@@ -12,7 +12,7 @@
 	<input type="text" name="artist" value="{{ track.full_track_details['artist'] }}"></td>
 	<td>{{ track.filename }}</td><td>{{ track.full_track_details['length'] }}</td>
 	<td>
-		<select>
+		<select name=status>
 		<option value="0" {% if track.full_track_details['status'] == 0 %}selected{% end %}>Inactive</option>
 		<option value="1" {% if track.full_track_details['status'] == 1 %}selected{% end %}>Active</option>
 		</select> 
