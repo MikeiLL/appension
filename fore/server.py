@@ -56,16 +56,10 @@ class MainHandler(tornado.web.RequestHandler):
 	template = 'index.html'
 
 	def __gen(self):
-		debug = self.get_argument('__debug', None)
-		if debug is None:
-			debug = self.request.host.startswith("localhost")
-		else:
-			debug = debug in ["True", 1, "on"]
 		kwargs = {
-			'debug': debug,
 			'compiled': compiled,
-			'open': len(StreamHandler.relays) > 0 or debug,
-			'endpoint': StreamHandler.relay_url() if not debug else "/all.mp3",
+			'open': True, # Can have this check for server load if we ever care
+			'endpoint': "/all.mp3",
 			'complete_length': datetime.timedelta(seconds=int(database.get_complete_length()))
 		}
 		if os.path.getmtime(config.template_dir + self.template) > self.mtime:
@@ -171,19 +165,8 @@ class StreamHandler(tornado.web.RequestHandler):
 
 	def head(self):
 		try:
-			ip = self.request.headers.get('X-Real-Ip', self.request.remote_ip)
-			ua = self.request.headers.get('User-Agent', None)
-			if ua == config.relay_ua or len(self.relays) == 0:
-				log.info("Got HEAD for relay at %s.", ip)
-				self.set_header("Content-Type", "audio/mpeg")
-				self.finish()
-			else:
-				if not self.relays:
-					tornado.web.RequestHandler.send_error(self, 503)
-				else:
-					relay = self.relay_url()
-					log.info("Redirected new listener %s to %s", ip, relay)
-					self.redirect(relay)
+			self.set_header("Content-Type", "audio/mpeg")
+			self.finish()
 		except Exception:
 			log.error("Error in stream.head:\n%s", traceback.format_exc())
 			tornado.web.RequestHandler.send_error(self, 500)
@@ -191,29 +174,9 @@ class StreamHandler(tornado.web.RequestHandler):
 	@tornado.web.asynchronous
 	def get(self):
 		try:
-			ip = self.request.headers.get('X-Real-Ip', self.request.remote_ip)
-			ua = self.request.headers.get('User-Agent', None)
-			if ua == config.relay_ua:
-				url = self.request.headers['X-Relay-Addr']
-				if not url.startswith('http://'):
-					url = "http://" + url
-				port = self.request.headers['X-Relay-Port']
-				self.weight = int(self.request.headers.get('X-Relay-Weight', 1))
-				log.info("Added new relay at %s:%s with weight %d.", url, port, self.weight)
-				self.set_header("Content-Type", "audio/mpeg")
-				self.url = "%s:%s/all.mp3" % (url, port)
-				self.relays.append(self)
-			else:
-				if self.request.host.startswith("localhost:8193"):
-					log.info("Added new debug listener at %s.", ip)
-					self.set_header("Content-Type", "audio/mpeg")
-					self.relays.append(self)
-				elif not self.relays:
-					tornado.web.RequestHandler.send_error(self, 503)
-				else:
-					relay = self.relay_url()
-					log.info("Redirected new listener %s to %s", ip, relay)
-					self.redirect(relay)
+			log.info("Added new listener at %s.", self.request.remote_ip)
+			self.set_header("Content-Type", "audio/mpeg")
+			self.relays.append(self)
 		except Exception:
 			log.error("Error in stream.get:\n%s", traceback.format_exc())
 			tornado.web.RequestHandler.send_error(self, 500)
