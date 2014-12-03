@@ -3,6 +3,7 @@ import psycopg2
 import utils
 import logging
 from mutagen.mp3 import MP3
+from time import sleep
 
 _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
@@ -75,6 +76,12 @@ def enqueue_tracks(queue):
 	while True:
 		for track in get_many_mp3():
 			queue.put(track)
+		# After going through the entire list, wait 1s before going back for more.
+		# In the normal case, this should not have any significant impact; this
+		# function is run on a separate daemon thread, and it just stuffs the queue
+		# with content. But when there are no tracks at all, this prevents spinning
+		# through the database, effectively busy-waiting for content.
+		sleep(1)
 
 def get_complete_length():
 	"""Get the sum of length of all active tracks."""
