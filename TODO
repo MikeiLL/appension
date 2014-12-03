@@ -53,8 +53,11 @@ Get to know PostgreSQL (name derives from Ingres)
     psql command-line client
 
 Choose a front end player that expects an mp3 stream
+    looks like there's one bundled with foreverFM.
 
 Solve 'No handlers could be found for logger (__main__)' messages in _forever.
 Solve 'socket.error: [Errno 61] Connection refused' error in test_listener.py
 
 Experimented with numpy.ndarray.dump, numpy.savetxt and data for a 6mb mp3 is about 20mb numpy array in a text file.
+
+_forever/server.py and _forever/monitor.py create Tornado classes 
