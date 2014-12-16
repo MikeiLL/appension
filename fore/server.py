@@ -202,6 +202,11 @@ class EditTrack(tornado.web.RequestHandler):
 		log.info("Yo we got input: %r", str(input))
 		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
 		track=database.get_single_track(int(input)), compiled=compiled))
+		
+class SMDemo(tornado.web.RequestHandler):
+	def get(self):
+		log.info("Yo we got input: %r", str(input))
+		self.write(templates.load("sm.html").generate(compiled=compiled))
 	
 class AdminRender(tornado.web.RequestHandler):
 	def get(self):
@@ -262,6 +267,7 @@ if __name__ == "__main__":
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
 			(apikeys.edit_url+"/([0-9]+)", EditTrack),
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
+			(r"/sm", SMDemo),
 		]),
 		socket_io_port=config.socket_port,
 		enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
