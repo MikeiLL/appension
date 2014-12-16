@@ -205,8 +205,9 @@ class EditTrack(tornado.web.RequestHandler):
 		
 class SMDemo(tornado.web.RequestHandler):
 	def get(self):
+		
 		log.info("Yo we got input: %r", str(input))
-		self.write(templates.load("sm.html").generate(compiled=compiled))
+		self.write(templates.load("sm.html").generate(endpoint="/all.mp3", compiled=compiled))
 	
 class AdminRender(tornado.web.RequestHandler):
 	def get(self):
