@@ -275,9 +275,11 @@ $(document).ready ->
 							# and (eventually) titleN.
 							artist.innerHTML = segment.tracks[0].metadata.artist
 							if story
+								console.log("we have a story")
+								console.log(story)
 								document.getElementById('story'+tag).innerHTML = segment.tracks[0].metadata.story
 							else
-								document.getElementById('story'+tag).innerHTML = "This one is still a mystery. Please let us know if you can help."
+								document.getElementById('story'+tag).innerHTML = "This one is still a mystery. Please let us know if you can solve."
 							document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
 				# console.log(segment.tracks[0].metadata)
 				# console.log(segment.tracks[0].metadata.id)
