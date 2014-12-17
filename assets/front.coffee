@@ -260,6 +260,14 @@ $(document).ready ->
 						trackids.push(id)
 						tag = trackids.length
 						length = segment.tracks[0].metadata.length
+						if segment.tracks[0].metadata.story
+							story = segment.tracks[0].metadata.story
+							console.log('have')
+							console.log(story)
+						else
+							story = "This one is still a mystery. Please let us know if you can solve."
+							console.log('empty')
+							console.log(story)
 						minutes = Math.floor(length/60)
 						seconds = Math.floor(length%60)
 						if seconds < 10
@@ -273,7 +281,7 @@ $(document).ready ->
 							# and (eventually) titleN.
 							artist.innerHTML = segment.tracks[0].metadata.artist
 							if segment.tracks[0].metadata.story
-								story.innerHTML = segment.tracks[0].metadata.story
+								document.getElementById('story'+tag).innerHTML = segment.tracks[0].metadata.story
 							else
 								story.innerHTML = "<p>This one is still a mystery.</p> 
 													<p>Please let us know if you can help solve it.</p>"
