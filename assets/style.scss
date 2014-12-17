@@ -25,9 +25,7 @@ body {
     min-height: $min_height;
 	
 	#trackdetails {
-		width:260px;
 		margin-left:10px;
-		border: 1px solid lime;
 		display: inline-block;
 		.artist, .length {margin:0px 8px 0px 8px; color:#fff;}
 		.artist {float:left}
