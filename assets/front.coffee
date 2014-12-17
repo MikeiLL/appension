@@ -260,28 +260,37 @@ $(document).ready ->
 						trackids.push(id)
 						tag = trackids.length
 						length = segment.tracks[0].metadata.length
+						console.log(segment.tracks[0].metadata)
+						story = segment.tracks[0].metadata.story
 						minutes = Math.floor(length/60)
 						seconds = Math.floor(length%60)
 						if seconds < 10
 							seconds = "0" + seconds
 						#console.log("Recording artist"+tag+" as "+segment.tracks[0].metadata.artist)
 						artist = document.getElementById('artist'+tag)
+						story = document.getElementById('story'+tag)
 						if artist
 							# Eventually we'll run out of objects to stash info into - that's fine.
 							# Assume that every artistN has corresponding other stash-targets lengthN
 							# and (eventually) titleN.
 							artist.innerHTML = segment.tracks[0].metadata.artist
+							if story
+								document.getElementById('story'+tag).innerHTML = segment.tracks[0].metadata.story
+							else
+								document.getElementById('story'+tag).innerHTML = "This one is still a mystery. Please let us know if you can help."
 							document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
-				# console.log(segment.tracks[0].metadata.artist)
+				# console.log(segment.tracks[0].metadata)
 				# console.log(segment.tracks[0].metadata.id)
 			# Sorry, subsequent maintainer, more bad code here. -- Rosuav
 			tag = trackids.length
 			while 1
 				tag = tag + 1
 				artist = document.getElementById('artist'+tag)
+				story = document.getElementById('story'+tag)
 				if artist
 					artist.innerHTML = ""
 					document.getElementById('length'+tag).innerHTML = ""
+					document.getElementById('story'+tag).innerHTML = ""
 				else
 					break
 	setTimeout getTrackInfo, 1000
@@ -308,6 +317,7 @@ $(document).ready ->
 					#console.log(data.segment.next_track)
 					# Temporarily tagging the artist so we know it came from send_next_track
 					document.getElementById('artist').innerHTML = "[snt] " + data.segment.next_track.artist
+					document.getElementById('story').innerHTML = "[snt] " + data.segment.next_track.story
 					document.getElementById('artist_next').innerHTML = "Up next: (unknown)"
 					length = data.segment.next_track.length
 					minutes = Math.floor(length/60)
@@ -321,6 +331,8 @@ $(document).ready ->
 					# TODO Be safe against embedded HTML tags
 					document.getElementById('artist').innerHTML = window._next_artist
 					window._next_artist = data.segment.tracks[0].metadata.artist
+					document.getElementById('story').innerHTML = window._next_story
+					window._next_story = data.segment.tracks[0].metadata.story
 					document.getElementById('artist_next').innerHTML = "Up next: " + window._next_artist
 				#console.log("GetTrackDets Data " + window._count_TrackDeets + ": ")
 				#console.log(data.segment.tracks[0].metadata.artist)
