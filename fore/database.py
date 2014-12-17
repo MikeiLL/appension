@@ -19,7 +19,7 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 class Track(object):
 	def __init__(self, id, filename, artist, title, length, status, 
 				submitter, submitteremail, submitted, lyrics, story):
-		log.info("Rendering Track(%r, %r, %r, %r, %r, %r)", id, filename, artist, title, length, status)
+		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, length, status, story, lyrics)
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
@@ -30,6 +30,8 @@ class Track(object):
 			'title': title,
 			'length': length,
 			'status': status,
+			'story': story,
+			'lyrics': lyrics,
 		}
 		self.full_track_details = {
 			'id': id,
