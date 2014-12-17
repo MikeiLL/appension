@@ -233,8 +233,8 @@ $(document).ready ->
 
 	getTrackInfo = ->
 		$.getJSON "all.json", (segments) ->
-			console.log("getTrackInfo")
-			console.log(segments)
+			#console.log("getTrackInfo")
+			#console.log(segments)
 			trackids = []
 			for segment in segments
 				if segment.tracks?
@@ -248,10 +248,10 @@ $(document).ready ->
 					# Signed: Chris Angelico (Rosuav).
 					now = window.serverTime()/1000
 					if now > segment.time+segment.duration
-						console.log("Segment ["+id+"] is in the past")
+						#console.log("Segment ["+id+"] is in the past")
 						continue # Voorbij is nu voorbij :)
 					else
-						console.log("Segment ["+id+"] is in the future")
+						#console.log("Segment ["+id+"] is in the future")
 					isnew = 1
 					for t in trackids
 						if t == id
@@ -264,7 +264,7 @@ $(document).ready ->
 						seconds = Math.floor(length%60)
 						if seconds < 10
 							seconds = "0" + seconds
-						console.log("Recording artist"+tag+" as "+segment.tracks[0].metadata.artist)
+						#console.log("Recording artist"+tag+" as "+segment.tracks[0].metadata.artist)
 						artist = document.getElementById('artist'+tag)
 						if artist
 							# Eventually we'll run out of objects to stash info into - that's fine.
@@ -302,10 +302,10 @@ $(document).ready ->
 			if typeof data is "string"
 				data = JSON.parse(data)
 				if data.segment.send_next_track
-					console.log("Send next track!")
-					console.log(Date())
-					console.log(data.segment.prev_track)
-					console.log(data.segment.next_track)
+					#console.log("Send next track!")
+					#console.log(Date())
+					#console.log(data.segment.prev_track)
+					#console.log(data.segment.next_track)
 					# Temporarily tagging the artist so we know it came from send_next_track
 					document.getElementById('artist').innerHTML = "[snt] " + data.segment.next_track.artist
 					document.getElementById('artist_next').innerHTML = "Up next: (unknown)"
@@ -322,9 +322,9 @@ $(document).ready ->
 					document.getElementById('artist').innerHTML = window._next_artist
 					window._next_artist = data.segment.tracks[0].metadata.artist
 					document.getElementById('artist_next').innerHTML = "Up next: " + window._next_artist
-				console.log("GetTrackDets Data " + window._count_TrackDeets + ": ")
-				console.log(data.segment.tracks[0].metadata.artist)
-				console.log(data.segment.tracks[0].metadata.id)
+				#console.log("GetTrackDets Data " + window._count_TrackDeets + ": ")
+				#console.log(data.segment.tracks[0].metadata.artist)
+				#console.log(data.segment.tracks[0].metadata.id)
 				window._count_TrackDeets++
 			if data.listener_count?
 				window._listeners = data.listener_count
