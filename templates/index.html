@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>Major Glitch</title>
-
+		
 		<link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
         <link rel="image_src" type="image/png" href="/static/img/icon.png" />
         <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
@@ -17,8 +17,6 @@
 
         <script type="text/javascript"
           src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
-
-
         {% if open %}
         <script type="text/javascript" src='{{ compiled(
           'spin.min.js',
@@ -29,8 +27,15 @@
         <script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
         <script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
         {% end %}
-		
-		<script type="text/javascript">  <! -- TODO move to separate file -->
+
+		<script type="text/javascript"> //TODO move to separate file
+
+		threeSixtyPlayer.config.scaleFont = (navigator.userAgent.match(/msie/i)?false:true);
+		threeSixtyPlayer.config.showHMSTime = true;
+
+		// enable some spectrum stuffs
+
+		threeSixtyPlayer.config.useWaveformData = true;
 		threeSixtyPlayer.config.useEQData = true;
 
 		// enable this in SM2 as well, as needed
@@ -64,7 +69,6 @@
        
 	</head>
   <body>
-	
     <div id="menu">
       <h1>
         Major Glitch
@@ -77,13 +81,6 @@
       </div>
 	  <div id="trackdetails">
 	  <h3>Playing now(ish):</h3>
-	  <div id="popup_box">    <!-- OUR PopupBox DIV-->
-    <h1>This IS A Cool PopUp</h1>
-    <a id="popupBoxClose">Close</a>   
-</div>
-<div id="container2"> <!-- Main Page -->
-    <h1>sample</h1>
-</div>
 		  <div class="nametime">
 			<div id="artist1" class="artist"></div>
 			<div id="length1" class="length"></div>
@@ -121,7 +118,6 @@
             <input type="radio" name="css3-tabstrip-0" checked="checked" id="css3-tabstrip-0-0" /><label for="css3-tabstrip-0-0">Details</label>
             <div>
                 <h3>Devil Glitchery</h3>
-				
                 <p>Chris Butler's "The Devil Glitch" was released in 1996, and the next year was certified by the Guinness Book of World Records as the longest pop song ever, practically filling an entire CD.
 Well, now he's making it even longer, with your help. Add your contribution here, join in the Forums, or just listen and learn about the project.</p>
             </div>
