@@ -261,7 +261,10 @@ $(document).ready ->
 						tag = trackids.length
 						length = segment.tracks[0].metadata.length
 						console.log(segment.tracks[0].metadata)
-						story = segment.tracks[0].metadata.story
+						if segment.tracks[0].metadata.story
+							story = segment.tracks[0].metadata.story
+						else
+							story = "This one is still a mystery. Please let us know if you can solve."
 						minutes = Math.floor(length/60)
 						seconds = Math.floor(length%60)
 						if seconds < 10
@@ -274,12 +277,7 @@ $(document).ready ->
 							# Assume that every artistN has corresponding other stash-targets lengthN
 							# and (eventually) titleN.
 							artist.innerHTML = segment.tracks[0].metadata.artist
-							if story
-								console.log("we have a story")
-								console.log(story)
-								document.getElementById('story'+tag).innerHTML = segment.tracks[0].metadata.story
-							else
-								document.getElementById('story'+tag).innerHTML = "This one is still a mystery. Please let us know if you can solve."
+							document.getElementById('story'+tag).innerHTML = segment.tracks[0].metadata.story
 							document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
 				# console.log(segment.tracks[0].metadata)
 				# console.log(segment.tracks[0].metadata.id)
