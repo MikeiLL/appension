@@ -274,17 +274,12 @@ $(document).ready ->
 							seconds = "0" + seconds
 						#console.log("Recording artist"+tag+" as "+segment.tracks[0].metadata.artist)
 						artist = document.getElementById('artist'+tag)
-						story = document.getElementById('story'+tag)
 						if artist
 							# Eventually we'll run out of objects to stash info into - that's fine.
 							# Assume that every artistN has corresponding other stash-targets lengthN
 							# and (eventually) titleN.
 							artist.innerHTML = segment.tracks[0].metadata.artist
-							if segment.tracks[0].metadata.story
-								document.getElementById('story'+tag).innerHTML = segment.tracks[0].metadata.story
-							else
-								story.innerHTML = "<p>This one is still a mystery.</p> 
-													<p>Please let us know if you can help solve it.</p>"
+							document.getElementById('story'+tag).innerHTML = story
 							document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
 				# console.log(segment.tracks[0].metadata)
 				# console.log(segment.tracks[0].metadata.id)
@@ -296,6 +291,7 @@ $(document).ready ->
 				if artist
 					artist.innerHTML = ""
 					document.getElementById('length'+tag).innerHTML = ""
+					# document.getElementById('story'+tag).innerHTML = ""
 				else
 					break
 	setTimeout getTrackInfo, 1000

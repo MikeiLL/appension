@@ -211,41 +211,26 @@
       </div>
 	  <div id="trackdetails">
 	  <h3>Playing now(ish):</h3>
-		  <div class="nametime">
-		  <button id="popup_window" data-popup-target="#example-popup">
-		<div id="artist1" class="artist"></div>
-		  <div id="length1" class="length"></div></button>
+		{% for id in range(1,6) %}
+		<div class="nametime">
+			<button id="trackbutton{{ id }}" data-popup-target="#storypopup{{ id }}">
+				<div id="artist{{ id }}" class="artist"></div>
+				<div id="length{{ id }}" class="length"></div>
+			</button>
 
-<div id="example-popup" class="popup">
-    <div class="popup-body">	<span class="popup-exit"></span>
-
-        <div class="popup-content">
-            	<h3 class="popup-title">The Story</h3>
-
-            <p><div id="story1" class="story"></div></p>
-        </div>
-    </div>
-</div>
-<div class="popup-overlay"></div>
-			
+			<div id="storypopup{{ id }}" class="popup">
+				<div class="popup-body">
+					<span class="popup-exit"></span>
+					<div class="popup-content">
+						<h3 class="popup-title">The Story</h3>
+						<p><div id="story{{ id }}" class="story"></div></p>
+					</div>
+				</div>
 			</div>
-			
-			<div class="nametime">
-		  
-		  <div id="artist2" class="artist"></div>
-		  <div id="length2" class="length"></div></div>
-			
-			<div class="nametime">
-			<div id="artist3" class="artist"></div>
-			<div id="length3" class="length"></div>
-			</div><div class="nametime">
-			<div id="artist4" class="artist"></div>
-			<div id="length4" class="length"></div>
-			</div><div class="nametime">
-			<div id="artist5" class="artist"></div>
-			<div id="length5" class="length"></div>
-		  </div>
-	  </div>
+			<div class="popup-overlay"></div>
+		</div>
+		{% end %}
+	</div>
 	  
 	  <div>Entire piece length:{{ complete_length }}</div>
       <div id="footer">
