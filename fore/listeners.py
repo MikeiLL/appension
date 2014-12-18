@@ -57,6 +57,18 @@ class Listeners(list):
 			if self.__packet and not self.__starving:
 				self.__starving = True
 				log.critical("Dropping frames! Queue %r is starving!", self.__name)
+				try: loadavg = open("/proc/loadavg").read().strip()
+				except (IOError, OSError): loadavg = "(unknown)"
+				memfree = "(unknown)"
+				try:
+					with open("/proc/meminfo") as mem:
+						memfree = ""
+						# Grab the first four lines from /proc/meminfo and compress them for readability
+						for i in range(4):
+							memfree += " "+" ".join(next(mem).split())
+				except (IOError, OSError, StopIteration):
+					pass
+				log.critical("System load: %s/%s", loadavg, memfree)
 				log.critical("Committing suicide.")
 				sys.exit(0)
 
