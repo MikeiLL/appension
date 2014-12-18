@@ -887,7 +887,7 @@ function ThreeSixtyPlayer() {
 		return [
 		 '<canvas class="sm2-canvas" width="'+diameter+'" height="'+diameter+'"></canvas>',
 		 ' <span class="sm2-360btn sm2-360btn-default"></span>', // note use of imageMap, edit or remove if you use a different-size image.
-		 ' <div class="sm2-timing'+(navigator.userAgent.match(/safari/i)?' alignTweak':'')+'"></div>', // + Ever-so-slight Safari horizontal alignment tweak
+		 //' <div class="sm2-timing'+(navigator.userAgent.match(/safari/i)?' alignTweak':'')+'"></div>', // + Ever-so-slight Safari horizontal alignment tweak
 		 ' <div class="sm2-cover"></div>'
 		];
 
