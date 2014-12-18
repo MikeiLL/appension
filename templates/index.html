@@ -29,7 +29,7 @@
         {% end %}
 		
 		<style type="text/css">
-		#popup_window{
+		.track-button {
 			background: red;
 			cursor: pointer;
 			color: #fff;
@@ -213,7 +213,7 @@
 	  <h3>Playing now(ish):</h3>
 		{% for id in range(1,6) %}
 		<div class="nametime">
-			<button id="trackbutton{{ id }}" data-popup-target="#storypopup{{ id }}">
+			<button id="trackbutton{{ id }}" class="track-button" data-popup-target="#storypopup{{ id }}">
 				<div id="artist{{ id }}" class="artist"></div>
 				<div id="length{{ id }}" class="length"></div>
 			</button>
