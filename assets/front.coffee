@@ -290,8 +290,8 @@ $(document).ready ->
 				artist = document.getElementById('artist'+tag)
 				if artist
 					artist.innerHTML = ""
-					document.getElementById('length'+tag).innerHTML = ""
-					# document.getElementById('story'+tag).innerHTML = ""
+					document.getElementById('length'+tag).innerHTML = "Loading..."
+					document.getElementById('story'+tag).innerHTML = "We're still loading info for that track, sit tight! :)"
 				else
 					break
 	setTimeout getTrackInfo, 1000
