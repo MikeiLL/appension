@@ -293,11 +293,9 @@ $(document).ready ->
 			while 1
 				tag = tag + 1
 				artist = document.getElementById('artist'+tag)
-				story = document.getElementById('story'+tag)
 				if artist
 					artist.innerHTML = ""
 					document.getElementById('length'+tag).innerHTML = ""
-					document.getElementById('story'+tag).innerHTML = ""
 				else
 					break
 	setTimeout getTrackInfo, 1000
@@ -324,7 +322,6 @@ $(document).ready ->
 					#console.log(data.segment.next_track)
 					# Temporarily tagging the artist so we know it came from send_next_track
 					document.getElementById('artist').innerHTML = "[snt] " + data.segment.next_track.artist
-					document.getElementById('story').innerHTML = "[snt] " + data.segment.next_track.story
 					document.getElementById('artist_next').innerHTML = "Up next: (unknown)"
 					length = data.segment.next_track.length
 					minutes = Math.floor(length/60)
@@ -338,8 +335,6 @@ $(document).ready ->
 					# TODO Be safe against embedded HTML tags
 					document.getElementById('artist').innerHTML = window._next_artist
 					window._next_artist = data.segment.tracks[0].metadata.artist
-					document.getElementById('story').innerHTML = window._next_story
-					window._next_story = data.segment.tracks[0].metadata.story
 					document.getElementById('artist_next').innerHTML = "Up next: " + window._next_artist
 				#console.log("GetTrackDets Data " + window._count_TrackDeets + ": ")
 				#console.log(data.segment.tracks[0].metadata.artist)
