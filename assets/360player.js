@@ -477,7 +477,7 @@ function ThreeSixtyPlayer() {
         oUIBox: self.getElementsByClassName('sm2-360ui','div',oContainer)[0],
         oCanvas: canvasElements[canvasElements.length-1],
         oButton: self.getElementsByClassName('sm2-360btn','span',oContainer)[0],
-        oTiming: self.getElementsByClassName('sm2-timing','div',oContainer)[0],
+        //oTiming: self.getElementsByClassName('sm2-timing','div',oContainer)[0],
         oCover: self.getElementsByClassName('sm2-cover','div',oContainer)[0],
         circleDiameter: diameter,
         circleRadius: diameter/2,
@@ -512,10 +512,10 @@ function ThreeSixtyPlayer() {
           var thisSound = this;
           thisSound._360data.radius = parseInt(thisSound._360data.radiusMax*thisSound._360data.amplifier*nProgress, 10);
           thisSound._360data.width = parseInt(thisSound._360data.widthMax*thisSound._360data.amplifier*nProgress, 10);
-          if (thisSound._360data.scaleFont && thisSound._360data.fontSizeMax !== null) {
-            thisSound._360data.oTiming.style.fontSize = parseInt(Math.max(1,thisSound._360data.fontSizeMax*nProgress), 10)+'px';
-            thisSound._360data.oTiming.style.opacity = nProgress;
-          }
+          //if (thisSound._360data.scaleFont && thisSound._360data.fontSizeMax !== null) {
+          //  thisSound._360data.oTiming.style.fontSize = parseInt(Math.max(1,thisSound._360data.fontSizeMax*nProgress), 10)+'px';
+          //  thisSound._360data.oTiming.style.opacity = nProgress;
+          //}
           if (thisSound.paused || thisSound.playState === 0 || thisSound._360data.lastValues.bytesLoaded === 0 || thisSound._360data.lastValues.position === 0) {
             self.updatePlaying.apply(thisSound);
           }
@@ -529,9 +529,9 @@ function ThreeSixtyPlayer() {
       }
 
       // minimize ze font
-      if (thisSound._360data.scaleFont && thisSound._360data.fontSizeMax !== null) {
-        thisSound._360data.oTiming.style.fontSize = '1px';
-      }
+      //if (thisSound._360data.scaleFont && thisSound._360data.fontSizeMax !== null) {
+      //  thisSound._360data.oTiming.style.fontSize = '1px';
+      //}
 
       // set up ze animation
       thisSound._360data.oAnim.addSubject(thisSound._360data.oAnimProgress,thisSound);
@@ -854,7 +854,7 @@ function ThreeSixtyPlayer() {
 
     if (timeNow !== this._360data.lastTime) {
       this._360data.lastTime = timeNow;
-      this._360data.oTiming.innerHTML = timeNow;
+      //this._360data.oTiming.innerHTML = timeNow;
     }
 
     // draw spectrum, if applicable
@@ -967,7 +967,7 @@ function ThreeSixtyPlayer() {
     return [
      '<canvas class="sm2-canvas" width="'+diameter+'" height="'+diameter+'"></canvas>',
      ' <span class="sm2-360btn sm2-360btn-default"></span>', // note use of imageMap, edit or remove if you use a different-size image.
-     ' <div class="sm2-timing'+(navigator.userAgent.match(/safari/i)?' alignTweak':'')+'"></div>', // + Ever-so-slight Safari horizontal alignment tweak
+     //' <div class="sm2-timing'+(navigator.userAgent.match(/safari/i)?' alignTweak':'')+'"></div>', // + Ever-so-slight Safari horizontal alignment tweak
      ' <div class="sm2-cover"></div>'
     ];
 
