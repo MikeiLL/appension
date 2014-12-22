@@ -111,7 +111,7 @@ def create_track(mp3data, filename, info):
 		# or insert a dummy row and then update it. Using the latter approach.
 		cur.execute("""INSERT INTO tracks (submitter, submitteremail, lyrics, story, comments)
 			VALUES (%s, %s, %s, %s, %s) RETURNING id""",
-			(info.get("SubmitterName",[""])[0], info.get("Email",[""])[0], info.get("Lyrics",[""])[0], info.get("Story",[""])[0], info.get("Comments",[""])[0]))
+			(info.get("submitter_name",[""])[0], info.get("email",[""])[0], info.get("lyrics",[""])[0], info.get("story",[""])[0], info.get("comments",[""])[0]))
 		id = cur.fetchone()[0]
 		filename = "audio/%d %s"%(id, filename)
 		with open(filename, "wb") as f: f.write(mp3data)
@@ -121,9 +121,9 @@ def create_track(mp3data, filename, info):
 		if pic: print("length of pic: {}".format(len(pic)))
 		# Note: These need to fold absent and blank both to the given string.
 		try: artist = u', '.join(track['TPE1'].text)
-		except KeyError: artist = info.get("Artist",[""])[0] or u'(unknown artist)'
+		except KeyError: artist = info.get("artist",[""])[0] or u'(unknown artist)'
 		try: title = u', '.join(track['TIT2'].text)
-		except KeyError: title = info.get("Track",[""])[0] or u'(unknown title)'
+		except KeyError: title = info.get("track_title",[""])[0] or u'(unknown title)'
 		cur.execute("UPDATE tracks SET artist=%s, title=%s, filename=%s, artwork=%s, length=%s WHERE id=%s",
 			(artist,
 			title,
