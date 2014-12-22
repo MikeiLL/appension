@@ -5,18 +5,19 @@
 {% end %}
 {% block content %}
 <p><h1>Submit Track</h1></p>
-<form enctype="multipart/form-data" action="/upload" method="post">
+<form enctype="multipart/form-data" action="/submit" method="post">
 <table class="submission_form">
-<tr><td width="200px">Your Name:</td><td> <input type="text" name="SubmitterName" /></td></tr>
-<tr><td>Email: </td><td><input type="text" name="Email" /></td></tr>
-<tr><td>Artist Name: </td><td><input type="text" name="Artist" /> (used if missing from mp3 data)</td></tr>
-<tr><td>Track Title: </td><td><input type="text" name="Track" /> (used if missing from mp3 data)</td></tr>
-<tr><td colspan="2">MP3 File: <input type="file" name="filearg" /></td></tr>
-<tr><td colspan="2">Story behind the track:<br/> <textarea rows=10 cols=80 name="Story"></textarea></td></tr>
-<tr><td colspan="2">Lyrics: <br/><textarea rows=10 cols=80  name="Lyrics"></textarea></td></tr>
-<tr><td colspan="2">Comments: <br/><textarea rows=10 cols=80  name="Comments"></textarea></td></tr>
+<tr><td width="200px">Your Name:</td><td> {{ form.submitter_name }}</td></tr>
+<tr><td>Email: </td><td>{{ form.email }}</td></tr>
+<tr><td>Artist Name: </td><td>{{ form.artist }} (used if missing from mp3 data)</td></tr>
+<tr><td>Track Title: </td><td>{{ form.track_title }}(used if missing from mp3 data)</td></tr>
+<tr><td colspan="2">MP3 File: {{ form.mp3_file }}</td></tr>
+<tr><td colspan="2">Story behind the track:<br/> {{ form.story(rows=10,cols=60) }}</td></tr>
+<tr><td colspan="2">Lyrics: <br/>{{ form.lyrics(rows=10,cols=60) }}</textarea></td></tr>
+<tr><td colspan="2">Comments: <br/>{{ form.comments(rows=10,cols=60)}}</td></tr>
 
 <tr><td colspan="2" align="right"><input type="submit" value="upload" /></td></tr>
 </table>
 </form>
 {% end %}
+

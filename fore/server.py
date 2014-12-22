@@ -19,6 +19,7 @@ import time
 import info
 import uuid
 import random
+import wtforms
 import datetime
 import threading
 import traceback
@@ -33,6 +34,7 @@ from mixer import Mixer
 from daemon import Daemon
 from utils import daemonize
 from listeners import Listeners
+from wtforms_tornado import Form
 from assetcompiler import compiled
 from sockethandler import SocketHandler
 from bufferedqueue import BufferedReadQueue
@@ -173,15 +175,34 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 		"/monitor.websocket": MonitorSocket
 	}
 
+class EasyForm(Form):
+	submitter_name = wtforms.TextField('submitter_name', validators=[wtforms.validators.DataRequired()], default=u'Your Name')
+	email = wtforms.TextField('email', validators=[wtforms.validators.Email(), wtforms.validators.DataRequired()])
+	artist = wtforms.TextField('artist', validators=[])
+	track_title = wtforms.TextField('track_title', validators=[])
+	mp3_file = wtforms.FileField(u'mp3_file', validators=[])
+	story = wtforms.TextAreaField('story', validators=[])
+	lyrics = wtforms.TextAreaField('lyrics', validators=[])
+	comments = wtforms.TextAreaField('comments', validators=[])
+
 class Userform(tornado.web.RequestHandler):
 	def get(self):
-		self.write(templates.load("fileuploadform.html").generate(compiled=compiled))
-
-class Upload(tornado.web.RequestHandler):
+		form = EasyForm()
+		self.write(templates.load("fileuploadform.html").generate(compiled=compiled, form=form))
+		
 	def post(self):
-		fileinfo = self.request.files['filearg'][0]
-		database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
-		self.finish("Thank you for your submission.")
+		form = EasyForm(self.request.arguments)
+		details = 'You submitted:<br/>';
+		if form.validate():
+			for f in self.request.arguments:
+				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
+			fileinfo = self.request.files['mp3_file'][0]
+			details += "<hr/>" + fileinfo['filename']
+			database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
+			self.write(details)
+		else:
+			self.set_status(400)
+			self.write(form.errors)
 
 def admin_page(deleted=0, updated=0):
 	return templates.load("administration.html").generate(
@@ -226,31 +247,6 @@ class TrackArtwork(tornado.web.RequestHandler):
 		else:
 			self.set_header("Content-Type","image/jpeg")
 			self.write(str(art))
-			
-import wtforms
-from wtforms_tornado import Form
-
-class EasyForm(Form):
-		  name = wtforms.TextField('name', validators=[wtforms.validators.DataRequired()], default=u'test')
-		  email = wtforms.TextField('email', validators=[wtforms.validators.Email(), wtforms.validators.DataRequired()])
-		  message = wtforms.TextAreaField('message', validators=[wtforms.validators.DataRequired()])
-		  media = wtforms.FileField(u'file', validators=[]) # wtforms.validators.DataRequired()])
-
-class SimpleForm(tornado.web.RequestHandler):
-	def get(self):
-		form = EasyForm()
-		self.write(templates.load("simpleform.html").generate(compiled=compiled, form=form))
-
-	def post(self):
-		form = EasyForm(self.request.arguments)
-		details = '';
-		if form.validate():
-			for f in self.request.arguments:
-				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
-			self.write(details)
-		else:
-			self.set_status(400)
-			self.write(form.errors)
 
 if __name__ == "__main__":
 	Daemon()
@@ -288,8 +284,6 @@ if __name__ == "__main__":
 			(r"/monitor", MonitorHandler),
 			(r"/", MainHandler),
 			(r"/submit", Userform),
-			(r"/upload", Upload),
-			(r"/simple", SimpleForm),
 			(apikeys.admin_url, AdminRender),
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
 			(apikeys.edit_url+"/([0-9]+)", EditTrack),
