@@ -62,4 +62,5 @@ uTidylib==0.2
 unattended-upgrades==0.1
 wadllib==1.3.2
 wsgiref==0.1.2
+wtforms-tornado==0.0.2
 zope.interface==4.1.1
