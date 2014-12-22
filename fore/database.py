@@ -18,8 +18,9 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 class Track(object):
 	def __init__(self, id, filename, artist, title, length, status, 
-				submitter, submitteremail, submitted, lyrics, story):
-		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, length, status, story, lyrics)
+				submitter, submitteremail, submitted, lyrics, story, comments):
+		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
+																	length, status, story, lyrics, comments)
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
@@ -44,6 +45,7 @@ class Track(object):
 			'submitteremail': submitteremail,
 			'lyrics': lyrics,
 			'story': story,
+			'comments': comments,
 		}
 
 def get_mp3(some_specifier):
@@ -57,7 +59,8 @@ def get_many_mp3(status=1, order_by='length'):
 	Returns a list, guaranteed to be fully realized prior to finishing
 	with the database cursor, for safety.
 	"""
-	query = """SELECT id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story
+	query = """SELECT id,filename,artist,title,length,status,submitter,submitteremail,submitted,\
+				lyrics,story, comments
 		FROM tracks WHERE {col}=%s ORDER BY {ord}""".format(col=("'all'" if status=='all' else 'status'), ord=order_by)
 	with _conn, _conn.cursor() as cur:
 		cur.execute(query, (status,))
@@ -66,7 +69,8 @@ def get_many_mp3(status=1, order_by='length'):
 def get_single_track(track_id):
 	"""Get details for a single track by its ID"""
 	with _conn, _conn.cursor() as cur:
-		cur.execute("""SELECT id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story
+		cur.execute("""SELECT id,filename,artist,title,length,status,submitter,submitteremail,\
+					submitted,lyrics,story, comments
 		FROM tracks WHERE id=%s""", (track_id,))
 		return Track(*cur.fetchone())
 

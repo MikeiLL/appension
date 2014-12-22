@@ -35,6 +35,8 @@
 	{{ track.full_track_details['lyrics'] }}</textarea></td></tr>
 	<tr><td colspan="6">Story:<br>
 	<textarea rows=10 cols=80 name="story">{{ track.full_track_details['story'] }}</textarea></td></tr>
+	<tr><td colspan="6">Comments:<br>
+	<textarea rows=10 cols=80 name="comments">{{ track.full_track_details['comments'] }}</textarea></td></tr>
 	<input type="hidden" name="id" value="{{ track.id }}">
 	<tr><td colspan="3">Submitted: {{ track.full_track_details['submitter'] }}</td>
 	<td colspan="2"><a href="mailto:{{ track.full_track_details['submitteremail'] }}">{{ track.full_track_details['submitteremail'] }}</a></td>
