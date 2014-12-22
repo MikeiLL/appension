@@ -36,7 +36,7 @@
 				$('html').addClass('overlay');
 				var activePopup = $(this).attr('data-popup-target');
 				$(activePopup).addClass('visible');
-
+				$(activePopup).addClass(overflow="scroll");
 			});
 
 			$(document).keyup(function (e) {
