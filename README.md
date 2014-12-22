@@ -3,7 +3,7 @@ appension
 =========
 
 Echonest player for devil glitch extension
- - major glitch - the longest pop song ever
+ - Infinite glitch - the longest pop song ever
 
 This is a collection of scripts for exploring ways to dynamically append segments of a VERY LONG song.
 

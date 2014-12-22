@@ -6,7 +6,7 @@
 ## Description
 
 ### Appension streaming music player for the   
-### Major Glitch Online Music Project
+### Infinite Glitch Online Music Project
 
 (_Additional elements of website described below_.)
 
