@@ -171,7 +171,7 @@ def update_track(id, info):
 
 def create_user(username, email, password):
 	"""Create a new user, return the newly-created ID"""
-	username = username.lower()
+	username = username.lower(); email = email.lower()
 	with _conn, _conn.cursor() as cur:
 		salt = os.urandom(16)
 		hash = hashlib.sha256(salt+password).hexdigest()
