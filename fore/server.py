@@ -280,13 +280,12 @@ if __name__ == "__main__":
 
 	log.info("Starting %s...", config.app_name)
 
-	track_queue = multiprocessing.Queue()
 	log.info("Initializing read queue to hold %2.2f seconds of audio.",
 			 config.frontend_buffer)
 	v2_queue = BufferedReadQueue(int(config.frontend_buffer / SECONDS_PER_FRAME))
 	info_queue = multiprocessing.Queue()
 
-	mixer = Mixer(track_queue,v2_queue.raw,info_queue)
+	mixer = Mixer(v2_queue.raw,info_queue)
 	mixer.start()
 
 	daemonize(info.generate, info_queue, first_frame, InfoHandler)
