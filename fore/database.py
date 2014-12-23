@@ -4,6 +4,8 @@ import utils
 import logging
 import Queue
 import multiprocessing
+import os
+import hashlib
 from mutagen.mp3 import MP3
 from time import sleep
 
@@ -166,3 +168,26 @@ def update_track(id, info):
 		fields = ("artist", "status", "lyrics", "story")
 		param = {k:info[k][0] for k in fields if k in info}
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
+
+def create_user(username, email, password):
+	"""Create a new user, return the newly-created ID"""
+	username = username.lower()
+	with _conn, _conn.cursor() as cur:
+		salt = os.urandom(16)
+		hash = hashlib.sha256(salt+password).hexdigest()
+		pwd = salt.encode("hex")+"-"+hash
+		cur.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s) RETURNING id", (username, email, pwd))
+		return cur.fetchone()[0]
+
+def verify_user(user_or_email, password):
+	"""Verify a user name/email and password, returns the ID if valid or None if not"""
+	user_or_email = user_or_email.lower()
+	with _conn, _conn.cursor() as cur:
+		cur.execute("SELECT id,password FROM users WHERE username=%s OR email=%s", (user_or_email, user_or_email))
+		for id, pwd in cur:
+			if "-" not in pwd: continue
+			salt, hash = pwd.split("-", 1)
+			if hashlib.sha256(salt.decode("hex")+password).hexdigest()==hash:
+				# Successful match.
+				return id
+	# If we fall through without finding anything that matches, return None.
