@@ -256,7 +256,7 @@ class UserForm(Form):
 class CreateUser(UserForm):
 	user_name = wtforms.TextField('user_name', validators=[wtforms.validators.Length(min=4, max=25), wtforms.validators.DataRequired()], default=u'Your Name')
 	password = wtforms.PasswordField('New Password', [
-		wtforms.validators.Required(), wtforms.validators.Length(min=7, max=25),
+		wtforms.validators.Required(), wtforms.validators.Length(min=8, max=25),
 		wtforms.validators.EqualTo('confirm', message='Passwords must match')
 	])
 	confirm = wtforms.PasswordField('Repeat Password')
@@ -273,7 +273,8 @@ class CreateAccount(tornado.web.RequestHandler):
 		if form.validate():
 			for f in self.request.arguments:
 				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
-			# database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
+			database.create_user(self.get_argument('user_name'), self.get_argument('email'),\
+								self.get_argument('password'))
 			self.write(details)
 		else:
 			self.set_status(400)
