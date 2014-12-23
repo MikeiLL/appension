@@ -1,0 +1,19 @@
+{% extends main.html %}
+{% block head %}
+    <title>Infinite Glitch - Create Account</title>
+	<meta name="description" content="Create Infinite Glitch User Account">
+{% end %}
+{% block content %}
+<p><h1>Create Account</h1></p>
+<form enctype="multipart/form-data" action="/create_account" method="post">
+<table class="create_account_form">
+<tr><td width="200px">Your Name:</td><td> {{ form.user_name }}</td></tr>
+<tr><td>Email: </td><td>{{ form.email }}</td></tr>
+<tr><td>Password: </td><td>{{ form.password }} </td></tr>
+<tr><td>Password again: </td><td>{{ form.confirm }}</td></tr>
+<tr><td>{{ form.accept_tos }} </td><td>I accept the terms and conditions</td></tr>
+<tr><td colspan="2" align="right"><input type="submit" value="Create Account" /></td></tr>
+</table>
+</form>
+{% end %}
+
