@@ -249,7 +249,7 @@ class TrackArtwork(tornado.web.RequestHandler):
 			self.write(str(art))
 			
 class CreateUser(Form):
-	user_name = wtforms.TextField('submitter_name', validators=[wtforms.validators.Length(min=4, max=25), wtforms.validators.DataRequired()], default=u'Your Name')
+	user_name = wtforms.TextField('user_name', validators=[wtforms.validators.Length(min=4, max=25), wtforms.validators.DataRequired()], default=u'Your Name')
 	email = wtforms.TextField('email', validators=[wtforms.validators.Email(), wtforms.validators.DataRequired()])
 	password = wtforms.PasswordField('New Password', [
 		wtforms.validators.Required(),
@@ -264,7 +264,7 @@ class CreateAccount(tornado.web.RequestHandler):
 		self.write(templates.load("create_account.html").generate(compiled=compiled, form=form))
 		
 	def post(self):
-		form = EasyForm(self.request.arguments)
+		form = CreateUser(self.request.arguments)
 		details = 'You submitted:<br/>';
 		if form.validate():
 			for f in self.request.arguments:
