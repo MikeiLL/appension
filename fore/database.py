@@ -172,6 +172,7 @@ def update_track(id, info):
 def create_user(username, email, password):
 	"""Create a new user, return the newly-created ID"""
 	username = username.lower(); email = email.lower()
+	if not isinstance(password, bytes): password=password.encode("utf-8")
 	with _conn, _conn.cursor() as cur:
 		salt = os.urandom(16)
 		hash = hashlib.sha256(salt+password).hexdigest()
@@ -182,6 +183,7 @@ def create_user(username, email, password):
 def verify_user(user_or_email, password):
 	"""Verify a user name/email and password, returns the ID if valid or None if not"""
 	user_or_email = user_or_email.lower()
+	if not isinstance(password, bytes): password=password.encode("utf-8")
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id,password FROM users WHERE username=%s OR email=%s", (user_or_email, user_or_email))
 		for id, pwd in cur:
