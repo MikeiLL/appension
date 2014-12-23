@@ -12,7 +12,6 @@ import traceback
 import threading
 import subprocess
 import multiprocessing
-import Queue # for Queue.Empty
 
 from lame import Lame
 from timer import Timer
@@ -288,8 +287,7 @@ def generate_metadata(a):
 
 
 class Mixer(multiprocessing.Process):
-	def __init__(self, iqueue, oqueue, infoqueue):
-		self.iqueue = iqueue
+	def __init__(self, oqueue, infoqueue):
 		self.infoqueue = infoqueue
 
 		self.encoder = None
@@ -361,22 +359,11 @@ class Mixer(multiprocessing.Process):
 	def __db_2_volume(self, loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
 
-	def get_track(self):
-		"""Pull a track off the queue, or pick automatically if none enqueued"""
-		try:
-			track=self.iqueue.get(False)
-			log.info("Using enqueued track %s.", track.id)
-		except Queue.Empty:
-			track=database.get_track_automatic() # Note that this can raise ValueError, which will simply propagate.
-			log.info("Automatically picking track %s.", track.id)
-		database.record_track_played(track.id)
-		return track
-
 	def generate_tracks(self):
 		"""Yield a series of lists of track segments - helper for run()"""
 		while len(self.tracks) < 2:
 			log.info("Waiting for a new track.")
-			track = self.get_track()
+			track = database.get_track_to_play()
 			try:
 				self.add_track(track)
 				log.info("Got a new track.")
@@ -407,7 +394,7 @@ class Mixer(multiprocessing.Process):
 				gc.collect()
 			log.info("Waiting for a new track.")
 			try:
-				self.add_track(self.get_track())
+				self.add_track(database.get_track_to_play())
 				log.info("Got a new track.")
 			except ValueError:
 				log.warning("Track too short! Trying another.")
