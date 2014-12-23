@@ -19,6 +19,8 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 class Track(object):
+	# Select these from the tracks table to construct a track object.
+	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments"
 	def __init__(self, id, filename, artist, title, length, status, 
 				submitter, submitteremail, submitted, lyrics, story, comments):
 		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
@@ -61,9 +63,7 @@ def get_many_mp3(status=1, order_by='length'):
 	Returns a list, guaranteed to be fully realized prior to finishing
 	with the database cursor, for safety.
 	"""
-	query = """SELECT id,filename,artist,title,length,status,submitter,submitteremail,submitted,\
-				lyrics,story, comments
-		FROM tracks WHERE {col}=%s ORDER BY {ord}""".format(col=("'all'" if status=='all' else 'status'), ord=order_by)
+	query = "SELECT {cols} FROM tracks WHERE {col}=%s ORDER BY {ord}""".format(cols=Track.columns, col=("'all'" if status=='all' else 'status'), ord=order_by)
 	with _conn, _conn.cursor() as cur:
 		cur.execute(query, (status,))
 		return [Track(*row) for row in cur.fetchall()]
@@ -80,8 +80,7 @@ def get_track_to_play():
 			track=_track_queue.get(False)
 			log.info("Using enqueued track %s.", track.id)
 		except Queue.Empty:
-			cur.execute("""SELECT id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments
-				FROM tracks WHERE status=1 ORDER BY played,random()""")
+			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY played,random()")
 			row=cur.fetchone()
 			if not row: raise ValueError("Database is empty, cannot enqueue track")
 			track=Track(*row)
@@ -93,16 +92,14 @@ def get_track_to_play():
 
 def enqueue_track(id):
 	with _conn, _conn.cursor() as cur:
-		cur.execute("UPDATE tracks SET enqueued=enqueued+1 WHERE ID=%s RETURNING id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments", (id,))
+		cur.execute("UPDATE tracks SET enqueued=enqueued+1 WHERE ID=%s RETURNING "+Track.columns, (id,))
 		# Assumes the ID is actually valid (will raise TypeError if not)
 		_track_queue.put(Track(*cur.fetchone()))
 
 def get_single_track(track_id):
 	"""Get details for a single track by its ID"""
 	with _conn, _conn.cursor() as cur:
-		cur.execute("""SELECT id,filename,artist,title,length,status,submitter,submitteremail,\
-					submitted,lyrics,story, comments
-		FROM tracks WHERE id=%s""", (track_id,))
+		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE id=%s", (track_id,))
 		return Track(*cur.fetchone())
 
 def get_complete_length():
