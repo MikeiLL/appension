@@ -65,7 +65,19 @@ def get_many_mp3(status=1, order_by='length'):
 	with _conn, _conn.cursor() as cur:
 		cur.execute(query, (status,))
 		return [Track(*row) for row in cur.fetchall()]
-		
+
+def get_track_automatic():
+	"""Get a track from the database, picking by magic.
+
+	Exact algorithm is subject to change at any time. Will raise ValueError if database is empty.
+	"""
+	with _conn, _conn.cursor() as cur:
+		cur.execute("""SELECT id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments
+			FROM tracks WHERE status=1 ORDER BY played,random()""")
+		row=cur.fetchone()
+		if row: return Track(*row)
+		raise ValueError("Database is empty, cannot enqueue track")
+
 def get_single_track(track_id):
 	"""Get details for a single track by its ID"""
 	with _conn, _conn.cursor() as cur:
@@ -73,21 +85,6 @@ def get_single_track(track_id):
 					submitted,lyrics,story, comments
 		FROM tracks WHERE id=%s""", (track_id,))
 		return Track(*cur.fetchone())
-
-def enqueue_tracks(queue):
-	"""Repeatedly enumerate tracks and enqueue them.
-	
-	Designed to be daemonized.
-	"""
-	while True:
-		for track in get_many_mp3():
-			queue.put(track)
-		# After going through the entire list, wait 1s before going back for more.
-		# In the normal case, this should not have any significant impact; this
-		# function is run on a separate daemon thread, and it just stuffs the queue
-		# with content. But when there are no tracks at all, this prevents spinning
-		# through the database, effectively busy-waiting for content.
-		sleep(1)
 
 def get_complete_length():
 	"""Get the sum of length of all active tracks."""
@@ -153,3 +150,10 @@ def update_track(id, info):
 		fields = ("artist", "status", "lyrics", "story")
 		param = {k:info[k][0] for k in fields if k in info}
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
+
+def record_track_played(id):
+	"""Record that a track has been played.
+
+	Currently simply increments the counter; may later keep track of how long since played, etc."""
+	with _conn, _conn.cursor() as cur:
+		cur.execute("UPDATE tracks SET played=played+1 WHERE id=%s", (id,))
