@@ -1,28 +1,33 @@
 REQUIREMENTS
-        Change image on mute button
         Add Navigation and Informational Pages (everything on current site)
         Simple Design and Design Implementation
         Ensure we have all of the Correct Tracks and Versions without Duplicates
-        Deploy to World Wide Web (including server configuration)
         Test (load testing, various platforms, browsers)
         Fix issues
         Point Domain Name to it and “publish”
+-- All this should be easy enough, and necessary.
+        Status/heartbeat URL endpoint
+        Monitor: ping heartbeat, email if unsuccessful (for any definition of "unsuccessful")
 
 RECOMMENDATIONS
+        A Login/Sign Up page invites people to register or log in, to gain the ability to submit tracks, enqueue existing tracks, etc.
+        Anyone not logged in is a guest. Guests basically have the same UI as we see today.
+        Admins log in using the same page, and can - in addition to what regular logged-in users can do - approve tracks for publication.
         Auto-email admin(s) when tracks are submitted
-        Fine-tune player (tracks that fade out get cross-faded, etc)
+        Sort/filter tracks in admin section (just add a way to configure what's displayed)
+        Regular users need to be able to see their own submitted tracks, but can't enqueue or edit them. There will be an ID listed, which the user can quote to an admin (eg in email) saying "Please withdraw this track", or somesuch.
+        The queue will no longer have any sorting done of its own. Instead of calling get_many_mp3() to enumerate all tracks,  enqueue_tracks() would repeatedly add a single track, and only if there's nothing explicitly enqueued. (How does it pick a track? Maybe random?)
 
 STRONG DESIRES
         Add the story and/or artist info for each segment to show when user clicks on it as it goes by in player
--- Shouldn't be too hard, is a good reason to use pointers rather than all data in ID3
 -- Curating the data is the time-consuming part
 -- Might be worth storing some of this in git, rather than the database - GitHub + PRs rather than writing your own edit screens
 ../stories/%d.txt
         A less simple Design and Design Implementation
         Offer users a UJam.com template to play with in creating their own segment
-        Add lyrics from each segment to database (won't be aligned to beats, just a block of text as per story)
-        Status/heartbeat URL endpoint
-        Monitor: ping heartbeat, email if unsuccessful (for any definition of "unsuccessful")
+        Add lyrics from each segment to database, which could be displayed individually or all together
+-- Displayed all together is easy enough. Just a pile of textual metadata like the story/artist info. Displaying individually would be rather harder - sync issues beset us already, let's not make 'em worse.
+        Alternate forms of login eg Google, Facebook, Twitter (mostly OAuth) - alternates which can be used instead of passwords, though we'll still have to support passwords for obvious reasons
 
 REALLY COOL
         Allow Users to Browse or Search tracks based on tags (style, attitude, instrumentation) and insert into the queue
@@ -30,34 +35,5 @@ REALLY COOL
 -- have to be concerned with spammers and trolls
         Stats on how often a particular track has been inserted - a simple popularity contest
         List of "Hidden gems" - tracks with low popularity
-
-Some html5 players:
-antimatter15.com/player/player.html - html5 player with id3
-https://github.com/payden/html5-mp3-id3-reader
-http://firezenk.github.io/html5player/
-https://github.com/FireZenk/html5player
-http://www.nacodes.com/2013/04/01/JavaScript-ID3-Reader-MP3-files-and-display-their-ID3-meta-data
-http://jonhall.info/how_to/create_id3_tags_using_ffmpeg
-
-
-Completed:
-
-Database Fields
-
-Get to know PostgreSQL (name derives from Ingres)
-    Workflow is important:
-      Start a transaction
-      Do the work
-      Rollback or Commit
-    psycopg2
-    psql command-line client
-
-Choose a front end player that expects an mp3 stream
-    looks like there's one bundled with foreverFM.
-
-Solve 'No handlers could be found for logger (__main__)' messages in _forever.
-Solve 'socket.error: [Errno 61] Connection refused' error in test_listener.py
-
-Experimented with numpy.ndarray.dump, numpy.savetxt and data for a 6mb mp3 is about 20mb numpy array in a text file.
-
-_forever/server.py and _forever/monitor.py create Tornado classes 
+        Regular users might want the ability to edit their own tracks, either before or after the track is approved.
+        Prevent abuse of the enqueue feature - eg disallow the same track more than N times within M tracks
