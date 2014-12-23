@@ -247,6 +247,33 @@ class TrackArtwork(tornado.web.RequestHandler):
 		else:
 			self.set_header("Content-Type","image/jpeg")
 			self.write(str(art))
+			
+class CreateUser(Form):
+	user_name = wtforms.TextField('submitter_name', validators=[wtforms.validators.Length(min=4, max=25), wtforms.validators.DataRequired()], default=u'Your Name')
+	email = wtforms.TextField('email', validators=[wtforms.validators.Email(), wtforms.validators.DataRequired()])
+	password = wtforms.PasswordField('New Password', [
+		wtforms.validators.Required(),
+		wtforms.validators.EqualTo('confirm', message='Passwords must match')
+	])
+	confirm = wtforms.PasswordField('Repeat Password')
+	accept_tos = wtforms.BooleanField('I accept the TOS', [wtforms.validators.Required()])
+	
+class CreateAccount(tornado.web.RequestHandler):
+	def get(self):
+		form = CreateUser()
+		self.write(templates.load("create_account.html").generate(compiled=compiled, form=form))
+		
+	def post(self):
+		form = EasyForm(self.request.arguments)
+		details = 'You submitted:<br/>';
+		if form.validate():
+			for f in self.request.arguments:
+				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
+			# database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
+			self.write(details)
+		else:
+			self.set_status(400)
+			self.write(form.errors)
 
 if __name__ == "__main__":
 	Daemon()
@@ -283,6 +310,7 @@ if __name__ == "__main__":
 			(r"/monitor", MonitorHandler),
 			(r"/", MainHandler),
 			(r"/submit", Userform),
+			(r"/create_account", CreateAccount),
 			(apikeys.admin_url, AdminRender),
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
 			(apikeys.edit_url+"/([0-9]+)", EditTrack),

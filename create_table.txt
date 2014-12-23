@@ -14,5 +14,12 @@ create table tracks (id serial primary key,
 		submitteremail varchar not null default '',
 		comments varchar not null default '',
 		enqueued int not null default 0,
-		played int not null default 0,
+		played int not null default 0
+);
+
+
+create table users (id serial primary key,
+		username varchar not null default '',
+		email varchar not null default '',
+		password varchar not null default ''
 );
