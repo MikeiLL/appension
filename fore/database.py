@@ -193,3 +193,9 @@ def verify_user(user_or_email, password):
 				# Successful match.
 				return id
 	# If we fall through without finding anything that matches, return None.
+
+def show_user(id):
+	with _conn, _conn.cursor() as cur:
+		cur.execute("SELECT username FROM users WHERE id=%s", (id,))
+		row = cur.fetchone()
+		return row # and row[0]?

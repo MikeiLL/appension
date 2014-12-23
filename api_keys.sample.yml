@@ -3,3 +3,9 @@ db_connect_string: ""
 admin_url: /123administration45
 delete_url: /x1x2x3x4x5
 edit_url: /hard_to_guess
+cookie_monster: llsfZyohQDa4kRdCCqnoV3gpD8jaHUY0kfkKI3pZlZ4=
+# in python you can generate like this:
+# import base64
+# import uuid 
+# print base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes) 
+# Thanks to https://gist.github.com/didip/823887

@@ -53,7 +53,11 @@ templates = tornado.template.Loader(config.template_dir)
 templates.autoescape = None
 first_frame = threading.Semaphore(0)
 
-class MainHandler(tornado.web.RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
+    def get_current_user(self):
+        return self.get_secure_cookie("user")
+		
+class MainHandler(BaseHandler):
 	mtime = 0
 	template = 'index.html'
 
@@ -185,7 +189,7 @@ class EasyForm(Form):
 	lyrics = wtforms.TextAreaField('lyrics', validators=[])
 	comments = wtforms.TextAreaField('comments', validators=[])
 
-class Userform(tornado.web.RequestHandler):
+class Userform(BaseHandler):
 	def get(self):
 		form = EasyForm()
 		self.write(templates.load("fileuploadform.html").generate(compiled=compiled, form=form))
@@ -211,26 +215,26 @@ def admin_page(deleted=0, updated=0):
 		delete_url=apikeys.delete_url, edit_url=apikeys.edit_url,
 	)
 
-class DeleteTrack(tornado.web.RequestHandler):
+class DeleteTrack(BaseHandler):
 	def get(self, input):
 		input = int(input) # TODO: If intification fails, send back a tidy error message, rather than just quietly deleting nothing
 		log.info("Yo we got input: %r", input)
 		database.delete_track(input)
 		self.write(admin_page(deleted=input))
 
-class EditTrack(tornado.web.RequestHandler):
+class EditTrack(BaseHandler):
 	def get(self, input):
 		log.info("Yo we got input: %r", str(input))
 		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
 		track=database.get_single_track(int(input)), compiled=compiled))
 		
-class SMDemo(tornado.web.RequestHandler):
+class SMDemo(BaseHandler):
 	def get(self):
 		
 		log.info("Yo we got input: %r", str(input))
 		self.write(templates.load("sm.html").generate(endpoint="/all.mp3", compiled=compiled))
 	
-class AdminRender(tornado.web.RequestHandler):
+class AdminRender(BaseHandler):
 	def get(self):
 		self.write(admin_page())
 
@@ -262,6 +266,7 @@ class CreateUser(UserForm):
 	confirm = wtforms.PasswordField('Repeat Password')
 	accept_tos = wtforms.BooleanField('I accept the TOS', [wtforms.validators.Required()])
 	
+	
 class CreateAccount(tornado.web.RequestHandler):
 	def get(self):
 		form = CreateUser()
@@ -276,6 +281,30 @@ class CreateAccount(tornado.web.RequestHandler):
 			database.create_user(self.get_argument('user_name'), self.get_argument('email'),\
 								self.get_argument('password'))
 			self.write(details)
+		else:
+			self.set_status(400)
+			self.write(form.errors)
+			
+class Login(tornado.web.RequestHandler):
+	def get(self):
+		form = UserForm()
+		self.write(templates.load("login.html").generate(compiled=compiled, form=form))
+		
+	def post(self):
+		form = UserForm(self.request.arguments)
+		details = 'You submitted:<br/>';
+		if form.validate():
+			for f in self.request.arguments:
+				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
+			try:
+				user_id = database.verify_user(self.get_argument('email'),\
+								self.get_argument('password'))
+				log.info(user_id)
+				user_name = database.show_user(str(1))[0]
+				self.set_secure_cookie("glitch_cookie_user", user_name)
+				self.write("Your cookie had not been set yet," + " " + user_name)
+			except NameError:
+				self.write(details)
 		else:
 			self.set_status(400)
 			self.write(form.errors)
@@ -315,6 +344,7 @@ if __name__ == "__main__":
 			(r"/", MainHandler),
 			(r"/submit", Userform),
 			(r"/create_account", CreateAccount),
+			(r"/login", Login),
 			(apikeys.admin_url, AdminRender),
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
 			(apikeys.edit_url+"/([0-9]+)", EditTrack),
@@ -322,6 +352,7 @@ if __name__ == "__main__":
 			(r"/sm", SMDemo),
 		]),
 		socket_io_port=config.socket_port,
+		cookie_secret=apikeys.cookie_monster,
 		enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
 	)
 
