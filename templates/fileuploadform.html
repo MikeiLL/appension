@@ -6,6 +6,7 @@
 {% block content %}
 <p><h1>Submit Track</h1></p>
 <form enctype="multipart/form-data" action="/submit" method="post">
+Hello {{ user_name }}!
 <table class="submission_form">
 <tr><td width="200px">Your Name:</td><td> {{ form.submitter_name }}</td></tr>
 <tr><td>Email: </td><td>{{ form.email }}</td></tr>

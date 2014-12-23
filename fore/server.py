@@ -189,10 +189,12 @@ class EasyForm(Form):
 	lyrics = wtforms.TextAreaField('lyrics', validators=[])
 	comments = wtforms.TextAreaField('comments', validators=[])
 
-class Userform(BaseHandler):
+class Submissionform(BaseHandler):
+	@tornado.web.authenticated
 	def get(self):
 		form = EasyForm()
-		self.write(templates.load("fileuploadform.html").generate(compiled=compiled, form=form))
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		self.write(templates.load("fileuploadform.html").generate(compiled=compiled, form=form, user_name=user_name))
 		
 	def post(self):
 		form = EasyForm(self.request.arguments)
@@ -288,7 +290,12 @@ class CreateAccount(tornado.web.RequestHandler):
 class Login(tornado.web.RequestHandler):
 	def get(self):
 		form = UserForm()
-		self.write(templates.load("login.html").generate(compiled=compiled, form=form))
+		try:
+			errormessage = self.get_argument("error")
+		except:
+			errormessage = ""
+		self.write(templates.load("login.html").generate(compiled=compiled, form=form, \
+														errormessage = errormessage ))
 		
 	def post(self):
 		form = UserForm(self.request.arguments)
@@ -296,18 +303,22 @@ class Login(tornado.web.RequestHandler):
 		if form.validate():
 			for f in self.request.arguments:
 				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
-			try:
-				user_id = database.verify_user(self.get_argument('email'),\
+			user_id = database.verify_user(self.get_argument('email'),\
 								self.get_argument('password'))
-				log.info(user_id)
+			if user_id:
 				user_name = database.show_user(str(1))[0]
-				self.set_secure_cookie("glitch_cookie_user", user_name)
-				self.write("Your cookie had not been set yet," + " " + user_name)
-			except NameError:
+				self.set_secure_cookie("user", user_name)
+				self.redirect(self.get_argument("next", "/"))
+			else:
 				self.write(details)
 		else:
 			self.set_status(400)
 			self.write(form.errors)
+			
+class Logout(BaseHandler):
+    def get(self):
+        self.clear_cookie("user")
+        self.redirect(self.get_argument("next", "/"))
 
 if __name__ == "__main__":
 	Daemon()
@@ -342,9 +353,10 @@ if __name__ == "__main__":
 
 			(r"/monitor", MonitorHandler),
 			(r"/", MainHandler),
-			(r"/submit", Userform),
+			(r"/submit", Submissionform),
 			(r"/create_account", CreateAccount),
 			(r"/login", Login),
+			(r"/logout", Logout),
 			(apikeys.admin_url, AdminRender),
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
 			(apikeys.edit_url+"/([0-9]+)", EditTrack),
@@ -353,6 +365,7 @@ if __name__ == "__main__":
 		]),
 		socket_io_port=config.socket_port,
 		cookie_secret=apikeys.cookie_monster,
+		login_url="/login",
 		enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
 	)
 

@@ -4,7 +4,10 @@
 	<meta name="description" content="Create Infinite Glitch User Account">
 {% end %}
 {% block content %}
-<p><h1>Create Account</h1></p>
+<p><h1>Login</h1></p>
+<fieldset>
+        <span class="errormessage"></span>
+</fieldset>
 <form enctype="multipart/form-data" action="/login" method="post">
 <table class="create_account_form">
 <tr><td width="200px">Email: </td><td>{{ form.email }}</td></tr>
