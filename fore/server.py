@@ -248,11 +248,15 @@ class TrackArtwork(tornado.web.RequestHandler):
 			self.set_header("Content-Type","image/jpeg")
 			self.write(str(art))
 			
-class CreateUser(Form):
-	user_name = wtforms.TextField('user_name', validators=[wtforms.validators.Length(min=4, max=25), wtforms.validators.DataRequired()], default=u'Your Name')
+class UserForm(Form):
 	email = wtforms.TextField('email', validators=[wtforms.validators.Email(), wtforms.validators.DataRequired()])
 	password = wtforms.PasswordField('New Password', [
-		wtforms.validators.Required(),
+		wtforms.validators.Required()])
+		
+class CreateUser(UserForm):
+	user_name = wtforms.TextField('user_name', validators=[wtforms.validators.Length(min=4, max=25), wtforms.validators.DataRequired()], default=u'Your Name')
+	password = wtforms.PasswordField('New Password', [
+		wtforms.validators.Required(), wtforms.validators.Length(min=7, max=25),
 		wtforms.validators.EqualTo('confirm', message='Passwords must match')
 	])
 	confirm = wtforms.PasswordField('Repeat Password')

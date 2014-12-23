@@ -13,6 +13,7 @@ body {
   overflow-x: hidden;
   min-height: $min_height;
 
+  .legal_stuff {width:500px; margin-bottom:2em;}
 
   #menu {
     background: rgba(1.0, 1.0, 1.0, 0.55);
