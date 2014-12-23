@@ -21,5 +21,6 @@ create table tracks (id serial primary key,
 create table users (id serial primary key,
 		username varchar not null default '',
 		email varchar not null default '',
-		password varchar not null default ''
+		password varchar not null default '',
+		user_level int not null default 1
 );
