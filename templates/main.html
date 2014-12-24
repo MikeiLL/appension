@@ -2,45 +2,66 @@
    "http://www.w3.org/TR/html4/loose.dtd">
    
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-
 	{% block head %}
+	<head>
+	  <meta charset="utf-8">
 		<title>Infinite Glitch</title>
-		<meta name="author" content="mZoo.org">
-	{% end %}
- 
-	<script type="text/javascript"
-			src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
-	<link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
-	<link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
-	
-</head>
-
-<body>
-<header>
-	{% block header %}<a href="/">Home</a>{% end %}
-</header>
-<content>
-	{% block content %}{% end %}
-</content>
-<footer>
-	{% block footer %}	<a href="/">Home</a> &copy; 2014 Future Fossil <a href="mailto:beezwax@aol.com">Contact</a>
-	<link href='{{ compiled(
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
+        <link rel="image_src" type="image/png" href="/static/img/icon.png" />
+        <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
+        <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
+		<link href='{{ compiled('tabs.scss') }}' rel='stylesheet' type='text/css' />
+        <link href='{{ compiled(
           'sprites.css',
           'flashblock.css',
-          '360player_admin.css',
-          '360player-visualization_admin.css'
+          '360player.css',
+          '360player-visualization.css'
         ) }}' rel='stylesheet' type='text/css' />
-	<script type="text/javascript" src='{{ compiled(
-          'spin.min.js',
-          'soundmanager2-nodebug-jsmin.js',
-          'berniecode-animator.js',
-          '360player_admin.js'
-          ) }}'></script>
-	<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
-	<script type="text/javascript" src='{{ compiled('front.coffee') }}'></script>
+
+	</head>
 	{% end %}
-</footer>
+<body>
+<div id="pagewrap">
+
+	<div id="header"><h1>
+			Infinite Glitch
+		  </h1></div>
+	
+	<div id="left">
+		{% block sidebar %}
+			{% if {{user_name}} %}
+			<p>Hello {{ user_name }}!</p>
+			{% end %}
+		{% end %}
+	</div>
+	
+	<div id="central">
+		{% block content %}<p>totally empty page</p>{% end %}
+	</div>	
+	<br style="clear:both"/>
+	<div class="footer">
+		
+		{% block footer %}	
+			<a href="/">Home</a> &copy; 2014 Future Fossil 
+			<a href="mailto:beezwax@aol.com">Contact</a> |
+			<a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>
+				
+			<script type="text/javascript"
+			  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
+			<script type="text/javascript" src='{{ compiled(
+			  'spin.min.js',
+			  'soundmanager2-nodebug-jsmin.js',
+			  'berniecode-animator.js',
+			  '360player.js'
+			  ) }}'></script>
+			<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+			<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
+			<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
+		{% end %}
+	</div>
+</div>
+
 </body>
 </html>

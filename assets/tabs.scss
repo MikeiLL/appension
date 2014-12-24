@@ -116,6 +116,8 @@
 .css3-tabstrip input[type="radio"]:checked:not(:disabled) ~ div
 {
     display: block;
+	height: 500px;
+	overflow: scroll;
 }
  
 .css3-tabstrip input[type="radio"]:disabled + label

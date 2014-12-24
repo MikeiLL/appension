@@ -1,134 +1,20 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Infinite Glitch</title>
-		
-		<link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
-        <link rel="image_src" type="image/png" href="/static/img/icon.png" />
-        <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
-        <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
-		<link href='{{ compiled('tabs.scss') }}' rel='stylesheet' type='text/css' />
-        <link href='{{ compiled(
-          'sprites.css',
-          'flashblock.css',
-          '360player.css',
-          '360player-visualization.css'
-        ) }}' rel='stylesheet' type='text/css' />
+{% extends main.html %}
 
-        <script type="text/javascript"
-          src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
-        {% if open %}
-        <script type="text/javascript" src='{{ compiled(
-          'spin.min.js',
-          'soundmanager2-nodebug-jsmin.js',
-          'berniecode-animator.js',
-          '360player.js'
-          ) }}'></script>
-        <script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
-        <script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
-        {% end %}
-
-		<script type='text/javascript'>//<![CDATA[ 
-		$(window).load(function(){
-		jQuery(document).ready(function ($) {
-
-			$('[data-popup-target]').click(function () {
-				$('html').addClass('overlay');
-				var activePopup = $(this).attr('data-popup-target');
-				$(activePopup).addClass('visible');
-				$(activePopup).addClass(overflow="scroll");
-			});
-
-			$(document).keyup(function (e) {
-				if (e.keyCode == 27 && $('html').hasClass('overlay')) {
-					clearPopup();
-				}
-			});
-
-			$('.popup-exit').click(function () {
-				clearPopup();
-
-			});
-
-			$('.popup-overlay').click(function () {
-				clearPopup();
-			});
-
-			function clearPopup() {
-				$('.popup.visible').addClass('transitioning').removeClass('visible');
-				$('html').removeClass('overlay');
-
-				setTimeout(function () {
-					$('.popup').removeClass('transitioning');
-				}, 200);
-			}
-
-		});
-		});//]]>  
-
-		</script>
-
-
-		<script type="text/javascript"> //TODO move to separate file
-
-		threeSixtyPlayer.config.scaleFont = (navigator.userAgent.match(/msie/i)?false:true);
-		threeSixtyPlayer.config.showHMSTime = true;
-
-		// enable some spectrum stuffs
-
-		threeSixtyPlayer.config.useWaveformData = true;
-		threeSixtyPlayer.config.useEQData = true;
-
-		// enable this in SM2 as well, as needed
-
-		if (threeSixtyPlayer.config.useWaveformData) {
-		  soundManager.flash9Options.useWaveformData = true;
-		}
-		if (threeSixtyPlayer.config.useEQData) {
-		  soundManager.flash9Options.useEQData = true;
-		}
-		if (threeSixtyPlayer.config.usePeakData) {
-		  soundManager.flash9Options.usePeakData = true;
-		}
-
-		if (threeSixtyPlayer.config.useWaveformData || threeSixtyPlayer.flash9Options.useEQData || threeSixtyPlayer.flash9Options.usePeakData) {
-		  // even if HTML5 supports MP3, prefer flash so the visualization features can be used.
-		  soundManager.preferFlash = true;
-		}
-
-		// favicon is expensive CPU-wise, but can be used.
-		if (window.location.href.match(/hifi/i)) {
-		  threeSixtyPlayer.config.useFavIcon = true;
-		}
-
-		if (window.location.href.match(/html5/i)) {
-		  // for testing IE 9, etc.
-		  soundManager.useHTML5Audio = true;
-		}
-
-		</script>
-       
-	</head>
-  <body>
-    <div id="menu">
-      <h1>
-        Infinite Glitch
-      </h1>
-      <div id="player">
-        <div id="sm2-container"></div>
-        <div class="ui360 ui360-vis">
-          <a id="endpoint_link" href="{{ endpoint }}"></a>
-        </div>
-      </div>
-	  <div id="trackdetails">
-	  <h3>Playing now(ish):</h3>
-		{% for id in range(1,4) %}
+{% block sidebar %}
+	<div id="player">
+		<div id="sm2-container"></div>
+		<div class="ui360 ui360-vis">
+		  <a id="endpoint_link" href="{{ endpoint }}"></a>
+		</div>
+	</div>
+  <div id="trackdetails">
+  <h3>Playing now(ish):</h3>
+	{% for id in range(1,4) %}
 		<div class="nametime">
 			<button id="trackbutton{{ id }}" class="track-button" data-popup-target="#storypopup{{ id }}">
 				<div id="artist{{ id }}" class="artist"></div>
 				<div id="length{{ id }}" class="length"></div>
 			</button>
-
 			<div id="storypopup{{ id }}" class="popup">
 				<div class="popup-body">
 					<span class="popup-exit"></span>
@@ -138,25 +24,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="popup-overlay"></div>
 		</div>
-		<br>
-		{% end %}
+		<div class="popup-overlay"></div>
+	{% end %}
+	<div>Entire piece length:{{ complete_length }}</div>
 	</div>
-	  
-	  <div>Entire piece length:{{ complete_length }}</div>
-      <div id="footer">
-        by Chris Butler
-        <div class="affiliates">
-          <div class="powered">powered by:</div>
-          
-          <a class="echonest"
-             target="_blank"
-             href="http://the.echonest.com"
-             title="Audio analysis by the Echo Nest"><span class="echonest"></span></a>
-        </div>
-      </div>
-    </div>
+{% end %}
+{% block content %}
 	<div id="content" style="z-index:0">
 	<div class="css3-tabstrip">
     <ul>
@@ -240,19 +114,16 @@ Well, now he's making it even longer, with your help. Add your contribution here
     </ul>
 	</div><!--End Content Div -->
 	
-	  {% if open %} 
-	  <div class="soundmanager-debug">
-      </div>
-      {% else %}
-      <div id="message" style="width: 80%; margin: 15% 0 0 15%; text-align: center; font-size: 2em;">
-	  <h1>We're sorry...</h1>
-      <p>
-            Infinite Glitch is currently <strong>over capacity</strong>.
-            Please check back soon!
-      </p>
-      </div>
-    {% end %}
-    </div>
-	</body>
-</html>
+		{% if open %} 
 
+		{% else %}
+		  <div id="message" style="width: 80%; margin: 15% 0 0 15%; text-align: center; font-size: 2em;">
+		  <h1>We're sorry...</h1>
+		  <p>
+				Infinite Glitch is currently <strong>over capacity</strong>.
+				Please check back soon!
+		  </p>
+		  </div>
+		{% end %}
+    </div>
+{% end %}

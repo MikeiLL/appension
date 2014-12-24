@@ -1,30 +1,401 @@
 
 $min_height = 470px;
 
-html { width: 100%; position: relative; height: 100%; }
-
 body {
-  padding: 0;
-  margin: 0;
-  background: url(/static/img/background.png) #d5d5d5;
-  font-family: "Signika", "Meta", "Helvetica", "Arial", sans-serif;
-  font-weight: 300;
-  width: 100%;
-  overflow-x: hidden;
-  min-height: $min_height;
+	padding: 0;
+	margin: 0;
+	background: url(/static/img/background.png) #d5d5d5;
+	font-family: "Signika", "Meta", "Helvetica", "Arial", sans-serif;
+	font-weight: 300;
+	width: 100%;
+	min-height: $min_height;
 
-  .legal_stuff {width:500px; margin-bottom:2em;}
+	.legal_stuff {width:500px; margin-bottom:2em;}
 
-  #menu {
-    background: rgba(1.0, 1.0, 1.0, 0.55);
-    width: 284px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 5;
-    min-height: $min_height;
-	
+	/*! HTML5 Boilerplate v4.3.0 | MIT License | http://h5bp.com/ */
+
+	/*
+	 * What follows is the result of much research on cross-browser styling.
+	 * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
+	 * Kroc Camen, and the H5BP dev community and team.
+	 */
+
+	/* ==========================================================================
+	   Base styles: opinionated defaults
+	   ========================================================================== */
+	/* STRUCTURE BOF mZoo 3col*/
+
+	#pagewrap {
+		padding: 5px;
+	}
+	#header {
+		height: 50px;
+		padding: 0 15px;
+	}
+	#left {
+		width: 290px;
+		float: left;
+		padding: 5px 15px;
+		min-height:500px;
+	}
+
+	#central {
+		width: 594px; /* Account for margins + border values */
+		float: left;
+		padding: 5px 15px;
+		margin: 0px 5px 5px 5px;
+		display: inline-block;
+	}
+
+
+	#footer {
+		clear: both;
+		padding: 0 15px;
+	}
+
+	/*EOF mZoo 3col*/
+
+	/*BOF Three column flowing mZoo*/
+	#example p:first-of-type {font-weight:600;}
+
+
+	html {
+		color: #222;
+		font-size: 1em;
+		line-height: 1.4;
+	}
+
+	/*
+	 * Remove text-shadow in selection highlight: h5bp.com/i
+	 * These selection rule sets have to be separate.
+	 * Customize the background color to match your design.
+	 */
+
+	::-moz-selection {
+		background: #b3d4fc;
+		text-shadow: none;
+	}
+
+	::selection {
+		background: #b3d4fc;
+		text-shadow: none;
+	}
+
+	/*
+	 * A better looking default horizontal rule
+	 */
+
+	hr {
+		display: block;
+		height: 1px;
+		border: 0;
+		border-top: 1px solid #ccc;
+		margin: 1em 0;
+		padding: 0;
+	}
+
+	/*
+	 * Remove the gap between images, videos, audio and canvas and the bottom of
+	 * their containers: h5bp.com/i/440
+	 */
+
+	audio,
+	canvas,
+	img,
+	svg,
+	video {
+		vertical-align: middle;
+	}
+
+	/*
+	 * Remove default fieldset styles.
+	 */
+
+	fieldset {
+		border: 0;
+		margin: 0;
+		padding: 0;
+	}
+
+	/*
+	 * Allow only vertical resizing of textareas.
+	 */
+
+	textarea {
+		resize: vertical;
+	}
+
+	/* ==========================================================================
+	   Browse Happy prompt
+	   ========================================================================== */
+
+	.browsehappy {
+		margin: 0.2em 0;
+		background: #ccc;
+		color: #000;
+		padding: 0.2em 0;
+	}
+
+	/* ==========================================================================
+	   Author's custom styles
+	   ========================================================================== */
+
+	#example p:first-of-type {font-weight:600;}
+	@media all and (max-width: 900px) and (min-width: 600px) {
+	#example p  {
+	  -webkit-column-count: 2; /* Saf3, Chrome*/
+	  -webkit-column-gap: 4%; /* Saf3, Chrome*/
+	  -moz-column-count: 2; /* FF3.5+ */
+	  -moz-column-gap: 4%; /* FF3.5+ */
+	  column-count: 2; /* Opera 11+*/
+	  column-gap: 4%; /* Opera 11+*/
+	  }
+	}
+
+	@media all and (min-width: 900px) {
+	#example p:first-of-type  {
+	  -webkit-column-count: 2;
+	  -webkit-column-gap: 3%; /* Saf3, Chrome*/
+	  -moz-column-count: 2;   
+	  -moz-column-gap: 3%; /* FF3.5+ */
+	  column-count: 2;        
+	  column-gap: 3%; /* Opera 11+*/
+	  }
+	   #example p  {
+	  -webkit-column-count: 3;
+	  -webkit-column-gap: 1%; /* Saf3, Chrome*/
+	  -moz-column-count: 3;   
+	  -moz-column-gap: 1%; /* FF3.5+ */
+	  column-count: 3;        
+	  column-gap: 1%; /* Opera 11+*/
+	  }
+	}
+
+	/* ==========================================================================
+	   Helper classes
+	   ========================================================================== */
+
+	/*
+	 * Hide from both screenreaders and browsers: h5bp.com/u
+	 */
+
+	.hidden {
+		display: none !important;
+		visibility: hidden;
+	}
+
+	/*
+	 * Hide only visually, but have it available for screenreaders: h5bp.com/v
+	 */
+
+	.visuallyhidden {
+		border: 0;
+		clip: rect(0 0 0 0);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		width: 1px;
+	}
+
+	/*
+	 * Extends the .visuallyhidden class to allow the element to be focusable
+	 * when navigated to via the keyboard: h5bp.com/p
+	 */
+
+	.visuallyhidden.focusable:active,
+	.visuallyhidden.focusable:focus {
+		clip: auto;
+		height: auto;
+		margin: 0;
+		overflow: visible;
+		position: static;
+		width: auto;
+	}
+
+	/*
+	 * Hide visually and from screenreaders, but maintain layout
+	 */
+
+	.invisible {
+		visibility: hidden;
+	}
+
+	/*
+	 * Clearfix: contain floats
+	 *
+	 * For modern browsers
+	 * 1. The space content is one way to avoid an Opera bug when the
+	 *    `contenteditable` attribute is included anywhere else in the document.
+	 *    Otherwise it causes space to appear at the top and bottom of elements
+	 *    that receive the `clearfix` class.
+	 * 2. The use of `table` rather than `block` is only necessary if using
+	 *    `:before` to contain the top-margins of child elements.
+	 */
+
+	.clearfix:before,
+	.clearfix:after {
+		left: " "; /* 1 */
+		display: table; /* 2 */
+	}
+
+	.clearfix:after {
+		clear: both;
+	}
+
+	/* ==========================================================================
+	   EXAMPLE Media Queries for Responsive Design.
+	   These examples override the primary ('mobile first') styles.
+	   Modify as content requires.
+	   ========================================================================== */
+
+	@media only screen and (min-width: 35em) {
+		/* Style adjustments for viewports that meet the condition */
+	}
+
+	/************************************************************************************
+	MEDIA QUERIES
+	*************************************************************************************/
+	/* for 980px or less mZoo 3col*/
+	 @media all and (max-width: 980px) {
+				
+		#pagewrap {
+			width: 94%;
+		}
+		#left {
+			width: 41%;
+			max-width: 290px;
+			padding: 1% 4%;
+			min-height:500px;
+		}
+		#central {
+			width: 41%;
+			padding: 1% 4%;
+			margin: 0px 0px 5px 5px;
+		}
+		
+
+		#header, #footer {
+			padding: 1% 4%;
+		}
+		
+	}
+	/* for 600px or less mZoo 3col*/
+	@media screen and (max-width: 600px) {
+
+		#left {
+			width: auto;
+			float: none;
+			min-height:450px;
+		}
+		
+		#central {
+			width: auto;
+			float: none;
+			margin-left: 0px;
+		}
+		
+
+	}
+
+	/* for 480px or less mZoo 3col*/
+	@media screen and (max-width: 480px) {
+
+		#header {
+			height: auto;
+		}
+		#left {
+			width: auto;
+			float: none;
+			min-height:50px;
+		}
+		
+		h1 {
+			font-size: 2em;
+		}
+
+
+	}
+
+	@media print,
+		   (-o-min-device-pixel-ratio: 5/4),
+		   (-webkit-min-device-pixel-ratio: 1.25),
+		   (min-resolution: 120dpi) {
+		/* Style adjustments for high resolution devices */
+	}
+
+	/* ==========================================================================
+	   Print styles.
+	   Inlined to avoid required HTTP connection: h5bp.com/r
+	   ========================================================================== */
+
+	@media print {
+		* {
+			background: transparent !important;
+			color: #000 !important; /* Black prints faster: h5bp.com/s */
+			box-shadow: none !important;
+			text-shadow: none !important;
+		}
+
+		a,
+		a:visited {
+			text-decoration: underline;
+		}
+
+		a[href]:after {
+			left: " (" attr(href) ")";
+		}
+
+		abbr[title]:after {
+			left: " (" attr(title) ")";
+		}
+
+		/*
+		 * Don't show links for images, or javascript/internal links
+		 */
+
+		a[href^="javascript:"]:after,
+		a[href^="#"]:after {
+			left: "";
+		}
+
+		pre,
+		blockquote {
+			border: 1px solid #999;
+			page-break-inside: avoid;
+		}
+
+		thead {
+			display: table-header-group; /* h5bp.com/t */
+		}
+
+		tr,
+		img {
+			page-break-inside: avoid;
+		}
+
+		img {
+			max-width: 100% !important;
+		}
+
+		p,
+		h2,
+		h3 {
+			orphans: 3;
+			widows: 3;
+		}
+
+		h2,
+		h3 {
+			page-break-after: avoid;
+		}
+	}
+	/*mZoo 2col*/
+
+	#left {
+		background: rgba(1.0, 1.0, 1.0, 0.55);
+		
 	#trackdetails {
 		margin-left:10px;
 		display: inline-block;
@@ -34,58 +405,38 @@ body {
 		.nametime {display:inline-block;background:red}
 	}
 
-    #player {
-      width: 256px;
-      margin: 29px 22px 4px;
-      overflow: hidden;
-      z-index: 5;
-    }
+	#player {
+	  width: 256px;
+	  margin: 29px 22px 4px;
+	  overflow: hidden;
+	  z-index: 5;
+	}
 	
 	.track-button {
 	background: red;
 	cursor: pointer;
 	color: #fff;
-}
+	}
 	
 	#admin_player {
-      width: 50px;
-      margin: 10px 10px 4px;
-      overflow: hidden;
-      z-index: 5;
-    }
-	
-    #footer {
-      text-align: center;
-      color: #ccc;
-      width: 100%;
-      position: absolute;
-      background: rgba(255, 255, 255, 0.75);
-      bottom: 0;
-      padding: 15px 0;
-      z-index: 125;
+	  width: 50px;
+	  margin: 10px 10px 4px;
+	  overflow: hidden;
+	  z-index: 5;
+	}
+}
 
-      .affiliates {
-        margin: 10px auto 0;
-        height: 27px;
-        
-        .powered {
-          display: inline-block;
-          margin: 5px 15px 0 0;
-        }
+#sidebar {
+	background: #f0efef;
+}
 
-        span {
-          opacity: 0;
-          -webkit-transition: opacity 1s linear;
-          -moz-transition:    opacity 1s linear;
-          -o-transition:      opacity 1s linear;
-          transition:         opacity 1s linear;
-        }
-        span:hover {
-          opacity: 1;
-        }
-      }
-    }
-  }
+#header, #left, #central, #sidebar {
+	margin-bottom: 15px;
+}
+
+#pagewrap, #header, #left, #central, #sidebar, #footer {
+	border: solid 1px lime;
+}
   
  //Begin Popup Stying
 
@@ -178,93 +529,6 @@ body {
 	text-align: justify;
 }
 //End popup styling
-	
-  #content {
-    position: absolute;
-    top: 0;
-    left: 320px;
-    bottom: 0;
-    z-index: 0;
-    width: 700px;
-    overflow-x: hidden;
-    overflow-y: visible;
 
-    .stripe {
-      position: absolute;
-      background: white;
-      height: 100px;
-      top: 300px;
-      width: 100%;
-      opacity: 0.3;
-      z-index: 0;
-    }
-  }
-}
 
-@media (max-height: 700px) {
-  body {
-    #menu {
-      #logo {
-        height: 169px;
-      }
-    }
-    #content {
-      .track_container {
-        height: 450px - 40px - (60px * 1);
-        .tracks#tracks  {
-          .track:nth-last-child(5) {
-            opacity: 0;
-            height: 0;
-          }
-        }
-      }
-	}
-  }
-}
-
-@media (max-height: 600px) {
-  body {
-    #menu {
-      h2 {
-        height: 0;
-        opacity: 0;
-      }
-      #player {
-        margin-top: 12px;
-      }
-    }
-    #content {
-      .track_container {
-        height: 450px - 40px - (61px * 2);
-        .tracks#tracks  {
-          .track:nth-last-child(4) {
-            opacity: 0;
-            height: 0;
-          }
-        }
-      }
-    }
-  }
-}
-
-@media (max-height: 500px) {
-  body {
-    #menu {
-      h1 {
-        height: 0;
-        opacity: 0;
-      }
-    }
-    #content {
-      .track_container {
-        height: 450px - 40px - (61px * 3);
-        .tracks#tracks  {
-          .track:nth-last-child(3) {
-            opacity: 0;
-            height: 0;
-          }
-        }
-      }
-    }
-  }
 }
