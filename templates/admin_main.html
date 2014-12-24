@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+   
+<html lang="en">
+	{% block head %}
+	<head>
+	  <meta charset="utf-8">
+		<title>Infinite Glitch</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
+        <link rel="image_src" type="image/png" href="/static/img/icon.png" />
+        <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
+        <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
+		<link href='{{ compiled('tabs.scss') }}' rel='stylesheet' type='text/css' />
+        <link href='{{ compiled(
+          'sprites.css',
+          'flashblock.css',
+          '360player_admin.css',
+          '360player-visualization_admin.css'
+        ) }}' rel='stylesheet' type='text/css' />
+
+	</head>
+	{% end %}
+<body>
+<div id="pagewrap">
+
+	<div id="header"><h1>
+			Infinite Glitch
+		  </h1></div>
+	
+	<div id="left">
+		{% block sidebar %}
+		{% try %}
+			{% set myname = user_name %}
+		{% except NameError %}
+			{% set myname = 'Guest' %}
+		{% end %}
+			<p>Hello {{ myname }}!</p>
+		{% end %}
+	</div>
+	
+	<div id="central">
+		{% block content %}<p>totally empty page</p>{% end %}
+	</div>	
+	<br style="clear:both"/>
+	<div class="footer">
+		
+		{% block footer %}	
+			<a href="/">Front End View</a> &copy; 2014 Future Fossil 
+				
+			<script type="text/javascript"
+			  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
+			<script type="text/javascript" src='{{ compiled(
+			  'spin.min.js',
+			  'soundmanager2-nodebug-jsmin.js',
+			  'berniecode-animator.js',
+			  '360player_admin.js'
+			  ) }}'></script>
+			<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+			<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
+			<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
+			<script type="text/javascript">
+				$('.confirmation').on('click', function () {
+					return confirm('Are you sure?');
+				});
+			</script>
+		{% end %}
+	</div>
+</div>
+
+</body>
+</html>
