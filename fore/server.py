@@ -210,11 +210,12 @@ class Submissionform(BaseHandler):
 			self.set_status(400)
 			self.write(form.errors)
 
-def admin_page(deleted=0, updated=0):
+def admin_page(user_name, deleted=0, updated=0):
 	return templates.load("administration.html").generate(
 		all_tracks=database.get_many_mp3(status="all", order_by='id'),
 		deleted=deleted, updated=updated, compiled=compiled,
 		delete_url=apikeys.delete_url, edit_url=apikeys.edit_url,
+		user_name=user_name,
 	)
 
 class DeleteTrack(BaseHandler):
@@ -228,20 +229,20 @@ class DeleteTrack(BaseHandler):
 class EditTrack(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, input):
-		log.info("Yo we got input: %r", str(input))
+		user_name = tornado.escape.xhtml_escape(self.current_user)
 		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
-		track=database.get_single_track(int(input)), compiled=compiled))
+		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name))
 		
 class SMDemo(BaseHandler):
 	def get(self):
-		
 		log.info("Yo we got input: %r", str(input))
 		self.write(templates.load("sm.html").generate(endpoint="/all.mp3", compiled=compiled))
 	
 class AdminRender(BaseHandler):
 	@tornado.web.authenticated
 	def get(self):
-		self.write(admin_page())
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		self.write(admin_page(user_name))
 
 	def post(self):
 		id=int(self.request.arguments['id'][0])
