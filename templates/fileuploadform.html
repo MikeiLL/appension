@@ -1,17 +1,14 @@
 {% extends main.html %}
-{% block head %}
-    <title>Infinite Glitch - Track Submission Form</title>
-	<meta name="description" content="Submit Track to Infinite Glitch">
-{% end %}
+
 {% block content %}
 <p><h1>Submit Track</h1></p>
 <form enctype="multipart/form-data" action="/submit" method="post">
-Hello {{ user_name }}!
+
 <table class="submission_form">
 <tr><td width="200px">Your Name:</td><td> {{ form.submitter_name }}</td></tr>
 <tr><td>Email: </td><td>{{ form.email }}</td></tr>
 <tr><td>Artist Name: </td><td>{{ form.artist }} (used if missing from mp3 data)</td></tr>
-<tr><td>Track Title: </td><td>{{ form.track_title }}(used if missing from mp3 data)</td></tr>
+<tr><td>Track Title: </td><td>{{ form.track_title }} (used if missing from mp3 data)</td></tr>
 <tr><td colspan="2">MP3 File: {{ form.mp3_file }}</td></tr>
 <tr><td colspan="2">Story behind the track:<br/> {{ form.story(rows=10,cols=60) }}</td></tr>
 <tr><td colspan="2">Lyrics: <br/>{{ form.lyrics(rows=10,cols=60) }}</textarea></td></tr>
