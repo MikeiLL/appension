@@ -31,7 +31,12 @@
 	
 	<div id="left">
 		{% block sidebar %}
-			<p>Hello {{ user_name }}!</p>
+		{% try %}
+			{% set myname = user_name %}
+		{% except NameError %}
+			{% set myname = 'Guest' %}
+		{% end %}
+			<p>Hello {{ myname }}!</p>
 		{% end %}
 	</div>
 	
