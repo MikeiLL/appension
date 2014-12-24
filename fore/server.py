@@ -218,6 +218,7 @@ def admin_page(deleted=0, updated=0):
 	)
 
 class DeleteTrack(BaseHandler):
+	@tornado.web.authenticated
 	def get(self, input):
 		input = int(input) # TODO: If intification fails, send back a tidy error message, rather than just quietly deleting nothing
 		log.info("Yo we got input: %r", input)
@@ -225,6 +226,7 @@ class DeleteTrack(BaseHandler):
 		self.write(admin_page(deleted=input))
 
 class EditTrack(BaseHandler):
+	@tornado.web.authenticated
 	def get(self, input):
 		log.info("Yo we got input: %r", str(input))
 		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
@@ -237,6 +239,7 @@ class SMDemo(BaseHandler):
 		self.write(templates.load("sm.html").generate(endpoint="/all.mp3", compiled=compiled))
 	
 class AdminRender(BaseHandler):
+	@tornado.web.authenticated
 	def get(self):
 		self.write(admin_page())
 
