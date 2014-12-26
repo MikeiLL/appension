@@ -428,10 +428,10 @@ function ThreeSixtyPlayer() {
       // already exists
       if (thisSound === self.lastSound) {
         // and was playing (or paused)
-        thisSound.toggleMute();
+        thisSound.togglePause();
       } else {
         // different sound
-        thisSound.toggleMute(); // start playing current
+        thisSound.togglePause(); // start playing current
         sm._writeDebug('sound different than last sound: '+self.lastSound.id);
         if (!self.config.allowMultiple && self.lastSound) {
           self.stopSound(self.lastSound);
