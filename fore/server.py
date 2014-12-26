@@ -323,6 +323,10 @@ class Logout(BaseHandler):
     def get(self):
         self.clear_cookie("user")
         self.redirect(self.get_argument("next", "/"))
+		
+class NewTabs(tornado.web.RequestHandler):
+	def get(self):
+		self.write(templates.load("new_tabs.html").generate(compiled=compiled))
 
 if __name__ == "__main__":
 	Daemon()
@@ -365,6 +369,7 @@ if __name__ == "__main__":
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
 			(apikeys.edit_url+"/([0-9]+)", EditTrack),
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
+			(r"/nt", NewTabs),
 			(r"/sm", SMDemo),
 		]),
 		socket_io_port=config.socket_port,
