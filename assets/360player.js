@@ -428,7 +428,7 @@ function ThreeSixtyPlayer() {
       // already exists
       if (thisSound === self.lastSound) {
         // and was playing (or paused)
-        thisSound.toggleMute();
+        thisSound.toggleMute(); //TODO switch to play() and stop() for iOS compatibility
       } else {
         // different sound
         thisSound.toggleMute(); // start playing current
