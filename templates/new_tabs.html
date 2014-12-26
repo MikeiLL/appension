@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html class="no-js">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <!--
+Copyright (c) 2014 by jacmaes (http://codepen.io/jacmaes/pen/iqgnh)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+  <title>CodePen - Simple Responsive Accordion to Tabs</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel='stylesheet prefetch' href='http://bradfrost.github.com/this-is-responsive/styles.css'>
+
+  <style>
+  body {
+  padding: 2em;
+}
+
+.accordion {
+  padding: 0;
+  margin: 2em 0;
+  width: 100%;
+  overflow: hidden;
+  font-size: 1em;
+  position: relative;
+}
+
+.accordion__title {
+  padding: 0 1em;
+  background: #ccc;
+  border-top: 2px solid #eee;
+  color: #222;
+  float: left;
+  line-height: 3;
+  height: 3em;
+  cursor: pointer;
+  margin-right: .25em;
+}
+
+.no-js .accordion__title {
+  float: none;
+  height:auto;
+  cursor:auto;
+  margin:0;
+  padding:0 2em;
+}
+
+.accordion__content {
+  float: right;
+  width: 100%;
+  margin: 3em 0 0 -100%;
+  padding: 2em;
+  background: silver;
+}
+
+.no-js .accordion__content {
+  float:left;
+  margin:0;
+}
+
+.accordion__title:hover,
+.accordion__title.active {
+  background: silver;
+  color: white;
+}
+
+.no-js .accordion__title:hover {
+  background-color:#ccc;
+  color:#222;
+}
+
+.accordion__title.active {
+  border-top-color:lime;
+}
+
+@media (max-width: 48em) {
+
+  .accordion {
+    border: 1px solid grey;
+  }
+
+  .accordion__title,
+  .accordion__content { 
+    float: none;
+    margin: 0;
+  }
+
+  .accordion__title:first-child {
+    border:none;
+  }
+
+ .accordion__title.active {
+  border-top-color:#eee;
+  }
+
+  .accordion__title.active, .accordion__title:hover {
+    background:#777;
+  }
+
+  .accordion__title:before {
+  content:"+";
+  text-align:center;
+  width:2em;
+  display:inline-block;
+  }
+ .accordion__title.active:before {
+  content:"-";
+  }
+
+  .accordion__content {
+    position:relative;
+    overflow:hidden;
+     padding:1em;
+  }
+
+}
+
+  </style>
+
+  <script>
+    window.console = window.console || function(t) {};
+    window.open = function(){ console.log('window.open is disabled.'); };
+    window.print = function(){ console.log('window.print is disabled.'); };
+    // Support hover state for mobile.
+    if (false) {
+      window.ontouchstart = function(){};
+    }
+  </script>
+
+    <script src="http://assets.codepen.io/assets/libs/modernizr-0e41cf622f0788eca25945c37bdc5b15.js">"></script>
+
+</head>
+
+<body>
+
+  <h2>Simple Responsive Accordion to Tabs</h2>
+<p><a href="http://codepen.io/jacmaes/full/miBKI">View the more complex version</a>.</p>
+<dl class="accordion">
+  <dt class="accordion__title">Item 1</dt>
+  <dd class="accordion__content">
+    <p><b>Item 1 content.</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tincidunt pellentesque lorem, id suscipit dolor rutrum id. Morbi facilisis porta volutpat. Fusce adipiscing, mauris quis congue tincidunt, sapien purus suscipit odio, quis dictum odio tortor in sem. Ut sit amet libero nec orci mattis fringilla.</p>
+    <p>Praesent eu ipsum in sapien tincidunt molestie sed ut magna. Nam accumsan dui at orci rhoncus pharetra tincidunt elit ullamcorper. Sed ac mauris ipsum. Nullam imperdiet sapien id purus pretium id aliquam mi ullamcorper.</p>
+  </dd>
+  <dt class="accordion__title">Item 2</dt>
+  <dd class="accordion__content">
+    <p><b>Item 2 content.</b> Ut laoreet augue et neque pretium non sagittis nibh pulvinar. Etiam ornare tincidunt orci quis ultrices. Pellentesque ac sapien ac purus gravida ullamcorper. Duis rhoncus sodales lacus, vitae adipiscing tellus pharetra sed. Praesent bibendum lacus quis metus condimentum ac accumsan orci vulputate. Aenean fringilla massa vitae metus facilisis congue. Morbi placerat eros ac sapien semper pulvinar. Vestibulum facilisis, ligula a molestie venenatis, metus justo ullamcorper ipsum, congue aliquet dolor tortor eu neque. Sed imperdiet, nibh ut vestibulum tempor, nibh dui volutpat lacus, vel gravida magna justo sit amet quam. Quisque tincidunt ligula at nisl imperdiet sagittis. Morbi rutrum tempor arcu, non ultrices sem semper a. Aliquam quis sem mi.</p>
+  </dd>
+  <dt class="accordion__title">Item 3</dt>
+  <dd class="accordion__content">
+    <p><b>Item 3 content.</b> Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Phasellus dui urna, mollis vel suscipit in, pharetra at ligula. Pellentesque a est vel est fermentum pellentesque sed sit amet dolor. Nunc in dapibus nibh. Aliquam erat volutpat. Phasellus vel dui sed nibh iaculis convallis id sit amet urna. Proin nec tellus quis justo consequat accumsan. Vivamus turpis enim, auctor eget placerat eget, aliquam ut sapien.</p>
+  </dd>
+</dl>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio cumque voluptate consequuntur ex suscipit quas rerum enim sunt ab voluptas laudantium sed voluptates iure magni accusamus ratione tempore consectetur inventore deleniti culpa tempora molestias laboriosam recusandae soluta accusantium voluptatibus est. Incidunt expedita praesentium tempore ullam iusto voluptate facere quod explicabo.</p>
+<p>Beatae voluptas ratione ut non quaerat eum tempora nemo rem voluptatibus assumenda alias sit odio velit mollitia numquam iure quisquam illum repellat ea deserunt. Quo aut porro cum enim officiis mollitia dolorem maiores veniam similique quam voluptate deserunt. Esse facere itaque unde quaerat expedita magni sunt odit sint atque necessitatibus.</p>
+
+  <script src='http://assets.codepen.io/assets/libs/fullpage/jquery-ab8e840c3dad7ccf2deadb8c40d53bdb.js'></script>
+
+  <script>
+    if (document.location.search.match(/type=embed/gi)) {
+      window.parent.postMessage('resize', "*");
+    }
+  </script>
+
+  <script src="http://assets.codepen.io/assets/common/stopExecutionOnTimeout-6c99970ade81e43be51fa877be0f7600.js"></script>
+
+  <script>
+    $('.accordion__content:not(:first)').hide();
+$('.accordion__title:first-child').addClass('active');
+$('.accordion__title').on('click', function () {
+    $('.accordion__content').hide();
+    $(this).next().show().prev().addClass('active').siblings().removeClass('active');
+});
+    //@ sourceURL=pen.js
+  </script>
+
+</body>
+
+</html>
