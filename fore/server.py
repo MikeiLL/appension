@@ -326,7 +326,10 @@ class Logout(BaseHandler):
 		
 class NewTabs(tornado.web.RequestHandler):
 	def get(self):
-		self.write(templates.load("new_tabs.html").generate(compiled=compiled))
+		self.write(templates.load("new_tabs.html").generate(compiled=compiled,
+			open=True, # Can have this check for server load if we ever care
+			endpoint="/all.mp3",
+			complete_length=datetime.timedelta(seconds=int(database.get_complete_length()))))
 
 if __name__ == "__main__":
 	Daemon()

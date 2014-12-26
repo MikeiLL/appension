@@ -1,8 +1,23 @@
+{% extends main.html %}
 
 <!DOCTYPE html>
 <html class="no-js">
-
-<head>
+	{% block head %}
+	<head>
+	  <meta charset="utf-8">
+		<title>Infinite Glitch</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
+        <link rel="image_src" type="image/png" href="/static/img/icon.png" />
+        <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
+        <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
+        <link href='{{ compiled(
+          'sprites.css',
+          'flashblock.css',
+          '360player.css',
+          '360player-visualization.css'
+        ) }}' rel='stylesheet' type='text/css' />
 
   <meta charset="UTF-8">
 
@@ -16,11 +31,12 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
-  <title>CodePen - Simple Responsive Accordion to Tabs</title>
+  <title>iLL - Simple Responsive Accordion to Tabs</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel='stylesheet prefetch' href='http://bradfrost.github.com/this-is-responsive/styles.css'>
+  <link href='{{ compiled('tabs.scss') }}' rel='stylesheet' type='text/css' />
+
 
   <style>
   body {
@@ -137,15 +153,45 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       window.ontouchstart = function(){};
     }
   </script>
+	<script type="text/javascript" src='{{ compiled('modernizr.js') }}'></script>
 
-    <script src="http://assets.codepen.io/assets/libs/modernizr-0e41cf622f0788eca25945c37bdc5b15.js">"></script>
-
-</head>
+	</head>
+	{% end %}
 
 <body>
+{% block sidebar %}
+	<div id="player">
+		<div id="sm2-container"></div>
+		<div class="ui360 ui360-vis">
+		  <a id="endpoint_link" href="{{ endpoint }}"></a>
+		</div>
+	</div>
+  <div id="trackdetails">
+  <h3>Playing now(ish):</h3>
+	{% for id in range(1,4) %}
+		<div class="nametime">
+			<button id="trackbutton{{ id }}" class="track-button" data-popup-target="#storypopup{{ id }}">
+				<div id="artist{{ id }}" class="artist"></div>
+				<div id="length{{ id }}" class="length"></div>
+			</button>
+			<div id="storypopup{{ id }}" class="popup">
+				<div class="popup-body">
+					<span class="popup-exit"></span>
+					<div class="popup-content">
+						<h3 class="popup-title">The Story</h3>
+						<p><div id="story{{ id }}" class="story"></div></p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="popup-overlay"></div>
+	{% end %}
+	<div>Entire piece length:{{ complete_length }}</div>
+	</div>
+{% end %}
+{% block content %}
 
   <h2>Simple Responsive Accordion to Tabs</h2>
-<p><a href="http://codepen.io/jacmaes/full/miBKI">View the more complex version</a>.</p>
 <dl class="accordion">
   <dt class="accordion__title">Item 1</dt>
   <dd class="accordion__content">
@@ -165,25 +211,42 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio cumque voluptate consequuntur ex suscipit quas rerum enim sunt ab voluptas laudantium sed voluptates iure magni accusamus ratione tempore consectetur inventore deleniti culpa tempora molestias laboriosam recusandae soluta accusantium voluptatibus est. Incidunt expedita praesentium tempore ullam iusto voluptate facere quod explicabo.</p>
 <p>Beatae voluptas ratione ut non quaerat eum tempora nemo rem voluptatibus assumenda alias sit odio velit mollitia numquam iure quisquam illum repellat ea deserunt. Quo aut porro cum enim officiis mollitia dolorem maiores veniam similique quam voluptate deserunt. Esse facere itaque unde quaerat expedita magni sunt odit sint atque necessitatibus.</p>
 
-  <script src='http://assets.codepen.io/assets/libs/fullpage/jquery-ab8e840c3dad7ccf2deadb8c40d53bdb.js'></script>
+{% end %}
 
-  <script>
-    if (document.location.search.match(/type=embed/gi)) {
-      window.parent.postMessage('resize', "*");
-    }
+	{% block footer %}	
+		<a href="/">Home</a> &copy; 2014 Future Fossil 
+		<a href="mailto:beezwax@aol.com">Contact</a> |
+		<a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>
+			
+		<script type="text/javascript"
+		  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
+		<script type="text/javascript" src='{{ compiled(
+		  'spin.min.js',
+		  'soundmanager2-nodebug-jsmin.js',
+		  'berniecode-animator.js',
+		  '360player.js'
+		  ) }}'></script>
+		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
+		<script>
+		if (document.location.search.match(/type=embed/gi)) {
+		  window.parent.postMessage('resize', "*");
+		}
   </script>
 
-  <script src="http://assets.codepen.io/assets/common/stopExecutionOnTimeout-6c99970ade81e43be51fa877be0f7600.js"></script>
+	<script>
+		$('.accordion__content:not(:first)').hide();
+		$('.accordion__title:first-child').addClass('active');
+		$('.accordion__title').on('click', function () {
+		$('.accordion__content').hide();
+		$(this).next().show().prev().addClass('active').siblings().removeClass('active');
+		});
+		//@ sourceURL=pen.js
+	</script>
+		{% end %}
 
-  <script>
-    $('.accordion__content:not(:first)').hide();
-$('.accordion__title:first-child').addClass('active');
-$('.accordion__title').on('click', function () {
-    $('.accordion__content').hide();
-    $(this).next().show().prev().addClass('active').siblings().removeClass('active');
-});
-    //@ sourceURL=pen.js
-  </script>
+
 
 </body>
 
