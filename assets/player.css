@@ -517,7 +517,7 @@ div.ui360 a span.metadata * {
 
 .ui360-vis {
  /* non-JS / before-loaded state */
-  float: left;
+  float: right;
  background:transparent url(../img/player/360-button-vis-play.png) no-repeat 21% 50%;
  _background:transparent url(../img/player/360-button-vis-play.gif) no-repeat 21% 50%; /* IE 6-only: special crap GIF */
 }

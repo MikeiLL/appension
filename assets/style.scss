@@ -1,10 +1,23 @@
 
 $min_height = 470px;
+	/************Reset**************/
+	* { 
+		-moz-box-sizing: border-box; 
+		-webkit-box-sizing: border-box; 
+		box-sizing: border-box; 
+	}
+	
+	html, div { 
+		margin: 0; 
+		padding: 0; 
+		border: 0;
+	} 
 
+	/************End Reset**************/
 body {
 	padding: 0;
 	margin: 0;
-	background: url(/static/img/background.png) #d5d5d5;
+	/*background: url(/static/img/background.png) #d5d5d5;*/
 	font-family: "Signika", "Meta", "Helvetica", "Arial", sans-serif;
 	font-weight: 300;
 	width: 100%;
@@ -25,15 +38,15 @@ body {
 	   ========================================================================== */
 	/* STRUCTURE BOF mZoo 3col*/
 
+
 	#pagewrap {
-		padding: 5px;
+		padding: 0;
+		width:100%;
 	}
 	#header {
-		height: 50px;
 		padding: 0 15px;
 	}
 	#left {
-		width: 290px;
 		float: left;
 		padding: 5px 15px;
 		min-height:500px;
@@ -62,6 +75,7 @@ body {
 		color: #222;
 		font-size: 1em;
 		line-height: 1.4;
+		padding:0;
 	}
 
 	/*
@@ -141,6 +155,7 @@ body {
 
 	#example p:first-of-type {font-weight:600;}
 	@media all and (max-width: 900px) and (min-width: 600px) {
+		#left {max-width: 290px;}
 	#example p  {
 	  -webkit-column-count: 2; /* Saf3, Chrome*/
 	  -webkit-column-gap: 4%; /* Saf3, Chrome*/
@@ -152,6 +167,7 @@ body {
 	}
 
 	@media all and (min-width: 900px) {
+	#left {max-width: 290px;}
 	#example p:first-of-type  {
 	  -webkit-column-count: 2;
 	  -webkit-column-gap: 3%; /* Saf3, Chrome*/
@@ -251,6 +267,8 @@ body {
 
 	@media only screen and (min-width: 35em) {
 		/* Style adjustments for viewports that meet the condition */
+		#left {width:29%;}
+		#central {width:70%;}
 	}
 
 	/************************************************************************************
@@ -264,12 +282,12 @@ body {
 		}
 		#left {
 			width: 41%;
-			max-width: 290px;
+			/*max-width: 290px;*/
 			padding: 1% 4%;
 			min-height:500px;
 		}
 		#central {
-			width: 41%;
+			width: 58%;
 			padding: 1% 4%;
 			margin: 0px 0px 5px 5px;
 		}
