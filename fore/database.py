@@ -195,8 +195,8 @@ def verify_user(user_or_email, password):
 	# If we fall through without finding anything that matches, return None.
 
 def get_user_info(id):
-	"""Return the user name and permissions level for a given UID, or None"""
+	"""Return the user name and permissions level for a given UID, or (None,0) if not logged in"""
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT username, user_level FROM users WHERE id=%s", (id,))
 		row = cur.fetchone()
-		return row
+		return row or (None, 0)
