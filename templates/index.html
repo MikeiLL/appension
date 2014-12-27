@@ -56,13 +56,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 <body>
 <div style="float:right; width="200px">
-{% block user %}
-		{% try %}
-			{% set myname = user_name %}
-		{% except NameError %}
-			{% set myname = 'Guest' %}
-		{% end %}
-			<p>Hello {{ myname }}!</p>
+		{% block user %}
+			<p>Hello {{ user_name }}!</p>
 		{% end %}
 </div>
 {% block sidebar %}

@@ -55,7 +55,7 @@ first_frame = threading.Semaphore(0)
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        username, perms = database.get_user_info(int(self.get_secure_cookie("userid")))
+        username, perms = database.get_user_info(int(self.get_secure_cookie("userid") or 0))
         if perms: return username # If perms==0, the user has been banned, and should be treated as not-logged-in.
 
 class MainHandler(BaseHandler):
@@ -68,7 +68,7 @@ class MainHandler(BaseHandler):
 			'open': True, # Can have this check for server load if we ever care
 			'endpoint': "/all.mp3",
 			'complete_length': datetime.timedelta(seconds=int(database.get_complete_length())),
-			'user_name':user_name
+			'user_name':self.current_user or 'Guest',
 		}
 		if os.path.getmtime(config.template_dir + self.template) > self.mtime:
 			templates.reset()
