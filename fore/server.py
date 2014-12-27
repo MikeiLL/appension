@@ -55,8 +55,8 @@ first_frame = threading.Semaphore(0)
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        username, perms = database.get_user_info(int(self.get_secure_cookie("userid") or 0))
-        if perms: return username # If perms==0, the user has been banned, and should be treated as not-logged-in.
+        username, self._user_perms = database.get_user_info(int(self.get_secure_cookie("userid") or 0))
+        if self._user_perms: return username # If perms==0, the user has been banned, and should be treated as not-logged-in.
 
 class MainHandler(BaseHandler):
 	mtime = 0
@@ -223,6 +223,7 @@ def admin_page(user_name, deleted=0, updated=0):
 class DeleteTrack(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, input):
+		if self._user_perms<2: return self.redirect("/")
 		input = int(input) # TODO: If intification fails, send back a tidy error message, rather than just quietly deleting nothing
 		log.info("Yo we got input: %r", input)
 		database.delete_track(input)
@@ -231,22 +232,26 @@ class DeleteTrack(BaseHandler):
 class EditTrack(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, input):
+		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
 		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name))
 		
 class SMDemo(BaseHandler):
 	def get(self):
+		if self._user_perms<2: return self.redirect("/")
 		log.info("Yo we got input: %r", str(input))
 		self.write(templates.load("sm.html").generate(endpoint="/all.mp3", compiled=compiled))
 	
 class AdminRender(BaseHandler):
 	@tornado.web.authenticated
 	def get(self):
+		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		self.write(admin_page(user_name))
 
 	def post(self):
+		if self._user_perms<2: return self.redirect("/")
 		id=int(self.request.arguments['id'][0])
 		database.update_track(id, self.request.arguments)
 		self.write(admin_page(updated=id))
@@ -254,6 +259,7 @@ class AdminRender(BaseHandler):
 class TrackArtwork(tornado.web.RequestHandler):
 	def get(self, id):
 		art = database.get_track_artwork(int(id))
+		# TODO: If the track hasn't been approved yet, return 404 unless the user is an admin.
 		if art is None:
 			self.send_error(404)
 		else:
