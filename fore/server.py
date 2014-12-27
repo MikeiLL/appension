@@ -301,7 +301,7 @@ class Login(tornado.web.RequestHandler):
 		except:
 			errormessage = ""
 		self.write(templates.load("login.html").generate(compiled=compiled, form=form, \
-														errormessage = errormessage ))
+								errormessage=errormessage, user_name=self.current_user ))
 		
 	def post(self):
 		form = UserForm(self.request.arguments)
