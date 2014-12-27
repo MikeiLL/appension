@@ -260,7 +260,7 @@ class TrackArtwork(tornado.web.RequestHandler):
 			self.write(str(art))
 			
 class UserForm(Form):
-	email = wtforms.TextField('email', validators=[wtforms.validators.Email(), wtforms.validators.DataRequired()])
+	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired()])
 	password = wtforms.PasswordField('New Password', [
 		wtforms.validators.Required()])
 		
