@@ -278,7 +278,7 @@ class CreateUser(UserForm):
 class CreateAccount(tornado.web.RequestHandler):
 	def get(self):
 		form = CreateUser()
-		self.write(templates.load("create_account.html").generate(compiled=compiled, form=form))
+		self.write(templates.load("create_account.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
 		
 	def post(self):
 		form = CreateUser(self.request.arguments)
