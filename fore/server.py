@@ -55,7 +55,8 @@ first_frame = threading.Semaphore(0)
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        return database.get_user_info(self.get_secure_cookie("userid")[0])
+        username, perms = database.get_user_info(self.get_secure_cookie("userid"))
+        if perms: return username # If perms==0, the user has been banned, and should be treated as not-logged-in.
 
 class MainHandler(BaseHandler):
 	mtime = 0
