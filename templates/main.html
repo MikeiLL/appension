@@ -24,13 +24,16 @@
 <body>
 <div id="pagewrap">
 
-	<div id="header"><h1>
-			Infinite Glitch
-		  </h1></div>
+	<div id="header">
+	<div style="float:left; width="200px">
+	<h1>Infinite Glitch</h1>
+	</div>
 		{% block user %}
-<div style="float:right; width="200px">
+	<div style="float:right; width="200px">
 			<p>Hello {{ user_name }}!</p>
-</div>		{% end %}
+	</div>		{% end %}
+</div>
+	<br style="clear:both"/>
 	<div id="left">
 		{% block sidebar %}
 		
