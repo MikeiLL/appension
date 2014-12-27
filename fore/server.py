@@ -55,7 +55,7 @@ first_frame = threading.Semaphore(0)
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        username, perms = database.get_user_info(self.get_secure_cookie("userid"))
+        username, perms = database.get_user_info(int(self.get_secure_cookie("userid")))
         if perms: return username # If perms==0, the user has been banned, and should be treated as not-logged-in.
 
 class MainHandler(BaseHandler):
@@ -312,7 +312,7 @@ class Login(tornado.web.RequestHandler):
 								self.get_argument('password'))
 			if user_id:
 				user_name, perms = database.get_user_info(user_id)
-				if perms: self.set_secure_cookie("userid", user_id) # Banned users (perms==0) are treated as guests. (We're so nice to people.)
+				if perms: self.set_secure_cookie("userid", str(user_id)) # Banned users (perms==0) are treated as guests. (We're so nice to people.)
 				self.redirect(self.get_argument("next", "/"))
 			else:
 				self.write(details)
