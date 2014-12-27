@@ -329,7 +329,7 @@ class Login(tornado.web.RequestHandler):
 			
 class Logout(BaseHandler):
     def get(self):
-        self.clear_cookie("user")
+        self.clear_cookie("userid")
         self.redirect(self.get_argument("next", "/"))
 
 class NewTabs(tornado.web.RequestHandler):
