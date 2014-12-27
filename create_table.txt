@@ -22,5 +22,6 @@ create table users (id serial primary key,
 		username varchar not null unique,
 		email varchar not null unique,
 		password varchar not null default '',
-		user_level int not null default 1
+		user_level int not null default 1 -- banned=0, user=1, admin=2 --
 );
+
