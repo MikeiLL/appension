@@ -67,7 +67,8 @@ class MainHandler(BaseHandler):
 			'compiled': compiled,
 			'open': True, # Can have this check for server load if we ever care
 			'endpoint': "/all.mp3",
-			'complete_length': datetime.timedelta(seconds=int(database.get_complete_length()))
+			'complete_length': datetime.timedelta(seconds=int(database.get_complete_length())),
+			'user_name':user_name
 		}
 		if os.path.getmtime(config.template_dir + self.template) > self.mtime:
 			templates.reset()
