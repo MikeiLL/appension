@@ -55,8 +55,8 @@ first_frame = threading.Semaphore(0)
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        return self.get_secure_cookie("user")
-		
+        return database.get_user_info(self.get_secure_cookie("userid")[0])
+
 class MainHandler(BaseHandler):
 	mtime = 0
 	template = 'index.html'
@@ -310,8 +310,8 @@ class Login(tornado.web.RequestHandler):
 			user_id = database.verify_user(self.get_argument('email'),\
 								self.get_argument('password'))
 			if user_id:
-				user_name = database.show_user(str(1))[0]
-				self.set_secure_cookie("user", user_name)
+				user_name, perms = database.get_user_info(user_id)
+				if perms: self.set_secure_cookie("userid", user_id) # Banned users (perms==0) are treated as guests. (We're so nice to people.)
 				self.redirect(self.get_argument("next", "/"))
 			else:
 				self.write(details)
@@ -323,7 +323,7 @@ class Logout(BaseHandler):
     def get(self):
         self.clear_cookie("user")
         self.redirect(self.get_argument("next", "/"))
-		
+
 class NewTabs(tornado.web.RequestHandler):
 	def get(self):
 		self.write(templates.load("new_tabs.html").generate(compiled=compiled,
