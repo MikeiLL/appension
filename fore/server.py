@@ -383,10 +383,7 @@ if __name__ == "__main__":
 			(r"/nt", NewTabs),
 			(r"/sm", SMDemo),
 		]),
-		socket_io_port=config.socket_port,
 		cookie_secret=apikeys.cookie_monster,
-		login_url="/login",
-		enabled_protocols=['websocket', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
 	)
 
 	frame_sender = tornado.ioloop.PeriodicCallback(
@@ -396,7 +393,7 @@ if __name__ == "__main__":
 
 	application.listen(config.http_port)
 	try:
-		tornadio2.server.SocketServer(application)
+		tornado.ioloop.IOLoop.instance().start()
 	except KeyboardInterrupt:
 		mixer.terminate()
 		raise
