@@ -8,7 +8,6 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 import config
 import apikeys
-import database
 
 import os
 import sys
@@ -30,7 +29,6 @@ import tornadio2.server
 import multiprocessing
 import pyechonest.config
 
-from mixer import Mixer
 from daemon import Daemon
 from utils import daemonize
 from listeners import Listeners
@@ -349,9 +347,6 @@ if __name__ == "__main__":
 	v2_queue = BufferedReadQueue(int(config.frontend_buffer / SECONDS_PER_FRAME))
 	info_queue = multiprocessing.Queue()
 
-	mixer = Mixer(v2_queue.raw,info_queue)
-	mixer.start()
-
 	daemonize(info.generate, info_queue, first_frame, InfoHandler)
 	StreamHandler.clients = Listeners(v2_queue, "All", first_frame)
 	daemonize(monitordaemon,StreamHandler.clients,InfoHandler.stats,{"mp3_queue":v2_queue})
@@ -392,6 +387,17 @@ if __name__ == "__main__":
 	frame_sender.start()
 
 	application.listen(config.http_port)
+	try:
+		if config.gid: os.setgid(config.gid)
+		if config.uid: os.setuid(config.uid)
+	except OSError:
+		log.info("Attempted to set UID/GID %d/%d",config.uid,config.gid)
+		raise
+	log.info("Running as UID/GID %d/%d %d/%d",os.getuid(),os.getgid(),os.geteuid(),os.getegid())
+	import database
+	from mixer import Mixer
+	mixer = Mixer(v2_queue.raw,info_queue)
+	mixer.start()
 	try:
 		tornado.ioloop.IOLoop.instance().start()
 	except KeyboardInterrupt:
