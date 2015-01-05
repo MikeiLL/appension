@@ -361,6 +361,7 @@ if __name__ == "__main__":
 			(r"/sm", SMDemo),
 		]),
 		cookie_secret=apikeys.cookie_monster,
+		debug=true,
 	)
 
 	application.listen(config.mini_http_port)
