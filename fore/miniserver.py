@@ -363,7 +363,7 @@ if __name__ == "__main__":
 		cookie_secret=apikeys.cookie_monster,
 	)
 
-	application.listen(config.http_port)
+	application.listen(config.mini_http_port)
 	try:
 		if config.gid: os.setgid(config.gid)
 		if config.uid: os.setuid(config.uid)
