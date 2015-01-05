@@ -57,7 +57,7 @@ class MainHandler(BaseHandler):
 		kwargs = {
 			'compiled': compiled,
 			'open': True, # Can have this check for server load if we ever care
-			'endpoint': "/all.mp3",
+			'endpoint': "/audio/Track01.mp3",
 			'complete_length': datetime.timedelta(seconds=int(database.get_complete_length())),
 			'user_name':self.current_user or 'Guest',
 		}
