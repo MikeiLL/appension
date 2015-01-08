@@ -189,7 +189,7 @@ def verify_user(user_or_email, password):
 	user_or_email = user_or_email.lower()
 	if not isinstance(password, bytes): password=password.encode("utf-8")
 	with _conn, _conn.cursor() as cur:
-		cur.execute("SELECT id,password FROM users WHERE username=%s OR email=%s", (user_or_email, user_or_email))
+		cur.execute("SELECT id,password FROM users WHERE username=%s OR email=%s AND status=1", (user_or_email, user_or_email))
 		for id, pwd in cur:
 			if "-" not in pwd: continue
 			salt, hash = pwd.split("-", 1)
