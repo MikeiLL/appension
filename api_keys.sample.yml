@@ -11,3 +11,5 @@ cookie_monster: llsfZyohQDa4kRdCCqnoV3gpD8jaHUY0kfkKI3pZlZ4=
 # Thanks to https://gist.github.com/didip/823887
 # Alternative way to generate a similar-length nonce:
 # import base64, os; print base64.b64encode(os.urandom(33))
+system_email: 'server@example.com'
+admin_email: 'username@example.com'
