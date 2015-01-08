@@ -8,6 +8,7 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 import config
 import apikeys
+import mailer
 
 import os
 import sys
@@ -205,6 +206,10 @@ class Submissionform(BaseHandler):
 			fileinfo = self.request.files['mp3_file'][0]
 			details += "<hr/>" + fileinfo['filename']
 			database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
+			info = self.request.arguments
+			message = "A new file, %s had been submitted by %s at %s."%(fileinfo['filename'],info.get("submitter_name",[""])[0]
+																	, info.get("email",[""])[0])
+			mailer.AlertMessage(message, 'New Track Submission')
 			self.write(details)
 		else:
 			self.set_status(400)
