@@ -291,12 +291,21 @@ class CreateAccount(tornado.web.RequestHandler):
 		
 	def post(self):
 		form = CreateUser(self.request.arguments)
-		details = 'You submitted:<br/>';
 		if form.validate():
-			for f in self.request.arguments:
-				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
-			database.create_user(self.get_argument('user_name'), self.get_argument('email'),\
-								self.get_argument('password'))
+			info = self.request.arguments
+			details = 'Account request submitted for %s. <br/>'%(info.get("email",[""])[0]);
+			try:
+				details += database.create_user(self.get_argument('user_name'), self.get_argument('email'),\
+										self.get_argument('password'))
+			except TypeError:
+				details += 'Please check your email to confirm.<br/>'
+				admin_message = "New account created for %s at %s."%(info.get("submitter_name",[""])[0]
+																, info.get("email",[""])[0])
+				mailer.AlertMessage(admin_message, 'New Account Created')
+				user_message = "Either you or someoe else just created an account at InfiniteGlitch.net. \
+						To confirm for %s at %s, please "%(info.get("submitter_name",[""])[0]
+																, info.get("email",[""])[0])
+				mailer.AlertMessage(user_message, 'New Account Created')
 			self.write(details)
 		else:
 			self.set_status(400)

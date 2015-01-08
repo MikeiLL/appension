@@ -177,8 +177,12 @@ def create_user(username, email, password):
 		salt = os.urandom(16)
 		hash = hashlib.sha256(salt+password).hexdigest()
 		pwd = salt.encode("hex")+"-"+hash
-		cur.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s) RETURNING id", (username, email, pwd))
-		return cur.fetchone()[0]
+		try:
+			cur.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s) RETURNING id", (username, email, pwd))
+			return cur.fetchone()[0]
+		except psycopg2.IntegrityError as e:
+			return "That didn't work too well because: <br/>%s<br/> Maybe you already have an account or \
+					someone else is using the name you requested."%e
 
 def verify_user(user_or_email, password):
 	"""Verify a user name/email and password, returns the ID if valid or None if not"""
