@@ -33,6 +33,7 @@ import pyechonest.config
 from daemon import Daemon
 from utils import daemonize
 from listeners import Listeners
+from wtforms import ValidationError
 from wtforms_tornado import Form
 from assetcompiler import compiled
 from sockethandler import SocketHandler
@@ -180,12 +181,21 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 		"/monitor.websocket": MonitorSocket
 	}
 
+
+def MpegFile(form, field):
+	#if file.size > 10*1024*1024:
+		#raise ValidationError("Audio file too large ( > 10mb )")
+	#if not field.content_type in ["audio/mpeg"]:
+	#	raise ValidationError(" must be an audio/mpeg file with extension .mp3.")
+	if not os.path.splitext(field.name)[1] in [".mp3"]:
+		raise ValidationError(" must be an audio/mpeg file with extension .mp3.")
+		
 class EasyForm(Form):
 	submitter_name = wtforms.TextField('submitter_name', validators=[wtforms.validators.DataRequired()], default=u'Your Name')
 	email = wtforms.TextField('email', validators=[wtforms.validators.Email(), wtforms.validators.DataRequired()])
 	artist = wtforms.TextField('artist', validators=[])
 	track_title = wtforms.TextField('track_title', validators=[])
-	mp3_file = wtforms.FileField(u'mp3_file', validators=[])
+	mp3_file = wtforms.FileField(u'mp3_file', validators=[MpegFile])
 	story = wtforms.TextAreaField('story', validators=[])
 	lyrics = wtforms.TextAreaField('lyrics', validators=[])
 	comments = wtforms.TextAreaField('comments', validators=[])
@@ -203,25 +213,18 @@ class Submissionform(BaseHandler):
 		if form.validate():
 			for f in self.request.arguments:
 				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
+			# self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
 			fileinfo = self.request.files['mp3_file'][0]
 			details += "<hr/>" + fileinfo['filename']
-			database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
+			#database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
 			info = self.request.arguments
 			message = "A new file, %s had been submitted by %s at %s."%(fileinfo['filename'],info.get("submitter_name",[""])[0]
-																	, info.get("email",[""])[0])
-			mailer.AlertMessage(message, 'New Track Submission')
-			self.write(details)
+																		, info.get("email",[""])[0])
+			#mailer.AlertMessage(message, 'New Track Submission')
+			self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
 		else:
-			self.set_status(400)
-			self.write(form.errors)
+			self.write(templates.load("fileuploadform.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
 			
-	def ValidateFile(self, file):
-		if file._size > 10*1024*1024:
-			raise ValidationError("Audio file too large ( > 10mb )")
-		if not file.content-type in ["audio/mpeg"]:
-			raise ValidationError("Content-Type is not mpeg")
-		if not os.path.splitext(file.name)[1] in [".mp3"]:
-			raise ValidationError("Doesn't have proper extension")
 
 def admin_page(user_name, deleted=0, updated=0):
 	return templates.load("administration.html").generate(
