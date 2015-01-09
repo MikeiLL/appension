@@ -214,6 +214,14 @@ class Submissionform(BaseHandler):
 		else:
 			self.set_status(400)
 			self.write(form.errors)
+			
+	def ValidateFile(self, file):
+		if file._size > 10*1024*1024:
+			raise ValidationError("Audio file too large ( > 10mb )")
+		if not file.content-type in ["audio/mpeg"]:
+			raise ValidationError("Content-Type is not mpeg")
+		if not os.path.splitext(file.name)[1] in [".mp3"]:
+			raise ValidationError("Doesn't have proper extension")
 
 def admin_page(user_name, deleted=0, updated=0):
 	return templates.load("administration.html").generate(
@@ -306,10 +314,9 @@ class CreateAccount(tornado.web.RequestHandler):
 				user_message = "Either you or someoe else just created an account at InfiniteGlitch.net. \
 						To confirm for %s at %s, please "%(submitter_name, submitter_email)
 				mailer.AlertMessage(user_message, 'New Account Created', you=submitter_email)
-			self.write(details)
+			self.write(templates.load("account_submission.html").generate(compiled=compiled, user_name=submitter_name))
 		else:
-			self.set_status(400)
-			self.write(form.errors)
+			self.write(templates.load("create_account.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
 			
 class Login(tornado.web.RequestHandler):
 	def get(self):
@@ -393,6 +400,7 @@ if __name__ == "__main__":
 			(r"/sm", SMDemo),
 		]),
 		cookie_secret=apikeys.cookie_monster,
+		login_url='/login',
 	)
 
 	frame_sender = tornado.ioloop.PeriodicCallback(
