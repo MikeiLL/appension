@@ -8,16 +8,32 @@
 <form enctype="multipart/form-data" action="/create_account" method="post">
 <table class="create_account_form">
 <tr><td width="200px">Your Name:</td><td> {{ form.user_name }}</td></tr>
+	{% if form.user_name.errors %}
+		<tr><td colspan=2> 
+        <ul class="errors">{% for error in form.user_name.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
+		</td></tr>
+    {% end %}
 <tr><td>Email: </td><td>{{ form.email }}</td></tr>
 <tr><td>Password: </td><td>{{ form.password }} (at least eight characters, please)</td></tr>
 <tr><td colspan="2">Ideally, use <a href="http://xkcd.com/936/">four common words</a> for your password.</td></tr>
 <tr><td>Password again: </td><td>{{ form.confirm }}</td></tr>
+	{% if form.password.errors %}
+		<tr><td colspan=2> 
+        <ul class="errors">{% for error in form.password.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
+		</td></tr>
+    {% end %}
 <tr><td colspan="2">
 
 <div class="legal_stuff">Legal stuff. You own your contribution, period - but by submitting it, you are allowing me to use it in this project in perpetuity. If you want to register it with the Library of Congress or any other performance right organization in your country, that is your business. There is a chance that some other media (TV, radio, etc.) might do a news piece on this project and use some of what you've submitted. If this happens, I will do my best to get you a cue sheet so if there is any dough generated, you get it. To that end, you must include some info about yourself, personal web page URL &amp;/or contact info with your submission or it can't be used. You also grant me the right to use this info in the project, but I will not give or sell your info to any third party, so don't get all nutzparanoid about this. Also, you warrant that your submission does not violate the rights of any third party.
 </div>
 
-{{ form.accept_tos }} I agree with the legal stuff</td></tr>
+{{ form.accept_tos }} I agree with the legal stuff
+
+	{% if form.accept_tos.errors %}
+        <ul class="errors">{% for error in form.accept_tos.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
+    {% end %}
+	
+	</td></tr>
 <tr><td colspan="2" align="right"><input type="submit" value="Create Account" /></td></tr>
 </table>
 </form>
