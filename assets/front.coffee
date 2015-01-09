@@ -262,6 +262,8 @@ $(document).ready ->
 						length = segment.tracks[0].metadata.length
 						if segment.tracks[0].metadata.story
 							story = segment.tracks[0].metadata.story
+							#TODO do this using .split and join
+							story = story.replace(/\r?\n|\r+|\r/g, "<br/>");
 						else
 							story = "This one is still a mystery. Please let us know if you can solve."
 						minutes = Math.floor(length/60)
