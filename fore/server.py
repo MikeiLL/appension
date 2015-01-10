@@ -265,10 +265,12 @@ class AdminRender(BaseHandler):
 		self.write(admin_page(user_name))
 
 	def post(self):
+		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
-		id=int(self.request.arguments['id'][0])
-		database.update_track(id, self.request.arguments)
-		self.write(admin_page(updated=id))
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		track_id=int(self.request.arguments['id'][0])
+		database.update_track(track_id, self.request.arguments)
+		self.write(admin_page(user_name, updated=id))
 
 class TrackArtwork(tornado.web.RequestHandler):
 	def get(self, id):
