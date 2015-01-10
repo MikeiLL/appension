@@ -8,7 +8,8 @@ Created by Jason Sundram, on 2010-04-05.
 Copyright (c) 2010 The Echo Nest. All rights reserved.
 Expanded Chris Angelico 2014 with additional utilities.
 """
-import threading
+import threading, os
+import binascii
 
 def flatten(l):
 	""" Converts a list of tuples to a flat list.
@@ -72,3 +73,7 @@ def daemonize(target, *args):
 	t = threading.Thread(target=target, args=args)
 	t.daemon = True
 	t.start()
+	
+def random_hex():
+	return binascii.b2a_hex(os.urandom(8))
+	

@@ -296,7 +296,11 @@ class CreateUser(UserForm):
 	confirm = wtforms.PasswordField('Repeat Password')
 	accept_tos = wtforms.BooleanField('I accept the TOS', [wtforms.validators.Required()])
 	
-	
+class ConfirmAccount(tornado.web.RequestHandler):
+	def get(self, id, hex_string):
+		form = CreateUser()
+		self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
+
 class CreateAccount(tornado.web.RequestHandler):
 	def get(self):
 		form = CreateUser()
@@ -401,6 +405,7 @@ if __name__ == "__main__":
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
 			(apikeys.edit_url+"/([0-9]+)", EditTrack),
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
+			(r"/confirm/([0-9]+)/([A-Fa-f0-9]{2}){8,9}", ConfirmAccount),
 			(r"/nt", NewTabs),
 			(r"/sm", SMDemo),
 		]),
