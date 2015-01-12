@@ -16,5 +16,6 @@ def AlertMessage(message, subject='Glitch System Message', me=apikeys.system_ema
 	s.sendmail(me, [you], msg.as_string())
 	s.quit()
 	
-a_message = 'There is someting I need to tell you.'
-AlertMessage(a_message)
+def test():
+	a_message = 'There is someting I need to tell you.'
+	AlertMessage(a_message)
