@@ -23,6 +23,7 @@ create table users (id serial primary key,
 		email varchar not null unique,
 		password varchar not null default '',
 		user_level int not null default 1, -- banned=0, user=1, admin=2 --
-		status int not null default 0
+		status int not null default 0,
+		hex_key varchar not null default ''
 );
 
