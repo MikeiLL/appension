@@ -169,16 +169,20 @@ def update_track(id, info):
 		param = {k:info[k][0] for k in fields if k in info}
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
 
-def create_user(username, email, password):
+def create_user(username, email, password, hex_key):
 	"""Create a new user, return the newly-created ID"""
-	username = username.lower(); email = email.lower()
+	username = username.lower(); email = email.lower();
 	if not isinstance(password, bytes): password=password.encode("utf-8")
+	print password
+	print email
+	print hex_key
 	with _conn, _conn.cursor() as cur:
 		salt = os.urandom(16)
 		hash = hashlib.sha256(salt+password).hexdigest()
 		pwd = salt.encode("hex")+"-"+hash
 		try:
-			cur.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s) RETURNING id", (username, email, pwd))
+			cur.execute("INSERT INTO users (username, email, password, hex_key) VALUES (%s, %s, %s, %s) RETURNING id", \
+											(username, email, pwd, hex_key))
 			return cur.fetchone()[0]
 		except psycopg2.IntegrityError as e:
 			return "That didn't work too well because: <br/>%s<br/> Maybe you already have an account or \
