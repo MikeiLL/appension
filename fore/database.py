@@ -54,6 +54,25 @@ class Track(object):
 			'comments': comments,
 		}
 
+class Lyric(object):
+	# Select these from the tracks table to construct a track object.
+	columns = "id,artist,lyrics"
+
+	def __init__(self, id, artist, lyrics):
+		
+		lyrics = self.couplets(lyrics)
+		
+		self.track_lyrics = {
+			'id': id,
+			'artist': artist,
+			'lyrics': lyrics,
+			#TODO ignore lyrics that exceed sts of two (but allow for 1/2 couplets)
+			'couplet_count': len([i for i in lyrics if i != "\r\n"]) / 2
+		}
+		
+	def couplets(self, lyrics):
+		return lyrics.splitlines(True)
+		
 def get_mp3(some_specifier):
 	with _conn, _conn.cursor():
 		# TODO: Fetch an MP3 and return its raw data
@@ -109,6 +128,12 @@ def get_complete_length():
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT coalesce(sum(length),0) FROM tracks WHERE status = 1")
 		return cur.fetchone()[0]
+		
+def get_all_lyrics():
+	"""Get the lyrics from all active tracks.."""
+	with _conn, _conn.cursor() as cur:
+		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE status = 1 AND lyrics != ''")
+		return [Lyric(*row) for row in cur.fetchall()]
 
 def get_track_artwork(id):
 	"""Get the artwork for one track, or None if no track, or '' if no artwork."""

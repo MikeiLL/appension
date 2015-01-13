@@ -1,0 +1,20 @@
+{% extends main.html %}
+
+{% block sidebar %}
+		{% end %}
+{% block content %}
+<p><h1>The Lyrics</h1></p>
+	{{ couplet_count }} couplets as as of today.
+	{% for section in lyrics %}
+	<p style="color:blue;margin-left:100px"> {{ section.track_lyrics['couplet_count'] }} couplets 
+												contributed by {{ section.track_lyrics['artist'] }}: </p>
+	
+	
+	<p>
+		{% for line in section.track_lyrics['lyrics'] %}
+			{{ line }} <br/>
+		{% end %}
+	</p>
+	{% end %}
+{% end %}
+

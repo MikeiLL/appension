@@ -257,6 +257,21 @@ class SMDemo(BaseHandler):
 		log.info("Yo we got input: %r", str(input))
 		self.write(templates.load("sm.html").generate(endpoint="/all.mp3", compiled=compiled))
 	
+class ShowLyrics(BaseHandler):
+	def couplet_count(self, lyrics):
+		total = 0
+		for count in lyrics:
+			total += count.track_lyrics['couplet_count']
+		return total
+			
+	def get(self):
+		lyrics = database.get_all_lyrics()
+		couplet_count = self.couplet_count(lyrics)
+		self.write(templates.load("lyrics.html").generate(compiled=compiled, 
+														user_name=self.current_user or 'Guest',
+														lyrics=lyrics,
+														couplet_count=couplet_count))
+	
 class AdminRender(BaseHandler):
 	@tornado.web.authenticated
 	def get(self):
@@ -400,11 +415,12 @@ if __name__ == "__main__":
 			(r"/create_account", CreateAccount),
 			(r"/login", Login),
 			(r"/logout", Logout),
+			(r"/confirm/([0-9]+)/([A-Fa-f0-9]{2}){8,9}", ConfirmAccount),
+			(r"/lyrics", ShowLyrics),
 			(apikeys.admin_url, AdminRender),
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
 			(apikeys.edit_url+"/([0-9]+)", EditTrack),
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
-			(r"/confirm/([0-9]+)/([A-Fa-f0-9]{2}){8,9}", ConfirmAccount),
 			(r"/nt", NewTabs),
 			(r"/sm", SMDemo),
 		]),
