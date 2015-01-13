@@ -5,6 +5,7 @@ import logging
 import Queue
 import multiprocessing
 import os
+import re
 import hashlib
 from mutagen.mp3 import MP3
 from time import sleep
@@ -57,9 +58,10 @@ class Track(object):
 class Lyric(object):
 	# Select these from the tracks table to construct a track object.
 	columns = "id,artist,lyrics"
-
+	
 	def __init__(self, id, artist, lyrics):
 		
+		couplet_count = len([block for block in re.split(r'(?:\r\n){2,}', lyrics) if block.count('\r\n') == 1])
 		lyrics = self.couplets(lyrics)
 		
 		self.track_lyrics = {
@@ -67,7 +69,7 @@ class Lyric(object):
 			'artist': artist,
 			'lyrics': lyrics,
 			#TODO ignore lyrics that exceed sts of two (but allow for 1/2 couplets)
-			'couplet_count': len([i for i in lyrics if i != "\r\n"]) / 2
+			'couplet_count': couplet_count
 		}
 		
 	def couplets(self, lyrics):
