@@ -31,7 +31,6 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href='{{ compiled('tabs.scss') }}' rel='stylesheet' type='text/css' />
 
@@ -142,38 +141,7 @@ Well, now he's making it even longer, with your help. Add your contribution here
 
 {% end %}
 
-	{% block footer %}	
-		<a href="/">Home</a> &copy; 2014 Future Fossil 
-		<a href="mailto:beezwax@aol.com">Contact</a> |
-		<a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>
-			
-		<script type="text/javascript"
-		  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
-		<script type="text/javascript" src='{{ compiled(
-		  'spin.min.js',
-		  'soundmanager2-nodebug-jsmin.js',
-		  'berniecode-animator.js',
-		  '360player.js'
-		  ) }}'></script>
-		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
-		<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
-		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
-		<script>
-		if (document.location.search.match(/type=embed/gi)) {
-		  window.parent.postMessage('resize', "*");
-		}
-  </script>
-
-	<script>
-		$('.accordion__content:not(:first)').hide();
-		$('.accordion__title:first-child').addClass('active');
-		$('.accordion__title').on('click', function () {
-		$('.accordion__content').hide();
-		$(this).next().show().prev().addClass('active').siblings().removeClass('active');
-		});
-		//@ sourceURL=pen.js
-	</script>
-		{% end %}
+	
 
 
 

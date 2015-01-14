@@ -22,49 +22,77 @@
 	</head>
 	{% end %}
 <body>
-<div id="pagewrap">
 
 	<div id="header">
-	<div style="float:left; width="200px">
-	<h1>Infinite Glitch</h1>
+	<h1><a href="/">Infinite Glitch</a></h1>
 	</div>
 		{% block user %}
-	<div style="float:right; width="200px">
-			<p>Hello {{ user_name }}!</p>
-	</div>		{% end %}
-</div>
-	<br style="clear:both"/>
-	<div id="left">
-		{% block sidebar %}
-		
+		<div style="float:right; width="200px">
+				<p>Hello {{ user_name }}!</p>
+		</div>		
 		{% end %}
 	</div>
+	<br style="clear:both"/>
+  <!--Pattern HTML-->
+    <section id="pattern" class="pattern">
+  	<ul class="grid">
+		<li>
+			<div>
+			{% block sidebar %}
+		
+			{% end %}
+			</div>
+		</li>
 	
-	<div id="central">
-		{% block content %}<p>totally empty page</p>{% end %}
-	</div>	
-	<br style="clear:both"/>
-	<div class="footer">
-		
-		{% block footer %}	
-			<a href="/">Home</a> &copy; 2014 Future Fossil 
-			<a href="mailto:beezwax@aol.com">Contact</a> |
-			<a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>
-				
-			<script type="text/javascript"
-			  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
-			<script type="text/javascript" src='{{ compiled(
-			  'spin.min.js',
-			  'soundmanager2-nodebug-jsmin.js',
-			  'berniecode-animator.js',
-			  '360player.js'
-			  ) }}'></script>
-			<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
-			<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
-			<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
+	
+	<li class="wide">
+		<div>
+			{% block content %}<p>totally empty page</p>{% end %}
+		</div>
+	</li>	
+	
+	{% block right-nav %}
+			<li>
+				<div>
+					<ul>
+					<li><a href="/lyrics">The Lyrics</a></li>
+					<li><a href="/submit">Submit</a></li>
+					<li><a href="/login">Login</a></li>
+					<li><a href="/logout">Logout</a></li>
+					<li><a href="/create_account">Sign-Up</a></li>
+					</ul>
+				</div>
+			</li>
+			
+		</ul>
+	</section>	
+	{% end %}
+	{% block footer %}	
+
+	<div class="container">	
+		<footer role="contentinfo">   
+			<div>
+				<nav id="menu">
+					<a href="/">Home</a> &copy; 2014 Future Fossil 
+					<a href="mailto:beezwax@aol.com">Contact</a> |
+					<a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>				</nav>
+			</div>
+		</footer>
+	</div>		
+
+		<script type="text/javascript"
+		  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
+		<script type="text/javascript" src='{{ compiled(
+		  'spin.min.js',
+		  'soundmanager2-nodebug-jsmin.js',
+		  'berniecode-animator.js',
+		  '360player.js'
+		  ) }}'></script>
+		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
 		{% end %}
 	</div>
-</div>
 
 </body>
 </html>

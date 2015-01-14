@@ -46,109 +46,269 @@ body {
 	#header {
 		padding: 0 15px;
 	}
-	#left {
+	/************Reset**************/
+* { 
+		-moz-box-sizing: border-box; 
+		-webkit-box-sizing: border-box; 
+		box-sizing: border-box; 
+	}
+	html, body, div, object, iframe, fieldset { 
+		margin: 0; 
+		padding: 0; 
+		border: 0;
+	} 
+	ol, ul { 
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	} 
+	table { 
+		border-collapse: collapse; 
+		border-spacing: 0; 
+	}
+	header, footer, nav, section, article, hgroup, figure {
+		display: block;	
+	}
+	legend {
+		display: none;
+	}
+	/************End Reset**************/
+	/************Start Index**************/
+
+	.grid {
+	  overflow: hidden;
+	  padding: 0.5em 0 0 0.5em;
+	  /*max-width: 76em;*/
+	  margin: 0 auto;
+	}
+	.grid li {
+	  padding: 0 0.5em 0.5em 0;
+	}
+	.grid li > div {
+	  border: 1px solid lime;
+	  padding: 1em 2em;
+	  text-align: left;
+	}
+	.grid li.wide {
+	  width: 100%;
+	}
+	.grid li a {
+	  color: #999;
+	}  
+
+	@media all and (min-width: 40em) {
+	  .grid li {
 		float: left;
-		padding: 5px 15px;
-		min-height:500px;
+		width: 33.3333333%;
+	  }
+	  .grid li.wide {
+		width: 66.666666%;
+	  }
+	}
+	@media all and (min-width: 60em) {
+	  .grid li {
+		width: 25%;
+	  }
+	  .grid li.wide {
+		width: 50%;
+	  }
+	}
+	/************End Index**************/
+
+
+	/************End Classes**************/
+
+	/************Structure**************/
+	.container {
+		max-width: 70em;
+		margin: 0 auto;
+		padding: 0 1em;
+		overflow: hidden;
+	}
+	div[role=main] {
+		padding-bottom: 1em;
 	}
 
-	#central {
-		float: left;
-		padding: 5px 15px;
-		margin: 0px 5px 5px 5px;
+	/*Footer*/
+	footer[role=contentinfo] {
+		color: #fff;
+		background: #000;
+		margin: 0 -1em;
+		position: relative;
+		z-index: 2;
+	}
+	footer[role=contentinfo] > div {
+		max-width: 70em;
+		padding: 0 1em;
+		margin: 0 auto;
+		overflow: hidden;
+	}
+	footer[role=contentinfo] p {
+		margin: 0;
+	}
+	footer[role=contentinfo] .nav li a {
+		display: block;
+		border-bottom: 1px solid #808080;
+		padding: 1em;
+		margin: 0 -1em;
+	}
+	footer[role=contentinfo] a {
 		display: inline-block;
+		padding: 0.5em 0;
+	}
+	footer[role=contentinfo] a.nav-home {
+		color: #fff;
+	}
+	footer[role=contentinfo] .f-rga {
+		padding: 0.6em 0;
+	}
+	footer[role=contentinfo] img {
+		max-width: 4.4em;
+		display: inline-block;
+		margin-bottom: -0.22em;
+	}
+	/*End Footer*/
+
+
+	/******Media Queries*******/
+
+	/* Medium Screens*/
+	@media all and (min-width: 35em) {
+		.blog-logo {
+			float: left;
+			font-size: 2em;
+			margin: 0 0 1em;
+		}
+		.blog-logo img {
+			width: auto;
+		}
+	}
+	@media all and (min-width:40em) {
+		h1 {
+			font-size: 3.6em;
+		}
+		.container {
+			padding-bottom: 4em;
+		}
+		footer[role=contentinfo] {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			margin: 0;
+		}
+		footer[role=contentinfo] .nav {
+			float: left;
+		}
+		footer[role=contentinfo] .nav li {
+			display: inline-block;
+			margin-right: 0.8em;
+		}
+		footer[role=contentinfo] .nav li a {
+			border: 0;
+		}
+		footer[role=contentinfo] .f-rga {
+			float: right;
+		}
+		.grid ul li {
+			width: 50%;
+			float: left;
+		}
+		.grid ul li:nth-child(odd) {
+			padding-right: 1em;
+			clear: left;
+		}
+		.ani {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 4em;
+			left: 0;
+			width: 100%;
+			height: 90%;
+			margin: 0;
+			z-index: 0;
+		}
+		.home {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 5em;
+			left: 0;
+			z-index: 1;
+			width: 100%;
+			height: 90%;
+			display: table;
+			text-align: center;
+			color: #fff;
+			color: rgba(255,255,255,0.7);
+		}
+		.home > div {
+			display: table-cell;
+			vertical-align: middle;
+		}
+		.home .intro a {
+			color: #fff;
+			color: rgba(255,255,255,0.8);
+			border-bottom: 1px solid rgba(255,255,255,0.8);
+		}
+		.home .intro a:hover, .home .intro a:focus {
+			color: #000;
+			border-bottom-color: #000;
+		}
+		
 	}
 
 
-	#footer {
-		clear: both;
-		padding: 0 15px;
+	/* Large Screens */
+	@media all and (min-width: 54em) {
+		h1 {
+			font-size: 2.4em;
+		}
+		.grid > section {
+			float: left;
+			width: 33.3333333%;
+		}
+		.grid > section:nth-of-type(3n+1) {
+			clear: left;
+		}
+		.grid ul li {
+			width: auto;
+			float: none;
+		}
+		.grid ul li:nth-child(odd) {
+			padding-right: 0;
+		}
+	}	
+
+
+	/* CSS Animations */
+	@-webkit-keyframes fadeout {
+	  0%   { background: #fff; }
+	  10%   { background: #eee; }
+	  100% { background: #fff; }
 	}
+	@-moz-keyframes fadeout {
+	  0%   { background: #fff; }
+	  10%   { background: #eee; }
+	  100% { background: #fff; }
+	}
+	@-o-keyframes fadeout {
+	  0%   { background: #fff; }
+	  10%   { background: #eee; }
+	  100% { background: #fff; }
+	}
+	@keyframes fadeout {
+	  0%   { background: #fff; }
+	  10%   { background: #eee; }
+	  100% { background: #fff; }
+	}
+
 
 	/*EOF mZoo 3col*/
 
-	/*BOF Three column flowing mZoo*/
+	/*BOF Three column flowing mZoo - may use*/
 	#example p:first-of-type {font-weight:600;}
-
-
-	html {
-		color: #222;
-		font-size: 1em;
-		line-height: 1.4;
-		padding:0;
-	}
-
-	/*
-	 * Remove text-shadow in selection highlight: h5bp.com/i
-	 * These selection rule sets have to be separate.
-	 * Customize the background color to match your design.
-	 */
-
-	::-moz-selection {
-		background: #b3d4fc;
-		text-shadow: none;
-	}
-
-	::selection {
-		background: #b3d4fc;
-		text-shadow: none;
-	}
-
-	/*
-	 * A better looking default horizontal rule
-	 */
-
-	hr {
-		display: block;
-		height: 1px;
-		border: 0;
-		border-top: 1px solid #ccc;
-		margin: 1em 0;
-		padding: 0;
-	}
-
-	/*
-	 * Remove the gap between images, videos, audio and canvas and the bottom of
-	 * their containers: h5bp.com/i/440
-	 */
-
-	audio,
-	canvas,
-	img,
-	svg,
-	video {
-		vertical-align: middle;
-	}
-
-	/*
-	 * Remove default fieldset styles.
-	 */
-
-	fieldset {
-		border: 0;
-		margin: 0;
-		padding: 0;
-	}
-
-	/*
-	 * Allow only vertical resizing of textareas.
-	 */
-
-	textarea {
-		resize: vertical;
-	}
-
-	/* ==========================================================================
-	   Browse Happy prompt
-	   ========================================================================== */
-
-	.browsehappy {
-		margin: 0.2em 0;
-		background: #ccc;
-		color: #000;
-		padding: 0.2em 0;
-	}
-
 	/* ==========================================================================
 	   Author's custom styles
 	   ========================================================================== */
@@ -186,48 +346,7 @@ body {
 	  }
 	}
 
-	/* ==========================================================================
-	   Helper classes
-	   ========================================================================== */
-
-	/*
-	 * Hide from both screenreaders and browsers: h5bp.com/u
-	 */
-
-	.hidden {
-		display: none !important;
-		visibility: hidden;
-	}
-
-	/*
-	 * Hide only visually, but have it available for screenreaders: h5bp.com/v
-	 */
-
-	.visuallyhidden {
-		border: 0;
-		clip: rect(0 0 0 0);
-		height: 1px;
-		margin: -1px;
-		overflow: hidden;
-		padding: 0;
-		position: absolute;
-		width: 1px;
-	}
-
-	/*
-	 * Extends the .visuallyhidden class to allow the element to be focusable
-	 * when navigated to via the keyboard: h5bp.com/p
-	 */
-
-	.visuallyhidden.focusable:active,
-	.visuallyhidden.focusable:focus {
-		clip: auto;
-		height: auto;
-		margin: 0;
-		overflow: visible;
-		position: static;
-		width: auto;
-	}
+	
 
 	/*
 	 * Hide visually and from screenreaders, but maintain layout
@@ -259,157 +378,6 @@ body {
 		clear: both;
 	}
 
-	/* ==========================================================================
-	   EXAMPLE Media Queries for Responsive Design.
-	   These examples override the primary ('mobile first') styles.
-	   Modify as content requires.
-	   ========================================================================== */
-
-	@media only screen and (min-width: 35em) {
-		/* Style adjustments for viewports that meet the condition */
-		#left {width:29%;}
-		#central {width:69%;}
-	}
-
-	/************************************************************************************
-	MEDIA QUERIES
-	*************************************************************************************/
-	/* for 980px or less mZoo 3col*/
-	 @media all and (max-width: 980px) {
-				
-		#pagewrap {
-			width: 94%;
-		}
-		#left {
-			width: 41%;
-			/*max-width: 290px;*/
-			padding: 1% 4%;
-			min-height:500px;
-		}
-		#central {
-			width: 58%;
-			padding: 1% 4%;
-			margin: 0px 0px 5px 5px;
-		}
-		
-
-		#header, #footer {
-			padding: 1% 4%;
-		}
-		
-	}
-	/* for 600px or less mZoo 3col*/
-	@media screen and (max-width: 600px) {
-
-		#left {
-			width: 41%;
-			width: auto;
-			float: none;
-			min-height:450px;
-		}
-		
-		#central {
-			width: auto;
-			float: none;
-			margin-left: 0px;
-		}
-		
-
-	}
-
-	/* for 480px or less mZoo 3col*/
-	@media screen and (max-width: 480px) {
-
-		#header {
-			height: auto;
-		}
-		#left {
-			width: auto;
-			float: none;
-			min-height:50px;
-		}
-		
-		h1 {
-			font-size: 2em;
-		}
-
-
-	}
-
-	@media print,
-		   (-o-min-device-pixel-ratio: 5/4),
-		   (-webkit-min-device-pixel-ratio: 1.25),
-		   (min-resolution: 120dpi) {
-		/* Style adjustments for high resolution devices */
-	}
-
-	/* ==========================================================================
-	   Print styles.
-	   Inlined to avoid required HTTP connection: h5bp.com/r
-	   ========================================================================== */
-
-	@media print {
-		* {
-			background: transparent !important;
-			color: #000 !important; /* Black prints faster: h5bp.com/s */
-			box-shadow: none !important;
-			text-shadow: none !important;
-		}
-
-		a,
-		a:visited {
-			text-decoration: underline;
-		}
-
-		a[href]:after {
-			left: " (" attr(href) ")";
-		}
-
-		abbr[title]:after {
-			left: " (" attr(title) ")";
-		}
-
-		/*
-		 * Don't show links for images, or javascript/internal links
-		 */
-
-		a[href^="javascript:"]:after,
-		a[href^="#"]:after {
-			left: "";
-		}
-
-		pre,
-		blockquote {
-			border: 1px solid #999;
-			page-break-inside: avoid;
-		}
-
-		thead {
-			display: table-header-group; /* h5bp.com/t */
-		}
-
-		tr,
-		img {
-			page-break-inside: avoid;
-		}
-
-		img {
-			max-width: 100% !important;
-		}
-
-		p,
-		h2,
-		h3 {
-			orphans: 3;
-			widows: 3;
-		}
-
-		h2,
-		h3 {
-			page-break-after: avoid;
-		}
-	}
-	/*mZoo 2col*/
 
 	#left {
 		background: rgba(1.0, 1.0, 1.0, 0.55);
@@ -444,15 +412,12 @@ body {
 	}
 }
 
-#sidebar {
-	background: #f0efef;
-}
 
-#header, #left, #central, #sidebar {
+#header {
 	margin-bottom: 15px;
 }
 
-#pagewrap, #header, #left, #central, #sidebar, #footer {
+#pagewrap, #header {
 	border: solid 1px lime;
 }
   
