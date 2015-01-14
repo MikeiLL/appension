@@ -46,8 +46,17 @@ body {
 	#header {
 		padding: 0 15px;
 	}
+	
+	.logo {
+		float:left;
+		width:70%;
+	}
+	
+	.user {
+		float:right; 
+	}
 	/************Reset**************/
-* { 
+ 	{ 
 		-moz-box-sizing: border-box; 
 		-webkit-box-sizing: border-box; 
 		box-sizing: border-box; 
