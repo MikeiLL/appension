@@ -59,9 +59,17 @@ class BaseHandler(tornado.web.RequestHandler):
         if self._user_perms: return username # If perms==0, the user has been banned, and should be treated as not-logged-in.
 
 class MainHandler(BaseHandler):
+	import database
 	mtime = 0
 	template = 'index.html'
-
+	lyrics = database.get_all_lyrics()
+	
+	def couplet_count(self, lyrics):
+		total = 0
+		for count in lyrics:
+			total += count.track_lyrics['couplet_count']
+		return total
+		
 	def __gen(self):
 		kwargs = {
 			'compiled': compiled,
@@ -69,6 +77,8 @@ class MainHandler(BaseHandler):
 			'endpoint': "/all.mp3",
 			'complete_length': datetime.timedelta(seconds=int(database.get_complete_length())),
 			'user_name':self.current_user or 'Guest',
+			'couplet_count': self.couplet_count(self.lyrics),
+			'lyrics': self.lyrics,
 		}
 		if os.path.getmtime(config.template_dir + self.template) > self.mtime:
 			templates.reset()
@@ -81,6 +91,9 @@ class MainHandler(BaseHandler):
 
 	def get(self):
 		self.finish(self.__gen())
+		
+
+			
 
 
 class InfoHandler(tornado.web.RequestHandler):

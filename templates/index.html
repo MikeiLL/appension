@@ -132,6 +132,23 @@ Well, now he's making it even longer, with your help. Add your contribution here
 
 				<p>David Fricke, Rolling Stone Magazine, June 26, 1997, p.56</p>
   </dd>
+  <dt class="accordion__title">Lyrics</dt>
+  <dd class="accordion__content">
+    <h3>The Lyrics</h3>
+        {{ couplet_count }} couplets as as of today.
+	{% for section in lyrics %}
+	<p class="lyric_credits"> {{ section.track_lyrics['couplet_count'] }} couplets 
+												contributed by {{ section.track_lyrics['artist'] }}: </p>
+	
+	
+	<p>
+		{% for line in section.track_lyrics['lyrics'] %}
+			{{ line }} <br/>
+		{% end %}
+	</p>
+	{% end %}        
+
+  </dd>
 </dl>
 
 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio cumque voluptate consequuntur ex suscipit quas rerum enim sunt ab voluptas laudantium sed voluptates iure magni accusamus ratione tempore consectetur inventore deleniti culpa tempora molestias laboriosam recusandae soluta accusantium voluptatibus est. Incidunt expedita praesentium tempore ullam iusto voluptate facere quod explicabo.</p>
