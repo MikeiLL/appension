@@ -47,9 +47,20 @@ body {
 		padding: 0 15px;
 	}
 	
+	.left-player {
+		width:290px;
+		float:none;
+		border:1px solid red;
+	}
+	
 	.logo {
 		float:left;
 		width:70%;
+	}
+	
+	.main {
+		border:1px solid blue;
+		margin-left:0p;
 	}
 	
 	.user {
@@ -88,7 +99,7 @@ body {
 		display: none;
 	}
 	/************End Reset**************/
-	/************Start Index**************/
+	/************Start Percent Grid**************/
 
 	.grid {
 	  overflow: hidden;
@@ -101,7 +112,7 @@ body {
 	}
 	.grid li > div {
 	  border: 1px solid lime;
-	  padding: 1em 2em;
+	  padding: .5em;
 	  text-align: left;
 	}
 	.grid li.wide {
@@ -111,27 +122,9 @@ body {
 	  color: #999;
 	}  
 
-	@media all and (min-width: 40em) {
-	  .grid li {
-		float: left;
-		width: 33.3333333%;
-	  }
-	  .grid li.wide {
-		width: 66.666666%;
-	  }
-	}
-	@media all and (min-width: 60em) {
-	  .grid li {
-		width: 25%;
-	  }
-	  .grid li.wide {
-		width: 50%;
-	  }
-	}
-	/************End Index**************/
+	
 
-
-	/************End Classes**************/
+	/************End Percent Grid**************/
 
 	/************Structure**************/
 	.container {
@@ -199,8 +192,11 @@ body {
 		}
 	}
 	@media all and (min-width:40em) {
+	
+		
 		h1 {
 			font-size: 3.6em;
+			color:red;
 		}
 		.container {
 			padding-bottom: 4em;
@@ -279,6 +275,7 @@ body {
 	@media all and (min-width: 54em) {
 		h1 {
 			font-size: 2.4em;
+			color:red;
 		}
 		.grid > section {
 			float: left;
@@ -293,6 +290,15 @@ body {
 		}
 		.grid ul li:nth-child(odd) {
 			padding-right: 0;
+		}
+		
+		.main {
+			margin-left:290px;
+		}
+		
+		.player-left {
+			width:290px;
+			float:left;
 		}
 	}	
 
@@ -322,44 +328,6 @@ body {
 
 	/*EOF mZoo 3col*/
 
-	/*BOF Three column flowing mZoo - may use*/
-	#example p:first-of-type {font-weight:600;}
-	/* ==========================================================================
-	   Author's custom styles
-	   ========================================================================== */
-
-	#example p:first-of-type {font-weight:600;}
-	@media all and (max-width: 900px) and (min-width: 600px) {
-		#left {max-width: 290px;}
-	#example p  {
-	  -webkit-column-count: 2; /* Saf3, Chrome*/
-	  -webkit-column-gap: 4%; /* Saf3, Chrome*/
-	  -moz-column-count: 2; /* FF3.5+ */
-	  -moz-column-gap: 4%; /* FF3.5+ */
-	  column-count: 2; /* Opera 11+*/
-	  column-gap: 4%; /* Opera 11+*/
-	  }
-	}
-
-	@media all and (min-width: 900px) {
-	#left {max-width: 290px;}
-	#example p:first-of-type  {
-	  -webkit-column-count: 2;
-	  -webkit-column-gap: 3%; /* Saf3, Chrome*/
-	  -moz-column-count: 2;   
-	  -moz-column-gap: 3%; /* FF3.5+ */
-	  column-count: 2;        
-	  column-gap: 3%; /* Opera 11+*/
-	  }
-	   #example p  {
-	  -webkit-column-count: 3;
-	  -webkit-column-gap: 1%; /* Saf3, Chrome*/
-	  -moz-column-count: 3;   
-	  -moz-column-gap: 1%; /* FF3.5+ */
-	  column-count: 3;        
-	  column-gap: 1%; /* Opera 11+*/
-	  }
-	}
 
 	
 
@@ -528,5 +496,80 @@ body {
 }
 //End popup styling
 
+	/*BOF Three column flowing mZoo - may use*/
+	#example p:first-of-type {font-weight:600;}
+	/* ==========================================================================
+	   Paragraph custom styles
+	   ========================================================================== */
+
+	#example p:first-of-type {font-weight:600;}
+	@media all and (max-width: 900px) and (min-width: 600px) {
+		#left {max-width: 290px;}
+	#example p  {
+	  -webkit-column-count: 2; /* Saf3, Chrome*/
+	  -webkit-column-gap: 4%; /* Saf3, Chrome*/
+	  -moz-column-count: 2; /* FF3.5+ */
+	  -moz-column-gap: 4%; /* FF3.5+ */
+	  column-count: 2; /* Opera 11+*/
+	  column-gap: 4%; /* Opera 11+*/
+	  }
+	}
+
+	@media all and (min-width: 900px) {
+	#left {max-width: 290px;}
+	#example p:first-of-type  {
+	  -webkit-column-count: 2;
+	  -webkit-column-gap: 3%; /* Saf3, Chrome*/
+	  -moz-column-count: 2;   
+	  -moz-column-gap: 3%; /* FF3.5+ */
+	  column-count: 2;        
+	  column-gap: 3%; /* Opera 11+*/
+	  }
+	   #example p  {
+	  -webkit-column-count: 3;
+	  -webkit-column-gap: 1%; /* Saf3, Chrome*/
+	  -moz-column-count: 3;   
+	  -moz-column-gap: 1%; /* FF3.5+ */
+	  column-count: 3;        
+	  column-gap: 1%; /* Opera 11+*/
+	  }
+	}
+
+	
+	/************Start Percent Grid Media**************/
+	@media all and (min-width: 40em) {
+	  .grid li {
+		float: left;
+		width: 33.3333333%;
+	  }
+	  .grid li.wide {
+		width: 66.666666%;
+	  }
+	  .left-player {
+		float:left;
+		width:290px;
+	  }
+	  .main {
+		margin-left:290;
+	  }
+	}
+	@media all and (min-width: 60em) {
+	  .grid li {
+		width: 20%;
+	  }
+	  .grid li.wide {
+		width: 80%;
+	  }
+	  .left-player {
+		float:left;
+		width:290px;
+	  }
+	  .main {
+		margin-left:290;
+	  }
+	}
+	/************End Percent Grid Media**************/
+
 
 }
+
