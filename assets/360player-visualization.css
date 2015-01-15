@@ -142,53 +142,12 @@
  visibility: hidden;
 }
 
-@media all and (min-width: 48em) {
+
 	.ui360-vis,
 	.ui360-vis .sm2-360ui,
 	.sm2-inline-list .ui360-vis {
 	 /* size of the container for the circle, etc. */
 	 width:256px;
 	 height:256px;
-	}
-}
-
-@media all and (max-width: 39em) {
-	.ui360-vis,
-	.ui360-vis .sm2-360ui,
-	.sm2-inline-list .ui360-vis {
-	 /* size of the container for the circle, etc. */
-	 width:206px;
-	 height:206px;
-	}
-}
-
-@media all and (min-width: 40em) {
-	.ui360-vis,
-	.ui360-vis .sm2-360ui,
-	.sm2-inline-list .ui360-vis {
-	 /* size of the container for the circle, etc. */
-	 width:156px;
-	 height:156px;
-	}
+	 }
 	
-}
-
-@media all and (min-width: 60em) {
-	.ui360-vis,
-	.ui360-vis .sm2-360ui,
-	.sm2-inline-list .ui360-vis {
-	 /* size of the container for the circle, etc. */
-	 width:185px;
-	 height:185px;
-	}
-}
-
-@media all and (min-width: 75em) {
-	.ui360-vis,
-	.ui360-vis .sm2-360ui,
-	.sm2-inline-list .ui360-vis {
-	 /* size of the container for the circle, etc. */
-	 width:256px;
-	 height:256px;
-	}
-}

@@ -306,35 +306,7 @@ div.ui360 a span.metadata * {
 }
 
 
-@media all and (min-width: 48em) {
 
-}
-
-@media all and (max-width: 39em) {
-	.ui360 .sm2-canvas.hi-dpi {
-	/* hi-dpi / "retina" screens */
-	 top: -50%;
-	 left: -50%;
-	 -moz-transform: scale(0.50);
-	 -ms-transform: scale(0.50);
-	 -webkit-transform: scale(0.50);
-	 transform: scale(0.50);
-	}
-}
-
-@media all and (min-width: 40em) and (max-width: 59em) {
-	.ui360 .sm2-canvas.hi-dpi {
-	/* hi-dpi / "retina" screens */
-	 top: -50%;
-	 left: -50%;
-	 -moz-transform: scale(0.50);
-	 -ms-transform: scale(0.50);
-	 -webkit-transform: scale(0.50);
-	 transform: scale(0.50);
-	}
-}
-
-@media all and (min-width: 60em) and (max-width: 74em) {
 	.ui360 .sm2-canvas.hi-dpi {
 	/* hi-dpi / "retina" screens */
 	 top: -50%;
@@ -344,16 +316,4 @@ div.ui360 a span.metadata * {
 	 -webkit-transform: scale(0.5);
 	 transform: scale(0.5);
 	}
-}
-
-@media all and (min-width: 75em) {
-	.ui360 .sm2-canvas.hi-dpi {
-	/* hi-dpi / "retina" screens */
-	 top: -50%;
-	 left: -50%;
-	 -moz-transform: scale(0.5);
-	 -ms-transform: scale(0.5);
-	 -webkit-transform: scale(0.5);
-	 transform: scale(0.5);
-	}
-}
+	
