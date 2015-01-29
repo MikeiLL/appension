@@ -4,6 +4,7 @@ DateTime==4.0.1
 PyExecJS==1.0.4
 PyMySQL==0.6.2
 PyYAML==3.11
+pyechonest==9.0.0
 TornadIO2==0.0.4
 Twisted==14.0.2
 argparse==1.2.1
