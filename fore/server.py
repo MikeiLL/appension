@@ -449,6 +449,13 @@ if __name__ == "__main__":
 
 	application.listen(config.http_port)
 	try:
+		if config.use_sudo_uid_gid:
+			# Attempt to drop privs to the user that invoked sudo, if
+			# possible. Otherwise, fall back on the specified uid/gid.
+			uid = int(os.getenv("SUDO_UID") or 0)
+			if uid: config.uid = uid
+			gid = int(os.getenv("SUDO_GID") or 0)
+			if uid: config.gid = gid
 		if config.gid: os.setgid(config.gid)
 		if config.uid: os.setuid(config.uid)
 	except OSError:
