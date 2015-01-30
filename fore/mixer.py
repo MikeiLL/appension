@@ -41,9 +41,23 @@ import weakref
 import numpy
 from echonest.remix.support.ffmpeg import ffmpeg
 
+# Probe the system and find which name is available
+ffmpeg_command = None
+for command in ("avconv", "ffmpeg", "en-ffmpeg"):
+	try:
+		subprocess.Popen([command],stdout=subprocess.PIPE,stderr=subprocess.STDOUT).wait()
+		ffmpeg_command = command
+		break
+	except OSError:
+		# The command wasn't found. Move on to the next one.
+		pass
+if not ffmpeg_command:
+	raise RuntimeError("No avconv/ffmpeg found, cannot continue")
+log.info("Using %r for audio conversion.",ffmpeg_command)
+
 class FFMPEGStreamHandler(threading.Thread):
 	def __init__(self, infile, numChannels=2, sampleRate=44100):
-		command = ["en-ffmpeg"]
+		command = [ffmpeg_command]
 
 		self.filename = None
 		if isinstance(infile, basestring):
