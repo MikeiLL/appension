@@ -42,7 +42,7 @@ def end_trans(track, beats_to_mix = 0):
 	if beats_to_mix > 0:
 		#if we're crossfading, playback ends at first beat of crossfade
 		playback_end = end_viable - (avg_duration * beats_to_mix)
-		final =  beats_to_mix #count tatums from end of tatum list
+		final =  int(beats_to_mix) #count tatums from end of tatum list
 
 	else:
 		#if we're not crossfading playback to end, final beat being last tatum
