@@ -396,7 +396,10 @@ class Mixer(multiprocessing.Process):
 				stay_time = max(self.tracks[0].analysis.duration,
 					self.tracks[1].analysis.duration)
 				tra = managed_transition(self.tracks[0],
-					self.tracks[1])
+					self.tracks[1],
+					xfade = track1._metadata.track_details['xfade'],
+					itrim = track1._metadata.track_details['itrim'],
+					otrim = track1._metadata.track_details['otrim'])
 				del self.tracks[0].analysis
 				gc.collect()
 				yield tra
