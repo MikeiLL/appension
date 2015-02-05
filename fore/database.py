@@ -23,11 +23,11 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 class Track(object):
 	# Select these from the tracks table to construct a track object.
-	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim"
+	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments"
 	def __init__(self, id, filename, artist, title, length, status, 
-				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim):
-		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
-																	length, status, story, lyrics, comments, xfade, itrim, otrim)
+				submitter, submitteremail, submitted, lyrics, story, comments):
+		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
+																	length, status, story, lyrics, comments)
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
@@ -40,9 +40,6 @@ class Track(object):
 			'status': status,
 			'story': story,
 			'lyrics': lyrics,
-			'xfade': xfade, 
-			'itrim': itrim,
-			'otrim': otrim,
 		}
 		self.full_track_details = {
 			'id': id,

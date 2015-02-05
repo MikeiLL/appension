@@ -404,9 +404,8 @@ if __name__ == "__main__":
 			 config.frontend_buffer)
 	v2_queue = BufferedReadQueue(int(config.frontend_buffer / SECONDS_PER_FRAME))
 	info_queue = multiprocessing.Queue()
-	track_queue = multiprocessing.Queue()
 
-	daemonize(info.generate, info_queue, track_queue, first_frame, InfoHandler)
+	daemonize(info.generate, info_queue, first_frame, InfoHandler)
 	StreamHandler.clients = Listeners(v2_queue, "All", first_frame)
 	daemonize(monitordaemon,StreamHandler.clients,InfoHandler.stats,{"mp3_queue":v2_queue})
 
@@ -465,7 +464,7 @@ if __name__ == "__main__":
 	log.info("Running as UID/GID %d/%d %d/%d",os.getuid(),os.getgid(),os.geteuid(),os.getegid())
 	import database
 	from mixer import Mixer
-	mixer = Mixer(v2_queue.raw,info_queue,track_queue)
+	mixer = Mixer(v2_queue.raw,info_queue)
 	mixer.start()
 	try:
 		tornado.ioloop.IOLoop.instance().start()

@@ -303,159 +303,153 @@ def generate_metadata(a):
 
 
 class Mixer(multiprocessing.Process):
-    def __init__(self, oqueue, infoqueue, track_queue):
-        self.infoqueue = infoqueue
+	def __init__(self, oqueue, infoqueue):
+		self.infoqueue = infoqueue
 
-        self.encoder = None
-        self.oqueue = oqueue
-        
-        self.track_queue = track_queue
-        for track in database.get_many_mp3(order_by='sequence'):
-            track_queue.put(track)
+		self.encoder = None
+		self.oqueue = oqueue
 
-        self.__track_lock = threading.Lock()
-        self.__tracks = []
+		self.__track_lock = threading.Lock()
+		self.__tracks = []
 
-        self.transition_time = 30 if not test else 5
-        self.__stop = False
+		self.transition_time = 30 if not test else 5
+		self.__stop = False
 
-        multiprocessing.Process.__init__(self)
+		multiprocessing.Process.__init__(self)
 
-    @property
-    def tracks(self):
-        self.__track_lock.acquire()
-        tracks = self.__tracks
-        self.__track_lock.release()
-        return tracks
+	@property
+	def tracks(self):
+		self.__track_lock.acquire()
+		tracks = self.__tracks
+		self.__track_lock.release()
+		return tracks
 
-    @tracks.setter
-    def tracks(self, new_val):
-        self.__track_lock.acquire()
-        self.__tracks = new_val
-        self.__track_lock.release()
+	@tracks.setter
+	def tracks(self, new_val):
+		self.__track_lock.acquire()
+		self.__tracks = new_val
+		self.__track_lock.release()
 
-    @property
-    def current_track(self):
-        return self.tracks[0]
+	@property
+	def current_track(self):
+		return self.tracks[0]
 
-    def get_stream(self, x):
-        for fname in (x.filename, "audio/"+x.filename):
-            if os.path.isfile(fname):
-                return fname
-        # TODO: Fetch the contents from the database and save to fname
-        raise NotImplementedError
+	def get_stream(self, x):
+		for fname in (x.filename, "audio/"+x.filename):
+			if os.path.isfile(fname):
+				return fname
+		# TODO: Fetch the contents from the database and save to fname
+		raise NotImplementedError
 
-    def analyze(self, x):
-        if isinstance(x, list):
-            return [self.analyze(y) for y in x]
-        if isinstance(x, AudioData):
-            return self.process(x)
-        if isinstance(x, tuple):
-            return self.analyze(*x)
+	def analyze(self, x):
+		if isinstance(x, list):
+			return [self.analyze(y) for y in x]
+		if isinstance(x, AudioData):
+			return self.process(x)
+		if isinstance(x, tuple):
+			return self.analyze(*x)
 
-        log.info("Grabbing stream [%r]...", x.id)
-        laf = LocalAudioStream(self.get_stream(x))
-        setattr(laf, "_metadata", x)
-        return self.process(laf)
+		log.info("Grabbing stream [%r]...", x.id)
+		laf = LocalAudioStream(self.get_stream(x))
+		setattr(laf, "_metadata", x)
+		return self.process(laf)
 
-    def add_track(self, track):
-        self.tracks.append(self.analyze(track))
+	def add_track(self, track):
+		self.tracks.append(self.analyze(track))
 
-    def process(self, track):
-        if not hasattr(track.analysis.pyechonest_track, "title"):
-            setattr(track.analysis.pyechonest_track, "title", track._metadata.title)
-        log.info("Resampling features [%r]...", track._metadata.id)
-        if len(track.analysis.beats):
-            track.resampled = resample_features(track, rate='beats')
-            track.resampled['matrix'] = timbre_whiten(track.resampled['matrix'])
-        else:
-            log.info("no beats returned for this track.")
-            track.resampled = {"rate":'beats', "matrix": []}
+	def process(self, track):
+		if not hasattr(track.analysis.pyechonest_track, "title"):
+			setattr(track.analysis.pyechonest_track, "title", track._metadata.title)
+		log.info("Resampling features [%r]...", track._metadata.id)
+		if len(track.analysis.beats):
+			track.resampled = resample_features(track, rate='beats')
+			track.resampled['matrix'] = timbre_whiten(track.resampled['matrix'])
+		else:
+			log.info("no beats returned for this track.")
+			track.resampled = {"rate":'beats', "matrix": []}
 
-        track.gain = self.__db_2_volume(track.analysis.loudness)
-        log.info("Done processing [%r].", track._metadata.id)
-        return track
+		track.gain = self.__db_2_volume(track.analysis.loudness)
+		log.info("Done processing [%r].", track._metadata.id)
+		return track
 
-    def __db_2_volume(self, loudness):
-        return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
+	def __db_2_volume(self, loudness):
+		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
 
-    def generate_tracks(self):
-        """Yield a series of lists of track segments - helper for run()"""
-        while len(self.tracks) < 2:
-            log.info("Waiting for a new track.")
-            track = self.track_queue.get()
-            try:
-                self.add_track(track)
-                log.info("Got a new track.")
-                log.info(str(track.track_details))
-            except Exception: # TODO: Why?
-                log.error("Exception while trying to add new track:\n%s",
-                    traceback.format_exc())
+	def generate_tracks(self):
+		"""Yield a series of lists of track segments - helper for run()"""
+		while len(self.tracks) < 2:
+			log.info("Waiting for a new track.")
+			track = database.get_track_to_play()
+			try:
+				self.add_track(track)
+				log.info("Got a new track.")
+			except Exception: # TODO: Why?
+				log.error("Exception while trying to add new track:\n%s",
+					traceback.format_exc())
 
-        # Initial transition. Should contain 2 instructions: fadein, and playback.
-        inter = self.tracks[0].analysis.duration
-        yield initialize(self.tracks[0], inter, self.transition_time, 10)
+		# Initial transition. Should contain 2 instructions: fadein, and playback.
+		inter = self.tracks[0].analysis.duration
+		yield initialize(self.tracks[0], inter, self.transition_time, 10)
 
-        while not self.__stop:
-            while len(self.tracks) > 1:
-                stay_time = max(self.tracks[0].analysis.duration,
-                    self.tracks[1].analysis.duration)
-                tra = managed_transition(self.tracks[0],
-                    self.tracks[1],
-                    xfade=32)
-                del self.tracks[0].analysis
-                gc.collect()
-                yield tra
-                log.debug("Finishing track 0 [%r]",self.tracks[0])
-                from datetime import datetime
-                now = datetime.now().time()
-                self.tracks[0].finish()
-                del self.tracks[0]
-                gc.collect()
-            log.info("Waiting for a new track.")
-            try:
-                self.add_track(database.get_track_to_play())
-                log.info("Got a new track.")
-            except ValueError:
-                log.warning("Track too short! Trying another.")
-            except Exception:
-                log.error("Got an Exception while trying to add new track:\n%s",
-                    traceback.format_exc())
+		while not self.__stop:
+			while len(self.tracks) > 1:
+				stay_time = max(self.tracks[0].analysis.duration,
+					self.tracks[1].analysis.duration)
+				tra = managed_transition(self.tracks[0],
+					self.tracks[1])
+				del self.tracks[0].analysis
+				gc.collect()
+				yield tra
+				log.debug("Finishing track 0 [%r]",self.tracks[0])
+				from datetime import datetime
+				now = datetime.now().time()
+				self.tracks[0].finish()
+				del self.tracks[0]
+				gc.collect()
+			log.info("Waiting for a new track.")
+			try:
+				self.add_track(database.get_track_to_play())
+				log.info("Got a new track.")
+			except ValueError:
+				log.warning("Track too short! Trying another.")
+			except Exception:
+				log.error("Got an Exception while trying to add new track:\n%s",
+					traceback.format_exc())
 
-        log.error("Stopping!")
-        # Last chunk. Should contain 1 instruction: fadeout.
-        yield terminate(self.tracks[-1], FADE_OUT)
+		log.error("Stopping!")
+		# Last chunk. Should contain 1 instruction: fadeout.
+		yield terminate(self.tracks[-1], FADE_OUT)
 
-    def run(self):
-        self.encoder = Lame(oqueue=self.oqueue)
-        self.encoder.start()
+	def run(self):
+		self.encoder = Lame(oqueue=self.oqueue)
+		self.encoder.start()
 
-        try:
-            self.ctime = None
-            for actions in self.generate_tracks():
-                log.info("Rendering audio data for %d actions.", len(actions))
-                for a in actions:
-                    try:
-                        with Timer() as t:
-                            #   TODO: Move the "multiple encoding" support into
-                            #   LAME itself - it should be able to multiplex the
-                            #   streams itself.
-                            self.encoder.add_pcm(a)
-                            self.infoqueue.put(generate_metadata(a))
-                        log.info("Rendered in %fs!", t.ms)
-                    except Exception:
-                        log.error("Could not render %s. Skipping.\n%s", a,
-                                  traceback.format_exc())
-                gc.collect()
-        except Exception:
-            log.error("Something failed in mixer.run:\n%s",
-                      traceback.format_exc())
-            self.stop()
-            return
+		try:
+			self.ctime = None
+			for actions in self.generate_tracks():
+				log.info("Rendering audio data for %d actions.", len(actions))
+				for a in actions:
+					try:
+						with Timer() as t:
+							#   TODO: Move the "multiple encoding" support into
+							#   LAME itself - it should be able to multiplex the
+							#   streams itself.
+							self.encoder.add_pcm(a)
+							self.infoqueue.put(generate_metadata(a))
+						log.info("Rendered in %fs!", t.ms)
+					except Exception:
+						log.error("Could not render %s. Skipping.\n%s", a,
+								  traceback.format_exc())
+				gc.collect()
+		except Exception:
+			log.error("Something failed in mixer.run:\n%s",
+					  traceback.format_exc())
+			self.stop()
+			return
 
-    def stop(self):
-        self.__stop = True
+	def stop(self):
+		self.__stop = True
 
-    @property
-    def stopped(self):
-        return self.__stop
+	@property
+	def stopped(self):
+		return self.__stop

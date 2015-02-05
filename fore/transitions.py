@@ -1,19 +1,3 @@
-#!/usr/bin/env python
-# encoding: utf=8
-
-"""
-capsule_support.py
-
-Created by Tristan Jehan and Jason Sundram.
-"""
-import logging
-from action import Crossfade as cf
-from action import Playback as pb
-
-log = logging.getLogger(__name__)
-
-LOUDNESS_THRESH = -8
-
 def last_viable(track):
 	for seg in reversed(track.analysis.segments):
 		if seg.loudness_max > -60:
@@ -78,7 +62,6 @@ def db_2_volume(loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
 		
 def managed_transition(track1, track2, xfade=0, otrim=0, itrim=0):
-        log.info("we got track1: %s and track2: %s", track1.analysis.pyechonest_track.artist, track1.analysis.pyechonest_track.artist)
 	for track in [track1, track2]:
 		loudness = track.analysis.loudness
 		track.gain = db_2_volume(loudness)
