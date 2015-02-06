@@ -199,7 +199,15 @@ def update_track(id, info):
 		fields = ("artist", "status", "lyrics", "story")
 		param = {k:info[k][0] for k in fields if k in info}
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
-
+		
+def sequence_tracks(sequence_object):
+    log.info("I HAVE HERE: %r", str(sequence_object))
+    for id, sequence in sequence_object.iteritems():
+        seq = sequence_object.get(id,'')[0]
+        log.info("Itz: %r, %r", id, seq)
+    	with _conn, _conn.cursor() as cur:
+		cur.execute("UPDATE tracks SET sequence = "+str(seq)+" WHERE id="+str(id))
+    
 def create_user(username, email, password, hex_key):
 	"""Create a new user, return the newly-created ID"""
 	username = username.lower(); email = email.lower();

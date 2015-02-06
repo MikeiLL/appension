@@ -2,7 +2,7 @@
 
 {% block content %}
 <p><h1>All Tracks</h1></p>
-<form enctype="multipart/form-data" action="/update" method="post">
+<form enctype="multipart/form-data" action="/sequence" method="post">
 <table border="1" cellpadding="3">
 {% if deleted %}
 	<h2> Track number {{ deleted }} deleted. </h2>
@@ -17,7 +17,7 @@
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
 <tr><td>Sequence</td><td>ID</td><td>Artist</td><td>Filename</td><td>Track Length</td><td>status</td></tr>
 {% for track in all_tracks %}
-	<tr><td><input type="text" name="sequence" size="5" value="{{ track.track_details['sequence'] }}"></td><td>{{ track.id }}</td><td>{{ track.track_details['artist'] }}</td>
+	<tr><td><input type="text" name="{{ track.id }}" size="5" value="{{ track.track_details['sequence'] }}"></td><td>{{ track.id }}</td><td>{{ track.track_details['artist'] }}</td>
 	<td>{{ track.filename }}</td><td>{{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</td>
 	<td>{% if track.full_track_details['status'] == 1 %}Active{% else %}Inactive{% end %}</td>
 	<td>

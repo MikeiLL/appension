@@ -276,7 +276,7 @@ class SequenceHandler(BaseHandler):
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		database.update_sequence(self.request.arguments)
+		database.sequence_tracks(self.request.arguments)
 		self.write(admin_page(user_name, notice='Transitions Updated.'))
 		
 class SMDemo(BaseHandler):
