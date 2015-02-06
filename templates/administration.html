@@ -34,6 +34,9 @@
 	<td><a href="{{ delete_url }}/{{ track.id }}" class="confirmation">delete</a></td>
 	<td><a href="{{ edit_url }}/{{ track.id }}">edit</a></td>
 	</tr>
+	<tr><td colspan="4">Crossfade: {{ track.track_details['xfade'] }}</td>
+	<td colspan="3">iTrim: {{ track.track_details['itrim'] }}</td>
+	<td colspan="3">oTrim: {{ track.track_details['otrim'] }}</td></tr>
 {% end %}
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
 </table>
