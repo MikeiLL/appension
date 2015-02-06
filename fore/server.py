@@ -240,12 +240,12 @@ class Submissionform(BaseHandler):
 			self.write(templates.load("fileuploadform.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
 			
 
-def admin_page(user_name, deleted=0, updated=0):
+def admin_page(user_name, deleted=0, updated=0, notice=''):
 	return templates.load("administration.html").generate(
 		all_tracks=database.get_many_mp3(status="all", order_by='sequence'),
 		deleted=deleted, updated=updated, compiled=compiled,
 		delete_url=apikeys.delete_url, edit_url=apikeys.edit_url,
-		user_name=user_name,
+		user_name=user_name, admin_url=apikeys.admin_url, notice=notice,
 	)
 
 class DeleteTrack(BaseHandler):
@@ -264,6 +264,20 @@ class EditTrack(BaseHandler):
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		self.write(templates.load("track_edit.html").generate(admin_url=apikeys.admin_url, 
 		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name))
+		
+class SequenceHandler(BaseHandler):
+	@tornado.web.authenticated
+	def get(self, input):
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		self.write(admin_page())
+		
+	def post(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		database.update_sequence(self.request.arguments)
+		self.write(admin_page(user_name, notice='Transitions Updated.'))
 		
 class SMDemo(BaseHandler):
 	def get(self):
@@ -422,7 +436,7 @@ if __name__ == "__main__":
 
 			(r"/all\.json", InfoHandler),
 			(r"/all\.mp3", StreamHandler),
-
+			(r"/sequence", SequenceHandler),
 			(r"/monitor", MonitorHandler),
 			(r"/", MainHandler),
 			(r"/submit", Submissionform),
