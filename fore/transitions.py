@@ -85,7 +85,7 @@ def managed_transition(track1, track2, xfade=0, otrim=0, itrim=0):
 	for track in [track1, track2]:
 		loudness = track.analysis.loudness
 		track.gain = db_2_volume(loudness)
-
+    
 	log.info("A cursor: %r", start_point['cursor'])
 	
 	half_way_point = len(track2.analysis.segments) / 2
@@ -109,7 +109,7 @@ def managed_transition(track1, track2, xfade=0, otrim=0, itrim=0):
 		t2offset = lead_in(track2)
 		pb1 = pb(track1, start_point['cursor'], times["playback_duration"] - t2offset)
 		pb2 = cf((track1, track2), (times["playback_start"] + times["playback_duration"] - t2offset, t2start), times["mix_duration"])
-		start_point['cursur'] = 3
+		start_point['cursor'] = t2start + times["mix_duration"]
 		log.info("New cursor: %r", start_point['cursor'])
 		pb3 = pb(track2, t2start + times["mix_duration"], until)
 		return [pb1, pb2]
