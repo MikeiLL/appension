@@ -242,7 +242,7 @@ class Submissionform(BaseHandler):
 
 def admin_page(user_name, deleted=0, updated=0):
 	return templates.load("administration.html").generate(
-		all_tracks=database.get_many_mp3(status="all", order_by='id'),
+		all_tracks=database.get_many_mp3(status="all", order_by='sequence'),
 		deleted=deleted, updated=updated, compiled=compiled,
 		delete_url=apikeys.delete_url, edit_url=apikeys.edit_url,
 		user_name=user_name,
@@ -262,7 +262,7 @@ class EditTrack(BaseHandler):
 	def get(self, input):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
+		self.write(templates.load("track_edit.html").generate(admin_url=apikeys.admin_url, 
 		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name))
 		
 class SMDemo(BaseHandler):

@@ -38,7 +38,8 @@ def end_trans(track, beats_to_mix = 0):
 	except IndexError:
 		avg_duration = sum([b.duration for b in track.analysis.segments[-8:]]) / 8
 	#How much of the track are we returning - adjust for beats to mix?
-	start = track.analysis.duration - (10 + (avg_duration * beats_to_mix))
+	half_way_point = len(track.analysis.segments) / 2
+	start = track.analysis.segments[half_way_point].start
 	if beats_to_mix > 0:
 		#if we're crossfading, playback ends at first beat of crossfade
 		playback_end = end_viable - (avg_duration * beats_to_mix)
@@ -76,12 +77,23 @@ def end_trans(track, beats_to_mix = 0):
 	
 def db_2_volume(loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
-		
+
+start_point = {"cursor": 0}
+	
 def managed_transition(track1, track2, xfade=0, otrim=0, itrim=0):
-        log.info("we got track1: %s and track2: %s", track1._metadata.track_details['xfade'], track1.analysis.pyechonest_track.artist)
+        log.info("we got track1: %s and track2: %s", track1._metadata.track_details['artist'], track2._metadata.track_details['artist'])
 	for track in [track1, track2]:
 		loudness = track.analysis.loudness
 		track.gain = db_2_volume(loudness)
+	try:
+	    log.info("A cursor: %r", start_point['cursur'])
+	except KeyError:
+	    start_point['cursur'] = 0
+	
+	half_way_point = len(track2.analysis.segments) / 2
+	until = track2.analysis.segments[half_way_point].start + \
+	        track2.analysis.segments[half_way_point].duration
+	until += itrim
 		
 	if xfade == 0:
 		times = end_trans(track1)
@@ -96,10 +108,11 @@ def managed_transition(track1, track2, xfade=0, otrim=0, itrim=0):
 		t2start = first_viable(track2)
 		'''offset between start and first theoretical beat.'''
 		t2offset = lead_in(track2)
-		pb1 = pb(track1, times["playback_start"], times["playback_duration"] - t2offset)
+		pb1 = pb(track1, start_point['cursur'], times["playback_duration"] - t2offset)
 		pb2 = cf((track1, track2), (times["playback_start"] + times["playback_duration"] - t2offset, t2start), times["mix_duration"])
-		pb3 = pb(track2, t2start + times["mix_duration"], 10)
-		return [pb1, pb2, pb3]
+		start_point['cursur'] = t2start + times["mix_duration"]
+		pb3 = pb(track2, t2start + times["mix_duration"], until)
+		return [pb1, pb2]
 
 def lead_in(track):
 	"""
