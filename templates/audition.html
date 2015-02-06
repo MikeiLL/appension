@@ -7,42 +7,7 @@
 <p><h2>{{ track.filename }}</h2>
 </p>
 <form enctype="multipart/form-data" action="{{ admin_url }}" method="post">
-<table border="1" width="800px" cellpadding="5">
-	<tr><td>id</td><td>Artist</td><td>Filename</td><td>Length</td><td>Status</td><td>Play</td></tr>
-	<tr><td>{{ track.id }}</td><td>
-	<input type="text" name="artist" value="{{ track.full_track_details['artist'] }}"></td>
-	<td>{{ track.filename }}</td><td>{{ track.full_track_details['length'] }}</td>
-	<td>
-		<select name=status>
-		<option value="0" {% if track.full_track_details['status'] == 0 %}selected{% end %}>Inactive</option>
-		<option value="1" {% if track.full_track_details['status'] == 1 %}selected{% end %}>Active</option>
-		</select> 
-	</td>
-	<td>
-	<div class="sm2-360ui">
-	<canvas class="sm2-canvas" height="30" width="30"></canvas>
-	<span class="sm2-360btn sm2-360btn-default"></span>
-	<div class="sm2-timing"></div>
-	<div class="sm2-cover"></div>
-	</div>
-        <div id="sm2-container"></div>
-		<div class="ui360 ui360-vis2">
-          <a id="endpoint_link" href="/audio/{{ track.filename }}" type="audio/mpeg"></a>
-        </div>
-	</td>
-	</tr>
-	<tr><td colspan="6">Lyrics:<br><textarea rows=10 cols=80 name="lyrics">
-	{{ track.full_track_details['lyrics'] }}</textarea></td></tr>
-	<tr><td colspan="6">Story:<br>
-	<textarea rows=10 cols=80 name="story">{{ track.full_track_details['story'] }}</textarea></td></tr>
-	<tr><td colspan="6">Comments:<br>
-	<textarea rows=10 cols=80 name="comments">{{ track.full_track_details['comments'] }}</textarea></td></tr>
-	<input type="hidden" name="id" value="{{ track.id }}">
-	<tr><td colspan="3">Submitted: {{ track.full_track_details['submitter'] }}</td>
-	<td colspan="2"><a href="mailto:{{ track.full_track_details['submitteremail'] }}">{{ track.full_track_details['submitteremail'] }}</a></td>
-	<td> on {{ track.full_track_details['submitted'] }}</td></tr>
-	<tr><td colspan="6" align="right"><input type="submit" value="Update"></td></tr>
-</table>
+COMING SOON
 </form>
 <p>Artwork:<br>
 <img src="/artwork/{{ track.id }}.jpg">
