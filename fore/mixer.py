@@ -20,10 +20,10 @@ import database
 from audio import AudioData
 
 from capsule_support import resample_features, \
-	timbre_whiten, initialize, make_transition, terminate, \
+	timbre_whiten, terminate, \
 	FADE_OUT, is_valid, LOUDNESS_THRESH
 	
-from transitions import managed_transition
+from transitions import managed_transition, initialize, make_transition
 
 log = logging.getLogger(__name__)
 
@@ -393,12 +393,10 @@ class Mixer(multiprocessing.Process):
 
 		while not self.__stop:
 			while len(self.tracks) > 1:
-				stay_time = max(self.tracks[0].analysis.duration,
-					self.tracks[1].analysis.duration)
 				tra = managed_transition(self.tracks[0],
 					self.tracks[1],
 					xfade = float(self.tracks[0]._metadata.track_details['xfade']),
-					itrim = float(self.tracks[0]._metadata.track_details['itrim']),
+					itrim = float(self.tracks[1]._metadata.track_details['itrim']),
 					otrim = float(self.tracks[0]._metadata.track_details['otrim']))
 				del self.tracks[0].analysis
 				gc.collect()

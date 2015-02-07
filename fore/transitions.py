@@ -77,11 +77,42 @@ def end_trans(track, beats_to_mix = 0):
 	
 def db_2_volume(loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
+		
+def initialize(track, inter, transition, fade_in=FADE_IN):
+	"""find initial cursor location"""
+	mat = track.resampled['matrix']
+	markers = getattr(track.analysis, track.resampled['rate'])
 
+	try:
+		# compute duration of matrix
+		mat_dur = markers[track.resampled['index'] + rows(mat)].start - markers[track.resampled['index']].start
+		start = (mat_dur - inter - transition - fade_in) / 2
+		dur = start + fade_in + inter
+		# move cursor to transition marker
+		duration, track.resampled['cursor'] = move_cursor(track, dur, 0)
+		# work backwards to find the exact locations of initial fade in and playback sections
+		fi = Fadein(track, markers[track.resampled['index'] + track.resampled['cursor']].start - inter - fade_in, fade_in)
+		pb = Playback(track, markers[track.resampled['index'] + track.resampled['cursor']].start - inter, inter)
+	except Exception:
+		track.resampled['cursor'] = fade_in + inter
+		fi = Fadein(track, 0, fade_in)
+		pb = Playback(track, fade_in, inter)
+
+	return [fi, pb]
+
+
+def terminate(track, fade):
+	""" Deal with last fade out"""
+	cursor = track.resampled['cursor']
+	markers = getattr(track.analysis, track.resampled['rate'])
+	if MIN_SEARCH <= len(markers):
+		cursor = markers[track.resampled['index'] + cursor].start
+	return [Fadeout(track, cursor, min(fade, track.duration - cursor))]
+	
 start_point = {"cursor": 0}
 	
 def managed_transition(track1, track2, xfade=0, otrim=0, itrim=0):
-        log.info("we got track1: %s and track2: %s", track1._metadata.track_details['artist'], track2._metadata.track_details['artist'])
+        log.info("now we got track1: %s and track2: %s", track1._metadata.track_details['artist'], track2._metadata.track_details['artist'])
 	for track in [track1, track2]:
 		loudness = track.analysis.loudness
 		track.gain = db_2_volume(loudness)
