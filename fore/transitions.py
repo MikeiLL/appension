@@ -82,6 +82,12 @@ start_point = {"cursor": 0}
 	
 def managed_transition(track1, track2):
     log.info("now we got track1: %s and track2: %s", track1._metadata.track_details['artist'], track2._metadata.track_details['artist'])
+    last_viable_tr1 = last_viable(track1)
+    last_viable_tr2 = last_viable(track2)
+    try:
+        avg_duration = sum([b.duration for b in track1.analysis.tatums[-16:]]) / 16
+    except IndexError:
+        avg_duration = sum([b.duration for b in track1.analysis.segments[-8:]]) / 8
     for track in [track1, track2]:
         loudness = track.analysis.loudness
         track.gain = db_2_volume(loudness)
@@ -95,48 +101,48 @@ def managed_transition(track1, track2):
     '''We would start at zero, but make it first audible segment'''
     t2start = first_viable(track2)
     t2start = t2start + float(track2._metadata.track_details['itrim'])
-    
+
     if xfade == 0:
-    
+
         log.warning("""
         So we want to play all of track 1 (%s), starting at point at which cursor last set which is %r.
-Then we want to play track 2 (%s) for the entire length (%r) minus t2_otrim which is %r, minus 2 so we'll play it for
-%r seconds. Cursor is currently at %r, and we'll now set it so the first viable segment of track2 (%r)
-PLUS t2_length - t2_otrim - 2, so: %r.
+    Then we want to play track 2 (%s) for the entire length (%r) minus t2_otrim which is %r, minus 2 so we'll play it for
+    %r seconds. Cursor is currently at %r, and we'll now set it so the first viable segment of track2 (%r)
+    PLUS t2_length - t2_otrim - 2, so: %r.
         """, track1._metadata.track_details['artist'],  start_point['cursor'], track2._metadata.track_details['artist'], t2_length, t2_otrim, t2_length - t2_otrim - 2, start_point['cursor'], t2start, t2start + t2_length - t2_otrim - 2)
-        
+
         times = end_trans(track1)
-        if times["playback_duration"] - otrim < 0:
+        if last_viable_tr1 - start_point['cursor'] - otrim < 0:
             raise Exception("You can't trim off more than 100%.")
         pb1 = pb(track1, start_point['cursor'], t1_length)
         pb2 = pb(track2, t2start, t2_length - t2_otrim - 2)
         start_point['cursor'] = t2start + t2_length - t2_otrim - 2
         return [pb1, pb2]
     else:
-        
+
         '''offset between start and first theoretical beat.'''
         t2offset = lead_in(track2)
         times = end_trans(track1, beats_to_mix=xfade)
         log.warning(str(times))
         log.warning("""
         This time we to play track 1 (%s), starting at last cursor time which is %r, for the playback duration (%r), minus the offset """ \
-        + """returned by lead_in: %r.
-Then play the crossfade: track1 starting at playback start + duration minus offset: %r, mixed with track 2 (%s) starting 
-at %r (first viable plus trim) for a duration of %r (from mix_trans). And we reset the cursor to: %r.
+        + """returned by track2_lead_in (%r), minus cursor time: %r.
+    Then play the crossfade: track1 starting at playback start + duration minus offset: %r, mixed with track 2 (%s) starting 
+    at %r (first viable plus trim) for a duration of %r (from mix_trans). And we reset the cursor to: %r.
         """, track1._metadata.track_details['artist'], 
         start_point['cursor'],
         times["playback_duration"],
         t2offset,
-        times["playback_start"] + times["playback_duration"] - t2offset,
+        times["playback_start"] + times["playback_duration"] - t2offset - start_point['cursor'],
         track2._metadata.track_details['artist'],
         t2start,
         times["mix_duration"],
         t2start + times["mix_duration"]
         )
-        
+
         log.info("times mix_duration is %r", times["mix_duration"])
 
-        pb1 = pb(track1, start_point['cursor'], times["playback_duration"] - t2offset)
+        pb1 = pb(track1, start_point['cursor'], times["playback_start"] + times["playback_duration"] - t2offset - start_point['cursor'])
         pb2 = cf((track1, track2), (times["playback_start"] + times["playback_duration"] - t2offset, t2start), times["mix_duration"])
         start_point['cursor'] = t2start + times["mix_duration"]
         return [pb1, pb2]
