@@ -77,53 +77,6 @@ def end_trans(track, beats_to_mix = 0):
 	
 def db_2_volume(loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
-		
-def initialize(track1, track2):
-    log.info("st now we got track1: %s and track2: %s", track1._metadata.track_details['artist'], track2._metadata.track_details['artist'])
-    for track in [track1, track2]:
-        loudness = track.analysis.loudness
-        track.gain = db_2_volume(loudness)
-		
-    xfade = float(track1._metadata.track_details['xfade'])
-    itrim = float(track2._metadata.track_details['itrim'])
-    otrim = float(track1._metadata.track_details['otrim'])
-    t1_length = float(track1._metadata.track_details['length'])
-    t2_length = float(track2._metadata.track_details['length'])
-    t2_otrim = float(track2._metadata.track_details['otrim'])
-    '''We would start at zero, but make it first audible segment'''
-    t2start = first_viable(track2)
-    
-    if xfade == 0:
-        times = end_trans(track1)
-        if times["playback_duration"] - otrim < 0:
-            raise Exception("You can't trim off more than 100%.")
-        pb1 = pb(track1, start_point['cursor'], t1_length)
-        pb2 = pb(track2, first_viable(track2) + itrim, t2_length - t2_otrim - 2)
-        start_point['cursor'] = t2start + t2_length - t2_otrim - 2
-        return [pb1, pb2]
-    else:
-        times = end_trans(track1, beats_to_mix=xfade)
-        log.info("times mix_duration is %r", times["mix_duration"])
-        '''We would start at zero, but make it first audible segment'''
-        t2start = first_viable(track2)
-        '''offset between start and first theoretical beat.'''
-        t2offset = lead_in(track2)
-        pb1 = pb(track1, 0, times["playback_duration"] - t2offset)
-        pb2 = cf((track1, track2), (times["playback_start"] + times["playback_duration"] - t2offset, t2start), times["mix_duration"])
-        start_point['cursor'] = t2start + times["mix_duration"]
-        log.info('''
-        track1 start: %r, track2 start: %r, duration: %r
-        ''',times["playback_start"] + times["playback_duration"] - t2offset, t2start, track1._metadata.track_details['length'])
-        log.info("New cf item: %r", pb2.duration)
-        log.info("Which looks like: %r", pb2.t2.start)
-        return [pb1, pb2]
-
-
-def terminate(track):
-	""" Deal with last track"""
-	log.info(dir(track))
-	pb1 = pb(track, 0, 100)
-	return [pb1]
 	
 start_point = {"cursor": 0}
 	
