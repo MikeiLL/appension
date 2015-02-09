@@ -201,7 +201,6 @@ def update_track(id, info):
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
 		
 def sequence_tracks(sequence_object):
-    log.info("I HAVE HERE: %r", str(sequence_object))
     for id, sequence in sequence_object.iteritems():
         seq = sequence_object.get(id,'')[0]
         log.info("Itz: %r, %r", id, seq)
