@@ -23,7 +23,7 @@ from capsule_support import resample_features, \
 	timbre_whiten, terminate, \
 	FADE_OUT, is_valid, LOUDNESS_THRESH
 	
-from transitions import managed_transition, initialize, make_transition
+from transitions import managed_transition, initialize, terminate
 
 log = logging.getLogger(__name__)
 
@@ -283,7 +283,7 @@ def generate_metadata(a):
 	m = metadata_of(a)
 	if isinstance(m, tuple):
 		m1, m2 = m
-		log.info("HERE: ", m1.artist)
+		log.info("HERE: ", dir(m1))
 		d['tracks'] = [{
 			"metadata": m1,
 			"start": a.s1,
@@ -389,15 +389,12 @@ class Mixer(multiprocessing.Process):
 
 		# Initial transition. Should contain 2 instructions: fadein, and playback.
 		inter = self.tracks[0].analysis.duration
-		yield initialize(self.tracks[0], inter, self.transition_time, 10)
+		yield initialize(self.tracks[0], self.tracks[1])
 
 		while not self.__stop:
 			while len(self.tracks) > 1:
 				tra = managed_transition(self.tracks[0],
-					self.tracks[1],
-					xfade = float(self.tracks[0]._metadata.track_details['xfade']),
-					itrim = float(self.tracks[1]._metadata.track_details['itrim']),
-					otrim = float(self.tracks[0]._metadata.track_details['otrim']))
+					self.tracks[1])
 				del self.tracks[0].analysis
 				gc.collect()
 				yield tra
@@ -439,7 +436,7 @@ class Mixer(multiprocessing.Process):
 							self.infoqueue.put(generate_metadata(a))
 						log.info("Rendered in %fs!", t.ms)
 					except Exception:
-						log.error("Could not render %s. Skipping.\n%s", a,
+						log.error("Could not render %s. Skipping.\n%s SEE???", a,
 								  traceback.format_exc())
 				gc.collect()
 		except Exception:
