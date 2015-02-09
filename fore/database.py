@@ -107,7 +107,7 @@ def get_track_to_play():
 			track=_track_queue.get(False)
 			log.info("Using enqueued track %s.", track.id)
 		except Queue.Empty:
-			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY sequence,id")
+			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY played,sequence,id")
 			row=cur.fetchone()
 			if not row: raise ValueError("Database is empty, cannot enqueue track")
 			track=Track(*row)
@@ -188,6 +188,11 @@ def delete_track(input):
 	"""Delete the given track ID - no confirmation"""
 	with _conn, _conn.cursor() as cur:
 		cur.execute("""DELETE FROM tracks WHERE id = %s""", (input,))
+		
+def reset_played():
+    """Reset played for all tracks to 0"""
+    with _conn, _conn.cursor() as cur:
+        cur.execute("UPDATE tracks SET played = 0")
 
 def update_track(id, info):
 	"""Update the given track ID based on the info mapping.

@@ -377,6 +377,7 @@ class Mixer(multiprocessing.Process):
 
 	def generate_tracks(self):
 		"""Yield a series of lists of track segments - helper for run()"""
+		database.reset_played()
 		while len(self.tracks) < 2:
 			log.info("Waiting for a new track.")
 			track = database.get_track_to_play()
@@ -387,10 +388,8 @@ class Mixer(multiprocessing.Process):
 				log.error("Exception while trying to add new track:\n%s",
 					traceback.format_exc())
 
-		# Initial transition. Should contain 2 instructions: fadein, and playback.
-		inter = self.tracks[0].analysis.duration
-		# might not need this:
-		#yield initialize(self.tracks[0], self.tracks[1])
+		# Initial transition. 
+		yield initialize(self.tracks[0], self.tracks[1])
 
 		while not self.__stop:
 			while len(self.tracks) > 1:
