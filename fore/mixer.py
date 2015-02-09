@@ -389,7 +389,7 @@ class Mixer(multiprocessing.Process):
 					traceback.format_exc())
 
 		# Initial transition. 
-		yield initialize(self.tracks[0], self.tracks[1])
+		# yield initialize(self.tracks[0], self.tracks[1])
 
 		while not self.__stop:
 			while len(self.tracks) > 1:
