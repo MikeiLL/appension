@@ -107,7 +107,7 @@ def get_track_to_play():
 			track=_track_queue.get(False)
 			log.info("Using enqueued track %s.", track.id)
 		except Queue.Empty:
-			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY played,sequence,id")
+			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY sequence,id")
 			row=cur.fetchone()
 			if not row: raise ValueError("Database is empty, cannot enqueue track")
 			track=Track(*row)
