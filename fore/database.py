@@ -206,7 +206,7 @@ def sequence_tracks(sequence_object):
         seq = sequence_object.get(id,'')[0]
         log.info("Itz: %r, %r", id, seq)
     	with _conn, _conn.cursor() as cur:
-		cur.execute("UPDATE tracks SET sequence = "+str(seq)+" WHERE id="+str(id))
+		cur.execute("UPDATE tracks SET sequence = "+str(seq)+", played = 0 WHERE id="+str(id))
     
 def create_user(username, email, password, hex_key):
 	"""Create a new user, return the newly-created ID"""
