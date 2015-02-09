@@ -78,72 +78,85 @@ def end_trans(track, beats_to_mix = 0):
 def db_2_volume(loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
 		
-def initialize(track, inter, transition, fade_in=FADE_IN):
-	"""find initial cursor location"""
-	mat = track.resampled['matrix']
-	markers = getattr(track.analysis, track.resampled['rate'])
+def initialize(track1, track2):
+    log.info("st now we got track1: %s and track2: %s", track1._metadata.track_details['artist'], track2._metadata.track_details['artist'])
+    for track in [track1, track2]:
+        loudness = track.analysis.loudness
+        track.gain = db_2_volume(loudness)
+		
+    xfade = float(track1._metadata.track_details['xfade'])
+    itrim = float(track2._metadata.track_details['itrim'])
+    otrim = float(track1._metadata.track_details['otrim'])
 
-	try:
-		# compute duration of matrix
-		mat_dur = markers[track.resampled['index'] + rows(mat)].start - markers[track.resampled['index']].start
-		start = (mat_dur - inter - transition - fade_in) / 2
-		dur = start + fade_in + inter
-		# move cursor to transition marker
-		duration, track.resampled['cursor'] = move_cursor(track, dur, 0)
-		# work backwards to find the exact locations of initial fade in and playback sections
-		fi = Fadein(track, markers[track.resampled['index'] + track.resampled['cursor']].start - inter - fade_in, fade_in)
-		pb = Playback(track, markers[track.resampled['index'] + track.resampled['cursor']].start - inter, inter)
-	except Exception:
-		track.resampled['cursor'] = fade_in + inter
-		fi = Fadein(track, 0, fade_in)
-		pb = Playback(track, fade_in, inter)
+    
+    if xfade == 0:
+        times = end_trans(track1)
+        if times["playback_duration"] - otrim < 0:
+            raise Exception("You can't trim off more than 100%.")
+        pb1 = pb(track1, 0, times["playback_duration"] - otrim)
+        pb2 = pb(track2, first_viable(track2), pb1.duration + 10)
+        return [pb1, pb2]
+    else:
+        times = end_trans(track1, beats_to_mix=xfade)
+        log.info("times mix_duration is %r", times["mix_duration"])
+        '''We would start at zero, but make it first audible segment'''
+        t2start = first_viable(track2)
+        '''offset between start and first theoretical beat.'''
+        t2offset = lead_in(track2)
+        pb1 = pb(track1, 0, times["playback_duration"] - t2offset)
+        pb2 = cf((track1, track2), (times["playback_start"] + times["playback_duration"] - t2offset, t2start), times["mix_duration"])
+        start_point['cursor'] = t2start + times["mix_duration"]
+        log.info('''
+        track1 start: %r, track2 start: %r, duration: %r
+        ''',times["playback_start"] + times["playback_duration"] - t2offset, t2start, track1._metadata.track_details['length'])
+        log.info("New cf item: %r", pb2.duration)
+        log.info("Which looks like: %r", pb2.t2.start)
+        return [pb1, pb2]
 
-	return [fi, pb]
 
-
-def terminate(track, fade):
-	""" Deal with last fade out"""
-	cursor = track.resampled['cursor']
-	markers = getattr(track.analysis, track.resampled['rate'])
-	if MIN_SEARCH <= len(markers):
-		cursor = markers[track.resampled['index'] + cursor].start
-	return [Fadeout(track, cursor, min(fade, track.duration - cursor))]
+def terminate(track):
+	""" Deal with last track"""
+	log.info(dir(track))
+	pb1 = pb(track, 0, 100)
+	return [pb1]
 	
 start_point = {"cursor": 0}
 	
-def managed_transition(track1, track2, xfade=0, otrim=0, itrim=0):
-        log.info("now we got track1: %s and track2: %s", track1._metadata.track_details['artist'], track2._metadata.track_details['artist'])
-	for track in [track1, track2]:
-		loudness = track.analysis.loudness
-		track.gain = db_2_volume(loudness)
+def managed_transition(track1, track2):
+    log.info("now we got track1: %s and track2: %s", track1._metadata.track_details['artist'], track2._metadata.track_details['artist'])
+    for track in [track1, track2]:
+        loudness = track.analysis.loudness
+        track.gain = db_2_volume(loudness)
+
+    xfade = float(track1._metadata.track_details['xfade'])
+    itrim = float(track2._metadata.track_details['itrim'])
+    otrim = float(track1._metadata.track_details['otrim'])
     
-	log.info("A cursor: %r", start_point['cursor'])
-	
-	half_way_point = len(track2.analysis.segments) / 2
-	until = track2.analysis.segments[half_way_point].start + \
-	        track2.analysis.segments[half_way_point].duration
-	until += itrim
-		
-	if xfade == 0:
+    if xfade == 0:
+        log.info("xfade = ", xfade)
 		times = end_trans(track1)
 		if times["playback_duration"] - otrim < 0:
 			raise Exception("You can't trim off more than 100%.")
-		pb1 = pb(track1, times["playback_start"], times["playback_duration"] - otrim)
-		pb2 = pb(track2, first_viable(track2) + itrim, pb1.duration + 10)
+		pb1 = pb(track1, start_point['cursor'], track1._metadata.track_details['length'])
+		pb2 = pb(track2, first_viable(track2) + itrim, track1._metadata.track_details['length'] - track2._metadata.track_details['otrim'])
+        start_point['cursor'] = t2start + times["mix_duration"]
 		return [pb1, pb2]
-	else:
-		times = end_trans(track1, beats_to_mix=xfade)
-		log.info("times mix_duration is %r", times["mix_duration"])
-		'''We would start at zero, but make it first audible segment'''
-		t2start = first_viable(track2)
-		'''offset between start and first theoretical beat.'''
-		t2offset = lead_in(track2)
-		pb1 = pb(track1, start_point['cursor'], times["playback_duration"] - t2offset)
-		pb2 = cf((track1, track2), (times["playback_start"] + times["playback_duration"] - t2offset, t2start), times["mix_duration"])
-		start_point['cursor'] = t2start + times["mix_duration"]
-		log.info("New cursor: %r", start_point['cursor'])
-		pb3 = pb(track2, t2start + times["mix_duration"], until)
-		return [pb1, pb2]
+    else:
+        times = end_trans(track1, beats_to_mix=xfade)
+        log.info("times mix_duration is %r", times["mix_duration"])
+        '''We would start at zero, but make it first audible segment'''
+        t2start = first_viable(track2)
+        '''offset between start and first theoretical beat.'''
+        t2offset = lead_in(track2)
+        pb1 = pb(track1, start_point['cursor'], times["playback_duration"] - t2offset)
+        pb2 = cf((track1, track2), (times["playback_start"] + times["playback_duration"] - t2offset, t2start), times["mix_duration"])
+        start_point['cursor'] = t2start + times["mix_duration"]
+        log.info('''
+        track1 start: %r, track2 start: %r, duration: %r
+        ''',times["playback_start"] + times["playback_duration"] - t2offset, t2start, track1._metadata.track_details['length'])
+        log.info("New cf item: %r", pb2.duration)
+        log.info("Which looks like: %r", pb2.t2.start)
+        return [pb1, pb2]
 
 def lead_in(track):
 	"""
