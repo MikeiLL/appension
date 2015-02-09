@@ -389,7 +389,8 @@ class Mixer(multiprocessing.Process):
 
 		# Initial transition. Should contain 2 instructions: fadein, and playback.
 		inter = self.tracks[0].analysis.duration
-		yield initialize(self.tracks[0], self.tracks[1])
+		# might not need this:
+		#yield initialize(self.tracks[0], self.tracks[1])
 
 		while not self.__stop:
 			while len(self.tracks) > 1:
