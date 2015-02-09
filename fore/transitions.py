@@ -87,14 +87,19 @@ def initialize(track1, track2):
     xfade = float(track1._metadata.track_details['xfade'])
     itrim = float(track2._metadata.track_details['itrim'])
     otrim = float(track1._metadata.track_details['otrim'])
-
+    t1_length = float(track1._metadata.track_details['length'])
+    t2_length = float(track2._metadata.track_details['length'])
+    t2_otrim = float(track2._metadata.track_details['otrim'])
+    '''We would start at zero, but make it first audible segment'''
+    t2start = first_viable(track2)
     
     if xfade == 0:
         times = end_trans(track1)
         if times["playback_duration"] - otrim < 0:
             raise Exception("You can't trim off more than 100%.")
-        pb1 = pb(track1, 0, times["playback_duration"] - otrim)
-        pb2 = pb(track2, first_viable(track2), pb1.duration + 10)
+        pb1 = pb(track1, start_point['cursor'], t1_length)
+        pb2 = pb(track2, first_viable(track2) + itrim, t2_length - t2_otrim - 2)
+        start_point['cursor'] = t2start + t2_length - t2_otrim - 2
         return [pb1, pb2]
     else:
         times = end_trans(track1, beats_to_mix=xfade)
@@ -131,21 +136,40 @@ def managed_transition(track1, track2):
     xfade = float(track1._metadata.track_details['xfade'])
     itrim = float(track2._metadata.track_details['itrim'])
     otrim = float(track1._metadata.track_details['otrim'])
-
+    t1_length = float(track1._metadata.track_details['length'])
+    t2_length = float(track2._metadata.track_details['length'])
+    t2_otrim = float(track2._metadata.track_details['otrim'])
+    '''We would start at zero, but make it first audible segment'''
+    t2start = first_viable(track2)
+    
     if xfade == 0:
-        log.info("xfade = ", xfade)
+    
+        log.info("""
+        So we want to play all of track 1 (%s), starting at point at which cursor last set which is %r.
+Then we want to play track 2 (%s) for the entire length (%r) minus t2_otrim which is %r, minus 2 so we'll play it for
+%r seconds. Cursor is currently at %r, and we'll now set it so the first viable segment of track2 (%r)
+PLUS t2_length - t2_otrim - 2, so: %r.
+        """, track1._metadata.track_details['artist'], 
+        start_point['cursor'],
+        track2._metadata.track_details['artist'],
+        t2_length, 
+        t2_otrim,
+        t2_length - t2_otrim - 2, 
+        start_point['cursor'], 
+        t2start, 
+        t2start + t2_length - t2_otrim - 2)
+        
         times = end_trans(track1)
         if times["playback_duration"] - otrim < 0:
             raise Exception("You can't trim off more than 100%.")
-        pb1 = pb(track1, start_point['cursor'], track1._metadata.track_details['length'])
-        pb2 = pb(track2, first_viable(track2) + itrim, track1._metadata.track_details['length'] - track2._metadata.track_details['otrim'])
-        start_point['cursor'] = t2start + times["mix_duration"]
+        pb1 = pb(track1, start_point['cursor'], t1_length)
+        pb2 = pb(track2, first_viable(track2) + itrim, t2_length - t2_otrim - 2)
+        start_point['cursor'] = t2start + t2_length - t2_otrim - 2
         return [pb1, pb2]
     else:
         times = end_trans(track1, beats_to_mix=xfade)
         log.info("times mix_duration is %r", times["mix_duration"])
-        '''We would start at zero, but make it first audible segment'''
-        t2start = first_viable(track2)
+
         '''offset between start and first theoretical beat.'''
         t2offset = lead_in(track2)
         pb1 = pb(track1, start_point['cursor'], times["playback_duration"] - t2offset)
