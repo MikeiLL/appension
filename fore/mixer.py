@@ -23,7 +23,7 @@ from capsule_support import resample_features, \
 	timbre_whiten, terminate, \
 	FADE_OUT, is_valid, LOUDNESS_THRESH
 	
-from transitions import managed_transition, initialize, terminate
+from transitions import managed_transition
 
 log = logging.getLogger(__name__)
 
