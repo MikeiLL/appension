@@ -131,16 +131,16 @@ def managed_transition(track1, track2):
     xfade = float(track1._metadata.track_details['xfade'])
     itrim = float(track2._metadata.track_details['itrim'])
     otrim = float(track1._metadata.track_details['otrim'])
-    
+
     if xfade == 0:
         log.info("xfade = ", xfade)
-		times = end_trans(track1)
-		if times["playback_duration"] - otrim < 0:
-			raise Exception("You can't trim off more than 100%.")
-		pb1 = pb(track1, start_point['cursor'], track1._metadata.track_details['length'])
-		pb2 = pb(track2, first_viable(track2) + itrim, track1._metadata.track_details['length'] - track2._metadata.track_details['otrim'])
+        times = end_trans(track1)
+        if times["playback_duration"] - otrim < 0:
+            raise Exception("You can't trim off more than 100%.")
+        pb1 = pb(track1, start_point['cursor'], track1._metadata.track_details['length'])
+        pb2 = pb(track2, first_viable(track2) + itrim, track1._metadata.track_details['length'] - track2._metadata.track_details['otrim'])
         start_point['cursor'] = t2start + times["mix_duration"]
-		return [pb1, pb2]
+        return [pb1, pb2]
     else:
         times = end_trans(track1, beats_to_mix=xfade)
         log.info("times mix_duration is %r", times["mix_duration"])
