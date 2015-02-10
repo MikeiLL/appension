@@ -77,33 +77,33 @@ def end_trans(track, beats_to_mix = 0):
 	
 def db_2_volume(loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
+		
+def avg_duration(track):
+    try:
+        return sum([b.duration for b in track.analysis.tatums[-16:]]) / 16
+    except IndexError:
+        return sum([b.duration for b in track.analysis.segments[-8:]]) / 8
 	
 start_point = {"cursor": 0}
 	
 def managed_transition(track1, track2):
-    log.info("now we got track1: %s and track2: %s", track1._metadata.track_details['artist'], track2._metadata.track_details['artist'])
-    last_viable_tr1 = last_viable(track1)
-    last_viable_tr2 = last_viable(track2)
-    try:
-        avg_duration = sum([b.duration for b in track1.analysis.tatums[-16:]]) / 16
-    except IndexError:
-        avg_duration = sum([b.duration for b in track1.analysis.segments[-8:]]) / 8
+    
     for track in [track1, track2]:
         loudness = track.analysis.loudness
         track.gain = db_2_volume(loudness)
 
     xfade = float(track1._metadata.track_details['xfade'])
-    itrim = float(track2._metadata.track_details['itrim'])
-    otrim = float(track1._metadata.track_details['otrim'])
+    t1_itrim = float(track2._metadata.track_details['itrim'])
+    t1_otrim = float(track1._metadata.track_details['otrim'])
     t1_length = float(track1._metadata.track_details['length'])
     t2_length = float(track2._metadata.track_details['length'])
     t2_otrim = float(track2._metadata.track_details['otrim'])
-    '''We would start at zero, but make it first audible segment'''
-    t2start = first_viable(track2)
-    t2start = t2start + float(track2._metadata.track_details['itrim'])
+    t2start = first_viable(track2) + float(track2._metadata.track_details['itrim'])
+    t1start = first_viable(track1) + float(track1._metadata.track_details['itrim'])
+    t2end = last_viable(track2) - float(track2._metadata.track_details['otrim'])
+    t1end = last_viable(track1) - float(track1._metadata.track_details['otrim'])
 
     if xfade == 0:
-
         log.warning("""
         So we want to play all of track 1 (%s), starting at point at which cursor last set which is %r.
     Then we want to play track 2 (%s) for the entire length (%r) minus t2_otrim which is %r, minus 2 so we'll play it for
@@ -111,40 +111,52 @@ def managed_transition(track1, track2):
     PLUS t2_length - t2_otrim - 2, so: %r.
         """, track1._metadata.track_details['artist'],  start_point['cursor'], track2._metadata.track_details['artist'], t2_length, t2_otrim, t2_length - t2_otrim - 2, start_point['cursor'], t2start, t2start + t2_length - t2_otrim - 2)
 
-        times = end_trans(track1)
-        if last_viable_tr1 - start_point['cursor'] - otrim < 0:
+        if last_viable_tr1 - start_point['cursor'] - t1_otrim < 0:
             raise Exception("You can't trim off more than 100%.")
-        pb1 = pb(track1, start_point['cursor'], t1_length)
+        '''Play track1 from cursor point until end of track, less otrim.'''
+        pb1 = pb(track1, start_point['cursor'], t1_length - t1_otrim)
+        '''Play track2 from start point for 2 seconds less than length - t2_otrim'''
         pb2 = pb(track2, t2start, t2_length - t2_otrim - 2)
-        start_point['cursor'] = t2start + t2_length - t2_otrim - 2
+        start_point['cursor'] = max(t2start + t2_length - t2_otrim - 2, 0)
         return [pb1, pb2]
     else:
-
         '''offset between start and first theoretical beat.'''
         t2offset = lead_in(track2)
-        times = end_trans(track1, beats_to_mix=xfade)
-        log.warning(str(times))
+        average_duration = avg_duration(track1)
+        playback_start = start_point['cursor']
+        playback_end = last_viable_tr1 - t1_otrim - (average_duration * xfade)
+        playback_duration = playback_end - playback_start - t2offset - t1_otrim
+        mix_duration = t1_length - playback_start - playback_duration + t2offset
+        mix_start = playback_start + playback_duration
+        
+        pb1 = pb(track1, start_point['cursor'], playback_duration)
+        pb2 = cf((track1, track2), (playback_start + playback_duration - t2offset, t2start), mix_duration)
+        
+        start_point['cursor'] = t2start + mix_duration
         log.warning("""
-        This time we to play track 1 (%s), starting at last cursor time which is %r, for the playback duration (%r), minus the offset """ \
-        + """returned by track2_lead_in (%r), minus cursor time: %r.
-    Then play the crossfade: track1 starting at playback start + duration minus offset: %r, mixed with track 2 (%s) starting 
-    at %r (first viable plus trim) for a duration of %r (from mix_trans). And we reset the cursor to: %r.
+        This time we to play track 1 (%s), starting at last cursor time which is %r, for the playback duration (%r), minus t2offset """ \
+        + """ (%r), minus cursor time totaling: %r.
+        The Crossfade: track1 starting at playback start + duration minus offset: %r, mixed with track 2 (%s) starting 
+        at %r (first viable plus trim) for a duration of %r (from mix_trans). And we reset the cursor to: %r.
         """, track1._metadata.track_details['artist'], 
         start_point['cursor'],
-        times["playback_duration"],
+        playback_duration,
         t2offset,
-        times["playback_start"] + times["playback_duration"] - t2offset - start_point['cursor'],
+        playback_duration - t2offset - t1_otrim,
+        
+        mix_start,
         track2._metadata.track_details['artist'],
         t2start,
-        times["mix_duration"],
-        t2start + times["mix_duration"]
+        mix_duration,
+        t2start + mix_duration
         )
-
-        log.info("times mix_duration is %r", times["mix_duration"])
-
-        pb1 = pb(track1, start_point['cursor'], times["playback_start"] + times["playback_duration"] - t2offset - start_point['cursor'])
-        pb2 = cf((track1, track2), (times["playback_start"] + times["playback_duration"] - t2offset, t2start), times["mix_duration"])
-        start_point['cursor'] = t2start + times["mix_duration"]
+        log.warning("""
+        Complete length of %s is %r.
+        Factors are 
+        1. start time (%r)
+        2. end time (%r)
+        3. offset (%r)
+        """, track1._metadata.track_details['artist'], track1._metadata.track_details['length'], t1start, t1end, lead_in(track1))
         return [pb1, pb2]
 
 def lead_in(track):
