@@ -15,75 +15,29 @@ log = logging.getLogger(__name__)
 LOUDNESS_THRESH = -8
 
 def last_viable(track):
-	for seg in reversed(track.analysis.segments):
-		if seg.loudness_max > -60:
-			#time of last audible piece of track
-			return seg.start + seg.duration
+    """Return end time of last audible segment"""
+    for seg in reversed(track.analysis.segments):
+        if seg.loudness_max > -60:
+            #time of last audible piece of track
+            return seg.start + seg.duration
 			
 def first_viable(track):
-	for seg in track.analysis.segments:
-		if seg.loudness_max > -60:
-			#time of first audible segment of track
-			return seg.start
-			
-
-					
-def end_trans(track, beats_to_mix = 0):
-	"""
-	Return tuples with times to be sent to Playback and Crossmix objects
-	"""
-	end_viable = last_viable(track)
-	try:
-		avg_duration = sum([b.duration for b in track.analysis.tatums[-16:]]) / 16
-	except IndexError:
-		avg_duration = sum([b.duration for b in track.analysis.segments[-8:]]) / 8
-	#How much of the track are we returning - adjust for beats to mix?
-	half_way_point = len(track.analysis.segments) / 2
-	start = track.analysis.segments[half_way_point].start
-	if beats_to_mix > 0:
-		#if we're crossfading, playback ends at first beat of crossfade
-		playback_end = end_viable - (avg_duration * beats_to_mix)
-		final =  int(beats_to_mix) #count tatums from end of tatum list
-
-	else:
-		#if we're not crossfading playback to end, final beat being last tatum
-		playback_end = end_viable
-		final = 1
-		
-	try:
-		track.analysis.tatums[-1]
-	except IndexError:
-		# if no tatums play through end of track
-		final_segments = {"subsequent_beat": track.analysis.segments[-final].start}
-		final_segments["playback_start"] = start
-		final_segments["playback_duration"] = playback_end - final_segments["playback_start"]
-		final_segments["mix_start"] = final_segments['subsequent_beat']
-		final_segments["mix_duration"] = end_viable - final_segments['subsequent_beat']
-		final_segments["avg_duration"] = avg_duration
-		return final_segments
-
-	final_segments = {"subsequent_beat": track.analysis.tatums[-final].start}
-	while final_segments['subsequent_beat'] < playback_end:
-		#get first "beat" following end of playback
-		final_segments['subsequent_beat'] += avg_duration
-
-	final_segments["playback_start"] = start
-	final_segments["playback_duration"] = playback_end - final_segments["playback_start"]
-	final_segments["mix_start"] = final_segments['subsequent_beat']
-	final_segments["mix_duration"] = end_viable - final_segments['subsequent_beat']
-	final_segments["avg_duration"] = avg_duration
-
-	return final_segments
+    """Return start time of first audible segment"""
+    for seg in track.analysis.segments:
+        if seg.loudness_max > -60:
+            #time of first audible segment of track
+            return seg.start
 	
 def db_2_volume(loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
 		
-def avg_duration(track):
+def avg_end_duration(track):
     try:
         return sum([b.duration for b in track.analysis.tatums[-16:]]) / 16
     except IndexError:
         return sum([b.duration for b in track.analysis.segments[-8:]]) / 8
-	
+
+# Initialize cursor
 start_point = {"cursor": 0}
 	
 def managed_transition(track1, track2):
@@ -93,70 +47,57 @@ def managed_transition(track1, track2):
         track.gain = db_2_volume(loudness)
 
     xfade = float(track1._metadata.track_details['xfade'])
+    t1start = first_viable(track1) + float(track1._metadata.track_details['itrim'])
+    t1end = last_viable(track1) - float(track1._metadata.track_details['otrim'])
     t1_itrim = float(track2._metadata.track_details['itrim'])
     t1_otrim = float(track1._metadata.track_details['otrim'])
     t1_length = float(track1._metadata.track_details['length'])
     t2_length = float(track2._metadata.track_details['length'])
     t2_otrim = float(track2._metadata.track_details['otrim'])
     t2start = first_viable(track2) + float(track2._metadata.track_details['itrim'])
-    t1start = first_viable(track1) + float(track1._metadata.track_details['itrim'])
     t2end = last_viable(track2) - float(track2._metadata.track_details['otrim'])
-    t1end = last_viable(track1) - float(track1._metadata.track_details['otrim'])
 
     if xfade == 0:
-        log.warning("""
-        So we want to play all of track 1 (%s), starting at point at which cursor last set which is %r.
-    Then we want to play track 2 (%s) for the entire length (%r) minus t2_otrim which is %r, minus 2 so we'll play it for
-    %r seconds. Cursor is currently at %r, and we'll now set it so the first viable segment of track2 (%r)
-    PLUS t2_length - t2_otrim - 2, so: %r.
-        """, track1._metadata.track_details['artist'],  start_point['cursor'], track2._metadata.track_details['artist'], t2_length, t2_otrim, t2_length - t2_otrim - 2, start_point['cursor'], t2start, t2start + t2_length - t2_otrim - 2)
-
-        if last_viable_tr1 - start_point['cursor'] - t1_otrim < 0:
-            raise Exception("You can't trim off more than 100%.")
         '''Play track1 from cursor point until end of track, less otrim.'''
         pb1 = pb(track1, start_point['cursor'], t1_length - t1_otrim)
-        '''Play track2 from start point for 2 seconds less than length - t2_otrim'''
+        '''Play track2 from start point for 2 seconds less than (length - t2_otrim)'''
         pb2 = pb(track2, t2start, t2_length - t2_otrim - 2)
+        '''Set cursor to 2 seconds'''
         start_point['cursor'] = max(t2start + t2_length - t2_otrim - 2, 0)
+        log.warning("""No xfade and %r, plus
+        %r""",str(pb1), str(pb2))
         return [pb1, pb2]
     else:
         '''offset between start and first theoretical beat.'''
         t2offset = lead_in(track2)
-        average_duration = avg_duration(track1)
-        playback_start = start_point['cursor']
-        playback_end = last_viable_tr1 - t1_otrim - (average_duration * xfade)
-        playback_duration = playback_end - playback_start - t2offset - t1_otrim
-        mix_duration = t1_length - playback_start - playback_duration + t2offset
-        mix_start = playback_start + playback_duration
+        avg_duration = avg_end_duration(track1)
+        playback_end = t1end - (avg_duration * xfade) - t2offset
+        playback_duration = playback_end - start_point['cursor']
+        mix_duration = t1end - playback_end
         
         pb1 = pb(track1, start_point['cursor'], playback_duration)
-        pb2 = cf((track1, track2), (playback_start + playback_duration - t2offset, t2start), mix_duration)
-        
-        start_point['cursor'] = t2start + mix_duration
+        pb2 = cf((track1, track2), (playback_duration, t2start), mix_duration - 1)
+
         log.warning("""
-        This time we to play track 1 (%s), starting at last cursor time which is %r, for the playback duration (%r), minus t2offset """ \
-        + """ (%r), minus cursor time totaling: %r.
-        The Crossfade: track1 starting at playback start + duration minus offset: %r, mixed with track 2 (%s) starting 
-        at %r (first viable plus trim) for a duration of %r (from mix_trans). And we reset the cursor to: %r.
-        """, track1._metadata.track_details['artist'], 
-        start_point['cursor'],
-        playback_duration,
-        t2offset,
-        playback_duration - t2offset - t1_otrim,
+        Complete length of %s (%d) is %r.
+        """, track1._metadata.track_details['artist'], track1._metadata.track_details['id'], track1._metadata.track_details['length'])
         
-        mix_start,
-        track2._metadata.track_details['artist'],
-        t2start,
-        mix_duration,
-        t2start + mix_duration
-        )
+        equal = mix_duration + playback_duration == t1end - start_point['cursor']
+        actual = t1end - start_point['cursor']
+        desired = mix_duration + playback_duration
+        diff = actual - desired
         log.warning("""
-        Complete length of %s is %r.
-        Factors are 
-        1. start time (%r)
-        2. end time (%r)
-        3. offset (%r)
-        """, track1._metadata.track_details['artist'], track1._metadata.track_details['length'], t1start, t1end, lead_in(track1))
+        Playback goes from %r to %r for a total duration of %r.
+        Mix goes from %r to %r for a total duration of %r.
+        Does this all add up? %r.
+        We have %r and we want %r.
+        We're off by %r.
+        Track 2 starts at %r.
+        """, start_point['cursor'], playback_end, playback_duration, 
+             playback_end, t1end, mix_duration,
+             equal, actual, desired, diff, t2start)
+        log.warning("Actual mix duration is %r.",pb2.duration)
+        start_point['cursor'] = mix_duration -1 + t2start
         return [pb1, pb2]
 
 def lead_in(track):
