@@ -76,7 +76,7 @@ def managed_transition(track1, track2):
         mix_duration = t1end - playback_end
         
         pb1 = pb(track1, start_point['cursor'], playback_duration)
-        pb2 = cf((track1, track2), (playback_duration, t2start), mix_duration - 1)
+        pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration - 1)
 
         log.warning("""
         Complete length of %s (%d) is %r.
