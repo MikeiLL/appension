@@ -103,7 +103,7 @@ class Fadein(Playback):
         return output
     
     def __repr__(self):
-        return "<Fadein '%s'>" % self.track.filename
+        return "<Fadein '%r'>" % self.track.filename
     
     def __str__(self):
         args = (self.start, self.start + self.duration, 
