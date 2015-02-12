@@ -103,7 +103,7 @@ class Playback(object):
 			title = "?"
 		args = (self.start, self.start + self.duration,
 				self.duration, title)
-		return "Playback\t%.3f\t-> %.3f\t (%.3f)\t%s" % args
+		return "Playback\t%.3f\t-> %.3f\t (%.3f)\t%r" % args
 
 
 class Fadeout(Playback):
@@ -122,12 +122,12 @@ class Fadeout(Playback):
 							.astype(numpy.int16))
 
 	def __repr__(self):
-		return "<Fadeout '%s'>" % self.track.analysis.pyechonest_track.title
+		return "<Fadeout '%r'>" % self.track.analysis.pyechonest_track.title
 
 	def __str__(self):
 		args = (self.start, self.start + self.duration,
 				self.duration, self.track.analysis.pyechonest_track.title)
-		return "Fade out\t%.3f\t-> %.3f\t (%.3f)\t%s" % args
+		return "Fade out\t%.3f\t-> %.3f\t (%.3f)\t%r" % args
 
 
 class Fadein(Playback):
@@ -148,12 +148,12 @@ class Fadein(Playback):
 							.astype(numpy.int16))
 
 	def __repr__(self):
-		return "<Fadein '%s'>" % self.track.analysis.pyechonest_track.title
+		return "<Fadein '%r'>" % self.track.analysis.pyechonest_track.title
 
 	def __str__(self):
 		args = (self.start, self.start + self.duration,
 				self.duration, self.track.analysis.pyechonest_track.title)
-		return "Fade in\t%.3f\t-> %.3f\t (%.3f)\t%s" % args
+		return "Fade in\t%.3f\t-> %.3f\t (%.3f)\t%r" % args
 
 
 class Edit(object):
@@ -166,7 +166,7 @@ class Edit(object):
 	def __str__(self):
 		args = (self.start, self.start + self.duration,
 				self.duration, self.track.analysis.pyechonest_track.title)
-		return "Edit\t%.3f\t-> %.3f\t (%.3f)\t%s" % args
+		return "Edit\t%.3f\t-> %.3f\t (%.3f)\t%r" % args
 
 	def get(self):
 		return self.track[self]
@@ -209,12 +209,12 @@ class Crossfade(object):
 
 	def __repr__(self):
 		args = (self.t1.track.analysis.pyechonest_track.title, self.t2.track.analysis.pyechonest_track.title)
-		return "<Crossfade '%s' and '%s'>" % args
+		return "<Crossfade '%r' and '%r'>" % args
 
 	def __str__(self):
 		args = (self.t1.start, self.t2.start + self.duration, self.duration,
 				self.t1.track.analysis.pyechonest_track.title, self.t2.track.analysis.pyechonest_track.title)
-		return "Crossfade\t%.3f\t-> %.3f\t (%.3f)\t%s -> %s" % args
+		return "Crossfade\t%.3f\t-> %.3f\t (%.3f)\t%r -> %r" % args
 
 
 class Jump(Crossfade):
@@ -236,12 +236,12 @@ class Jump(Crossfade):
 		return self.t2.end
 
 	def __repr__(self):
-		return "<Jump '%s'>" % (self.t1.track.analysis.pyechonest_track.title)
+		return "<Jump '%r'>" % (self.t1.track.analysis.pyechonest_track.title)
 
 	def __str__(self):
 		args = (self.t1.start, self.t2.end, self.duration,
 				self.t1.track.analysis.pyechonest_track.title)
-		return "Jump\t\t%.3f\t-> %.3f\t (%.3f)\t%s" % args
+		return "Jump\t\t%.3f\t-> %.3f\t (%.3f)\t%r" % args
 
 
 class Blend(object):
@@ -268,7 +268,7 @@ class Blend(object):
 
 	def __repr__(self):
 		args = (self.t1.analysis.pyechonest_track.title, self.t2.analysis.pyechonest_track.title)
-		return "<Blend '%s' and '%s'>" % args
+		return "<Blend '%r' and '%r'>" % args
 
 	def __str__(self):
 		# start and end for each of these lists.
@@ -276,7 +276,7 @@ class Blend(object):
 		s2, e2 = self.l2[0][0], sum(self.l2[-1])
 		n1, n2 = self.t1.analysis.pyechonest_track.title, self.t2.analysis.pyechonest_track.title  # names
 		args = (s1, s2, e1, e2, self.duration, n1, n2)
-		return "Blend [%.3f, %.3f] -> [%.3f, %.3f] (%.3f)\t%s + %s" % args
+		return "Blend [%.3f, %.3f] -> [%.3f, %.3f] (%.3f)\t%r + %r" % args
 
 
 class Crossmatch(Blend):
@@ -388,7 +388,7 @@ class Crossmatch(Blend):
 					self.t2.analysis.pyechonest_track.title)
 		except AttributeError:
 			args = ("?", "?")
-		return "<Crossmatch '%s' and '%s'>" % args
+		return "<Crossmatch '%r' and '%r'>" % args
 
 	def __str__(self):
 		# start and end for each of these lists.
@@ -399,7 +399,7 @@ class Crossmatch(Blend):
 		except AttributeError:
 			n1, n2 = "?", "?"
 		args = (s1, e2, self.duration, n1, n2)
-		return "Crossmatch\t%.3f\t-> %.3f\t (%.3f)\t%s -> %s" % args
+		return "Crossmatch\t%.3f\t-> %.3f\t (%.3f)\t%r -> %r" % args
 
 
 def humanize_time(secs):
