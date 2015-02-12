@@ -192,16 +192,16 @@ class Crossfade(object):
 		return self.duration
 
 	def render(self, chunk_size):
-			#   For now, only support stereo tracks
-			assert self.t1.data.ndim == 2
-			assert self.t2.data.ndim == 2
-			start = int(self.s1 * 44100)
-			end = int((self.s1 + self.duration) * 44100)
-			for i in xrange(start, end, chunk_size):
-				e = min(end, i + chunk_size)
-				yield (crossfade(self.t1[i:e].data,
-								 self.t2[i:e].data, self.mode,
-								 self.samples, i - start).astype(numpy.int16))
+		#   For now, only support stereo tracks
+		assert self.t1.data.ndim == 2
+		assert self.t2.data.ndim == 2
+		start = int(self.s1 * 44100)
+		end = int((self.s1 + self.duration) * 44100)
+		for i in xrange(start, end, chunk_size):
+			e = min(end, i + chunk_size)
+			yield (crossfade(self.t1[i:e].data,
+							 self.t2[i:e].data, self.mode,
+							 self.samples, i - start).astype(numpy.int16))
 
 	def __repr__(self):
 		args = (self.t1.analysis.pyechonest_track.title, self.t2.analysis.pyechonest_track.title)
