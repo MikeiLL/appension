@@ -78,7 +78,7 @@ def db_2_volume(loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
 		
 def managed_transition(track1, track2, xfade=0, otrim=0, itrim=0):
-        log.info("we got track1: %s and track2: %s", track1._metadata.track_details['artist'], track2._metadata.track_details['artist'])
+        #log.info("we got track1: %s and track2: %s", track1._metadata.track_details['artist'], track2._metadata.track_details['artist'])
 	for track in [track1, track2]:
 		loudness = track.analysis.loudness
 		track.gain = db_2_volume(loudness)

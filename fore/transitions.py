@@ -76,8 +76,8 @@ def managed_transition(track1, track2):
         mix_duration = t1end - playback_end
         
         pb1 = pb(track1, start_point['cursor'], playback_duration)
-        pb2 = cf((track1, track2), (playback_end - .01, 1), mix_duration - .01)
-        log.warning("Mix looks like start %r track: %r end: %r",pb2.t2.start, pb2.t2.track, pb2.t2.end)
+        pb2 = cf((track1, track2), (playback_end - .01, 1), mix_duration - 1)
+        log.warning("Mix looks like start %r track: %r end: %r, duration: %r",pb2.t2.start, pb2.t2.track, pb2.t2.end, pb2.duration)
 
         log.warning("""
         Complete length of %s (%d) is %r.
@@ -98,7 +98,7 @@ def managed_transition(track1, track2):
              playback_end, t1end, mix_duration,
              equal, actual, desired, diff, t2start)
         log.warning("Actual mix duration is %r.",pb2.duration)
-        start_point['cursor'] = mix_duration -.01 + t2start
+        start_point['cursor'] = mix_duration - 1 + t2start
         return [pb1, pb2]
 
 def lead_in(track):

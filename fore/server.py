@@ -315,7 +315,17 @@ class AdminRender(BaseHandler):
 		track_id=int(self.request.arguments['id'][0])
 		database.update_track(track_id, self.request.arguments)
 		self.write(admin_page(user_name, updated=id))
-
+		
+class AuditionTransition(BaseHandler):
+	@tornado.web.authenticated
+	def get(self, input):
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
+		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name,
+		next_track=database.get_subsequent_track(int(input))))
+		
+		
 class TrackArtwork(tornado.web.RequestHandler):
 	def get(self, id):
 		art = database.get_track_artwork(int(id))
@@ -449,6 +459,7 @@ if __name__ == "__main__":
 			(apikeys.admin_url, AdminRender),
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
 			(apikeys.edit_url+"/([0-9]+)", EditTrack),
+			(r"/audition/([0-9]+)", AuditionTransition),
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
 			(r"/nt", NewTabs),
 			(r"/sm", SMDemo),

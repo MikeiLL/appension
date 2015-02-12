@@ -208,9 +208,17 @@ def update_track(id, info):
 def sequence_tracks(sequence_object):
     for id, sequence in sequence_object.iteritems():
         seq = sequence_object.get(id,'')[0]
-        log.info("Itz: %r, %r", id, seq)
     	with _conn, _conn.cursor() as cur:
 		cur.execute("UPDATE tracks SET sequence = "+str(seq)+", played = 0 WHERE id="+str(id))
+		
+def get_subsequent_track(track_id):
+    """Return Track Object for next track in sequence."""
+    with _conn, _conn.cursor() as cur:
+        cur.execute("SELECT sequence FROM tracks WHERE id = "+str(track_id))
+        sequence = cur.fetchone()[0]
+        query = "SELECT {cols} FROM tracks WHERE sequence > {seq} AND status = 1 ORDER BY sequence limit 1".format(cols=Track.columns, seq=str(sequence))
+        cur.execute(query)
+        return Track(*cur.fetchone())
     
 def create_user(username, email, password, hex_key):
 	"""Create a new user, return the newly-created ID"""
