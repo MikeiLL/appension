@@ -219,6 +219,12 @@ def get_subsequent_track(track_id):
         query = "SELECT {cols} FROM tracks WHERE sequence > {seq} AND status = 1 ORDER BY sequence limit 1".format(cols=Track.columns, seq=str(sequence))
         cur.execute(query)
         return Track(*cur.fetchone())
+        
+def get_transition_pair(track1_id, track2_id):
+    """Return filenames for two requested tracks"""
+    with _conn, _conn.cursor() as cur:
+        cur.execute("SELECT filename FROM tracks WHERE id = "+str(track1_id)+" OR id = "+str(track2_id)+" ORDER BY sequence LIMIT 2")
+        return [file for file in cur.fetchall()]
     
 def create_user(username, email, password, hex_key):
 	"""Create a new user, return the newly-created ID"""

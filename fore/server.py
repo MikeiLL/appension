@@ -325,7 +325,17 @@ class AuditionTransition(BaseHandler):
 		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name,
 		next_track=database.get_subsequent_track(int(input))))
 		
-		
+
+	def post(self, track_id):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		track1_id=int(self.request.arguments['track_id'][0])
+		track2_id=int(self.request.arguments['next_track_id'][0])
+		pair_o_tracks = database.get_transition_pair(track1_id, track2_id)
+		log.warning("We got %r from sending %r and %r", str(pair_o_tracks), track1_id, track2_id)
+		self.write(admin_page(user_name, notice="Updated Transition"))
+				
 class TrackArtwork(tornado.web.RequestHandler):
 	def get(self, id):
 		art = database.get_track_artwork(int(id))

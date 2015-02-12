@@ -4,29 +4,32 @@
 	<meta name="description" content="Admin Infinite Glitch">
 {% end %}
 {% block content %}
-<form enctype="multipart/form-data" action="{{ admin_url }}" method="post">
+<form enctype="multipart/form-data" action="/audition/{{ track.id }}" method="post">
 <table>
 <tr><td> Title: {{ track.track_details['title'] }} ({{ track.id }})</td><td>By: {{ track.track_details['artist'] }}</td></tr>
 <tr>
 	<td colspan="2">Filename: {{ track.filename }}</td><td>Duration: {{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</td>
 </tr>
 	<tr><td>Crossfade time in half-beats (whole numbers only): 
-	<input type="text" name="{{ track.id }}" size="5" value="{{ track.track_details['xfade'] }}"></td>
+	<input type="hidden" name="track_id" size="5" value="{{ next_track.id }}">
+	<input type="text" name="track_xfade" size="5" value="{{ track.track_details['xfade'] }}"></td>
 	<td>Out Trim time in milliseconds (whole numbers only): 
-	<input type="text" name="{{ track.id }}" size="5" value="{{ track.track_details['otrim'] }}"></td>
+	<input type="text" name="track_otrim" size="5" value="{{ track.track_details['otrim'] }}"></td>
 	<td>Sequence: 
-	<input type="text" name="{{ track.id }}" size="5" value="{{ track.track_details['sequence'] }}"></td>
+	{{ track.track_details['sequence'] }}</td>
 	</tr>
 	<tr><td>INTO:</td></tr>
 	<tr><td> Title: {{ next_track.track_details['title'] }} ({{ next_track.id }})</td><td>By: {{ next_track.track_details['artist'] }}</td></tr>
 	<td>In Trim time in milliseconds (whole numbers only): 
-	<input type="text" name="{{ next_track.id }}" size="5" value="{{ next_track.track_details['itrim'] }}"></td>
+	<input type="hidden" name="next_track_id" size="5" value="{{ next_track.id }}">
+	<input type="text" name="next_track_itrim" size="5" value="{{ next_track.track_details['itrim'] }}"></td>
 	<td>Sequence: 
-	<input type="text" name="{{ next_track.id }}" size="5" value="{{ next_track.track_details['sequence'] }}"></td>
+	{{ next_track.track_details['sequence'] }}</td>
 	<td><input type="submit" value="Submit"></td>
 </table>
 	</form>
 <p>Artwork:<br>
 <img src="/artwork/{{ track.id }}.jpg">
+<img src="/artwork/{{ next_track.id }}.jpg">
 </p>
 {% end %}
