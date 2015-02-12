@@ -191,15 +191,10 @@ class Crossfade(object):
 			return int(self.duration * 44100)
 		return self.duration
 
-	def render(self, chunk_size=None):
-		#   For now, only support stereo tracks
-		assert self.t1.data.ndim == 2
-		assert self.t2.data.ndim == 2
-		if chunk_size is None:
-			# May have been broken??? -- CJA 20150212
-			print("POSSIBLE BROKEN BRANCH")
-			yield crossfade(self.t1.data, self.t2.data, self.mode)
-		else:
+	def render(self, chunk_size):
+			#   For now, only support stereo tracks
+			assert self.t1.data.ndim == 2
+			assert self.t2.data.ndim == 2
 			start = int(self.s1 * 44100)
 			end = int((self.s1 + self.duration) * 44100)
 			for i in xrange(start, end, chunk_size):
