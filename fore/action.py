@@ -175,15 +175,14 @@ class Edit(object):
 	def end(self):
 		return self.start + self.duration
 
-
 class Crossfade(object):
 	"""Crossfades between two tracks, at the start points specified,
 	for the given duration"""
 	def __init__(self, tracks, starts, duration, mode='linear'):
-		self.t1, self.t2 = [Edit(t, s, duration) for t, s in zip(tracks, starts)]
+		self.t1, self.t2 = tracks
 		self.s1, self.s2 = starts
-		self.e1, self.e2 = [s + self.t1.duration for s in starts]
-		self.duration = self.t1.duration
+		self.e1, self.e2 = [s + duration for s in starts]
+		self.duration = duration
 		self.mode = mode
 
 	@property
@@ -194,26 +193,28 @@ class Crossfade(object):
 
 	def render(self, chunk_size=None):
 		#   For now, only support stereo tracks
-		assert self.t1.track.data.ndim == 2
-		assert self.t2.track.data.ndim == 2
+		assert self.t1.data.ndim == 2
+		assert self.t2.data.ndim == 2
 		if chunk_size is None:
+			# May have been broken??? -- CJA 20150212
+			print("POSSIBLE BROKEN BRANCH")
 			yield crossfade(self.t1.data, self.t2.data, self.mode)
 		else:
 			start = int(self.s1 * 44100)
 			end = int((self.s1 + self.duration) * 44100)
 			for i in xrange(start, end, chunk_size):
 				e = min(end, i + chunk_size)
-				yield (crossfade(self.t1.track[i:e].data,
-								 self.t2.track[i:e].data, self.mode,
+				yield (crossfade(self.t1[i:e].data,
+								 self.t2[i:e].data, self.mode,
 								 self.samples, i - start).astype(numpy.int16))
 
 	def __repr__(self):
-		args = (self.t1.track.analysis.pyechonest_track.title, self.t2.track.analysis.pyechonest_track.title)
+		args = (self.t1.analysis.pyechonest_track.title, self.t2.analysis.pyechonest_track.title)
 		return "<Crossfade '%r' and '%r'>" % args
 
 	def __str__(self):
-		args = (self.t1.start, self.t2.start + self.duration, self.duration,
-				self.t1.track.analysis.pyechonest_track.title, self.t2.track.analysis.pyechonest_track.title)
+		args = (self.s1, self.s2 + self.duration, self.duration,
+				self.t1.analysis.pyechonest_track.title, self.t2.analysis.pyechonest_track.title)
 		return "Crossfade\t%.3f\t-> %.3f\t (%.3f)\t%r -> %r" % args
 
 

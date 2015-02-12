@@ -77,7 +77,7 @@ def managed_transition(track1, track2):
         
         pb1 = pb(track1, start_point['cursor'], playback_duration)
         pb2 = cf((track1, track2), (playback_end - .01, 1), mix_duration - 1)
-        log.warning("Mix looks like start %r track: %r end: %r, duration: %r",pb2.t2.start, pb2.t2.track, pb2.t2.end, pb2.duration)
+        log.warning("Mix looks like start %r track: %r end: %r, duration: %r",pb2.s2, pb2.t2, pb2.e2, pb2.duration)
 
         log.warning("""
         Complete length of %s (%d) is %r.
