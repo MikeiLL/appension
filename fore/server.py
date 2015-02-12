@@ -316,25 +316,29 @@ class AdminRender(BaseHandler):
 		database.update_track(track_id, self.request.arguments)
 		self.write(admin_page(user_name, updated=id))
 		
-class AuditionTransition(BaseHandler):
+class ManageTransition(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, input):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
+		self.write(templates.load("manage_transition.html").generate(admin_url=apikeys.admin_url, 
 		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name,
 		next_track=database.get_subsequent_track(int(input))))
 		
-
 	def post(self, track_id):
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		track1_id=int(self.request.arguments['track_id'][0])
+		track_xfade=int(self.request.arguments['track_xfade'][0])
+		track_otrim=int(self.request.arguments['track_otrim'][0])
+		next_track_itrim=int(self.request.arguments['next_track_itrim'][0])
 		track2_id=int(self.request.arguments['next_track_id'][0])
 		pair_o_tracks = database.get_transition_pair(track1_id, track2_id)
 		log.warning("We got %r from sending %r and %r", str(pair_o_tracks), track1_id, track2_id)
-		self.write(admin_page(user_name, notice="Updated Transition"))
+		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
+		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name,
+		next_track=database.get_subsequent_track(int(input))))
 				
 class TrackArtwork(tornado.web.RequestHandler):
 	def get(self, id):
@@ -469,6 +473,7 @@ if __name__ == "__main__":
 			(apikeys.admin_url, AdminRender),
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
 			(apikeys.edit_url+"/([0-9]+)", EditTrack),
+			(r"/manage/([0-9]+)", ManageTransition),
 			(r"/audition/([0-9]+)", AuditionTransition),
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
 			(r"/nt", NewTabs),

@@ -26,7 +26,26 @@ def first_viable(track):
 			#time of first audible segment of track
 			return seg.start
 			
+def make_save_all(files):
+    """
+    Get a list of files, make LocalAudioFile objects and save them.
+    """
+    q = file_queue(files)
 
+    while not q.empty():
+        file = q.get()
+        make_save_one(file)
+        
+def file_queue(files):
+    """
+    Get list of files, add them to a queue and return the queue.
+    """
+    q = Queue() 
+    
+    for f in files:
+        q.put(f)
+    
+    return q
 					
 def end_trans(track, beats_to_mix = 0):
 	"""

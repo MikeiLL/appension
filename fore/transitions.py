@@ -76,7 +76,7 @@ def managed_transition(track1, track2):
         mix_duration = t1end - playback_end
         
         pb1 = pb(track1, start_point['cursor'], playback_duration)
-        pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration)
+        pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode='equal_power') #other mode option: 'linear'
         log.warning("Mix looks like start %r track: %r end: %r, duration: %r",pb2.s2, pb2.t2, pb2.e2, pb2.duration)
 
         log.warning("""
