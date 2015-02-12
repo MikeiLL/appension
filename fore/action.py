@@ -195,13 +195,17 @@ class Crossfade(object):
 		#   For now, only support stereo tracks
 		assert self.t1.data.ndim == 2
 		assert self.t2.data.ndim == 2
-		start = int(self.s1 * 44100)
-		end = int((self.s1 + self.duration) * 44100)
-		for i in xrange(start, end, chunk_size):
+		s1 = int(self.s1 * 44100)
+		s2 = int(self.s2 * 44100)
+		end = int(self.duration * 44100)
+		for i in xrange(0, end, chunk_size):
 			e = min(end, i + chunk_size)
-			yield (crossfade(self.t1[i:e].data,
-							 self.t2[i:e].data, self.mode,
-							 self.samples, i - start).astype(numpy.int16))
+			# Note that this may bomb if there isn't enough of t2 to do the xfade.
+			# Since xfade is set administratively, this is simply a matter of "be
+			# smart". If you break stuff, it's your problem.
+			yield (crossfade(self.t1[s1+i:s1+e].data,
+							 self.t2[s2+i:s2+e].data, self.mode,
+							 self.samples, i).astype(numpy.int16))
 
 	def __repr__(self):
 		args = (self.t1.analysis.pyechonest_track.title, self.t2.analysis.pyechonest_track.title)
