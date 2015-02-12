@@ -546,6 +546,7 @@ function ThreeSixtyPlayer() {
       if (!self.config.allowMultiple && self.lastSound) {
         self.stopSound(self.lastSound);
       }
+      thisSound.setVolume(5);
       thisSound.play();
 
     }
