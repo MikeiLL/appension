@@ -4,9 +4,9 @@ create table tracks (id serial primary key,
 		filename varchar not null default '',
 		artwork bytea not null default '',
 		length double precision not null default 0,
-		xfade varchar(10) not null default '',
-		itrim varchar(10) not null default '',
-		otrim varchar(10) not null default '';
+		xfade int not null default 0,
+		itrim int not null default 0,
+		otrim int not null default 0;
 		lyrics text not null default '',
 		story text not null default '',
 		status smallint not null default 0,
