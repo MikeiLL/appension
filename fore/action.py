@@ -94,7 +94,7 @@ class Playback(object):
 					yield self.track[i:min(end, i + chunk_size)].data
 
 	def __repr__(self):
-		return "<Playback '%s'>" % self.track.analysis.pyechonest_track.title
+		return "<Playback %r>" % self.track.analysis.pyechonest_track.title
 
 	def __str__(self):
 		try:
