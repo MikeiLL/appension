@@ -343,7 +343,7 @@ class AuditionTransition(BaseHandler):
 		track_otrim=int(self.request.arguments['track_otrim'][0])
 		next_track_itrim=int(self.request.arguments['next_track_itrim'][0])
 		track2_id=int(self.request.arguments['next_track_id'][0])
-		pair_o_tracks = database.get_transition_pair(track1_id, track2_id)
+		pair_o_tracks = database.get_track_filename(track1_id), database.get_track_filename(track2_id)
 		import audition
 		log.warning("We got %r from sending %r and %r", str(pair_o_tracks), track1_id, track2_id)
 		audition.audition(pair_o_tracks,xfade=track_xfade, otrim=track_otrim, itrim=next_track_itrim, user_name=user_name)
