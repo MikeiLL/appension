@@ -22,9 +22,9 @@ log = logging.getLogger(__name__)
 LOUDNESS_THRESH = -8
 
 def audition(files, xfade=0, otrim=0, itrim=0, user_name="transition"):
-    filenames = ['audio/' + file[0].encode("UTF-8") for file in files]
+    filenames = ['audio/' + filename.encode("UTF-8") for filename in files]
     two_tracks = make_LAFs(filenames)
-    transition = managed_transition(two_tracks[1], two_tracks[2], xfade=12, otrim=otrim, itrim=itrim)
+    transition = managed_transition(two_tracks[1], two_tracks[2], xfade=xfade, otrim=otrim, itrim=itrim)
     log.warning("What we have here is a list and it looks like %r", transition)
     audition_render(transition, 'transition.mp3')
 
