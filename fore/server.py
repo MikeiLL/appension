@@ -346,7 +346,7 @@ class AuditionTransition(BaseHandler):
 		pair_o_tracks = database.get_transition_pair(track1_id, track2_id)
 		import audition
 		log.warning("We got %r from sending %r and %r", str(pair_o_tracks), track1_id, track2_id)
-		audition.audition(pair_o_tracks)
+		audition.audition(pair_o_tracks,xfade=track_xfade, otrim=track_otrim, itrim=next_track_itrim, user_name=user_name)
 		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
 		track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
 		next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,

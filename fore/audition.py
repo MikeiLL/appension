@@ -9,9 +9,11 @@ Created by Tristan Jehan and Jason Sundram.
 from __future__ import print_function
 import echonest.remix.audio as audio
 from mixer import LocalAudioStream
+import echonest.remix.audio as audio
 import logging
 from action import Crossfade as cf
 from action import Playback as pb
+from action import render
 from Queue import Queue
 import os
 
@@ -19,13 +21,16 @@ log = logging.getLogger(__name__)
 
 LOUDNESS_THRESH = -8
 
-def audition(files, xfade=xfade, otrim=otrim, itrim=itrim):
+def audition(files, xfade=0, otrim=0, itrim=0, user_name="transition"):
     filenames = []
     for file in files:
         log.warning("It's %r", str(file[0]))
         filename = 'audio/' + str(file[0])
         filenames.append(filename)
     two_tracks = make_LAFs(filenames)
+    transition = managed_transition(two_tracks[1], two_tracks[2], xfade=12, otrim=otrim, itrim=itrim)
+    log.warning("What we have here is a list and it looks like %r", transition)
+    render(transition, 'transition.mp3')
 
 def make_LAFs(files):
     """
@@ -39,7 +44,7 @@ def make_LAFs(files):
         localaudiofiles[number] = LocalAudioStream(file)
         number += 1
         
-    return [localaudiofiles]
+    return localaudiofiles
         
 def file_queue(files):
     """
@@ -81,9 +86,8 @@ start_point = {"cursor": 0}
 def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0, mode = 'equal_power'): 
     """Return three renderable Echonest objects. 
 
-    (other mode option: 'linear')
+    (other mode option is 'linear')
     """
-
     for track in [track1, track2]:
         loudness = track.analysis.loudness
         track.gain = db_2_volume(loudness)
@@ -93,12 +97,11 @@ def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0, mode = '
     t1end = last_viable(track1) - float(otrim)
     t1_itrim = float(itrim)
     t1_otrim = float(otrim)
-    t1_length = float(length)
-    t2_length = float(length)
+    t1_length = float(track1.analysis.duration)
+    t2_length = float(track2.analysis.duration)
     t2_otrim = float(otrim)
     t2start = first_viable(track2) + float(itrim)
     t2end = last_viable(track2) - float(otrim)
-    start = track.analysis.duration - (10 + (avg_duration * beats_to_mix))
 
     if xfade == 0:
         '''Play track1 from cursor point until end of track, less otrim.'''
@@ -107,13 +110,12 @@ def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0, mode = '
         pb2 = pb(track2, t2start, t2_length - t2_otrim - 2)
         '''Set cursor to 2 seconds'''
         start_point['cursor'] = max(t2start + t2_length - t2_otrim - 2, 0)
-        log.warning("""No xfade and %r, plus
-        %r""",str(pb1), str(pb2))
         return [pb1, pb2]
     else:
         '''offset between start and first theoretical beat.'''
-        t2offset = lead_in(track2)
+        t2offset = 0 #lead_in(track2)
         avg_duration = avg_end_duration(track1)
+        start = track.analysis.duration - (10 + (avg_duration * xfade))
         playback_end = t1end - (avg_duration * xfade) - t2offset
         playback_duration = playback_end - start_point['cursor']
         mix_duration = t1end - playback_end
@@ -131,7 +133,7 @@ def lead_in(track):
         avg_duration = sum([b.duration for b in track.analysis.beats[:8]]) / 8
         earliest_beat = track.analysis.beats[0].start
     except IndexError:
-        log.warning("No beats returned for track by %r", track._metadata.track_details['artist'])
+        log.warning("No beats returned for track.")
         earliest_beat = track.analysis.segments[0].start
     while earliest_beat >= 0 + avg_duration:
         earliest_beat -= avg_duration
