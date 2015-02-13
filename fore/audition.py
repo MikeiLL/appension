@@ -2,9 +2,9 @@
 # encoding: utf=8
 
 """
-capsule_support.py
+audition.py
 
-Created by Tristan Jehan and Jason Sundram.
+Created by Mike iLL with mentorship of Rosuav.
 """
 from __future__ import print_function
 import echonest.remix.audio as audio
@@ -24,7 +24,6 @@ LOUDNESS_THRESH = -8
 def audition(files, xfade=0, otrim=0, itrim=0, user_name="transition"):
     filenames = []
     for file in files:
-        log.warning("It's %r", str(file[0]))
         filename = 'audio/' + str(file[0])
         filenames.append(filename)
     two_tracks = make_LAFs(filenames)
