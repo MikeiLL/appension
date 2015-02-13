@@ -1,8 +1,5 @@
-{% extends main.html %}
-{% block head %}
-    <title>Infinite Glitch - Admin</title>
-	<meta name="description" content="Admin Infinite Glitch">
-{% end %}
+{% extends admin_main.html %}
+
 {% block content %}
 <form enctype="multipart/form-data" action="/confirm_transition/{{ track.id }}" method="post">
 <table>
@@ -10,19 +7,22 @@
 <tr>
 	<td colspan="2">Filename: {{ track.filename }}</td><td>Duration: {{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</td>
 </tr>
-	<tr><td>Crossfade time in half-beats (whole numbers only): 
+	<tr><td>Crossfade time in half-beats: 
 	<input type="hidden" name="track_id" size="5" value="{{ track.id }}">
-	<input type="text" name="track_xfade" size="5" value="{{ track_xfade }}"></td>
-	<td>Out Trim time in milliseconds (can be fractions of second): 
-	<input type="text" name="track_otrim" size="5" value="{{ track_otrim }}"></td>
+	<input type="hidden" name="track_xfade" size="5" value="{{ track_xfade }}">
+	{{ track_xfade }}</td>
+	<td>Out Trim time in seconds: 
+	<input type="hidden" name="track_otrim" size="5" value="{{ track_otrim }}">
+	{{ track_otrim }}</td>
 	<td>Sequence: 
 	{{ track.track_details['sequence'] }}</td>
 	</tr>
 	<tr><td>INTO:</td></tr>
 	<tr><td> Title: {{ next_track.track_details['title'] }} ({{ next_track.id }})</td><td>By: {{ next_track.track_details['artist'] }}</td></tr>
-	<td>In Trim time in milliseconds (as otrim): 
+	<td>In Trim time in seconds: 
 	<input type="hidden" name="next_track_id" size="5" value="{{ next_track.id }}">
-	<input type="text" name="next_track_itrim" size="5" value="{{ next_track_itrim }}"></td>
+	<input type="hidden" name="next_track_itrim" size="5" value="{{ next_track_itrim }}">
+	{{ next_track_itrim }}</td>
 	<td>Sequence: 
 	{{ next_track.track_details['sequence'] }}</td>
 	<td><a href="/manage/{{ track.id }}" class=btn>Cancel/Reset</a> &nbsp; <input type="submit" value="Set Transition Parameters"></td>
@@ -31,6 +31,6 @@
 <p>Artwork:<br>
 <img src="/artwork/{{ track.id }}.jpg">
 <img src="/artwork/{{ next_track.id }}.jpg">
-<div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../transition.mp3" type="audio/mpeg"></a>
+<div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../static/transition.mp3" type="audio/mpeg"></a>
 </p>
 {% end %}

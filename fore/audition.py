@@ -26,7 +26,7 @@ def audition(files, xfade=0, otrim=0, itrim=0, user_name="transition"):
     two_tracks = make_LAFs(filenames)
     transition = managed_transition(two_tracks[1], two_tracks[2], xfade=xfade, otrim=otrim, itrim=itrim)
     log.warning("What we have here is a list and it looks like %r", transition)
-    audition_render(transition, 'transition.mp3')
+    audition_render(transition, 'static/transition.mp3')
 
 def make_LAFs(files):
     """
