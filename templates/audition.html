@@ -25,11 +25,12 @@
 	<input type="text" name="next_track_itrim" size="5" value="{{ next_track_itrim }}"></td>
 	<td>Sequence: 
 	{{ next_track.track_details['sequence'] }}</td>
-	<td><a href="/audition/{{ track.id }}" class=btn>Cancel/Reset</a> &nbsp; <input type="submit" value="Set Transition Parameters"></td>
+	<td><a href="/manage/{{ track.id }}" class=btn>Cancel/Reset</a> &nbsp; <input type="submit" value="Set Transition Parameters"></td>
 </table>
 	</form>
 <p>Artwork:<br>
 <img src="/artwork/{{ track.id }}.jpg">
 <img src="/artwork/{{ next_track.id }}.jpg">
+<div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../transition.mp3" type="audio/mpeg"></a>
 </p>
 {% end %}
