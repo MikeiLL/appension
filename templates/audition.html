@@ -4,7 +4,7 @@
 	<meta name="description" content="Admin Infinite Glitch">
 {% end %}
 {% block content %}
-<form enctype="multipart/form-data" action="/audition/{{ track.id }}" method="post">
+<form enctype="multipart/form-data" action="/confirm_transition/{{ track.id }}" method="post">
 <table>
 <tr><td> Title: {{ track.track_details['title'] }} ({{ track.id }})</td><td>By: {{ track.track_details['artist'] }}</td></tr>
 <tr>
@@ -12,9 +12,9 @@
 </tr>
 	<tr><td>Crossfade time in half-beats (whole numbers only): 
 	<input type="hidden" name="track_id" size="5" value="{{ track.id }}">
-	<input type="text" name="track_xfade" size="5" value="{{ track.track_details['xfade'] }}"></td>
+	<input type="text" name="track_xfade" size="5" value="{{ track_xfade }}"></td>
 	<td>Out Trim time in milliseconds (can be fractions of second): 
-	<input type="text" name="track_otrim" size="5" value="{{ track.track_details['otrim'] }}"></td>
+	<input type="text" name="track_otrim" size="5" value="{{ track_otrim }}"></td>
 	<td>Sequence: 
 	{{ track.track_details['sequence'] }}</td>
 	</tr>
@@ -22,10 +22,10 @@
 	<tr><td> Title: {{ next_track.track_details['title'] }} ({{ next_track.id }})</td><td>By: {{ next_track.track_details['artist'] }}</td></tr>
 	<td>In Trim time in milliseconds (as otrim): 
 	<input type="hidden" name="next_track_id" size="5" value="{{ next_track.id }}">
-	<input type="text" name="next_track_itrim" size="5" value="{{ next_track.track_details['itrim'] }}"></td>
+	<input type="text" name="next_track_itrim" size="5" value="{{ next_track_itrim }}"></td>
 	<td>Sequence: 
 	{{ next_track.track_details['sequence'] }}</td>
-	<td><input type="submit" value="Submit"></td>
+	<td><a href="/audition/{{ track.id }}" class=btn>Cancel/Reset</a> &nbsp; <input type="submit" value="Set Transition Parameters"></td>
 </table>
 	</form>
 <p>Artwork:<br>

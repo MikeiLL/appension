@@ -12,12 +12,10 @@
         <link rel="image_src" type="image/png" href="/static/img/icon.png" />
         <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
         <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
-		<link href='{{ compiled('tabs.scss') }}' rel='stylesheet' type='text/css' />
         <link href='{{ compiled(
           'sprites.css',
           'flashblock.css',
-          '360player_admin.css',
-          '360player-visualization_admin.css'
+          '360player.css'
         ) }}' rel='stylesheet' type='text/css' />
 
 	</head>
@@ -50,7 +48,7 @@
 			  'spin.min.js',
 			  'soundmanager2-nodebug-jsmin.js',
 			  'berniecode-animator.js',
-			  '360player_admin.js'
+			  '360player.js'
 			  ) }}'></script>
 			<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
 			<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>

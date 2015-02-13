@@ -1,35 +1,48 @@
-{% extends main.html %}
-{% block head %}
-    <title>Infinite Glitch - Admin</title>
-	<meta name="description" content="Admin Infinite Glitch">
-{% end %}
+{% extends admin_main.html %}
+
+
 {% block content %}
 <form enctype="multipart/form-data" action="/audition/{{ track.id }}" method="post">
-<table>
-<tr><td> Title: {{ track.track_details['title'] }} ({{ track.id }})</td><td>By: {{ track.track_details['artist'] }}</td></tr>
+<table border="1">
+<tr><td colspan="2"> Title: {{ track.track_details['title'] }} ({{ track.id }})</td><td>By: {{ track.track_details['artist'] }}</td></tr>
 <tr>
-	<td colspan="2">Filename: {{ track.filename }}</td><td>Duration: {{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</td>
+	<td colspan="2">Filename: {{ track.filename }}</td>
+	<td>Duration: {{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</td>
+	<td><div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../audio/{{ track.filename }}" type="audio/mpeg"></a></div></td>
+	</td>
 </tr>
-	<tr><td>Crossfade time in half-beats (whole numbers only): 
+	<tr><td colspan="2">Crossfade time in half-beats (whole numbers only): 
 	<input type="hidden" name="track_id" size="5" value="{{ track.id }}">
 	<input type="text" name="track_xfade" size="5" value="{{ track.track_details['xfade'] }}"></td>
-	<td>Out Trim time in milliseconds (can be fractions of second): 
+	<td>Trim track end in seconds (can be floating point like 0.4): 
 	<input type="text" name="track_otrim" size="5" value="{{ track.track_details['otrim'] }}"></td>
 	<td>Sequence: 
 	{{ track.track_details['sequence'] }}</td>
 	</tr>
-	<tr><td>INTO:</td></tr>
-	<tr><td> Title: {{ next_track.track_details['title'] }} ({{ next_track.id }})</td><td>By: {{ next_track.track_details['artist'] }}</td></tr>
-	<td>In Trim time in milliseconds (as otrim): 
+	<tr><td colspan="3"><h2>INTO:</h2></td></tr>
+	<tr>
+	<td colspan="2">Filename: {{ next_track.filename }}</td>
+	<td>Duration: {{ datetime.timedelta(seconds=int(next_track.track_details['length'])) }}</td>
+	<td><div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../audio/{{ track.filename }}" type="audio/mpeg"></a></div></td>
+	</td>
+	</tr>
+	<tr><td colspan="2"> Title: {{ next_track.track_details['title'] }} ({{ next_track.id }})</td><td>By: {{ next_track.track_details['artist'] }}</td>
+	</tr>
+	<tr>
+	<td colspan="2">Trim track start in milliseconds (can be floating point): 
 	<input type="hidden" name="next_track_id" size="5" value="{{ next_track.id }}">
 	<input type="text" name="next_track_itrim" size="5" value="{{ next_track.track_details['itrim'] }}"></td>
 	<td>Sequence: 
-	{{ next_track.track_details['sequence'] }}</td>
-	<td><input type="submit" value="Submit"></td>
+	{{ next_track.track_details['sequence'] }}</td></tr>
+	<tr><td colspan="2"></td><td><input type="submit" value="Audition"></td></tr>
 </table>
 	</form>
+	<table><tr><td>
 <p>Artwork:<br>
 <img src="/artwork/{{ track.id }}.jpg">
 <img src="/artwork/{{ next_track.id }}.jpg">
-</p>
+</p></td>
+<td>
+</tr>
+</table>
 {% end %}
