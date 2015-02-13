@@ -12,6 +12,7 @@ from echonest.remix.audio import assemble
 from cAction import limit, crossfade, fadein, fadeout, fade
 from itertools import izip
 import logging
+from lame import Lame
 
 import dirac
 
@@ -46,11 +47,25 @@ def make_stereo(track):
 def render(actions, filename, verbose=True):
 	"""Calls render on each action in actions, concatenates the results,
 	renders an audio file, and returns a path to the file"""
+	# May be broken, may not even be used.
 	pieces = [a.render() for a in actions]
 	# TODO: allow numChannels and sampleRate to vary.
 	out = assemble(pieces, numChannels=2, sampleRate=44100, verbose=verbose)
 	return out, out.encode(filename)
 
+def audition_render(actions, filename):
+	"""Calls render on each action in actions, concatenates the results,
+	and renders an audio file"""
+	print("Calling render()!")
+	print(actions)
+	print(filename)
+	encoder = Lame(ofile=open(filename, 'wb'))
+	encoder.start()
+	for a in actions:
+		print("add_pcm: %r"%a)
+		encoder.add_pcm(a)
+	encoder.finish()
+	print("render() finished!")
 
 class Playback(object):
 	"""A snippet of the given track with start and duration. Volume leveling

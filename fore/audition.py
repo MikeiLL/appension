@@ -13,7 +13,7 @@ import echonest.remix.audio as audio
 import logging
 from action import Crossfade as cf
 from action import Playback as pb
-from action import render
+from action import render, audition_render
 from Queue import Queue
 import os
 
@@ -26,7 +26,7 @@ def audition(files, xfade=0, otrim=0, itrim=0, user_name="transition"):
     two_tracks = make_LAFs(filenames)
     transition = managed_transition(two_tracks[1], two_tracks[2], xfade=12, otrim=otrim, itrim=itrim)
     log.warning("What we have here is a list and it looks like %r", transition)
-    render(transition, 'transition.mp3')
+    audition_render(transition, 'transition.mp3')
 
 def make_LAFs(files):
     """

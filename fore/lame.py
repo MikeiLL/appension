@@ -126,6 +126,7 @@ class Lame(threading.Thread):
 		or an AudioRenderable that will be sliced according to the start and end.
 
 		"""
+		print("Lame::add_pcm: %r"%data)
 		if self.lame.returncode is not None:
 			return False
 		if marker: self.markers.append((self.in_samples, marker))
