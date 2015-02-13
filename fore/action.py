@@ -191,8 +191,13 @@ class Crossfade(object):
 			return int(self.duration * 44100)
 		return self.duration
 
-	def render(self, chunk_size):
+	def render(self, chunk_size=5512):
 		#   For now, only support stereo tracks
+		# CJA 20150213: The "chunk_size is None" branch was looking broken, so I
+		# removed it (cf 030ff0 and 6de38a), but it is used (in one place - see
+		# top-level render() above). Now defaulting to 5512 which seems to be a
+		# viable chunk size; it may be necessary to reinstate, and then bug-fix,
+		# the original notion of "unchunked return".
 		assert self.t1.data.ndim == 2
 		assert self.t2.data.ndim == 2
 		s1 = int(self.s1 * 44100)
