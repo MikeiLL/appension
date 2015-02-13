@@ -225,7 +225,7 @@ def get_transition_pair(track1_id, track2_id):
     with _conn, _conn.cursor() as cur:
         cur.execute("SELECT filename FROM tracks WHERE id = "+str(track1_id)+" OR id = "+str(track2_id)+" ORDER BY sequence LIMIT 2")
         return [file for file in cur.fetchall()]
-    
+
 def create_user(username, email, password, hex_key):
 	"""Create a new user, return the newly-created ID"""
 	username = username.lower(); email = email.lower();
@@ -244,6 +244,19 @@ def create_user(username, email, password, hex_key):
 		except psycopg2.IntegrityError as e:
 			return "That didn't work too well because: <br/>%s<br/> Maybe you already have an account or \
 					someone else is using the name you requested."%e
+
+def set_user_password(user_or_email, password):
+	"""Change a user's password (administratively) - returns None on success, or error message"""
+	user_or_email = user_or_email.lower()
+	if not isinstance(password, bytes): password=password.encode("utf-8")
+	with _conn, _conn.cursor() as cur:
+		salt = os.urandom(16)
+		hash = hashlib.sha256(salt+password).hexdigest()
+		pwd = salt.encode("hex")+"-"+hash
+		cur.execute("SELECT id FROM users WHERE username=%s OR email=%s AND status=1", (user_or_email, user_or_email))
+		rows=cur.fetchall()
+		if len(rows)!=1: return "This works only if the user/email provided is unique."
+		cur.execute("update users set password=%s where id=%s", (pwd, rows[0][0]))
 
 def verify_user(user_or_email, password):
 	"""Verify a user name/email and password, returns the ID if valid or None if not"""
