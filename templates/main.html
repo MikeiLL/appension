@@ -39,14 +39,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <body>
 
 	<div id="header">
-		<div class="logo">
-			<h1><a href="/">Infinite Glitch</a></h1>
-		</div>
+		
 		{% block user %}
 		<div class="user">
 				<p>Hello {{ user_name }}!</p>
 		</div>
 		{% end %}
+		<center><div id="title">
+		<div style="text-align: center"><img src="/static/img/glitchlogo.jpg" width="600" border="0" height="153"></div>
+		</div>
+		</center>
 	</div>
 	<br style="clear:both"/>
   <!--Pattern HTML-->
@@ -71,12 +73,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			<li>
 				<div>
 					<ul>
-					<li><a href="/lyrics">The Lyrics</a></li>
-					<li><a href="/submit">Submit</a></li>
-					<li><a href="/login">Login</a></li>
-					<li><a href="/logout">Logout</a></li>
-					<li><a href="/create_account">Sign-Up</a></li>
-					</ul>
+<li><a href="/create_account"><img src="static/img/sign-up.png" alt="" width="78" border="0" height="23"></a></li>
+<li><a href="/login"><img src="static/img/login-link.png" alt="" width="62" border="0" height="25"></a></li>
+<li><a href="/logout"><img src="static/img/logout-link.png" alt="" width="47" border="0" height="39"></a></li>
+<li><a href="segment_selection"><img src="static/img/segment-selection-link.png" alt="" width="106" border="0" height="38"></a></li>
+<li><a href="submit"><img src="static/img/submit-link.png" alt="" width="137" border="0" height="26"></a></li>
+<li><a href="magic_ball"><img src="static/img/magic-ball-link.png" alt="" width="114" border="0" height="96"></a></li>
+</ul>
 				</div>
 			</li>
 			

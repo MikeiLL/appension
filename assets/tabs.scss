@@ -1,7 +1,3 @@
- body {
-  padding: 2em;
-}
-
 .accordion {
   padding: 0;
   margin: 2em 0;
@@ -13,22 +9,27 @@
 
 .accordion__title {
   padding: 0 1em;
-  background: #ccc;
-  border-top: 2px solid #eee;
+  background: url(tile3.jpg) #CCC;
+  border-top: 1px solid #C0C0C0;
   color: #222;
   float: left;
   line-height: 3;
   height: 3em;
   cursor: pointer;
-  margin-right: .25em;
+  margin-right: 0.25em;
+  /*+border-radius: 12px;*/
+  -moz-border-radius: 12px;
+  -webkit-border-radius: 12px;
+  -khtml-border-radius: 12px;
+  border-radius: 12px;
 }
 
 .no-js .accordion__title {
   float: none;
-  height:auto;
-  cursor:auto;
-  margin:0;
-  padding:0 2em;
+  height: auto;
+  cursor: auto;
+  margin: 0;
+  padding: 0 2em;
 }
 
 .accordion__content {
@@ -36,70 +37,79 @@
   width: 100%;
   margin: 3em 0 0 -100%;
   padding: 2em;
-  background: silver;
+  background: url(tile.jpg) transparent;
+  /*+border-radius: 0px 8px 12px 12px;*/
+  -moz-border-radius: 0px 8px 12px 12px;
+  -webkit-border-radius: 0px 8px 12px 12px;
+  -khtml-border-radius: 0px 8px 12px 12px;
+  border-radius: 0px 8px 12px 12px;
+  color: black;
 }
 
 .no-js .accordion__content {
-  float:left;
-  margin:0;
+  float: left;
+  margin: 0;
 }
 
 .accordion__title:hover,
 .accordion__title.active {
-  background: silver;
+  background: url(tile.jpg) silver;
   color: white;
 }
 
 .no-js .accordion__title:hover {
-  background-color:#ccc;
-  color:#222;
+  background-color: #CCC;
+  color: #222;
 }
 
 .accordion__title.active {
-  border-top-color:lime;
+  border-top-color: white;
+  background-image: url(tile.jpg);
+  /*+border-radius: 12px 12px 0px 0px;*/
+  -moz-border-radius: 12px 12px 0px 0px;
+  -webkit-border-radius: 12px 12px 0px 0px;
+  -khtml-border-radius: 12px 12px 0px 0px;
+  border-radius: 12px 12px 0px 0px;
 }
 
 @media (max-width: 48em) {
-
   .accordion {
     border: 1px solid grey;
   }
-
+  
   .accordion__title,
-  .accordion__content { 
+  .accordion__content {
     float: none;
     margin: 0;
   }
-
+  
   .accordion__title:first-child {
-    border:none;
+    border: none;
   }
-
- .accordion__title.active {
-  border-top-color:#eee;
+  
+  .accordion__title.active {
+    border-top-color: #EEE;
   }
-
-  .accordion__title.active, .accordion__title:hover {
-    background:#777;
+  
+  .accordion__title.active,
+  .accordion__title:hover {
+    background: #777;
   }
-
+  
   .accordion__title:before {
-  content:"+";
-  text-align:center;
-  width:2em;
-  display:inline-block;
+    content: "+";
+    text-align: center;
+    width: 2em;
+    display: inline-block;
   }
- .accordion__title.active:before {
-  content:"-";
+  
+  .accordion__title.active:before {
+    content: "-";
   }
-
+  
   .accordion__content {
-    position:relative;
-    overflow:hidden;
-     padding:1em;
+    position: relative;
+    overflow: hidden;
+    padding: 1em;
   }
-
 }
-
-
-
