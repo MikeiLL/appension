@@ -5,13 +5,13 @@
 	{% block head %}
 	<head>
 	  <meta charset="utf-8">
-		<title>Infinite Glitch</title>
+		<title>Infinite Glitch Admin</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
         <link rel="image_src" type="image/png" href="/static/img/icon.png" />
         <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
-        <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
+        <link href='{{ compiled('style-admin.scss') }}' rel='stylesheet' type='text/css' />
         <link href='{{ compiled(
           'sprites.css',
           'flashblock.css',
@@ -23,16 +23,16 @@
 <body>
 <div id="pagewrap">
 
-	<div id="header"><h1>
-			Infinite Glitch
-		  </h1></div>
-	
-	<div id="left">
+	<div class="logo">
+<div style="text-align: center"><a href="{{ admin_url }}"><img src="/static/img/glitchlogo-small.jpg" border="0" width="400" height="102" title="Back to Main Page"></a></div>
+</div>
+	<div id="user">
 		{% block sidebar %}
 			<p>Hello {{ user_name }}!</p>
 		{% end %}
 	</div>
 	
+	<br style="clear:both">
 	<div id="central">
 		{% block content %}<p>totally empty page</p>{% end %}
 	</div>	
@@ -50,6 +50,7 @@
 			  'berniecode-animator.js',
 			  '360player.js'
 			  ) }}'></script>
+			<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
 			<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
 			<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
 			<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>

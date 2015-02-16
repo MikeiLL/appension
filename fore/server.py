@@ -77,7 +77,7 @@ class MainHandler(BaseHandler):
 			'open': True, # Can have this check for server load if we ever care
 			'endpoint': "/all.mp3",
 			'complete_length': datetime.timedelta(seconds=int(database.get_complete_length())),
-			'user_name':self.current_user or 'Guest',
+			'user_name':self.current_user or 'Glitcher',
 			'couplet_count': self.couplet_count(lyrics),
 			'lyrics': lyrics,
 		}
@@ -297,7 +297,7 @@ class ShowLyrics(BaseHandler):
 		lyrics = database.get_all_lyrics()
 		couplet_count = self.couplet_count(lyrics)
 		self.write(templates.load("lyrics.html").generate(compiled=compiled, 
-														user_name=self.current_user or 'Guest',
+														user_name=self.current_user or 'Glitcher',
 														lyrics=lyrics,
 														couplet_count=couplet_count))
 	
@@ -358,10 +358,22 @@ class ConfirmTransition(BaseHandler):
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		track_id=int(self.request.arguments['id'][0])
-		database.update_track(track_id, self.request.arguments)
-		self.write(admin_page(user_name, notice="confirmed transition"))
-				
+		in_track_data = {}
+		next_track_id = self.request.arguments.pop('next_track_id')[0]
+		in_track_data['itrim'] = self.request.arguments.pop('itrim')
+		out_track_id = self.request.arguments.pop('track_id')[0]
+		#track_xfade=int(self.request.arguments['track_xfade'][0])
+		#track_otrim=int(self.request.arguments['track_otrim'][0])
+		#next_track_id=int(self.request.arguments['next_track_id'][0])
+		#next_track_itrim=int(self.request.arguments['next_track_itrim'][0])
+		database.update_track(out_track_id, self.request.arguments)
+		database.update_track(next_track_id, in_track_data)
+		log.warning("""Two dicts: 
+		%r
+		%r
+		""",self.request.arguments, in_track_data)
+		self.write(admin_page(user_name, notice="Transition Settings Adjusted"))
+		
 class TrackArtwork(tornado.web.RequestHandler):
 	def get(self, id):
 		art = database.get_track_artwork(int(id))
@@ -504,6 +516,7 @@ if __name__ == "__main__":
 		]),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',
+		admin_url=apikeys.admin_url,
 	)
 
 	frame_sender = tornado.ioloop.PeriodicCallback(

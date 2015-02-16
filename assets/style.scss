@@ -43,6 +43,8 @@ body {
 	
 	/*! Start Keith Allison Design Work */
 	
+	
+	
 	img.floatLoose {
 	  /*+box-shadow: 3px 4px 7px rgba(0, 0, 0, 0.667);*/
 	  -moz-box-shadow: 3px 4px 7px rgba(0, 0, 0, 0.667);
@@ -99,6 +101,15 @@ body {
 		display: inline-block;
 		background: ;
 	}
+	
+	.entire_length {
+		position: absolute;
+		top: 708px;
+		left: 70px;
+		font-family: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace;
+		font-size: 12px;
+	}
+	
 	#player {
 		width: 256px;
 		margin: 34px 22px 4px 20px;
@@ -170,7 +181,8 @@ body {
 	}
 	.logo {
 		float: left;
-		width: 70%;
+		max-width: 100%;
+		max-height: 100%;
 	}
 	.main {
 		border: 1px solid transparent;
@@ -225,7 +237,7 @@ body {
 	}
 	.grid li.wide {
 		width: 100%;
-		background-image: url(tile2.jpg);
+		background-image: url(../img/tile2.jpg);
 		padding: 5px 15px;
 		/*+border-radius: 12px;*/
 		-moz-border-radius: 12px;
@@ -318,19 +330,233 @@ body {
 
 
 
+	/* CSS Animations */
+	@-webkit-keyframes fadeout {
+	  0%   { background: #fff; }
+	  10%   { background: #eee; }
+	  100% { background: #fff; }
+	}
+	@-moz-keyframes fadeout {
+	  0%   { background: #fff; }
+	  10%   { background: #eee; }
+	  100% { background: #fff; }
+	}
+	@-o-keyframes fadeout {
+	  0%   { background: #fff; }
+	  10%   { background: #eee; }
+	  100% { background: #fff; }
+	}
+	@keyframes fadeout {
+	  0%   { background: #fff; }
+	  10%   { background: #eee; }
+	  100% { background: #fff; }
+	}
+
+
+	/*EOF mZoo 3col*/
+
+
+	
+
+	/*
+	 * Hide visually and from screenreaders, but maintain layout
+	 */
+
+	.invisible {
+		visibility: hidden;
+	}
+
+	/*
+	 * Clearfix: contain floats
+	 *
+	 * For modern browsers
+	 * 1. The space content is one way to avoid an Opera bug when the
+	 *    `contenteditable` attribute is included anywhere else in the document.
+	 *    Otherwise it causes space to appear at the top and bottom of elements
+	 *    that receive the `clearfix` class.
+	 * 2. The use of `table` rather than `block` is only necessary if using
+	 *    `:before` to contain the top-margins of child elements.
+	 */
+
+	.clearfix:before,
+	.clearfix:after {
+		left: " "; /* 1 */
+		display: table; /* 2 */
+	}
+
+	.clearfix:after {
+		clear: both;
+	}
+
+
+		
+
+
+#header {
+	margin-bottom: 15px;
+}
+  
+ //Begin Popup Stying
+
+		.popup-overlay {
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		background: rgba(196, 196, 196, 0.85);
+		top: 0;
+		left: 100%;
+		opacity: 1;
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+		-webkit-transition: opacity .2s ease-out;
+		-moz-transition: opacity .2s ease-out;
+		-ms-transition: opacity .2s ease-out;
+		-o-transition: opacity .2s ease-out;
+		transition: opacity 0.2s ease-out;
+	}
+		.overlay .popup-overlay {
+		opacity: 1;
+		left: 0;
+	}
+		.popup {
+		position: fixed;
+		top: 25%;
+		left: 40%;
+		z-index: -9999;
+	}
+		.popup .popup-body {
+		background: white;
+		background: -moz-linear-gradient(top, #FFFFFF 0%, #F7F7F7 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #f7f7f7));
+		background: -webkit-linear-gradient(top, #FFFFFF 0%, #F7F7F7 100%);
+		background: -o-linear-gradient(top, #FFFFFF 0%, #F7F7F7 100%);
+		background: -ms-linear-gradient(top, #FFFFFF 0%, #F7F7F7 100%);
+		background: linear-gradient(to bottom, #FFFFFF 0%, #F7F7F7 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f7f7f7', GradientType=0);
+		opacity: 0;
+		min-height: 150px;
+		width: 90%;
+		margin-left: -25%;
+		padding: 0px;
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+		-webkit-transition: opacity .2s ease-out;
+		-moz-transition: opacity .2s ease-out;
+		-ms-transition: opacity .2s ease-out;
+		-o-transition: opacity .2s ease-out;
+		transition: opacity 0.2s ease-out;
+		position: relative;
+		-moz-box-shadow: 1px 2px 3px 1px rgb(185, 185, 185);
+		-webkit-box-shadow: 1px 2px 3px 1px rgb(185, 185, 185);
+		box-shadow: 0 0 7px 2px #343030;
+		text-align: left;
+		border: 1px solid #E9E9E9;
+		/*+border-radius: 12px 0px 0px 12px;*/
+		-moz-border-radius: 12px 0px 0px 12px;
+		-webkit-border-radius: 12px 0px 0px 12px;
+		-khtml-border-radius: 12px 0px 0px 12px;
+		border-radius: 12px 0px 0px 12px;
+	}
+		.story {
+		overflow-y: auto;
+		height: 250px;
+		background-color: #F5F5F5;
+		/*+border-radius: 9px;*/
+		-moz-border-radius: 9px;
+		-webkit-border-radius: 9px;
+		-khtml-border-radius: 9px;
+		border-radius: 9px;
+		padding: 6px 0 0 8px;
+	}
+		.popup.visible, .popup.transitioning {
+		z-index: 9999;
+	}
+		.popup.visible .popup-body {
+		opacity: 1;
+		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+		background-color: ;
+	}
+		.popup .popup-exit {
+		cursor: pointer;
+		display: block;
+		width: 32px;
+		height: 32px;
+		position: absolute;
+		top: 10px;
+		right: 25px;
+		background: url("../img/quit.png") no-repeat;
+	}
+		.popup .popup-content {
+		overflow-y: scroll;
+		background-color: #B06E6C;
+		padding: 0 10px;
+		background-image: url(tile.jpg);
+		/*+border-radius: 12px 0px 0px 12px;*/
+		-moz-border-radius: 12px 0px 0px 12px;
+		-webkit-border-radius: 12px 0px 0px 12px;
+		-khtml-border-radius: 12px 0px 0px 12px;
+		border-radius: 12px 0px 0px 12px;
+	}
+		.popup-content .popup-title {
+		font-size: 20px;
+		border-bottom: 1px solid #E9E9E9;
+		padding-bottom: 10px;
+		color: white;
+		text-shadow: 2px 2px 1px black;
+	}
+		.popup-content p {
+		font-size: 13px;
+		text-align: justify;
+	}
+	//End popup styling
+
+	/*BOF Three column flowing mZoo - may use*/
+	#example p:first-of-type {font-weight:600;}
+	/* ==========================================================================
+	   Paragraph custom styles
+	   ========================================================================== */
+
+	#example p:first-of-type {font-weight:600;}
+	@media all and (max-width: 900px) and (min-width: 600px) {
+		#left {max-width: 290px;}
+	#example p  {
+	  -webkit-column-count: 2; /* Saf3, Chrome*/
+	  -webkit-column-gap: 4%; /* Saf3, Chrome*/
+	  -moz-column-count: 2; /* FF3.5+ */
+	  -moz-column-gap: 4%; /* FF3.5+ */
+	  column-count: 2; /* Opera 11+*/
+	  column-gap: 4%; /* Opera 11+*/
+	  }
+	}
+
+	@media all and (min-width: 900px) {
+	#left {max-width: 290px;}
+	#example p:first-of-type  {
+	  -webkit-column-count: 2;
+	  -webkit-column-gap: 3%; /* Saf3, Chrome*/
+	  -moz-column-count: 2;   
+	  -moz-column-gap: 3%; /* FF3.5+ */
+	  column-count: 2;        
+	  column-gap: 3%; /* Opera 11+*/
+	  }
+	   #example p  {
+	  -webkit-column-count: 3;
+	  -webkit-column-gap: 1%; /* Saf3, Chrome*/
+	  -moz-column-count: 3;   
+	  -moz-column-gap: 1%; /* FF3.5+ */
+	  column-count: 3;        
+	  column-gap: 1%; /* Opera 11+*/
+	  }
+	}
+
 	/******Media Queries*******/
 
 	/* Medium Screens*/
-	@media all and (min-width: 35em) {
-		.blog-logo {
-			float: left;
-			font-size: 2em;
-			margin: 0 0 1em;
-		}
-		.blog-logo img {
-			width: auto;
-		}
+	@media all and (max-width: 40em) {
+		#title {
+			width: 310px;
+			height: 84px;
+			}
 	}
+	
 	@media all and (min-width:40em) {
 	
 		
@@ -409,7 +635,8 @@ body {
 		}
 		
 	}
-
+	/************Start Percent Grid Media**************/
+	
 
 	/* Large Screens */
 	@media all and (min-width: 54em) {
@@ -442,242 +669,8 @@ body {
 		}
 	}	
 
-
-	/* CSS Animations */
-	@-webkit-keyframes fadeout {
-	  0%   { background: #fff; }
-	  10%   { background: #eee; }
-	  100% { background: #fff; }
-	}
-	@-moz-keyframes fadeout {
-	  0%   { background: #fff; }
-	  10%   { background: #eee; }
-	  100% { background: #fff; }
-	}
-	@-o-keyframes fadeout {
-	  0%   { background: #fff; }
-	  10%   { background: #eee; }
-	  100% { background: #fff; }
-	}
-	@keyframes fadeout {
-	  0%   { background: #fff; }
-	  10%   { background: #eee; }
-	  100% { background: #fff; }
-	}
-
-
-	/*EOF mZoo 3col*/
-
-
-	
-
-	/*
-	 * Hide visually and from screenreaders, but maintain layout
-	 */
-
-	.invisible {
-		visibility: hidden;
-	}
-
-	/*
-	 * Clearfix: contain floats
-	 *
-	 * For modern browsers
-	 * 1. The space content is one way to avoid an Opera bug when the
-	 *    `contenteditable` attribute is included anywhere else in the document.
-	 *    Otherwise it causes space to appear at the top and bottom of elements
-	 *    that receive the `clearfix` class.
-	 * 2. The use of `table` rather than `block` is only necessary if using
-	 *    `:before` to contain the top-margins of child elements.
-	 */
-
-	.clearfix:before,
-	.clearfix:after {
-		left: " "; /* 1 */
-		display: table; /* 2 */
-	}
-
-	.clearfix:after {
-		clear: both;
-	}
-
-
-	#left {
-		background: rgba(1.0, 1.0, 1.0, 0.55);
-		
-	#trackdetails {
-		margin-left:10px;
-		display: inline-block;
-		.artist, .length {margin:0px 8px 0px 8px; color:#fff;}
-		.artist {float:left}
-		.length {float:right}
-		.nametime {display:inline-block;background:red}
-	}
-
-	#player {
-	  width: 256px;
-	  margin: 29px 22px 4px;
-	  overflow: hidden;
-	  z-index: 5;
-	}
-	
-	.track-button {
-	background: red;
-	cursor: pointer;
-	color: #fff;
-	}
-	
-	#admin_player {
-	  width: 50px;
-	  margin: 10px 10px 4px;
-	  overflow: hidden;
-	  z-index: 5;
-	}
-}
-
-
-#header {
-	margin-bottom: 15px;
-}
-
-#pagewrap, #header {
-	border: solid 1px lime;
-}
-  
- //Begin Popup Stying
-
-.popup-overlay {
-	width: 100%;
-	height: 100%;
-	position: fixed;
-	background: rgba(196, 196, 196, .85);
-	top: 0;
-	left: 100%;
-	opacity: 1;
-	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-	-webkit-transition: opacity .2s ease-out;
-	-moz-transition: opacity .2s ease-out;
-	-ms-transition: opacity .2s ease-out;
-	-o-transition: opacity .2s ease-out;
-	transition: opacity .2s ease-out;
-}
-.overlay .popup-overlay {
-	opacity: 1;
-	left: 0
-}
-.popup {
-	position: fixed;
-	top: 25%;
-	left: 40%;
-	z-index: -9999;
-}
-.popup .popup-body {
-	background: #ffffff;
-	background: -moz-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #f7f7f7));
-	background: -webkit-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-	background: -o-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-	background: -ms-linear-gradient(top, #ffffff 0%, #f7f7f7 100%);
-	background: linear-gradient(to bottom, #ffffff 0%, #f7f7f7 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f7f7f7', GradientType=0);
-	opacity: 0;
-	min-height: 150px;
-	width: 90%;
-	margin-left: -25%;
-	padding: 20px;
-	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-	-webkit-transition: opacity .2s ease-out;
-	-moz-transition: opacity .2s ease-out;
-	-ms-transition: opacity .2s ease-out;
-	-o-transition: opacity .2s ease-out;
-	transition: opacity .2s ease-out;
-	position: relative;
-	-moz-box-shadow: 1px 2px 3px 1px rgb(185, 185, 185);
-	-webkit-box-shadow: 1px 2px 3px 1px rgb(185, 185, 185);
-	box-shadow: 1px 2px 3px 1px rgb(185, 185, 185);
-	text-align: left;
-	border: 1px solid #e9e9e9;
-	overflow-y:scroll;
-	.story {
-		overflow-y: auto;
-		height:250px;
-		background-color: #F5F5F5;
-	}
-}
-
-.popup.visible, .popup.transitioning {
-	z-index: 9999;
-}
-.popup.visible .popup-body {
-	opacity: 1;
-	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-}
-.popup .popup-exit {
-	cursor: pointer;
-	display: block;
-	width: 24px;
-	height: 24px;
-	position: absolute;
-	top: 10px;
-	right: 25px;
-	background: url(/static/img/quit.png) no-repeat;
-}
-.popup .popup-content {
-	overflow-y: scroll;
-}
-.popup-content .popup-title {
-	font-size: 24px;
-	border-bottom: 1px solid #e9e9e9;
-	padding-bottom: 10px;
-}
-.popup-content p {
-	font-size: 13px;
-	text-align: justify;
-}
-//End popup styling
-
-	/*BOF Three column flowing mZoo - may use*/
-	#example p:first-of-type {font-weight:600;}
-	/* ==========================================================================
-	   Paragraph custom styles
-	   ========================================================================== */
-
-	#example p:first-of-type {font-weight:600;}
-	@media all and (max-width: 900px) and (min-width: 600px) {
-		#left {max-width: 290px;}
-	#example p  {
-	  -webkit-column-count: 2; /* Saf3, Chrome*/
-	  -webkit-column-gap: 4%; /* Saf3, Chrome*/
-	  -moz-column-count: 2; /* FF3.5+ */
-	  -moz-column-gap: 4%; /* FF3.5+ */
-	  column-count: 2; /* Opera 11+*/
-	  column-gap: 4%; /* Opera 11+*/
-	  }
-	}
-
-	@media all and (min-width: 900px) {
-	#left {max-width: 290px;}
-	#example p:first-of-type  {
-	  -webkit-column-count: 2;
-	  -webkit-column-gap: 3%; /* Saf3, Chrome*/
-	  -moz-column-count: 2;   
-	  -moz-column-gap: 3%; /* FF3.5+ */
-	  column-count: 2;        
-	  column-gap: 3%; /* Opera 11+*/
-	  }
-	   #example p  {
-	  -webkit-column-count: 3;
-	  -webkit-column-gap: 1%; /* Saf3, Chrome*/
-	  -moz-column-count: 3;   
-	  -moz-column-gap: 1%; /* FF3.5+ */
-	  column-count: 3;        
-	  column-gap: 1%; /* Opera 11+*/
-	  }
-	}
-
-	
-	/************Start Percent Grid Media**************/
 	@media all and (min-width: 40em) {
+	
 	  .grid li {
 		float: left;
 		width: 33.3333333%;
@@ -693,6 +686,7 @@ body {
 		margin-left:290;
 	  }
 	}
+	
 	@media all and (min-width: 60em) {
 	  .grid li {
 		width: 20%;

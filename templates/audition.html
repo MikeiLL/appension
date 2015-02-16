@@ -1,7 +1,7 @@
 {% extends admin_main.html %}
 
 {% block content %}
-<form enctype="multipart/form-data" action="/confirm_transition/{{ track.id }}" method="post">
+<form enctype="multipart/form-data" action="/confirm_transition" method="post">
 <table>
 <tr><td> Title: {{ track.track_details['title'] }} ({{ track.id }})</td><td>By: {{ track.track_details['artist'] }}</td></tr>
 <tr>
@@ -9,10 +9,10 @@
 </tr>
 	<tr><td>Crossfade time in half-beats: 
 	<input type="hidden" name="track_id" size="5" value="{{ track.id }}">
-	<input type="hidden" name="track_xfade" size="5" value="{{ track_xfade }}">
+	<input type="hidden" name="xfade" size="5" value="{{ track_xfade }}">
 	{{ track_xfade }}</td>
 	<td>Out Trim time in seconds: 
-	<input type="hidden" name="track_otrim" size="5" value="{{ track_otrim }}">
+	<input type="hidden" name="otrim" size="5" value="{{ track_otrim }}">
 	{{ track_otrim }}</td>
 	<td>Sequence: 
 	{{ track.track_details['sequence'] }}</td>
@@ -21,7 +21,7 @@
 	<tr><td> Title: {{ next_track.track_details['title'] }} ({{ next_track.id }})</td><td>By: {{ next_track.track_details['artist'] }}</td></tr>
 	<td>In Trim time in seconds: 
 	<input type="hidden" name="next_track_id" size="5" value="{{ next_track.id }}">
-	<input type="hidden" name="next_track_itrim" size="5" value="{{ next_track_itrim }}">
+	<input type="hidden" name="itrim" size="5" value="{{ next_track_itrim }}">
 	{{ next_track_itrim }}</td>
 	<td>Sequence: 
 	{{ next_track.track_details['sequence'] }}</td>

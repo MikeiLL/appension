@@ -59,7 +59,7 @@ class MainHandler(BaseHandler):
 			'open': True, # Can have this check for server load if we ever care
 			'endpoint': "/audio/Track01.mp3",
 			'complete_length': datetime.timedelta(seconds=int(database.get_complete_length())),
-			'user_name':self.current_user or 'Guest',
+			'user_name':self.current_user or 'Glitcher',
 		}
 		if os.path.getmtime(config.template_dir + self.template) > self.mtime:
 			templates.reset()
