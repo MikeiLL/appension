@@ -74,9 +74,15 @@ def managed_transition(track1, track2):
         playback_end = t1end - (avg_duration * xfade) - t2offset
         playback_duration = playback_end - start_point['cursor']
         mix_duration = t1end - playback_end
+        '''Protect from xfade longer than second track.'''
+        while t2_length - mix_duration <= 0:
+            mix_duration -= .5
+            playback_end += .5
+            playback_duration += .5
+            
         
         pb1 = pb(track1, start_point['cursor'], playback_duration)
-        pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode='equal_power') #other mode option: 'linear'
+        pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode='linear') #other mode option: 'equal_power'
         log.warning("Mix looks like start %r track: %r end: %r, duration: %r",pb2.s2, pb2.t2, pb2.e2, pb2.duration)
 
         log.warning("""
@@ -109,8 +115,8 @@ def lead_in(track):
         avg_duration = sum([b.duration for b in track.analysis.beats[:8]]) / 8
         earliest_beat = track.analysis.beats[0].start
     except IndexError:
-        log.warning("No beats returned for track by %r", track._metadata.track_details['artist'])
-        earliest_beat = track.analysis.segments[0].start
+        log.warning("No beats returned for track by %r.", track._metadata.track_details['artist'])
+        return track.analysis.segments[0].start
     while earliest_beat >= 0 + avg_duration:
         earliest_beat -= avg_duration
     offset = earliest_beat
