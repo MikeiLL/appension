@@ -45,9 +45,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				<p>Hello {{ user_name }}!</p>
 		</div>
 		{% end %}
-		<center><div id="title">
-		<div style="text-align: center"><img class="logo" src="/static/img/glitchlogo.jpg" width="600" border="0" height="153"></div>
-		</div>
+		<center>
+		<a href="/" style="display:block;">
+		<div id="title">
+		
+		</div></a>
 		</center>
 	</div>
 	<br style="clear:both"/>
@@ -121,7 +123,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		});
 		//@ sourceURL=pen.js
 		</script>
-
+		<script type="text/javascript" >
+			$(".title").click(function() {
+		  window.location = $(this).find("a").attr("href"); 
+		  return false;
+		});
+		</script>
 
 		{% end %}
 	</div>

@@ -22,16 +22,20 @@
 	{% end %}
 <body>
 <div id="pagewrap">
-
-	<div class="logo">
-<div style="text-align: center"><a href="{{ admin_url }}"><img src="/static/img/glitchlogo-small.jpg" border="0" width="400" height="102" title="Back to Main Page"></a></div>
-</div>
-	<div id="user">
-		{% block sidebar %}
-			<p>Hello {{ user_name }}!</p>
+    	<div id="header">
+		
+		{% block user %}
+		<div class="user">
+				<p>Hello {{ user_name }}!</p>
+		</div>
 		{% end %}
+		<center>
+		<a href="{{ admin_url }}" style="display:block;">
+		<div id="title-admin">
+		
+		</div></a>
+		</center>
 	</div>
-	
 	<br style="clear:both">
 	<div id="central">
 		{% block content %}<p>totally empty page</p>{% end %}

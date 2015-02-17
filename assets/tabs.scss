@@ -9,7 +9,7 @@
 
 .accordion__title {
   padding: 0 1em;
-  background: url(tile3.jpg) #CCC;
+  background: url(../img/tile3.jpg) #CCC;
   border-top: 1px solid #C0C0C0;
   color: #222;
   float: left;
@@ -53,7 +53,7 @@
 
 .accordion__title:hover,
 .accordion__title.active {
-  background: url(tile.jpg) silver;
+  background: url(../img/tile.jpg) silver;
   color: white;
 }
 
