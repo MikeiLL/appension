@@ -238,9 +238,9 @@ def create_user(username, email, password, hex_key):
 		hash = hashlib.sha256(salt+password).hexdigest()
 		pwd = salt.encode("hex")+"-"+hash
 		try:
-			cur.execute("INSERT INTO users (username, email, password, hex_key) VALUES (%s, %s, %s, %s) RETURNING id", \
+			cur.execute("INSERT INTO users (username, email, password, hex_key) VALUES (%s, %s, %s, %s) RETURNING id, hex_key", \
 											(username, email, pwd, hex_key))
-			return cur.fetchone()[0]
+			return cur.fetchone()
 		except psycopg2.IntegrityError as e:
 			return "That didn't work too well because: <br/>%s<br/> Maybe you already have an account or \
 					someone else is using the name you requested."%e

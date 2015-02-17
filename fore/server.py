@@ -419,13 +419,15 @@ class CreateAccount(tornado.web.RequestHandler):
 			submitter_name = info.get("submitter_name",[""])[0]
 			hex_key = random_hex()
 			details = 'Account request submitted for %s. <br/>'%(info.get("email",[""])[0]);
-			user_id = database.create_user(submitter_name, submitter_email,\
+			new_user = database.create_user(submitter_name, submitter_email,\
 										self.get_argument('password'), hex_key)
+			log.warning("New User looks like %r", new_user)
 			details += 'Please check your email to confirm.<br/>'
 			admin_message = "New account created for %s at %s."%(submitter_name, submitter_email)
 			mailer.AlertMessage(admin_message, 'New Account Created')
-			user_message = "Either you or someoe else just created an account at InfiniteGlitch.net. \
-					To confirm for %s at %s, please "%(submitter_name, submitter_email)
+			confirmation_url = "http://localhost/confirm/"+str(new_user[0])+"/"+str(new_user[1])
+			user_message = "Either you or someoe else just created an account at InfiniteGlitch.net. \n \
+					To confirm for %s at %s, please visit %s"%(submitter_name, submitter_email, confirmation_url)
 			mailer.AlertMessage(user_message, 'New Account Created', you=submitter_email)
 			self.write(templates.load("account_submission.html").generate(compiled=compiled, user_name=submitter_name))
 		else:
