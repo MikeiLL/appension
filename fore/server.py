@@ -94,7 +94,10 @@ class MainHandler(BaseHandler):
 		self.finish(self.__gen())
 		
 
-			
+class AuditionStaticFileHandler(tornado.web.StaticFileHandler):
+    def set_extra_headers(self, path):
+        # Disable cache
+        self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')			
 
 
 class InfoHandler(tornado.web.RequestHandler):
@@ -490,7 +493,7 @@ if __name__ == "__main__":
 			(r"/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"}),
 			(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static/"}),
 			(r"/audio/(.*)", tornado.web.StaticFileHandler, {"path": "audio/"}),
-
+			(r"/transition_audio/(.*)", AuditionStaticFileHandler, {"path": "transition_audio/"}),
 			(r"/timing\.json", TimingHandler),
 
 			(r"/all\.json", InfoHandler),
