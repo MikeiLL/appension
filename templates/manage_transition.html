@@ -2,47 +2,62 @@
 
 
 {% block content %}
+<h2>Manage Transition </h2>
+<h3>{{ track.track_details['artist'] }} into {{ next_track.track_details['artist'] }}</h3>
 <form enctype="multipart/form-data" action="/audition/{{ track.id }}" method="post">
-<table border="1">
-<tr><td colspan="2"> Title: {{ track.track_details['title'] }} ({{ track.id }})</td><td>By: {{ track.track_details['artist'] }}</td></tr>
-<tr>
-	<td colspan="2">Filename: {{ track.filename }}</td>
-	<td>Duration: {{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</td>
-	<td><div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../audio/{{ track.filename }}" type="audio/mpeg"></a></div></td>
-	</td>
-</tr>
-	<tr><td colspan="2">Crossfade time in half-beats (whole numbers only): 
+<div id="manage_track">
+	<div class="player">
+		 <div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../audio/{{ track.filename }}" type="audio/mpeg"></a></div>
+	<img src="/artwork/{{ track.id }}.jpg" class="track_art">
+	</div>
+	<div class="details">
+	 <p>{{ track.track_details['artist'] }} ({{ track.track_details['title'] }} id: {{ track.id }})</p>
+	 <p>Filename: {{ track.filename }}
+	 Duration: {{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</p>
+ 
+ 
+	 {% if track.full_track_details['status'] == 0 %}<p class="status_alert">Inactive</p>{% end %}
+ 	<p>
+	 Crossfade time in half-beats (whole numbers only): 
 	<input type="hidden" name="track_id" size="5" value="{{ track.id }}">
-	<input type="text" name="track_xfade" size="5" value="{{ track.track_details['xfade'] }}"></td>
-	<td>Trim track end in seconds (can be floating point like 0.4): 
-	<input type="text" name="track_otrim" size="5" value="{{ track.track_details['otrim'] }}"></td>
-	<td>Sequence: 
-	{{ track.track_details['sequence'] }}</td>
-	</tr>
-	<tr><td colspan="3"><h2>INTO:</h2></td></tr>
-	<tr>
-	<td colspan="2">Filename: {{ next_track.filename }}</td>
-	<td>Duration: {{ datetime.timedelta(seconds=int(next_track.track_details['length'])) }}</td>
-	<td><div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../audio/{{ track.filename }}" type="audio/mpeg"></a></div></td>
-	</td>
-	</tr>
-	<tr><td colspan="2"> Title: {{ next_track.track_details['title'] }} ({{ next_track.id }})</td><td>By: {{ next_track.track_details['artist'] }}</td>
-	</tr>
-	<tr>
-	<td colspan="2">Trim track start in seconds (can be floating point): 
+	<input type="text" name="track_xfade" size="5" value="{{ track.track_details['xfade'] }}">
+	Trim track end in seconds (can be floating point like 0.4): 
+	<input type="text" name="track_otrim" size="5" value="{{ track.track_details['otrim'] }}">
+	Sequence: 
+	{{ track.track_details['sequence'] }}</p>
+	</div>
+	<br class="clear"/>
+	
+
+	<div class="player">
+		 <div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../audio/{{ next_track.filename }}" type="audio/mpeg"></a></div>
+		<img src="/artwork/{{ next_track.id }}.jpg" class="track_art">
+	</div>
+	<div class="details">
+	<p>{{ next_track.track_details['artist'] }} ({{ next_track.track_details['title'] }} id: {{ next_track.id }})</p>
+	<p>Filename: {{ next_track.filename }}
+	Duration: {{ datetime.timedelta(seconds=int(next_track.track_details['length'])) }}</p>
+	
+	<p>Trim track start in seconds (can be floating point): 
 	<input type="hidden" name="next_track_id" size="5" value="{{ next_track.id }}">
-	<input type="text" name="next_track_itrim" size="5" value="{{ next_track.track_details['itrim'] }}"></td>
-	<td>Sequence: 
-	{{ next_track.track_details['sequence'] }}</td></tr>
-	<tr><td colspan="2"></td><td><input type="submit" value="Audition"></td></tr>
-</table>
+	<input type="text" name="next_track_itrim" size="5" value="{{ next_track.track_details['itrim'] }}">
+	Sequence: 
+	{{ next_track.track_details['sequence'] }}</p>
+	{% if next_track.full_track_details['status'] == 0 %}<p class="status_alert">Inactive</p>{% end %}</p>
+	<p><a href="{{ admin_url }}#track{{ track.id }}"><button>Cancel</button></a> <input type="submit" value="Audition" id="submitbtn">
+	
+			
+
+</div>
 	</form>
-	<table><tr><td>
-<p>Artwork:<br>
-<img src="/artwork/{{ track.id }}.jpg" class="track_art">
-<img src="/artwork/{{ next_track.id }}.jpg" class="track_art">
-</p></td>
-<td>
-</tr>
-</table>
+	<div id="loading">
+			<div id="loadingcontent">
+				<p id="loadingspinner">
+					Making Transition...
+				</p>
+			</div>
+			</div>
+		</div>
+
+
 {% end %}

@@ -11,6 +11,7 @@
 		<link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
         <link rel="image_src" type="image/png" href="/static/img/icon.png" />
         <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
+        <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
         <link href='{{ compiled('style-admin.scss') }}' rel='stylesheet' type='text/css' />
         <link href='{{ compiled(
           'sprites.css',
@@ -54,7 +55,7 @@
 			  'berniecode-animator.js',
 			  '360player.js'
 			  ) }}'></script>
-			<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+			<script type="text/javascript" src='{{ compiled('spin.min.js') }}'></script>
 			<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
 			<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
 			<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
@@ -63,6 +64,26 @@
 					return confirm('Are you sure?');
 				});
 			</script>
+				<script type="text/javascript">
+    $(function () {
+        $("#submitbtn").click(function () {
+            $("#loading").fadeIn();
+            var opts = {
+                lines: 12, // The number of lines to draw
+                length: 7, // The length of each line
+                width: 4, // The line thickness
+                radius: 10, // The radius of the inner circle
+                color: '#000', // #rgb or #rrggbb
+                speed: 1, // Rounds per second
+                trail: 60, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false // Whether to use hardware acceleration
+            };
+            var target = document.getElementById('loading');
+            var spinner = new Spinner(opts).spin(target);
+        });
+    });
+</script>	
 		{% end %}
 	</div>
 </div>
