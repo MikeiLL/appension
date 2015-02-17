@@ -359,7 +359,7 @@ class Mixer(multiprocessing.Process):
 
 	def process(self, track):
 		if not hasattr(track.analysis.pyechonest_track, "title"):
-			setattr(track.analysis.pyechonest_track, "title", track._metadata.title)
+			setattr(track.analysis.pyechonest_track, "title", track._metadata.track_details['title'])
 		log.info("Resampling features [%r]...", track._metadata.id)
 		if len(track.analysis.beats):
 			track.resampled = resample_features(track, rate='beats')
