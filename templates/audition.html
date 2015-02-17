@@ -1,36 +1,32 @@
 {% extends admin_main.html %}
 
-{% block content %}
+{% block content %}<h2>Manage Transition </h2>
+<h3>{{ track.track_details['artist'] }} into {{ next_track.track_details['artist'] }}</h3>
 <form enctype="multipart/form-data" action="/confirm_transition" method="post">
-<table>
-<tr><td> Title: {{ track.track_details['title'] }} ({{ track.id }})</td><td>By: {{ track.track_details['artist'] }}</td></tr>
-<tr>
-	<td colspan="2">Filename: {{ track.filename }}</td><td>Duration: {{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</td>
-</tr>
-	<tr><td>Crossfade time in half-beats: 
+	<p>{{ track.track_details['artist'] }}</p>
+	<p>Crossfade: 
 	<input type="hidden" name="track_id" size="5" value="{{ track.id }}">
 	<input type="hidden" name="xfade" size="5" value="{{ track_xfade }}">
-	{{ track_xfade }}</td>
-	<td>Out Trim time in seconds: 
+	{{ track_xfade }} | 
+	Out Trim: 
 	<input type="hidden" name="otrim" size="5" value="{{ track_otrim }}">
-	{{ track_otrim }}</td>
-	<td>Sequence: 
-	{{ track.track_details['sequence'] }}</td>
-	</tr>
-	<tr><td>INTO:</td></tr>
-	<tr><td> Title: {{ next_track.track_details['title'] }} ({{ next_track.id }})</td><td>By: {{ next_track.track_details['artist'] }}</td></tr>
-	<td>In Trim time in seconds: 
+	{{ track_otrim }} | 
+	Sequence: 
+	{{ track.track_details['sequence'] }}</p>
+	<br/>
+	<p>{{ next_track.track_details['artist'] }}</p>
+	<p>In Trim:
 	<input type="hidden" name="next_track_id" size="5" value="{{ next_track.id }}">
 	<input type="hidden" name="itrim" size="5" value="{{ next_track_itrim }}">
-	{{ next_track_itrim }}</td>
-	<td>Sequence: 
-	{{ next_track.track_details['sequence'] }}</td>
-	<td><a href="/manage/{{ track.id }}" class=btn>Cancel/Reset</a> &nbsp; <input type="submit" value="Set Transition Parameters"></td>
-</table>
+	{{ next_track_itrim }} | 
+	Sequence: 
+	{{ next_track.track_details['sequence'] }}
+	<table><tr>
+	<td><img src="/artwork/{{ track.id }}.jpg" class="track_art"></td>
+	<td><div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../static/transition.mp3" type="audio/mpeg"></a></td>
+	<td><img src="/artwork/{{ next_track.id }}.jpg" class="track_art"></td></table>
+	
+	<a href="/manage/{{ track.id }}">Cancel/Reset</a> 	&nbsp; <input type="submit" value="Set Transition Parameters"> 
 	</form>
-<p>Artwork:<br>
-<img src="/artwork/{{ track.id }}.jpg" class="track_art">
-<img src="/artwork/{{ next_track.id }}.jpg" class="track_art">
-<div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../static/transition.mp3" type="audio/mpeg"></a>
-</p>
+	
 {% end %}

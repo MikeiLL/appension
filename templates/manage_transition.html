@@ -44,12 +44,14 @@
 	Sequence: 
 	{{ next_track.track_details['sequence'] }}</p>
 	{% if next_track.full_track_details['status'] == 0 %}<p class="status_alert">Inactive</p>{% end %}</p>
-	<p><a href="{{ admin_url }}#track{{ track.id }}"><button>Cancel</button></a> <input type="submit" value="Audition" id="submitbtn">
+	<p><a href="{{ admin_url }}#track{{ track.id }}">Cancel</a> &nbsp; <input type="submit" value="Audition" id="submitbtn">
 	
 			
 
 </div>
+
 	</form>
+	
 	<div id="loading">
 			<div id="loadingcontent">
 				<p id="loadingspinner">
