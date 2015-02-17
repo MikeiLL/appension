@@ -111,11 +111,16 @@ def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0, mode = '
         '''offset between start and first theoretical beat.'''
         t2offset = 0 #lead_in(track2)
         avg_duration = avg_end_duration(track1)
-        start = track.analysis.duration - (10 + (avg_duration * xfade))
+        start = track1.analysis.duration - (10 + (avg_duration * xfade))
         playback_end = t1end - (avg_duration * xfade) - t2offset
-        playback_duration = playback_end - start_point['cursor']
+        playback_duration = playback_end - start
         mix_duration = t1end - playback_end
-    
+        '''Protect from xfade longer than second track.'''
+        while t2_length - mix_duration <= 0:
+            mix_duration -= .5
+            playback_end += .5
+            playback_duration += .5
+        log.warning("Our Start is %r", start)
         pb1 = pb(track1, start, playback_duration)
         pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode=mode) 
         pb3 = pb(track2, t2start + mix_duration, 10)
