@@ -377,7 +377,7 @@ class TrackArtwork(tornado.web.RequestHandler):
 
 class OracleHandler(tornado.web.RequestHandler):
 	def get(self):
-		if not self.current_user:
+		if self.current_user:
 			user_name = self.current_user
 		else:
 			user_name = "Glitcher"
@@ -385,11 +385,11 @@ class OracleHandler(tornado.web.RequestHandler):
 
 class SegmentHandler(tornado.web.RequestHandler):
 	def get(self):
-		if not self.current_user:
+		if self.current_user:
 			user_name = self.current_user
 		else:
 			user_name = "Glitcher"
-		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name="something", notice=""))
+		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name=user_name))
 			
 class UserForm(Form):
 	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email()])
