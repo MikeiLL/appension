@@ -172,11 +172,14 @@ body {
 	}
 	
 	.entire_length {
-		position: absolute;
-		top: 708px;
-		left: 70px;
-		font-family: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace;
+		color: red;
+		font-family: "Lucida Sans Typewriter","Lucida Console",monaco,"Bitstream Vera Sans Mono",monospace;
 		font-size: 12px;
+		font-weight: 800;
+		left: 70px;
+		opacity: 0.5;
+		position: absolute;
+		top: 706px;
 	}
 	
 	#player {
