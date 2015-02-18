@@ -283,11 +283,6 @@ class SequenceHandler(BaseHandler):
 		database.sequence_tracks(self.request.arguments)
 		self.write(admin_page(user_name, notice='Transitions Updated.'))
 		
-class SMDemo(BaseHandler):
-	def get(self):
-		if self._user_perms<2: return self.redirect("/")
-		log.info("Yo we got input: %r", str(input))
-		self.write(templates.load("sm.html").generate(endpoint="/all.mp3", compiled=compiled))
 	
 class ShowLyrics(BaseHandler):
 	def couplet_count(self, lyrics):
@@ -318,6 +313,7 @@ class AdminRender(BaseHandler):
 		track_id=int(self.request.arguments['id'][0])
 		database.update_track(track_id, self.request.arguments)
 		self.write(admin_page(user_name, updated=id))
+
 		
 class ManageTransition(BaseHandler):
 	@tornado.web.authenticated
@@ -365,16 +361,8 @@ class ConfirmTransition(BaseHandler):
 		next_track_id = self.request.arguments.pop('next_track_id')[0]
 		in_track_data['itrim'] = self.request.arguments.pop('itrim')
 		out_track_id = self.request.arguments.pop('track_id')[0]
-		#track_xfade=int(self.request.arguments['track_xfade'][0])
-		#track_otrim=int(self.request.arguments['track_otrim'][0])
-		#next_track_id=int(self.request.arguments['next_track_id'][0])
-		#next_track_itrim=int(self.request.arguments['next_track_itrim'][0])
 		database.update_track(out_track_id, self.request.arguments)
 		database.update_track(next_track_id, in_track_data)
-		log.warning("""Two dicts: 
-		%r
-		%r
-		""",self.request.arguments, in_track_data)
 		self.write(admin_page(user_name, notice="Transition Settings Adjusted"))
 		
 class TrackArtwork(tornado.web.RequestHandler):
@@ -386,6 +374,22 @@ class TrackArtwork(tornado.web.RequestHandler):
 		else:
 			self.set_header("Content-Type","image/jpeg")
 			self.write(str(art))
+
+class OracleHandler(tornado.web.RequestHandler):
+	def get(self):
+		if not self.current_user:
+			user_name = self.current_user
+		else:
+			user_name = "Glitcher"
+		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name))
+
+class SegmentHandler(tornado.web.RequestHandler):
+	def get(self):
+		if not self.current_user:
+			user_name = self.current_user
+		else:
+			user_name = "Glitcher"
+		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name="something", notice=""))
 			
 class UserForm(Form):
 	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email()])
@@ -451,18 +455,19 @@ class Login(tornado.web.RequestHandler):
 		
 	def post(self):
 		form = UserForm(self.request.arguments)
-		details = 'You submitted:<br/>';
 		if form.validate():
-			for f in self.request.arguments:
-				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
 			user_id = database.verify_user(self.get_argument('email'),\
+								self.get_argument('password'))
+			log.warning("WE ARE: %r AND %R", self.get_argument('email'),\
 								self.get_argument('password'))
 			if user_id:
 				user_name, perms = database.get_user_info(user_id)
 				if perms: self.set_secure_cookie("userid", str(user_id)) # Banned users (perms==0) are treated as guests. (We're so nice to people.)
 				self.redirect(self.get_argument("next", "/"))
 			else:
-				self.write(details)
+				notice = "LOGIN FAILED. PLEASE TRY AGAIN."
+				self.write(templates.load("login.html").generate(compiled=compiled, form=form, \
+										notice=notice, user_name=self.current_user ))
 		else:
 			self.set_status(400)
 			self.write(form.errors)
@@ -472,12 +477,6 @@ class Logout(BaseHandler):
         self.clear_cookie("userid")
         self.redirect(self.get_argument("next", "/"))
 
-class NewTabs(tornado.web.RequestHandler):
-	def get(self):
-		self.write(templates.load("new_tabs.html").generate(compiled=compiled,
-			open=True, # Can have this check for server load if we ever care
-			endpoint="/all.mp3",
-			complete_length=datetime.timedelta(seconds=int(database.get_complete_length()))))
 
 if __name__ == "__main__":
 	Daemon()
@@ -514,16 +513,14 @@ if __name__ == "__main__":
 			(r"/login", Login),
 			(r"/logout", Logout),
 			(r"/confirm/([0-9]+)/([A-Fa-f0-9]+)", ConfirmAccount),
-			(r"/lyrics", ShowLyrics),
 			(apikeys.admin_url, AdminRender),
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
 			(apikeys.edit_url+"/([0-9]+)", EditTrack),
 			(r"/manage/([0-9]+)", ManageTransition),
 			(r"/audition/([0-9]+)", AuditionTransition),
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
-			(r"/confirm_transition", ConfirmTransition),
-			(r"/nt", NewTabs),
-			(r"/sm", SMDemo),
+			(r"/oracle", OracleHandler),
+			(r"/segment_selection", SegmentHandler),
 		]),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',

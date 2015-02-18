@@ -53,8 +53,10 @@ body {
 	  -webkit-border-radius: 12px;
 	  -khtml-border-radius: 12px;
 	  border-radius: 12px;
-	  margin: 0 0 0 -16px;
+	  background-color: #b06e6c;
+      margin: 0 0 0 86px;
 	}
+	
 	#manage_track{
 	
 		.player{
@@ -510,13 +512,105 @@ body {
 		clear: both;
 	}
 
+	
+	.secondary-grid li {
+		padding: 0 0.5em 0.5em 0;
+	}
+	.secondary-grid li > div {
+		padding: 0.5em;
+		text-align: left;
+	}
 
-		
+	.secondary-grid li a {
+		color: #999;
+		margin: 0 0 0 19px;
+	}
+	
+	.secondary-grid li.wide {
+		background-image: url("../img/tile.jpg");
+		border: 4px double gray;
+		border-radius: 12px;
+		box-shadow: 3px 4px 6px #514949;
+		color: black;
+		margin: 0 0 0 86px;
+		padding: 0 0 10px 12px;
+	}
+	
+	table.secondary	{
+		background-image: url(../img/tile3.jpg);
+		border: 7px solid transparent;
+		border-collapse: collapse;
+		border-radius: 10px;
+		border-spacing: 0;
+		box-shadow: 0 0 4px #514949;
+	}
 
-
-#header {
-	margin-bottom: 15px;
-}
+	#header {
+		margin-bottom: 15px;
+	}
+	
+//Begin Glitch Oracle Styling
+	#Table_01 {
+		height: 251px;
+		left: 0;
+		position: relative;
+		top: 0;
+		width: 221px;
+	}
+	#Oracle-01 {
+		height: 72px;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 221px;
+	}
+	#Oracle-02 {
+		height: 104px;
+		left: 0;
+		position: absolute;
+		top: 72px;
+		width: 57px;
+	}
+	#Oracle-03 {
+		background-image: url("../img/oracle-off.png");
+		height: 104px;
+		left: 57px;
+		position: absolute;
+		top: 72px;
+		width: 107px;
+	}
+	#Oracle-03:hover {
+		background-image: url("../img/oracle-hover.png");
+		cursor: pointer;
+		height: 104px;
+		left: 57px;
+		position: absolute;
+		top: 72px;
+		width: 107px;
+	}
+	#Oracle-03:active {
+		background-image: url("../img/oracle-on.png");
+		height: 104px;
+		left: 57px;
+		position: absolute;
+		top: 72px;
+		width: 107px;
+	}
+	#Oracle-04 {
+		height: 104px;
+		left: 164px;
+		position: absolute;
+		top: 72px;
+		width: 57px;
+	}
+	#Oracle-05 {
+		height: 75px;
+		left: 0;
+		position: absolute;
+		top: 176px;
+		width: 221px;
+	}
+//End Glitch Oracle Styling
   
  //Begin Popup Stying
 
@@ -718,6 +812,14 @@ body {
 			padding-right: 1em;
 			clear: left;
 		}
+		.secondary-grid ul li {
+			width: 50%;
+			float: left;
+		}
+		.secondary-grid ul li:nth-child(odd) {
+			padding-right: 1em;
+			clear: left;
+		}
 		.ani {
 			position: absolute;
 			top: 0;
@@ -781,6 +883,20 @@ body {
 		.grid ul li:nth-child(odd) {
 			padding-right: 0;
 		}
+		.secondary-grid > section {
+			float: left;
+			width: 33.3333333%;
+		}
+		.secondary-grid > section:nth-of-type(3n+1) {
+			clear: left;
+		}
+		.secondary-grid ul li {
+			width: auto;
+			float: none;
+		}
+		.secondary-grid ul li:nth-child(odd) {
+			padding-right: 0;
+		}
 		
 		.main {
 			margin-left:290px;
@@ -801,6 +917,13 @@ body {
 	  .grid li.wide {
 		width: 66.666666%;
 	  }
+	  .secondary-grid li {
+		float: left;
+		width: 33.3333333%;
+	  }
+	  .secondary-grid li.wide {
+		width: 66.666666%;
+	  }
 	  .left-player {
 		float:left;
 		width:290px;
@@ -815,6 +938,12 @@ body {
 		width: 20%;
 	  }
 	  .grid li.wide {
+		width: 80%;
+	  }
+	  .secondary-grid li {
+		width: 20%;
+	  }
+	  .secondary-grid li.wide {
 		width: 80%;
 	  }
 	  .left-player {

@@ -1,10 +1,14 @@
-{% extends main.html %}
+{% extends secondary.html %}
 
 {% block content %}
-<p><h1>Submit Track</h1></p>
+<p></p>
+<h2>
+<img width="212" border="0" height="38" alt="" src="static/img/submit-title.png">
+</h2>
+<p></p>
 <form enctype="multipart/form-data" action="/submit" method="post">
 
-<table class="submission_form">
+<table class="secondary">
 <tr><td width="200px">Your Name:</td><td> {{ form.submitter_name }}</td></tr>
 	{% if form.submitter_name.errors %}
 		<tr><td colspan=2> 

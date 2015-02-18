@@ -12,6 +12,7 @@
         <link rel="image_src" type="image/png" href="/static/img/icon.png" />
         <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
         <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
+        <link href='{{ compiled('style-extra.scss') }}' rel='stylesheet' type='text/css' />
         <link href='{{ compiled(
           'sprites.css',
           'flashblock.css',
@@ -45,21 +46,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				<p>Hello {{ user_name }}!</p>
 		</div>
 		{% end %}
-		<center>
+
 		<a href="/" style="display:block;">
-		<div id="title">
+		<div id="title-admin">
 		
 		</div></a>
-		</center>
+
 	</div>
 	<br style="clear:both"/>
   <!--Pattern HTML-->
-			<div class="left-player">
-			{% block sidebar %}
-		
-			{% end %}
-			</div>
-	<div class="main">
+	<div class="secondary">
     <section id="pattern" class="pattern">
   	<ul class="grid">
 		
