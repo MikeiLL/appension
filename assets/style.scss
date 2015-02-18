@@ -184,6 +184,64 @@ body {
 		z-index: 5;
 		height: 256px;
 	}
+	
+	#Table_01 {
+		height: 251px;
+		left: 0;
+		position: relative;
+		top: 0;
+		width: 418px;
+	}
+	#Devil-Glitch-Player-01 {
+		height: 116px;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 418px;
+	}
+	#Devil-Glitch-Player-02 {
+		height: 76px;
+		left: 0;
+		position: absolute;
+		top: 116px;
+		width: 59px;
+	}
+	#Devil-Glitch-Player-03 {
+		height: 20px;
+		left: 59px;
+		position: absolute;
+		top: 116px;
+		width: 300px;
+	}
+	#Devil-Glitch-Player-04 {
+		height: 76px;
+		left: 359px;
+		position: absolute;
+		top: 116px;
+		width: 59px;
+	}
+	#Devil-Glitch-Player-05 {
+		height: 36px;
+		left: 59px;
+		position: absolute;
+		top: 136px;
+		width: 300px;
+	}
+	#Devil-Glitch-Player-06 {
+		height: 20px;
+		left: 59px;
+		position: absolute;
+		top: 172px;
+		width: 300px;
+	}
+	#Devil-Glitch-Player-07 {
+		height: 59px;
+		left: 0;
+		position: absolute;
+		top: 192px;
+		width: 418px;
+	}
+
 	.track-button {
 		background: url(/static/img/tile2.jpg) black;
 		cursor: pointer;
