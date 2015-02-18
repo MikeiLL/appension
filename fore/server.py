@@ -427,7 +427,8 @@ class CreateAccount(tornado.web.RequestHandler):
 			details += 'Please check your email to confirm.<br/>'
 			admin_message = "New account created for %s at %s."%(submitter_name, submitter_email)
 			mailer.AlertMessage(admin_message, 'New Account Created')
-			confirmation_url = "http://localhost/confirm/"+str(new_user[0])+"/"+str(new_user[1])
+			base_url_string = self.request.full_url()
+			confirmation_url = base_url_string+"/confirm/"+str(new_user[0])+"/"+str(new_user[1])
 			user_message = """Either you or someoe else just created an account at InfiniteGlitch.net. \n \r
 To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, confirmation_url)
 			mailer.AlertMessage(user_message, 'Infinite Glitch Account', you=submitter_email)
