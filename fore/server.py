@@ -403,8 +403,11 @@ class CreateUser(UserForm):
 	
 class ConfirmAccount(tornado.web.RequestHandler):
 	def get(self, id, hex_string):
+		log.warning("I got %r and %r from confirm account.", id, hex_string)
 		form = CreateUser()
-		self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
+		signup_confirmed = "Sign-up Confirmed, Glitchmeister. Login with email (or username) and password."
+		
+		self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice=signup_confirmed))
 
 class CreateAccount(tornado.web.RequestHandler):
 	def get(self):
@@ -418,7 +421,7 @@ class CreateAccount(tornado.web.RequestHandler):
 			submitter_email = info.get("email",[""])[0]
 			submitter_name = info.get("submitter_name",[""])[0]
 			hex_key = random_hex()
-			details = 'Account request submitted for %s. <br/>'%(info.get("email",[""])[0]);
+			details = 'Account request submitted for %s. <br/>'%(submitter_email);
 			new_user = database.create_user(submitter_name, submitter_email,\
 										self.get_argument('password'), hex_key)
 			log.warning("New User looks like %r", new_user)
@@ -426,8 +429,8 @@ class CreateAccount(tornado.web.RequestHandler):
 			admin_message = "New account created for %s at %s."%(submitter_name, submitter_email)
 			mailer.AlertMessage(admin_message, 'New Account Created')
 			confirmation_url = "http://localhost/confirm/"+str(new_user[0])+"/"+str(new_user[1])
-			user_message = "Either you or someoe else just created an account at InfiniteGlitch.net. \n \
-					To confirm for %s at %s, please visit %s"%(submitter_name, submitter_email, confirmation_url)
+			user_message = """Either you or someoe else just created an account at InfiniteGlitch.net. \n \r
+To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, confirmation_url)
 			mailer.AlertMessage(user_message, 'New Account Created', you=submitter_email)
 			self.write(templates.load("account_submission.html").generate(compiled=compiled, user_name=submitter_name))
 		else:
@@ -440,8 +443,10 @@ class Login(tornado.web.RequestHandler):
 			errormessage = self.get_argument("error")
 		except:
 			errormessage = ""
+		
+		notice = ""
 		self.write(templates.load("login.html").generate(compiled=compiled, form=form, \
-								errormessage=errormessage, user_name=self.current_user ))
+								errormessage=errormessage, user_name=self.current_user, notice=notice ))
 		
 	def post(self):
 		form = UserForm(self.request.arguments)
@@ -507,7 +512,7 @@ if __name__ == "__main__":
 			(r"/create_account", CreateAccount),
 			(r"/login", Login),
 			(r"/logout", Logout),
-			(r"/confirm/([0-9]+)/([A-Fa-f0-9]{2}){8,9}", ConfirmAccount),
+			(r"/confirm/([0-9]+)/([A-Fa-f0-9]+)", ConfirmAccount),
 			(r"/lyrics", ShowLyrics),
 			(apikeys.admin_url, AdminRender),
 			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),

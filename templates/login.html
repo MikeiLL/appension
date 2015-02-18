@@ -9,6 +9,9 @@
 </fieldset>
 <form enctype="multipart/form-data" action="/login" method="post">
 <table class="create_account_form">
+{% if notice %}
+	<h4> {{ notice }} </h4>
+{% end %}
 <tr><td width="200px">Email: </td><td>{{ form.email }}</td></tr>
 <tr><td>Password: </td><td>{{ form.password }} </td></tr>
 <tr><td colspan="2" align="right"><input type="submit" value="Login" /></td></tr>
