@@ -244,6 +244,11 @@ def create_user(username, email, password, hex_key):
 		except psycopg2.IntegrityError as e:
 			return "That didn't work too well because: <br/>%s<br/> Maybe you already have an account or \
 					someone else is using the name you requested."%e
+					
+def confirm_user(id, hex_key):
+    with _conn, _conn.cursor() as cur:
+        cur.execute("UPDATE users SET status = 1, hex_key = '' WHERE id = %s AND hex_key = %s RETURNING username", (id, hex_key))
+        return cur.fetchone()[0]
 
 def set_user_password(user_or_email, password):
 	"""Change a user's password (administratively) - returns None on success, or error message"""

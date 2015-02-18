@@ -388,7 +388,7 @@ class TrackArtwork(tornado.web.RequestHandler):
 			self.write(str(art))
 			
 class UserForm(Form):
-	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired()])
+	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email()])
 	password = wtforms.PasswordField('New Password', [
 		wtforms.validators.Required()])
 		
@@ -403,10 +403,9 @@ class CreateUser(UserForm):
 	
 class ConfirmAccount(tornado.web.RequestHandler):
 	def get(self, id, hex_string):
-		log.warning("I got %r and %r from confirm account.", id, hex_string)
 		form = CreateUser()
-		signup_confirmed = "Sign-up Confirmed, Glitchmeister. Login with email (or username) and password."
-		
+		user_name = database.confirm_user(id, hex_string)
+		signup_confirmed = "Sign-up confirmed. Login with email (or username) and password."
 		self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice=signup_confirmed))
 
 class CreateAccount(tornado.web.RequestHandler):
@@ -419,7 +418,7 @@ class CreateAccount(tornado.web.RequestHandler):
 		if form.validate():
 			info = self.request.arguments
 			submitter_email = info.get("email",[""])[0]
-			submitter_name = info.get("submitter_name",[""])[0]
+			submitter_name = info.get("user_name",[""])[0]
 			hex_key = random_hex()
 			details = 'Account request submitted for %s. <br/>'%(submitter_email);
 			new_user = database.create_user(submitter_name, submitter_email,\
@@ -431,7 +430,7 @@ class CreateAccount(tornado.web.RequestHandler):
 			confirmation_url = "http://localhost/confirm/"+str(new_user[0])+"/"+str(new_user[1])
 			user_message = """Either you or someoe else just created an account at InfiniteGlitch.net. \n \r
 To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, confirmation_url)
-			mailer.AlertMessage(user_message, 'New Account Created', you=submitter_email)
+			mailer.AlertMessage(user_message, 'Infinite Glitch Account', you=submitter_email)
 			self.write(templates.load("account_submission.html").generate(compiled=compiled, user_name=submitter_name))
 		else:
 			self.write(templates.load("create_account.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
