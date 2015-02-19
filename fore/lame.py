@@ -193,8 +193,9 @@ class Lame(threading.Thread):
 
 	#   TODO: Extend me to work for all samplerates
 	def start(self, *args, **kwargs):
-		call = ["lame"]
-		call.append('-r')
+		# TODO: Optionally run this with nice(1) for use-cases that don't require real-time processing
+		# call = ["nice", "lame"]
+		call = ["lame", "-r"]
 		if self.input_wordlength != 16:
 			call.extend(["--bitwidth", str(self.input_wordlength)])
 		call.extend(self.preset.split())
