@@ -464,7 +464,7 @@ class Login(tornado.web.RequestHandler):
 		if form.validate():
 			user_id = database.verify_user(self.get_argument('email'),\
 								self.get_argument('password'))
-			log.warning("WE ARE: %r AND %R", self.get_argument('email'),\
+			log.warning("WE ARE: %r AND %r", self.get_argument('email'),\
 								self.get_argument('password'))
 			if user_id:
 				user_name, perms = database.get_user_info(user_id)
