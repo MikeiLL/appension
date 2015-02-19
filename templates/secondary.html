@@ -19,6 +19,7 @@
           '360player.css',
           '360player-visualization.css'
         ) }}' rel='stylesheet' type='text/css' />
+        <link href='{{ compiled('bar-ui.css') }}' rel='stylesheet' type='text/css' />
 <!--
 Copyright (c) 2014 by jacmaes (http://codepen.io/jacmaes/pen/iqgnh)
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -107,9 +108,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		  '360player.js'
 		  ) }}'></script>
 		<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>
-		<script type="text/javascript" src='{{ compiled('demo.js') }}'></script>
-        <link href='{{ compiled('demo.css') }}' rel='stylesheet' type='text/css' />
-        <link href='{{ compiled('bar-ui.css') }}' rel='stylesheet' type='text/css' />
 		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
 		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
 		<script type="text/javascript" >
