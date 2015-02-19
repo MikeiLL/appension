@@ -23,35 +23,10 @@ LOUDNESS_THRESH = -8
 
 def audition(files, xfade=0, otrim=0, itrim=0, user_name="transition"):
     filenames = ['audio/' + filename.encode("UTF-8") for filename in files]
-    two_tracks = make_LAFs(filenames)
-    transition = managed_transition(two_tracks[1], two_tracks[2], xfade=xfade, otrim=otrim, itrim=itrim)
+    tracks = [LocalAudioStream(file) for file in filenames]
+    transition = managed_transition(tracks[0], tracks[1], xfade=xfade, otrim=otrim, itrim=itrim)
     log.warning("What we have here is a list and it looks like %r and %r", filenames[0], filenames[1])
     audition_render(transition, 'transition_audio/transition.mp3')
-
-def make_LAFs(files):
-    """
-
-    """
-    q = file_queue(files)
-    localaudiofiles = {}
-    number = 1
-    while not q.empty():
-        file = q.get()
-        localaudiofiles[number] = LocalAudioStream(file)
-        number += 1
-        
-    return localaudiofiles
-        
-def file_queue(files):
-    """
-    Get list of files, add them to a queue and return the queue.
-    """
-    q = Queue() 
-    
-    for f in files:
-        q.put(f)
-    
-    return q
 
 def last_viable(track):
     """Return end time of last audible segment"""
@@ -59,14 +34,14 @@ def last_viable(track):
         if seg.loudness_max > -60:
             #time of last audible piece of track
             return seg.start + seg.duration
-			
+
 def first_viable(track):
     """Return start time of first audible segment"""
     for seg in track.analysis.segments:
         if seg.loudness_max > -60:
             #time of first audible segment of track
             return seg.start
-	
+
 def db_2_volume(loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
 		
