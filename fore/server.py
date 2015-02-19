@@ -327,11 +327,8 @@ class ManageTransition(BaseHandler):
 class AuditionTransition(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, input):
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
-		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name,
-		next_track=database.get_subsequent_track(int(input))))
+		# This is a POST endpoint only.
+		return self.redirect("/")
 		
 	def post(self, track_id):
 		self.get_current_user()
@@ -345,11 +342,11 @@ class AuditionTransition(BaseHandler):
 		pair_o_tracks = database.get_track_filename(track1_id), database.get_track_filename(track2_id)
 		import audition
 		log.warning("We got %r from sending %r and %r", str(pair_o_tracks), track1_id, track2_id)
-		audition.audition(pair_o_tracks,xfade=track_xfade, otrim=track_otrim, itrim=next_track_itrim)
+		threading.Thread(target=audition.audition, args=(pair_o_tracks,track_xfade, track_otrim, next_track_itrim)).start()
 		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
-		track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
-		next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,
-		track_otrim=track_otrim, next_track_itrim=next_track_itrim))
+			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
+			next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,
+			track_otrim=track_otrim, next_track_itrim=next_track_itrim))
 		
 class ConfirmTransition(BaseHandler):
 	@tornado.web.authenticated
@@ -467,7 +464,7 @@ class Login(tornado.web.RequestHandler):
 		if form.validate():
 			user_id = database.verify_user(self.get_argument('email'),\
 								self.get_argument('password'))
-			log.warning("WE ARE: %r AND %R", self.get_argument('email'),\
+			log.warning("WE ARE: %r AND %r", self.get_argument('email'),\
 								self.get_argument('password'))
 			if user_id:
 				user_name, perms = database.get_user_info(user_id)
@@ -557,7 +554,13 @@ if __name__ == "__main__":
 		log.info("Attempted to set UID/GID %d/%d",config.uid,config.gid)
 		raise
 	log.info("Running as UID/GID %d/%d %d/%d",os.getuid(),os.getgid(),os.geteuid(),os.getegid())
+	# Now we load up a few other modules - now that setuid is done.
+	# These will be re-imported elsewhere when they're needed, but any lengthy
+	# initialization work will be done at this point, before the mixer starts.
+	# This slows startup slightly, but prevents the 1-2s delay on loading up
+	# something like echonest.
 	import database
+	import audition
 	from mixer import Mixer
 	mixer = Mixer(v2_queue.raw,info_queue)
 	mixer.start()
