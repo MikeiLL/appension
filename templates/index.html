@@ -1,55 +1,5 @@
 {% extends main.html %}
 
-<!DOCTYPE html>
-<html class="no-js">
-	{% block head %}
-	<head>
-	  <meta charset="utf-8">
-		<title>Infinite Glitch</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
-        <link rel="image_src" type="image/png" href="/static/img/icon.png" />
-        <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
-        <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
-        <link href='{{ compiled(
-          'sprites.css',
-          'flashblock.css',
-          '360player.css',
-          '360player-visualization.css'
-        ) }}' rel='stylesheet' type='text/css' />
-
-  <meta charset="UTF-8">
-
-  <!--
-Copyright (c) 2014 by jacmaes (http://codepen.io/jacmaes/pen/iqgnh)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--->
-
-
-  <link href='{{ compiled('tabs.scss') }}' rel='stylesheet' type='text/css' />
-
-
-  
-
-  <script>
-    window.console = window.console || function(t) {};
-    window.open = function(){ console.log('window.open is disabled.'); };
-    window.print = function(){ console.log('window.print is disabled.'); };
-    // Support hover state for mobile.
-    if (false) {
-      window.ontouchstart = function(){};
-    }
-  </script>
-	<script type="text/javascript" src='{{ compiled('modernizr.js') }}'></script>
-
-	</head>
-	{% end %}
 
 {% block sidebar %}
 	<div id="player">
@@ -198,15 +148,71 @@ mom) mess with the music. Weird, long-winded, wonderful."</p>
 			<img src="static/img/Devil-Glitch-Player_02.png" width="59" height="76" alt="">
 		</div>
 		<div id="Devil-Glitch-Player-03">
-		<object id="Object2" type="application/x-shockwave-flash" data="static/flash/devil-glitch-short/player_mp3_maxi.swf" width="300" height="20">
-	<noscript><a rel="nofollow" href ="http://www.java.com">Install or enable JAVA</a></noscript>
-	<param name="wmode" value="opaque" />
-	<param name="movie" value="static/flash/devil-glitch-short/player_mp3_maxi.swf" />
-	<param name="autoplay" value="false" />
-	<param name="autoload" value="false" />
-	<param name="FlashVars" value="config=static/flash/devil-glitch-short/The Devil Glitch - Short Version.txt" />
-	</object> 
 		</div>
+				<!-- start player 1 -->
+
+		<div class="sm2-bar-ui compact">
+
+		 <div class="bd sm2-main-controls">
+
+		  <div class="sm2-inline-element sm2-button-element">
+		   <div class="sm2-button-bd">
+			<a href="#play" class="sm2-inline-button play-pause">Play / pause</a>
+		   </div>
+		  </div>
+
+		  <div class="sm2-inline-element sm2-inline-status">
+
+		   <div class="sm2-playlist">
+			<div class="sm2-playlist-target">
+			 <!-- playlist <ul> + <li> markup will be injected here -->
+			 <!-- if you want default / non-JS content, you can put that here. -->
+			 <noscript><p>JavaScript is required.</p></noscript>
+			</div>
+		   </div>
+
+		   <div class="sm2-progress">
+			<div class="sm2-row">
+			<div class="sm2-inline-time">0:00</div>
+			 <div class="sm2-progress-bd">
+			  <div class="sm2-progress-track">
+			   <div class="sm2-progress-bar"></div>
+			   <div class="sm2-progress-ball"><div class="icon-overlay"></div></div>
+			  </div>
+			 </div>
+			 <div class="sm2-inline-duration">0:00</div>
+			</div>
+		   </div>
+
+		  </div>
+
+		  <div class="sm2-inline-element sm2-button-element sm2-volume">
+		   <div class="sm2-button-bd">
+			<span class="sm2-inline-button sm2-volume-control volume-shade"></span>
+			<a href="#volume" class="sm2-inline-button sm2-volume-control">volume</a>
+		   </div>
+		  </div>
+
+		 </div>
+
+		 <div class="bd sm2-playlist-drawer sm2-element">
+
+		  <div class="sm2-inline-texture">
+		   <div class="sm2-box-shadow"></div>
+		  </div>
+
+		  <!-- playlist content is mirrored here -->
+
+		  <div class="sm2-playlist-wrapper">
+			<ul class="sm2-playlist-bd">
+			</ul>
+		  </div>
+
+		 </div>
+
+		</div>
+		<!-- end player 1 -->
+		
 		<div id="Devil-Glitch-Player-04">
 			<img src="static/img/Devil-Glitch-Player_04.png" width="59" height="76" alt="">
 		</div>
@@ -214,21 +220,80 @@ mom) mess with the music. Weird, long-winded, wonderful."</p>
 			<img src="static/img/Devil-Glitch-Player_05.png" width="300" height="36" alt="">
 		</div>
 		<div id="Devil-Glitch-Player-06">
-			<object id="Object2" type="application/x-shockwave-flash" data="static/flash/devil-glitch-full/player_mp3_maxi.swf" width="300" height="20">
-	<noscript><a rel="nofollow" href ="http://www.java.com">Install or enable JAVA</a></noscript>
-	<param name="wmode" value="opaque" />
-	<param name="movie" value="static/flash/devil-glitch-full/player_mp3_maxi.swf" />
-	<param name="autoplay" value="false" />
-	<param name="autoload" value="false" />
-	<param name="FlashVars" value="config=static/flash/devil-glitch-full/The-Devil Glitch-69minute-Version.txt" />
-	</object> 
+				<!-- start player 2 -->
+
+
+		<div class="sm2-bar-ui compact">
+
+		 <div class="bd sm2-main-controls">
+
+		  <div class="sm2-inline-texture"></div>
+		  <div class="sm2-inline-gradient"></div>
+
+		  <div class="sm2-inline-element sm2-button-element">
+		   <div class="sm2-button-bd">
+			<a href="#play" class="sm2-inline-button play-pause">Play / pause</a>
+		   </div>
+		  </div>
+
+		  <div class="sm2-inline-element sm2-inline-status">
+
+		   <div class="sm2-playlist">
+			<div class="sm2-playlist-target">
+			 <!-- playlist <ul> + <li> markup will be injected here -->
+			 <!-- if you want default / non-JS content, you can put that here. -->
+			 <noscript><p>JavaScript is required.</p></noscript>
+			</div>
+		   </div>
+
+		   <div class="sm2-progress">
+			<div class="sm2-row">
+			<div class="sm2-inline-time">0:00</div>
+			 <div class="sm2-progress-bd">
+			  <div class="sm2-progress-track">
+			   <div class="sm2-progress-bar"></div>
+			   <div class="sm2-progress-ball"><div class="icon-overlay"></div></div>
+			  </div>
+			 </div>
+			 <div class="sm2-inline-duration">0:00</div>
+			</div>
+		   </div>
+
+		  </div>
+
+		  <div class="sm2-inline-element sm2-button-element sm2-volume">
+		   <div class="sm2-button-bd">
+			<span class="sm2-inline-button sm2-volume-control volume-shade"></span>
+			<a href="#volume" class="sm2-inline-button sm2-volume-control">volume</a>
+		   </div>
+		  </div>
+
+		 </div>
+
+		 <div class="bd sm2-playlist-drawer sm2-element">
+
+		  <div class="sm2-inline-texture">
+		   <div class="sm2-box-shadow"></div>
+		  </div>
+
+		  <!-- playlist content is mirrored here -->
+
+		  <div class="sm2-playlist-wrapper">
+			<ul class="sm2-playlist-bd">
+			 <li><a href="static/flash/devil-glitch-full/long.mp3"><b>Three Minute Version</b> - Devil Glitch</a></li>
+			</ul>
+		  </div>
+
+		 </div>
+
 		</div>
+		<!-- end player 2 -->
+</div>
 		<div id="Devil-Glitch-Player-07">
 			<img src="static/img/Devil-Glitch-Player_07.png" width="418" height="59" alt="">
 		</div>
 	</div>
 	<!-- End Devil Glitch Player -->
-
 
 	</center>
   </dd><!-- Contribute -->

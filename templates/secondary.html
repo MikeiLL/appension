@@ -106,8 +106,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		  'berniecode-animator.js',
 		  '360player.js'
 		  ) }}'></script>
+		<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('demo.js') }}'></script>
+        <link href='{{ compiled('demo.css') }}' rel='stylesheet' type='text/css' />
+        <link href='{{ compiled('bar-ui.css') }}' rel='stylesheet' type='text/css' />
 		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
-		<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
 		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
 		<script type="text/javascript" >
 		// Hide all but first tab content

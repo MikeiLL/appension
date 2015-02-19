@@ -383,6 +383,15 @@ class OracleHandler(tornado.web.RequestHandler):
 			user_name = "Glitcher"
 		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name))
 
+
+class SMHandler(tornado.web.RequestHandler):
+	def get(self):
+		if self.current_user:
+			user_name = self.current_user
+		else:
+			user_name = "Glitcher"
+		self.write(templates.load("sm.html").generate(compiled=compiled, user_name=user_name))
+
 class SegmentHandler(tornado.web.RequestHandler):
 	def get(self):
 		if self.current_user:
@@ -521,6 +530,7 @@ if __name__ == "__main__":
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
 			(r"/oracle", OracleHandler),
 			(r"/segment_selection", SegmentHandler),
+			(r"/sm", SMHandler),
 		]),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',
