@@ -27,7 +27,9 @@
 	{{ track.track_details['sequence'] }}</p>
 	</div>
 	<br class="clear"/>
-	
+	{% if track.id == next_track.id %}
+		<p class="status_alert">NO SUBSEQUENT TRACK IN SEQUENCE</p>
+	{% end %}
 
 	<div class="player">
 		 <div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../audio/{{ next_track.filename }}" type="audio/mpeg"></a></div>
