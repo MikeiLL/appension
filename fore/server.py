@@ -327,11 +327,8 @@ class ManageTransition(BaseHandler):
 class AuditionTransition(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, input):
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
-		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name,
-		next_track=database.get_subsequent_track(int(input))))
+		# This is a POST endpoint only.
+		return self.redirect("/")
 		
 	def post(self, track_id):
 		self.get_current_user()
@@ -347,9 +344,9 @@ class AuditionTransition(BaseHandler):
 		log.warning("We got %r from sending %r and %r", str(pair_o_tracks), track1_id, track2_id)
 		audition.audition(pair_o_tracks,xfade=track_xfade, otrim=track_otrim, itrim=next_track_itrim)
 		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
-		track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
-		next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,
-		track_otrim=track_otrim, next_track_itrim=next_track_itrim))
+			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
+			next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,
+			track_otrim=track_otrim, next_track_itrim=next_track_itrim))
 		
 class ConfirmTransition(BaseHandler):
 	@tornado.web.authenticated
