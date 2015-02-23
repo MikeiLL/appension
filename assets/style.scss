@@ -54,7 +54,8 @@ body {
 	  -khtml-border-radius: 12px;
 	  border-radius: 12px;
 	  background-color: #b06e6c;
-      margin: 0 0 0 86px;
+      margin: 0;
+      max-width: 80%;
 	}
 	
 	#manage_track{
@@ -565,7 +566,6 @@ body {
 		left: 0;
 		position: relative;
 		top: 0;
-		width: 221px;
 	}
 	#Oracle-01 {
 		height: 72px;
@@ -782,6 +782,14 @@ body {
 			background-repeat: no-repeat;
 			background-position: center center;   	
 			}
+		#title-admin {
+			width: 310px;
+			height: 84px;
+			background: url(/static/img/glitchlogo.jpg);
+			background-size:   cover;                    
+			background-repeat: no-repeat;
+			background-position: center center;   	
+			}
 	}
 	
 	@media all and (min-width:40em) {
@@ -968,4 +976,3 @@ body {
 
 
 }
-
