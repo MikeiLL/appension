@@ -948,16 +948,28 @@ body {
 	  .secondary-grid li.wide {
 		width: 66.666666%;
 	  }
+	  .main {
+		margin-left:290;
+	  }
+	  #trackdetails {
+		display: inline-block;
+		margin: 94px 0 0 25px;
+		}
+	  .entire_length {
+	    top: 739px;
+	    }
+	  .ui360-vis {
+	    padding-left: 253px;
+    	padding-top: 36px;
+	    }
+	}
+	
+	@media all and (min-width: 60em) {
+	
 	  .left-player {
 		float:left;
 		width:290px;
 	  }
-	  .main {
-		margin-left:290;
-	  }
-	}
-	
-	@media all and (min-width: 60em) {
 	  .grid li {
 		width: 20%;
 	  }
