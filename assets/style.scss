@@ -33,7 +33,6 @@ body {
 	font-weight: 300;
 	width: 100%;
 	min-height: 470px;
-	padding: 2em;
   	background-color: #B06E6C;
 
 	#title-admin {
@@ -108,13 +107,17 @@ body {
         padding-top:80px;
     }
 	
-	
-	
 	img.floatLoose {
 	  /*+box-shadow: 3px 4px 7px rgba(0, 0, 0, 0.667);*/
 	  -moz-box-shadow: 3px 4px 7px rgba(0, 0, 0, 0.667);
 	  -webkit-box-shadow: 3px 4px 7px rgba(0, 0, 0, 0.667);
 	  box-shadow: 3px 4px 7px rgba(0, 0, 0, 0.667);
+	  max-width: 80%;
+	  height:auto;
+	}
+	img.tabHeading  {
+	  max-width: 80%;
+	  height:auto;
 	}
 
 	/*! HTML5 Boilerplate v4.3.0 | MIT License | http://h5bp.com/ */
@@ -490,9 +493,6 @@ body {
 
 	/*EOF mZoo 3col*/
 
-
-	
-
 	/*
 	 * Hide visually and from screenreaders, but maintain layout
 	 */
@@ -774,6 +774,9 @@ body {
 
 	/* Medium Screens*/
 	@media all and (max-width: 40em) {
+	
+		padding: 0;
+		
 		#title {
 			width: 310px;
 			height: 84px;
@@ -794,6 +797,7 @@ body {
 	
 	@media all and (min-width:40em) {
 	
+		padding: 2em;
 		
 		h1 {
 			font-size: 3.6em;
@@ -883,6 +887,8 @@ body {
 
 	/* Large Screens */
 	@media all and (min-width: 54em) {
+		padding: 4em;
+		
 		h1 {
 			font-size: 2.4em;
 			color:red;
