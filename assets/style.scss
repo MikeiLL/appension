@@ -183,7 +183,6 @@ body {
 		left: 70px;
 		opacity: 0.5;
 		position: absolute;
-		top: 706px;
 	}
 	
 	#player {
@@ -951,17 +950,20 @@ body {
 	  .main {
 		margin-left:290;
 	  }
-	  #trackdetails {
-		display: inline-block;
-		margin: 94px 0 0 25px;
-		}
-	  .entire_length {
+	}
+	
+@media all and (max-width: 60em) {
+	   .entire_length {
 	    top: 739px;
 	    }
 	  .ui360-vis {
 	    padding-left: 253px;
     	padding-top: 36px;
 	    }
+	  #trackdetails {
+		display: inline-block;
+		margin: 94px 0 0 25px;
+		}
 	}
 	
 	@media all and (min-width: 60em) {
@@ -989,6 +991,13 @@ body {
 	  .main {
 		margin-left:290;
 	  }
+	  .entire_length {
+		top: 706px;
+	    }
+	  .ui360-vis {
+	    padding-left: 253px;
+    	padding-top: 3px;
+	    }
 	}
 	/************End Percent Grid Media**************/
 
