@@ -461,12 +461,12 @@ class Login(BaseHandler):
 		
 		notice = ""
 		username = self.get_current_user()
-		log.warning("WE GO:  %r AS %r", self.get_argument('next'), username)
+		log.warning("WE GO:  %r AS %r", self.get_argument('next', "/"), username)
 		'''if self.get_current_user():
 			self.redirect(self.get_argument('next', '/')) # Change this line
 			return
 		else:'''
-		self.write(templates.load("login.html").generate(compiled=compiled, form=form, \
+		self.write(templates.load("login.html").generate(compiled=compiled, form=form, next=self.get_argument('next', "/"),
 							errormessage=errormessage, user_name=self.current_user, notice=notice ))
 		
 	def post(self):
@@ -480,8 +480,8 @@ class Login(BaseHandler):
 				log.warning("HERE USER/PERMS ARE %r AND %r", user_name, perms)
 				if perms: 
 					self.set_secure_cookie("userid", str(user_id)) # Banned users (perms==0) are treated as guests. (We're so nice.)
-					time.sleep(3)
 					log.warning("HERE WE ARE %r, based on %r", self.get_current_user(), self.get_secure_cookie("userid"))
+				log.warning("NEXT IS %r", self.get_argument("next", "/"))
 				self.redirect(self.get_argument("next", "/"))
 			else:
 				notice = "LOGIN FAILED. PLEASE TRY AGAIN."
