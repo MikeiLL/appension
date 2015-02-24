@@ -180,7 +180,6 @@ body {
 		font-family: "Lucida Sans Typewriter","Lucida Console",monaco,"Bitstream Vera Sans Mono",monospace;
 		font-size: 12px;
 		font-weight: 800;
-		left: 70px;
 		opacity: 0.5;
 		position: absolute;
 	}
@@ -953,9 +952,7 @@ body {
 	}
 	
 @media all and (max-width: 60em) {
-	   .entire_length {
-	    top: 739px;
-	    }
+
 	  .ui360-vis {
 	    padding-left: 253px;
     	padding-top: 36px;
@@ -964,9 +961,20 @@ body {
 		display: inline-block;
 		margin: 94px 0 0 25px;
 		}
+	.entire_length {
+	    top: 738px;
+		left: 68px;
+	    }
 	}
 	
-	@media all and (min-width: 60em) {
+@media all and (max-width:40em) {
+	.entire_length {
+	    top: 622px;
+		left: 33px;
+	    }
+	}
+	
+@media all and (min-width: 60em) {
 	
 	  .left-player {
 		float:left;
@@ -992,8 +1000,10 @@ body {
 		margin-left:290;
 	  }
 	  .entire_length {
-		top: 706px;
+	    top: 735px;
+		left: 95px;
 	    }
+	    
 	  .ui360-vis {
 	    padding-left: 253px;
     	padding-top: 3px;
