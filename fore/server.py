@@ -54,9 +54,13 @@ templates.autoescape = None
 first_frame = threading.Semaphore(0)
 
 class BaseHandler(tornado.web.RequestHandler):
-    def get_current_user(self):
-        username, self._user_perms = database.get_user_info(int(self.get_secure_cookie("userid") or 0))
-        if self._user_perms: return username # If perms==0, the user has been banned, and should be treated as not-logged-in.
+
+	def get_current_user(self):
+		username, self._user_perms = database.get_user_info(int(self.get_secure_cookie("userid") or 0))
+		log.warning("WE HAVE A USERID %r and username: %r", self.get_secure_cookie("userid"), username)
+		if self._user_perms: return username # If perms==0, the user has been banned, and should be treated as not-logged-in.
+        
+
 
 class MainHandler(BaseHandler):
 	mtime = 0
@@ -447,7 +451,7 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 		else:
 			self.write(templates.load("create_account.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
 			
-class Login(tornado.web.RequestHandler):
+class Login(BaseHandler):
 	def get(self):
 		form = UserForm()
 		try:
@@ -456,19 +460,28 @@ class Login(tornado.web.RequestHandler):
 			errormessage = ""
 		
 		notice = ""
+		username = self.get_current_user()
+		log.warning("WE GO:  %r AS %r", self.get_argument('next'), username)
+		'''if self.get_current_user():
+			self.redirect(self.get_argument('next', '/')) # Change this line
+			return
+		else:'''
 		self.write(templates.load("login.html").generate(compiled=compiled, form=form, \
-								errormessage=errormessage, user_name=self.current_user, notice=notice ))
+							errormessage=errormessage, user_name=self.current_user, notice=notice ))
 		
 	def post(self):
 		form = UserForm(self.request.arguments)
 		if form.validate():
+			log.warning("HERE EMAIL/PASSWD ARE %r AND %r", self.get_argument('email'), self.get_argument('password'))
 			user_id = database.verify_user(self.get_argument('email'),\
-								self.get_argument('password'))
-			log.warning("WE ARE: %r AND %r", self.get_argument('email'),\
 								self.get_argument('password'))
 			if user_id:
 				user_name, perms = database.get_user_info(user_id)
-				if perms: self.set_secure_cookie("userid", str(user_id)) # Banned users (perms==0) are treated as guests. (We're so nice to people.)
+				log.warning("HERE USER/PERMS ARE %r AND %r", user_name, perms)
+				if perms: 
+					self.set_secure_cookie("userid", str(user_id)) # Banned users (perms==0) are treated as guests. (We're so nice.)
+					time.sleep(3)
+					log.warning("HERE WE ARE %r, based on %r", self.get_current_user(), self.get_secure_cookie("userid"))
 				self.redirect(self.get_argument("next", "/"))
 			else:
 				notice = "LOGIN FAILED. PLEASE TRY AGAIN."
