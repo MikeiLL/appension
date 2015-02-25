@@ -221,7 +221,7 @@ def update_track(id, info):
 	with _conn, _conn.cursor() as cur:
 		# Enumerate all updateable fields. If they're not provided, they won't be updated;
 		# any other fields will be ignored. This is basically set intersection on a dict.
-		fields = ("artist", "status", "lyrics", "story", "xfade", "otrim", "itrim")
+		fields = ("artist", "status", "lyrics", "story", "xfade", "otrim", "itrim", "keywords")
 		param = {k:info[k][0] for k in fields if k in info}
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
 		

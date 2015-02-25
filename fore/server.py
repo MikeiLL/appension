@@ -316,7 +316,7 @@ class AdminRender(BaseHandler):
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		track_id=int(self.request.arguments['id'][0])
 		database.update_track(track_id, self.request.arguments)
-		self.write(admin_page(user_name, updated=id))
+		self.write(admin_page(user_name, updated=track_id))
 
 		
 class ManageTransition(BaseHandler):
