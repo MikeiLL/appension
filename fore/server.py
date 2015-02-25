@@ -454,34 +454,23 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 class Login(BaseHandler):
 	def get(self):
 		form = UserForm()
-		try:
-			errormessage = self.get_argument("error")
-		except:
-			errormessage = ""
-		
-		notice = ""
+		errormessage = self.get_argument("error", "")
 		username = self.get_current_user()
-		log.warning("WE GO:  %r AS %r", self.get_argument('next', "/"), username)
-		'''if self.get_current_user():
+		if self.get_current_user():
 			self.redirect(self.get_argument('next', '/')) # Change this line
-			return
-		else:'''
-		self.write(templates.load("login.html").generate(compiled=compiled, form=form, next=self.get_argument('next', "/"),
-							errormessage=errormessage, user_name=self.current_user, notice=notice ))
+		else:
+			self.write(templates.load("login.html").generate(compiled=compiled, form=form, next=self.get_argument('next', "/"),
+							errormessage=errormessage, user_name=self.current_user, notice="" ))
 		
 	def post(self):
 		form = UserForm(self.request.arguments)
 		if form.validate():
-			log.warning("HERE EMAIL/PASSWD ARE %r AND %r", self.get_argument('email'), self.get_argument('password'))
 			user_id = database.verify_user(self.get_argument('email'),\
 								self.get_argument('password'))
 			if user_id:
 				user_name, perms = database.get_user_info(user_id)
-				log.warning("HERE USER/PERMS ARE %r AND %r", user_name, perms)
 				if perms: 
 					self.set_secure_cookie("userid", str(user_id)) # Banned users (perms==0) are treated as guests. (We're so nice.)
-					log.warning("HERE WE ARE %r, based on %r", self.get_current_user(), self.get_secure_cookie("userid"))
-				log.warning("NEXT IS %r", self.get_argument("next", "/"))
 				self.redirect(self.get_argument("next", "/"))
 			else:
 				notice = "LOGIN FAILED. PLEASE TRY AGAIN."
