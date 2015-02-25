@@ -32,12 +32,10 @@
 	<tr><td colspan="3">Submitted: {{ track.full_track_details['submitter'] }}</td>
 	<td colspan="2"><a href="mailto:{{ track.full_track_details['submitteremail'] }}">{{ track.full_track_details['submitteremail'] }}</a></td>
 	<td> on {{ track.full_track_details['submitted'] }}</td></tr>
-	<tr><td colspan="6">Keywords:<br><textarea rows=10 cols=80 name="keywords">
-	{{ track.full_track_details['keywords'] }}</textarea></td></tr>
 
 	<tr><td colspan="6" align="right"><input type="submit" value="Update"></td></tr>
 	<tr><td colspan="6">Comma Separated Keywords:<br/>
-	{{ track.track_details['keywords'] }}</td></tr>
+	{{ track.full_track_details['keywords'] }}</td></tr>
 </table>
 </form>
 <p>Artwork:<br>

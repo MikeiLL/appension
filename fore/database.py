@@ -39,9 +39,6 @@ class Track(object):
 			'title': title,
 			'length': length,
 			'status': status,
-			'submitted': submitted,
-			'submitter': submitter,
-			'submitteremail': submitteremail,
 			'story': story,
 			'lyrics': lyrics,
 			'xfade': xfade, 
@@ -49,9 +46,8 @@ class Track(object):
 			'otrim': otrim,
 			'comments': comments,
 			'sequence': sequence,
-			'keywords': keywords,
 		}
-		self.track_old_details = {
+		self.full_track_details = {
 			'status': status,
 			'submitted': submitted,
 			'submitter': submitter,
