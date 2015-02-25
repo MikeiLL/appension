@@ -160,6 +160,10 @@ def get_all_lyrics():
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE status = 1 AND lyrics != ''")
 		return [Lyric(*row) for row in cur.fetchall()]
+		
+def oracle(question):
+    with _conn, _conn.cursor() as cur:
+		cur.execute("SELECT id, lyrics FROM tracks WHERE keywords LIKE '%"+question+"%'")
 
 def get_track_artwork(id):
 	"""Get the artwork for one track, or None if no track, or '' if no artwork."""

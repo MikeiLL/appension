@@ -8,7 +8,10 @@
 <!-- start ball -->
 <form enctype="multipart/form-data" action="/oracle" method="post" id="oracle">
 <center>
-		<p>{{ question }}</p>
+			<P>Enter your question and then press the Glitch Ball</p>
+		{% if not question == "" %}
+			<p>{{ question }}</p>
+		{% end %}
 
 		<p>{{ form.question(style="width: 300px;max-width:90%;") }}</p>
 
@@ -16,6 +19,8 @@
 		<ul>
         	{% for error in form.question.errors %}<li class="errors">{{ error }}</li>{% end %}</ul>
   		{% end %}
+  		
+  		<p>{{ answer }}</p>
   </form>
 
 <div id="Table_01">

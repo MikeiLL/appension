@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.WARNING,format='%(asctime)s:%(levelname)s:%(na
 import config
 import apikeys
 import mailer
+import oracle
 
 import os
 import sys
@@ -380,7 +381,6 @@ class Oracle(Form):
 	question = wtforms.TextField('question', validators=[wtforms.validators.DataRequired()])
 	
 class OracleHandler(tornado.web.RequestHandler):
-	question="Enter your question and then press the Glitch Ball"
 	def get(self):
 		if self.current_user:
 			user_name = self.current_user
@@ -388,7 +388,7 @@ class OracleHandler(tornado.web.RequestHandler):
 			user_name = "Glitcher"
 		form = Oracle()
 		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
-															question=self.question))
+															question="", answer=""))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
@@ -399,11 +399,12 @@ class OracleHandler(tornado.web.RequestHandler):
 		if form.validate():
 			info = self.request.arguments
 			question = info.get("question",[""])[0]
+			answer = oracle.get_word_list(question)[0]
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
-													question=question))
+													question=question, answer=answer))
 		else:
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
-														question=self.question))
+														question=self.question, answer=""))
 
 
 class SMHandler(tornado.web.RequestHandler):
