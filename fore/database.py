@@ -23,9 +23,9 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 class Track(object):
 	# Select these from the tracks table to construct a track object.
-	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence"
+	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords"
 	def __init__(self, id, filename, artist, title, length, status, 
-				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence):
+				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords):
 		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
 																	length, status, story, lyrics, comments, xfade, itrim, otrim)
 		self.id = id
@@ -57,6 +57,7 @@ class Track(object):
 			'lyrics': lyrics,
 			'story': story,
 			'comments': comments,
+			'keywords': keywords,
 		}
 
 class Lyric(object):
