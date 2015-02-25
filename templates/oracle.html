@@ -6,7 +6,18 @@
 
 <div style="text-align: center"><font size="-1"><b><b>For entertainment purposes only.</b></b>  <br>This website and its creators are not responsible for any damages incurred by actions taken based on playing this game.</font></div><br>
 <!-- start ball -->
-<center><p>Enter your question and then press the Glitch Ball</p>
+<form enctype="multipart/form-data" action="/oracle" method="post" id="oracle">
+<center>
+		<p>{{ question }}</p>
+
+		<p>{{ form.question }}</p>
+
+		{% if form.question.errors %}
+		<ul>
+        	{% for error in form.question.errors %}<li class="errors">{{ error }}</li>{% end %}</ul>
+  		{% end %}
+  </form>
+
 <div id="Table_01">
 	<div id="Oracle-01">
 		<img src="static/img/Oracle_01.png" width="221" height="72" alt="">
@@ -15,7 +26,7 @@
 		<img src="static/img/Oracle_02.png" width="57" height="104" alt="">
 	</div>
 	<div id="Oracle-03">
-		<a href="index.html"></a>
+		
 	</div>
 	<div id="Oracle-04">
 		<img src="static/img/Oracle_04.png" width="57" height="104" alt="">
@@ -24,13 +35,9 @@
 		<img src="static/img/Oracle_05.png" width="221" height="75" alt="">
 	</div>
 </div>
-
+</center>
 <!-- end ball -->
-<br><br>
-<fieldset>
-<span class="errormessage"></span>
-</fieldset>
-<form enctype="multipart/form-data" action="/login" method="post">
 
-</form>
+<br><br>
+
 {% end %}

@@ -107,6 +107,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		  'berniecode-animator.js',
 		  '360player.js'
 		  ) }}'></script>
+		<script type="text/javascript">
+		$('#Oracle-03').click(function () {
+			$('#oracle').submit();
+		});
+		</script>
 		<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>
 		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
 		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>

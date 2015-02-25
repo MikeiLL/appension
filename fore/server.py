@@ -375,14 +375,35 @@ class TrackArtwork(tornado.web.RequestHandler):
 		else:
 			self.set_header("Content-Type","image/jpeg")
 			self.write(str(art))
-
+			
+class Oracle(Form):
+	question = wtforms.TextField('question', validators=[wtforms.validators.DataRequired()])
+	
 class OracleHandler(tornado.web.RequestHandler):
+	question="Enter your question and then press the Glitch Ball"
 	def get(self):
 		if self.current_user:
 			user_name = self.current_user
 		else:
 			user_name = "Glitcher"
-		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name))
+		form = Oracle()
+		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
+															question=self.question))
+		
+	def post(self):
+		form = Oracle(self.request.arguments)
+		if self.current_user:
+			user_name = self.current_user
+		else:
+			user_name = "Glitcher"
+		if form.validate():
+			info = self.request.arguments
+			question = info.get("question",[""])[0]
+			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
+													question=question))
+		else:
+			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
+														question=self.question))
 
 
 class SMHandler(tornado.web.RequestHandler):
