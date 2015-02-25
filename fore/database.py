@@ -23,11 +23,11 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 class Track(object):
 	# Select these from the tracks table to construct a track object.
-	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence"
+	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords"
 	def __init__(self, id, filename, artist, title, length, status, 
-				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence):
-		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
-																	length, status, story, lyrics, comments, xfade, itrim, otrim)
+				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords):
+		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r. %r)", id, filename, artist, title, \
+																	length, status, story, lyrics, comments, xfade, itrim, otrim, keywords)
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
@@ -38,18 +38,19 @@ class Track(object):
 			'title': title,
 			'length': length,
 			'status': status,
+			'submitted': submitted,
+			'submitter': submitter,
+			'submitteremail': submitteremail,
 			'story': story,
 			'lyrics': lyrics,
 			'xfade': xfade, 
 			'itrim': itrim,
 			'otrim': otrim,
+			'comments': comments,
 			'sequence': sequence,
+			'keywords': keywords,
 		}
-		self.full_track_details = {
-			'id': id,
-			'artist': artist,
-			'title': title,
-			'length': length,
+		self.track_old_details = {
 			'status': status,
 			'submitted': submitted,
 			'submitter': submitter,
