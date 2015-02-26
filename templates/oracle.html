@@ -13,12 +13,18 @@
 			<p>{{ question }}</p>
 		{% end %}
 		{% if not answer == "" %}
+			<div style="max-width:550px">
 			<p>"{{ answer.couplet['couplet'][0] }}<br/>
 				{{ answer.couplet['couplet'][1] }}."</p>
 			<p style="float:right">-{{ answer.couplet['artist'] }}</p>
+			</div>
 		{% end %}
 		<br style="clear:both"/>
-			<p>{{ form.question(style="width: 300px;max-width:90%;") }}</p>
+		<table width=448 height=106 border=0 cellpadding=0 cellspacing=0 background="static/img/oracle-question-box.png" left repeat-y;" align="center">
+	<tr>
+		<td align=center ><p>{{ form.question(style="width: 300px;max-width:90%;") }}</p></td>
+	</tr>
+</table>
 
 		{% if form.question.errors %}
 		<ul>
