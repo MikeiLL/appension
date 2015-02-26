@@ -377,7 +377,6 @@ class Mixer(multiprocessing.Process):
 
 	def generate_tracks(self):
 		"""Yield a series of lists of track segments - helper for run()"""
-		database.reset_played()
 		while len(self.tracks) < 2:
 			log.info("Waiting for a new track.")
 			track = database.get_track_to_play()
@@ -406,6 +405,7 @@ class Mixer(multiprocessing.Process):
 				self.tracks[0].finish()
 				del self.tracks[0]
 				gc.collect()
+			if self.infoqueue is None: break # Hack: If we're not in infinite mode, don't wait for more tracks.
 			log.info("Waiting for a new track.")
 			try:
 				self.add_track(database.get_track_to_play())
@@ -418,9 +418,11 @@ class Mixer(multiprocessing.Process):
 
 		log.error("Stopping!")
 		# Last chunk. Should contain 1 instruction: fadeout.
-		yield terminate(self.tracks[-1], FADE_OUT)
+		# CJA 20150227: Seems to be broken. Commenting this out means we lose the last track from the MajorGlitch.mp3 file.
+		# yield terminate(self.tracks[-1], FADE_OUT)
 
 	def run(self):
+		database.reset_played()
 		self.encoder = Lame(oqueue=self.oqueue)
 		self.encoder.start()
 
@@ -435,7 +437,7 @@ class Mixer(multiprocessing.Process):
 							#   LAME itself - it should be able to multiplex the
 							#   streams itself.
 							self.encoder.add_pcm(a)
-							self.infoqueue.put(generate_metadata(a))
+							if self.infoqueue: self.infoqueue.put(generate_metadata(a))
 						log.info("Rendered in %fs!", t.ms)
 					except Exception:
 						log.error("Could not render %s. Skipping.\n%s SEE???", a,
@@ -453,3 +455,22 @@ class Mixer(multiprocessing.Process):
 	@property
 	def stopped(self):
 		return self.__stop
+
+def build_entire_track(dest):
+	"""Build the entire-track file, saving to dest"""
+	encoder = Lame(ofile=open(dest,"wb"))
+	print("Building...")
+	encoder.start()
+	mixer = Mixer(None, None)
+	for track in database.get_many_mp3(order_by="sequence,id"):
+		print(track)
+		mixer.add_track(track)
+	for actions in mixer.generate_tracks():
+		for a in actions:
+			print(a)
+			encoder.add_pcm(a)
+	encoder.finish()
+	print("Build complete.")
+
+if __name__=="__main__":
+	build_entire_track("MajorGlitch.mp3")
