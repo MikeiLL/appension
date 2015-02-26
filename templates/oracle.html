@@ -9,11 +9,15 @@
 <form enctype="multipart/form-data" action="/oracle" method="post" id="oracle">
 <center>
 			<P>Enter your question and then press the Glitch Ball</p>
-		{% if not question == "" %}
+		{% if not answer == "" %}
 			<p>{{ question }}</p>
 		{% end %}
-
-		<p>{{ form.question(style="width: 300px;max-width:90%;") }}</p>
+		{% if not answer == "" %}
+			<p>"{{ answer.couplet['couplet'] }}"</p>
+			<p style="float:right">-{{ answer.couplet['artist'] }}</p>
+		{% end %}
+		<br style="clear:both"/>
+			<p>{{ form.question(style="width: 300px;max-width:90%;") }}</p>
 
 		{% if form.question.errors %}
 		<ul>

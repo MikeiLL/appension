@@ -63,19 +63,20 @@ class Lyric(object):
 	columns = "id,artist,lyrics"
 	
 	def __init__(self, id, artist, lyrics):
-		
-		couplet_count = len([block for block in re.split(r'(?:\r\n){2,}', lyrics) if block.count('\r\n') == 1])
-		lyrics = self.couplets(lyrics)
+		couplets = [block for block in re.split(r'(?:\r\n){2,}', lyrics) if block.count('\r\n') == 1]
+		couplet_count = len(couplets)
+		lyrics = self.get_couplets(lyrics)
 		
 		self.track_lyrics = {
 			'id': id,
 			'artist': artist,
 			'lyrics': lyrics,
 			#TODO ignore lyrics that exceed sts of two (but allow for 1/2 couplets)
-			'couplet_count': couplet_count
+			'couplet_count': couplet_count,
+			'couplets': couplets
 		}
 		
-	def couplets(self, lyrics):
+	def get_couplets(self, lyrics):
 		return lyrics.splitlines(True)
 		
 def get_mp3(some_specifier):
@@ -161,9 +162,15 @@ def get_all_lyrics():
 		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE status = 1 AND lyrics != ''")
 		return [Lyric(*row) for row in cur.fetchall()]
 		
-def oracle(question):
+def keyword_lyrics(word):
     with _conn, _conn.cursor() as cur:
-		cur.execute("SELECT id, lyrics FROM tracks WHERE keywords LIKE '%"+question+"%'")
+		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE keywords LIKE %s", ('%'+word+'%',))
+		return [Lyric(*row) for row in cur.fetchall()]
+		
+def random_lyrics():
+    with _conn, _conn.cursor() as cur:
+		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE lyrics != '' ORDER BY random() limit 1")
+		return [Lyric(*row) for row in cur.fetchall()]
 
 def get_track_artwork(id):
 	"""Get the artwork for one track, or None if no track, or '' if no artwork."""

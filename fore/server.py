@@ -399,12 +399,12 @@ class OracleHandler(tornado.web.RequestHandler):
 		if form.validate():
 			info = self.request.arguments
 			question = info.get("question",[""])[0]
-			answer = oracle.get_word_list(question)[0]
+			answer = oracle.the_oracle_speaks(question)
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
 													question=question, answer=answer))
 		else:
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
-														question=self.question, answer=""))
+														question="", answer=""))
 
 
 class SMHandler(tornado.web.RequestHandler):
