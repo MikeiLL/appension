@@ -13,10 +13,11 @@ stop_words = get_stop_words('en')
 class Couplet(object):
 	
 	def __init__(self, lyric, couplet):
-		
+		couplet = string.capitalize(couplet)
+		couplet = couplet.splitlines(True)
 		self.couplet = {
 					'artist': lyric.track_lyrics['artist'],
-					'couplet': string.capitalize(couplet),
+					'couplet': couplet,
 					'id': lyric.track_lyrics['id']
 					}
 		
@@ -54,6 +55,7 @@ def get_random():
 		
 def the_oracle_speaks(question):
 	wordlist = get_word_list(question)
+	random.shuffle(wordlist)
 	for word in wordlist:
 		one = compare_to_lyrics(word)
 		if one:

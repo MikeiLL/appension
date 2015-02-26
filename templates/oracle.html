@@ -13,7 +13,8 @@
 			<p>{{ question }}</p>
 		{% end %}
 		{% if not answer == "" %}
-			<p>"{{ answer.couplet['couplet'] }}"</p>
+			<p>"{{ answer.couplet['couplet'][0] }}<br/>
+				{{ answer.couplet['couplet'][1] }}."</p>
 			<p style="float:right">-{{ answer.couplet['artist'] }}</p>
 		{% end %}
 		<br style="clear:both"/>
