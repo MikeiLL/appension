@@ -51,9 +51,6 @@ def avg_end_duration(track):
     except IndexError:
         return sum([b.duration for b in track.analysis.segments[-8:]]) / 8
 
-# Initialize cursor
-start_point = {"cursor": 0}
-	
 def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0, mode = 'equal_power'): 
     """Return three renderable Echonest objects. 
 
@@ -75,12 +72,10 @@ def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0, mode = '
     t2end = last_viable(track2) - float(otrim)
 
     if xfade == 0:
-        '''Play track1 from cursor point until end of track, less otrim.'''
-        pb1 = pb(track1, start_point['cursor'], t1_length - t1_otrim)
-        '''Play track2 from start point for 2 seconds less than (length - t2_otrim)'''
+        # Play track1 from cursor point until end of track, less otrim.
+        pb1 = pb(track1, 0, t1_length - t1_otrim)
+        # Play track2 from start point for 2 seconds less than (length - t2_otrim)
         pb2 = pb(track2, t2start, t2_length - t2_otrim - 2)
-        '''Set cursor to 2 seconds'''
-        start_point['cursor'] = max(t2start + t2_length - t2_otrim - 2, 0)
         return [pb1, pb2]
     else:
         '''offset between start and first theoretical beat.'''
