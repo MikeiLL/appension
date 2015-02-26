@@ -9,6 +9,7 @@ import random
 from stop_words import get_stop_words
 
 stop_words = get_stop_words('en')
+stop_words.extend([u'sometimes', u'can', u'will'])
 
 class Couplet(object):
 	
