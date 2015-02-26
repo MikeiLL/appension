@@ -391,10 +391,12 @@ class Mixer(multiprocessing.Process):
 		# Initial transition. 
 		# yield initialize(self.tracks[0], self.tracks[1])
 
+		mixer_state = {}
+
 		while not self.__stop:
 			while len(self.tracks) > 1:
 				tra = managed_transition(self.tracks[0],
-					self.tracks[1])
+					self.tracks[1], mixer_state)
 				del self.tracks[0].analysis
 				gc.collect()
 				yield tra
