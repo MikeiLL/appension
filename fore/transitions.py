@@ -37,14 +37,24 @@ def avg_end_duration(track):
     except IndexError:
         return sum([b.duration for b in track.analysis.segments[-8:]]) / 8
 
-# Initialize cursor
-start_point = {"cursor": 0, "track": 0}
-
-def managed_transition(track1, track2):
-    if start_point["track"] != track1._metadata.id:
+def managed_transition(track1, track2, state=None):
+    """ Manage the transition from track1 to track2
+    
+    If this is part of a chain of transitions (to track3, track4, ...),
+    pass a state dictionary, which should start out empty. Continue to
+    pass the same dictionary, and it will be updated to maintain state.
+    """
+    if not state:
+        # No state object passed, so no state retention;
+        # we'll be discarding this when we're done.
+        state = {}
+    if "cursor" not in state:
+        # Initialize new state mapping to save us having to use .get() everywhere
+        state["cursor"] = state["track"] = 0
+    if state["track"] != track1._metadata.id:
         # We're not chaining tracks, so wipe out the cursor.
-        start_point["cursor"] = 0
-    start_point["track"] = track2._metadata.id
+        state["cursor"] = 0
+    state["track"] = track2._metadata.id
     for track in [track1, track2]:
         loudness = track.analysis.loudness
         track.gain = db_2_volume(loudness)
@@ -62,11 +72,11 @@ def managed_transition(track1, track2):
 
     if xfade == 0:
         '''Play track1 from cursor point until end of track, less otrim.'''
-        pb1 = pb(track1, start_point['cursor'], t1_length - t1_otrim)
+        pb1 = pb(track1, state['cursor'], t1_length - t1_otrim)
         '''Play track2 from start point for 2 seconds less than (length - t2_otrim)'''
         pb2 = pb(track2, t2start, t2_length - t2_otrim - 2)
         '''Set cursor to 2 seconds'''
-        start_point['cursor'] = max(t2start + t2_length - t2_otrim - 2, 0)
+        state['cursor'] = max(t2start + t2_length - t2_otrim - 2, 0)
         log.warning("""No xfade and %r, plus
         %r""",str(pb1), str(pb2))
         return [pb1, pb2]
@@ -75,7 +85,7 @@ def managed_transition(track1, track2):
         t2offset = lead_in(track2)
         avg_duration = avg_end_duration(track1)
         playback_end = t1end - (avg_duration * xfade) - t2offset
-        playback_duration = playback_end - start_point['cursor']
+        playback_duration = playback_end - state['cursor']
         mix_duration = t1end - playback_end
         '''Protect from xfade longer than second track.'''
         while t2_length - mix_duration <= 0:
@@ -84,7 +94,7 @@ def managed_transition(track1, track2):
             playback_duration += .5
             
         
-        pb1 = pb(track1, start_point['cursor'], playback_duration)
+        pb1 = pb(track1, state['cursor'], playback_duration)
         pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode='linear') #other mode option: 'equal_power'
         log.warning("Mix looks like start %r track: %r end: %r, duration: %r",pb2.s2, pb2.t2, pb2.e2, pb2.duration)
 
@@ -92,8 +102,8 @@ def managed_transition(track1, track2):
         Complete length of %s (%d) is %r.
         """, track1._metadata.track_details['artist'], track1._metadata.track_details['id'], track1._metadata.track_details['length'])
         
-        equal = mix_duration + playback_duration == t1end - start_point['cursor']
-        actual = t1end - start_point['cursor']
+        equal = mix_duration + playback_duration == t1end - state['cursor']
+        actual = t1end - state['cursor']
         desired = mix_duration + playback_duration
         diff = actual - desired
         log.warning("""
@@ -103,11 +113,11 @@ def managed_transition(track1, track2):
         We have %r and we want %r.
         We're off by %r.
         Track 2 starts at %r.
-        """, start_point['cursor'], playback_end, playback_duration, 
+        """, state['cursor'], playback_end, playback_duration, 
              playback_end, t1end, mix_duration,
              equal, actual, desired, diff, t2start)
         log.warning("Actual mix duration is %r.",pb2.duration)
-        start_point['cursor'] = mix_duration + t2start
+        state['cursor'] = mix_duration + t2start
         return [pb1, pb2]
 
 def lead_in(track):
