@@ -38,12 +38,13 @@ def avg_end_duration(track):
         return sum([b.duration for b in track.analysis.segments[-8:]]) / 8
 
 # Initialize cursor
-start_point = {"cursor": 0}
-	
+start_point = {"cursor": 0, "track": 0}
+
 def managed_transition(track1, track2):
     if start_point["track"] != track1._metadata.id:
         # We're not chaining tracks, so wipe out the cursor.
         start_point["cursor"] = 0
+    start_point["track"] = track2._metadata.id
     for track in [track1, track2]:
         loudness = track.analysis.loudness
         track.gain = db_2_volume(loudness)
