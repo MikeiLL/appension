@@ -462,12 +462,13 @@ def build_entire_track(dest):
 	print("Building...")
 	encoder.start()
 	mixer = Mixer(None, None)
-	for track in database.get_many_mp3(order_by="sequence,id"):
-		print(track)
+	for idx,track in enumerate(database.get_many_mp3(order_by="sequence,id")):
+		print("Adding [%d]: ##%d %s (%r)"%(idx,track.id,track.track_details["artist"],track.filename))
 		mixer.add_track(track)
 	for actions in mixer.generate_tracks():
+		print("Encoder: Got %d actions"%len(actions))
 		for a in actions:
-			print(a)
+			print("Encoder: Adding %r"%(a,))
 			encoder.add_pcm(a)
 	encoder.finish()
 	print("Build complete.")
