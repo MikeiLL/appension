@@ -473,4 +473,4 @@ def build_entire_track(dest):
 	print("Build complete.")
 
 if __name__=="__main__":
-	build_entire_track("MajorGlitch.mp3")
+	build_entire_track("static/single-audio-files/full.mp3")
