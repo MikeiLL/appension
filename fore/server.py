@@ -425,7 +425,6 @@ class OracleHandler(tornado.web.RequestHandler):
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
 														question="", answer=""))
 
-
 class SMHandler(tornado.web.RequestHandler):
 	def get(self):
 		if self.current_user:
@@ -440,7 +439,19 @@ class SegmentHandler(tornado.web.RequestHandler):
 			user_name = self.current_user
 		else:
 			user_name = "Glitcher"
-		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name=user_name))
+		form = Oracle()
+		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name=user_name, form=form))
+		
+	def post(self):
+		form = Oracle(self.request.arguments)
+		if self.current_user:
+			user_name = self.current_user
+		else:
+			user_name = "Glitcher"
+		letter = self.request.arguments['letters'][0]
+		artist_tracks = database.browse_tracks(letter)
+		self.write(templates.load("segment_selection.html").generate(compiled=compiled, form=form, user_name=user_name,
+																	artist_tracks=artist_tracks))
 			
 class UserForm(Form):
 	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email()])

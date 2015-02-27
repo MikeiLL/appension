@@ -262,6 +262,12 @@ def get_track_filename(track_id):
     with _conn, _conn.cursor() as cur:
         cur.execute("SELECT filename FROM tracks WHERE id = %s", (track_id,))
         for row in cur: return row[0]
+
+def browse_tracks(letter):
+    """Return artist, id for tracks, where artist name starts with letter in expression"""
+    with _conn, _conn.cursor() as cur:
+        cur.execute("SELECT {cols} FROM tracks WHERE status = 1 AND artist >= '{letter}' ORDER BY artist LIMIT 20".format(cols=Track.columns, letter=letter))
+        return [Track(*row) for row in cur.fetchall()]
         
 def create_user(username, email, password, hex_key):
 	"""Create a new user, return the newly-created ID"""

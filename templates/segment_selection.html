@@ -3,6 +3,7 @@
 {% block sidebar %}
 		{% end %}
 {% block content %}
+{% import string %}
 <p></p>
 <h2>
 <img width="165" border="0" height="62" alt="" src="static/img/segment-selection-title.png">
@@ -12,12 +13,18 @@
 <fieldset>
         <span class="errormessage"></span>
 </fieldset>
-<form enctype="multipart/form-data" action="/login" method="post">
+<form enctype="multipart/form-data" action="/segment_selection" method="post">
 <table class="secondary">
 
-<tr><td width="200px">Email: </td><td></td></tr>
-<tr><td>Password: </td><td></td></tr>
-<tr><td colspan="2" align="right"><input type="submit" value="Login" /></td></tr>
+<tr><td width="200px">Browse Artists: <select name="letters">
+						{% for letter in string.uppercase[:26] %}
+							<option value="{{ letter }}">{{ letter }}</option>
+						{% end %}
+					</select></tr>
+<tr><td align="right"><input type="submit" value="Browse" /></td></tr>
+{% for track in artist_tracks %}
+<tr><td>{{ track.track_details['artist'] }}</td></tr>
+{% end %}
 </table>
 </form>
 {% end %}
