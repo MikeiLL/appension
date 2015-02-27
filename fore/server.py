@@ -592,7 +592,7 @@ if __name__ == "__main__":
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
 			(r"/oracle", OracleHandler),
 			(r"/segment_selection", SegmentHandler),
-			(r"/view_artist/([A-Za-z0-9\+\-]+)", TracksByArtist),
+			(r"/view_artist/([A-Za-z0-9\+\-\.]+)", TracksByArtist),
 			(r"/rebuild_glitch", RenderGlitch),
 			(r"/sm", SMHandler),
 		]),
