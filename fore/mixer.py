@@ -458,21 +458,25 @@ class Mixer(multiprocessing.Process):
 
 def build_entire_track(dest):
 	"""Build the entire-track file, saving to dest"""
-	encoder = Lame(ofile=open(dest,"wb"))
-	print("Building...")
-	encoder.start()
-	mixer = Mixer(None, None)
-	for idx,track in enumerate(database.get_many_mp3(order_by="sequence,id")):
-		print("Adding [%d]: ##%d %s (%r)"%(idx,track.id,track.track_details["artist"],track.filename))
-		mixer.add_track(track)
-	for actions in mixer.generate_tracks():
-		print("Encoder: Got %d actions"%len(actions))
-		for a in actions:
-			print("Encoder: Adding %r"%(a,))
-			encoder.add_pcm(a)
-	encoder.finish()
-	print("Build complete.")
+	with open(dest,"wb") as f:
+		encoder = Lame(ofile=f)
+		print("Building...")
+		encoder.start()
+		mixer = Mixer(None, None)
+		for idx,track in enumerate(database.get_many_mp3(order_by="sequence,id")):
+			print("Adding [%d]: ##%d %s (%r)"%(idx,track.id,track.track_details["artist"],track.filename))
+			mixer.add_track(track)
+		for actions in mixer.generate_tracks():
+			print("Encoder: Got %d actions"%len(actions))
+			for a in actions:
+				print("Encoder: Adding %r"%(a,))
+				encoder.add_pcm(a)
+		encoder.finish()
+		print("Build complete.")
 
-if __name__=="__main__":
+def rebuild_major_glitch():
 	build_entire_track("MajorGlitch.mp3")
 	os.rename("MajorGlitch.mp3", "static/single-audio-files/MajorGlitch.mp3")
+
+if __name__=="__main__":
+	rebuild_major_glitch()
