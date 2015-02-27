@@ -78,15 +78,12 @@ class MainHandler(BaseHandler):
 		import database
 		lyrics = database.get_all_lyrics()
 		complete_length = datetime.timedelta(seconds=int(database.get_complete_length()))
-		themajorglitch = MP3("static/single-audio-files/MajorGlitch.mp3")
-		major_glitch_length = datetime.timedelta(seconds=int(themajorglitch.info.length))
 
 		kwargs = {
 			'compiled': compiled,
 			'open': True, # Can have this check for server load if we ever care
 			'endpoint': "/all.mp3",
 			'complete_length': complete_length,
-			'major_glitch_length': major_glitch_length,
 			'user_name':self.current_user or 'Glitcher',
 			'couplet_count': self.couplet_count(lyrics),
 			'lyrics': lyrics,
