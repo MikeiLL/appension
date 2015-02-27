@@ -44,7 +44,7 @@ def managed_transition(track1, track2, state=None):
     pass a state dictionary, which should start out empty. Continue to
     pass the same dictionary, and it will be updated to maintain state.
     """
-    if not state:
+    if state is None:
         # No state object passed, so no state retention;
         # we'll be discarding this when we're done.
         state = {}
