@@ -1,0 +1,10 @@
+{% extends admin_main.html %}
+
+{% block content %}<h2>Manage Transition </h2>
+<h3>Are you sure it's time to re-build the big file?</h3>
+<form enctype="multipart/form-data" action="/rebuild_glitch" method="post">
+<p>This may take some time.</p>
+	<a href="{{ admin_url }}">Cancel/Reset</a> 	&nbsp; <input type="submit" value="Render Major Glitch File"> 
+	</form>
+	
+{% end %}

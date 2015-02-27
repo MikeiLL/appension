@@ -354,6 +354,23 @@ class AuditionTransition(BaseHandler):
 			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
 			next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,
 			track_otrim=track_otrim, next_track_itrim=next_track_itrim))
+			
+class RenderGlitch(BaseHandler):
+	@tornado.web.authenticated
+	def get(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		self.write(templates.load("rebuild_glitch.html").generate(admin_url=apikeys.admin_url, 
+			compiled=compiled, user_name=user_name))
+		
+	def post(self):
+		from mixer import rebuild_major_glitch
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		threading.Thread(target=rebuild_major_glitch).start()
+		self.write(admin_page(user_name, notice="Major Glitch rebuild has been started in the background. Will complete on its own."))
 		
 class ConfirmTransition(BaseHandler):
 	@tornado.web.authenticated
@@ -553,6 +570,7 @@ if __name__ == "__main__":
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
 			(r"/oracle", OracleHandler),
 			(r"/segment_selection", SegmentHandler),
+			(r"/rebuild_glitch", RenderGlitch),
 			(r"/sm", SMHandler),
 		]),
 		cookie_secret=apikeys.cookie_monster,
