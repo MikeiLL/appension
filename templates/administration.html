@@ -32,6 +32,8 @@
 	<td colspan="6">oTrim: {{ track.track_details['otrim'] }} | <a href="manage/{{ track.id }}">manage transition</a></td></tr>
 {% end %}
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
+<tr><td colspan="10" align="right"><a href="{{ delete_url }}/{{ track.id }}" class="confirmation">Generate Major Glitch Track</a></td></tr>
+
 </table>
 </form>
 {% end %}
