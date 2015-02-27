@@ -30,7 +30,7 @@ import tornado.template
 import tornadio2.server
 import multiprocessing
 import pyechonest.config
-from mutagen.mp3 import MP3
+from tornado import escape
 
 from daemon import Daemon
 from listeners import Listeners
@@ -433,6 +433,16 @@ class SMHandler(tornado.web.RequestHandler):
 			user_name = "Glitcher"
 		self.write(templates.load("sm.html").generate(compiled=compiled, user_name=user_name))
 
+class TracksByArtist(tornado.web.RequestHandler):
+	def get(self, artist):
+		if self.current_user:
+			user_name = self.current_user
+		else:
+			user_name = "Glitcher"
+		tracks_by = database.tracks_by(escape.url_unescape(artist))
+		self.write(templates.load("view_artist.html").generate(compiled=compiled, user_name=user_name, 
+														tracks_by=tracks_by))
+		
 class SegmentHandler(tornado.web.RequestHandler):
 	def get(self):
 		if self.current_user:
@@ -440,7 +450,8 @@ class SegmentHandler(tornado.web.RequestHandler):
 		else:
 			user_name = "Glitcher"
 		form = Oracle()
-		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name=user_name, form=form))
+		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name=user_name, form=form,
+																	artist_tracks=""))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
@@ -581,6 +592,7 @@ if __name__ == "__main__":
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
 			(r"/oracle", OracleHandler),
 			(r"/segment_selection", SegmentHandler),
+			(r"/view_artist/([A-Za-z0-9\+]+)", TracksByArtist),
 			(r"/rebuild_glitch", RenderGlitch),
 			(r"/sm", SMHandler),
 		]),

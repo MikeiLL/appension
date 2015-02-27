@@ -4,6 +4,7 @@
 		{% end %}
 {% block content %}
 {% import string %}
+{% from tornado.escape import url_escape %}
 <p></p>
 <h2>
 <img width="165" border="0" height="62" alt="" src="static/img/segment-selection-title.png">
@@ -22,8 +23,10 @@
 						{% end %}
 					</select></tr>
 <tr><td align="right"><input type="submit" value="Browse" /></td></tr>
-{% for track in artist_tracks %}
-<tr><td>{{ track.track_details['artist'] }}</td></tr>
+{% if not artist_tracks == "" %}
+	{% for track in artist_tracks %}
+	<tr><td><a href="/view_artist/{{ url_escape(track.track_details['artist']) }}">{{ track.track_details['artist'] }}</a></td></tr>
+	{% end %}
 {% end %}
 </table>
 </form>

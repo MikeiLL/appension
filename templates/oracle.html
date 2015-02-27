@@ -1,5 +1,6 @@
 {% extends secondary.html %}
 
+{% from tornado.escape import url_escape %}
 
 {% block content %}
 <p></p><h2><img src="static/img/glitch-ball-title.png" border="0" width="204" height="159" alt=""></h2><p></p>
@@ -16,7 +17,7 @@
 			<div style="max-width:550px">
 			<p>"{{ answer.couplet['couplet'][0] }}<br/>
 				{{ answer.couplet['couplet'][1] }}."</p>
-			<p style="float:right">-{{ answer.couplet['artist'] }}</p>
+			<p style="float:right">-<a href="/view_artist/{{ url_escape(answer.couplet['artist']) }}">{{ answer.couplet['artist'] }}</a></p>
 			</div>
 		{% end %}
 		<br style="clear:both"/>
