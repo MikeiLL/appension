@@ -418,7 +418,10 @@ class Mixer(multiprocessing.Process):
 
 		log.error("Stopping!")
 		# Last chunk. Should contain 1 instruction: fadeout.
-		# CJA 20150227: Seems to be broken. Commenting this out means we lose the last track from the MajorGlitch.mp3 file.
+		# CJA 20150227: Seems to be broken. Commenting this out may mean we ignore the
+		# last track's transition info when building MajorGlitch.mp3, but this is not
+		# serious. The track itself is correctly rendered; it will simply go on until
+		# it reaches the end, and then stop, as per the King's advice.
 		# yield terminate(self.tracks[-1], FADE_OUT)
 
 	def run(self):
