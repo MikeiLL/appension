@@ -474,6 +474,9 @@ def build_entire_track(dest):
 		encoder.finish()
 		print("Build complete.")
 
-if __name__=="__main__":
+def rebuild_major_glitch():
 	build_entire_track("MajorGlitch.mp3")
 	os.rename("MajorGlitch.mp3", "static/single-audio-files/MajorGlitch.mp3")
+
+if __name__=="__main__":
+	rebuild_major_glitch()
