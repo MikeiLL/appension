@@ -64,7 +64,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 <body>
 
-	<div id="header">
+	<div id="header" role="banner">
 		
 		{% block user %}
 		<div class="user">
@@ -99,7 +99,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	
 	{% block right-nav %}
 			<li>
-				<div>
+				<nav role="navigation">
 					<ul>
 <li><a href="/create_account"><img src="static/img/sign-up.png" alt="" width="78" border="0" height="23"></a></li>
 <li><a href="/login"><img src="static/img/login-link.png" alt="" width="62" border="0" height="25"></a></li>
@@ -108,7 +108,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <li><a href="/submit"><img src="static/img/submit-link.png" alt="" width="137" border="0" height="26"></a></li>
 <li><a href="/oracle"><img src="static/img/magic-ball-link.png" alt="" width="114" border="0" height="96"></a></li>
 </ul>
-				</div>
+				</nav>
 			</li>
 			
 		</ul>
