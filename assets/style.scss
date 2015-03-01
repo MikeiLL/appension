@@ -307,6 +307,16 @@ body {
 		-webkit-box-shadow: black;
 		box-shadow: black;
 	}
+	
+	.grid li > nav {
+		padding: 0.5em;
+		text-align: left;
+		/*+box-shadow: black;*/
+		-moz-box-shadow: black;
+		-webkit-box-shadow: black;
+		box-shadow: black;
+	}
+	
 	.grid li.wide {
 		width: 100%;
 		background-image: url(../img/tile2.jpg);
