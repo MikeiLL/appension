@@ -1,106 +1,592 @@
-{% extends main.html %}{% block sidebar %}	<div id="player">		<div id="sm2-container"></div>		<div class="ui360 ui360-vis">		  <a id="endpoint_link" href="{{ endpoint }}"></a>		</div>	</div>  <div id="trackdetails">	{% for id in range(1,4) %}		<div class="nametime">			<button id="trackbutton{{ id }}" class="track-button" data-popup-target="#storypopup{{ id }}">				<div id="artist{{ id }}" class="artist"></div>				<div id="length{{ id }}" class="length"></div>			</button>			<div id="storypopup{{ id }}" class="popup">				<div class="popup-body">					<span class="popup-exit"></span>					<div class="popup-content">						<h3 class="popup-title">The Story</h3>						<p><div id="story{{ id }}" class="story"></div></p>					</div>				</div>			</div>		</div><br/>		<div class="popup-overlay"></div>	{% end %}		<div class="entire_length">Entire duration:{{ complete_length }}</div>	</div>{% end %}{% block content %}<dl class="accordion">  <dt class="accordion__title">Details</dt>  <!-- Details 28th Feb --><dd class="accordion__content">  <div style="text-align: center"><img src="static/img/glitch-cd-case.png" border="0" width="282" height="247" alt="" class="floatLoose"></div><br>    <p>
-Chris Butler's "The Devil Glitch" was released as a CD in 1996, and the next year was certified by the Guinness Book of World Records as the World's Longest Recorded Pop Song.  But there was a. . .well, glitch. . .the song should have been longer, but due to the 74-minute recording time limit of the CD format, parts had to be edited out.  <br><br>
-Then along came the world wide web, with no time limit for audio, and the 69-minute original version became 199x's "The Major Glitch", clocking in at 3 hours 13 minutes and 32 seconds, thanks to contributions from around the world.   But it's STILL not long enough, which brings us to the new, improved  "The Infinite Glitch".  <br><br>
-Enjoy the project in its original CD length, listen chunk by chunk, stream it as an infinite loop, or access the song's wisdom from The Glitch Oracle.  But most importantly, PLEASE check out the Submissions page <a href="/submit">HERE</a> for tools and guidelines so YOU can become a part of "The Infinite Glitch" project.   <br><br>TIA & best/CButler<br><br></p>  </dd><!-- WHAT?!?!?! -->  <dt class="accordion__title">WHAT?!?!?!</dt>  <dd class="accordion__content"><div style="text-align: center"><img class="tabHeading" src="static/img/complete-puzzle.png" border="0" width="260" height="260" alt=""></div><div style="text-align: center"><img class="tabHeading" src="static/img/whats-it-all-about.png" border="0" width="270" height="35" alt=""></div><br><p>In 1995, I wrote and recorded a song called "The Devil Glitch", which clocked in at 5:03.  One day, I'm trading off playing demos with muso pal Nick Berry from Dots Will Echo, and he plays one and I play one and he plays one and then I play him "The Devil Glitch", apologizing sheepishly 'cause the vamp at the end is 12 choruses long and I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too <b><i>short</i></b>!  and wow!...wouldn't it be cool to fill up a whole CD with choruses??<br><br>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-So that's what I did.  Three months later I'd written over 550 of them (usually in the early, early morning before the cares of the day shut off the joy valve).  I then recorded the whole thing at one sitting with an acoustic guitar (the chords are A Bm D6) to an 114 BPM click track in 20-minute chunks at Harold Dessau Studios in Lower Manhattan, with Scott Anthony engineering (and soon to be drafted as the project's long-time, long-suffering Sys Op). The next step was to pass out 2-3 minute chunks on Alesis ADAT cassettes to people I've worked with and asked them to add their own background accompaniment on synths, spoons, tuned vacuum cleaners...whatever.  This was in April of '95, thinking I'd have everything back by May and the whole thing assembled by Memorial Day.  Wrong.  It took a year to get everything organized, but that's okay 'cause the software to actually glue the thing together wasn't available in '95, and Freedy Johnston took forever to hand in his piece (worth it) and Liam Sternberg (Mr. "Walk Like An Egyptian") from Akron and now France had to do his too and Kramer (who had been the Waitresses original sound man!) had to be goosed to get his bit in (also worth it) and don't get me started about my Mom (never try to produce your Mom). <br><br>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Mac OS X (vers 31 October 2006 - Apple Inc. build 15.12), see www.w3.org" />
 
-Scott stitched the whole thing together using SAW+ (we had become a Beta project for the software!), having to regrettably edit the long version down to allow for the original 5:03 song, since at the time CDs could only hold 74 minutes of audio.<br><br>
+  <title></title>
+</head>
 
-For a laugh, i sent a copy of the CD to the Guinness Book people, think i might have inadvertently set a record.  Their response was "Maybe. Yep. Prove it."  Guinness required for independent verification, and although I knew it to be a valid claim, getting others to confirm it became a "computer era" question, where information becomes available only if the question is phrased correctly. <br><br>
+<body>
+  {% extends main.html %}{% block sidebar %}
 
-For example, neither the Library of Congress (where American copyrights are registered), BMI and ASCAP (the USA's major performance rights organizations) nor The Harry Fox Agency (collector of mechanical rights) can search their databases for length...only by title and author. Luckily, David Sanjek of the BMI Archives was able to confirm my claim stating that "I know of no other commercial piece of music that received sufficient public distribution that comes close to "The Devil Glitch" in length and scope." William Shurck, the Sound Recordings Archivist at Bowling Green State University's Music Library and Sound Archive, also saw no reason to dispute my claim, based on his "...40-plus years of working with popular music.").  Homer's "Illiad" and "Odessey" were actually "sung". . .but no one is around who remembers how it goes. "Alice's Restaurant"?  A mere 19-minutes, and it's as much talking as it is a "song", which is legally defined in America as a "lyric with a melody".  I'm sure my record has long been broken, and as far as i know, Guinness has retired the category, but the original project was fun to do, and it's nice to be recognized...even for such a dubious achievement.<br><br>
+  <div id="player">
+    <div id="sm2-container"></div>
 
-And now we have "The Infinite Glitch which is were you, Dear Reader, come in.  Please got to the Submission pages to find out how YOU can contribute to the project. I want this song to contain the sum total of human wisdom (seriously!) and we have. . .a bit of a way to go.</p>  </dd>  <dt class="accordion__title">World Records</dt>  <!-- World Records --><dd class="accordion__content"><div style="text-align: center"><img class="tabHeading" src="static/img/Where-does-it-come-from.png" border="0" width="209" height="176" alt=""></div>  <br/>
-<b>The Devil Glitch</b><br/>
-world's longest pop song - 69 minutes<br/>
-July 11th, 1997,<br/>
-Guinness Book of World Records<br/>
-declares "The Devil Glitch" to be<br/>
-THE WORLD'S LONGEST POP SONG.<br/>
-<p>"Then there's ex-Waitress CHRIS BUTLER'S 69-minute (!) single, "The
-Devil Glitch" (Future Fossil, CD), a screwy swinger with an hour's worth
-of Butler lyrically vamping on the end chorus as friends, old band
-mates, and relatives (including Freedy Johnston, Kramer, and Butler's
-mom) mess with the music. Weird, long-winded, wonderful."</p>
-<p>David Fricke, Rolling Stone Magazine, June 26, 1997, p.56</p>
-<p><b>THE CAST OF
-CHARACTERS</b>
-</p>
-<ul type="square">
-<li>Chris Butler - words, music, and production<br/>
-</li><li>Paul Moschella - drums<br/>
-</li><li>Matt Azzarto, Jim Higgins, Paul Moschella, Chris Gefken - backing
-vocals<br/>
-</li><li>Chris Gefken - extra bass snazz on the Long Version<br/>
-</li><li>Supervising Engineer - Scott Anthony
-<p><u><b>Other Musicians/Bands</b></u> <br/>in order of appearance<br/></p>
-</li><li>Mars Williams<br/>
-</li><li>The Whatnots<br/>
-</li><li>Liam Sternberg<br/>
-</li><li>Fear of Falling<br/>
-</li><li>The Gefkens<br/>
-</li><li>Bianca Bob Miller<br/>
-</li><li>Michael Baker<br/>
-</li><li>James MacMillan and Freedy Johnston - The Know It All Boyfriends<br/>
-</li><li>Michael Aylward<br/>
-</li><li>Harvey Gold<br/>
-</li><li>Kramer<br/>
-</li><li>Christopher D. Butler<br/>
-</li><li>Mrs. Irene Elizabeth Butler (Mom)<br/>
-</li><li>Morgan McNeish<br/>
-</li><li>The Fluxus Midwest
-Paper Cup Marching Band<br/>
-</li><li>Scott Anthony </li>
-</ul>
-<br/><b>SHORT VERSION</b><br/>recorded by Scott Anthony at Harold Dessau in NYC and
-by Chris Gefken at Jackson Hole in Hoboken. mixed by Dave Derr at Studio E
-in Garfield, NJ
-<br/><br/><b>LONG VERSION</b><br/>lead vocals recorded (no loops!)
-at B Jams, Hoboken, by Scott Anthony and Ben Kilmer. Mixed and assembled
-starting January 8th and 9th during the Blizzard of '96 by Scott
-Anthony at Harold Dessau in NYC. Additional transfers and duping by
-Greg, Steve and Chris at Upstart in Hoboken. Final assembly completed
-spring '96 at Mutiny Zoo in Hoboken. Mastered by Dave Steele at DBS
-Digital, Hoboken. <br/><br/>
+    <div class="ui360 ui360-vis">
+      <a id="endpoint_link" href="{{%20endpoint%20}}" name="endpoint_link"></a>
+    </div>
+  </div>
 
+  <div id="trackdetails">
+    {% for id in range(1,4) %}
 
-<br/>
-<hr style="max-width:450px">
-<table max-width="500" border="0" cellpadding="10">
-<tbody>
-<tr>
-<td>
-<center>
-<b>The Story Behind the One-Minute Version of "The Devil Glitch"</b><br/>
-</center>
-<p>Morgan Fisher (ex-Mott The Hoople keyboardist) requested a one-minute version of "The Devil Glitch" for inclusion in his second <em>"Miniatures"</em> CD. The 60 or so compositions on this disc come from around the world and all deal in some way with a Millenium theme. <br/><br/>Morgan
-never said WHICH Millenium, however. "The Devil Glitch" includes an
-audio time-travel ending, which is a regression back to 1900 via the
-entire history of audio recording technology (digital-tape-wire-wax
-cylinder).
-</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p></p>
-<hr style="max-width:450px">	<br/>	<center><!-- Start Devil Glitch Player --><div id="Devil_Glitch_Table">	<div id="Devil-Glitch-Player-01">		<img src="static/img/Devil-Glitch-Player_01.png" width="506" height="117" alt="">	</div>	<div id="Devil-Glitch-Player-02">		<img src="static/img/Devil-Glitch-Player_02.png" width="103" height="101" alt="">	</div>	<div id="Devil-Glitch-Player-03">	<!-- 5-minute song goes here -->	<!-- start player 1 -->	<div class="sm2-bar-ui compact">	 <div class="bd sm2-main-controls">	  <div class="sm2-inline-element sm2-button-element">	   <div class="sm2-button-bd">		<a href="#play" class="sm2-inline-button play-pause">Play / pause</a>	   </div>	  </div>	  <div class="sm2-inline-element sm2-inline-status">	   <div class="sm2-playlist">		<div class="sm2-playlist-target">		 <!-- playlist <ul> + <li> markup will be injected here -->		 <!-- if you want default / non-JS content, you can put that here. -->		 <noscript><p>JavaScript is required.</p></noscript>		</div>	   </div>	   <div class="sm2-progress">		<div class="sm2-row">		<div class="sm2-inline-time">0:00</div>		 <div class="sm2-progress-bd">		  <div class="sm2-progress-track">		   <div class="sm2-progress-bar"></div>		   <div class="sm2-progress-ball"><div class="icon-overlay"></div></div>		  </div>		 </div>		 <div class="sm2-inline-duration">0:00</div>		</div>	   </div>	  </div>	  <div class="sm2-inline-element sm2-button-element sm2-volume">	   <div class="sm2-button-bd">		<span class="sm2-inline-button sm2-volume-control volume-shade"></span>		<a href="#volume" class="sm2-inline-button sm2-volume-control">volume</a>	   </div>	  </div>	 </div>	 <div class="bd sm2-playlist-drawer sm2-element">	  <div class="sm2-inline-texture">	   <div class="sm2-box-shadow"></div>	  </div>	  <!-- playlist content is mirrored here -->	  <div class="sm2-playlist-wrapper">		<ul class="sm2-playlist-bd">		 <li><a href="static/single-audio-files/short.mp3"></a></li>		</ul>	  </div>	 </div>	</div>	<!-- end player 1 -->		<img src="static/img/Devil-Glitch-Player_03.png" width="300" height="30" alt="">	</div>	<div id="Devil-Glitch-Player-04">		<img src="static/img/Devil-Glitch-Player_04.png" width="103" height="101" alt="">	</div>	<div id="Devil-Glitch-Player-05">		<img src="static/img/Devil-Glitch-Player_05.png" width="300" height="41" alt="">	</div>	<div id="Devil-Glitch-Player-06">	<!-- 69-minute song goes here -->				<!-- start player 2 -->				<div class="sm2-bar-ui compact">		 <div class="bd sm2-main-controls">		  <div class="sm2-inline-element sm2-button-element">		   <div class="sm2-button-bd">			<a href="#play" class="sm2-inline-button play-pause">Play / pause</a>		   </div>		  </div>		  <div class="sm2-inline-element sm2-inline-status">		   <div class="sm2-playlist">			<div class="sm2-playlist-target">			 <!-- playlist <ul> + <li> markup will be injected here -->			 <!-- if you want default / non-JS content, you can put that here. -->			 <noscript><p>JavaScript is required.</p></noscript>			</div>		   </div>		   <div class="sm2-progress">			<div class="sm2-row">			<div class="sm2-inline-time">0:00</div>			 <div class="sm2-progress-bd">			  <div class="sm2-progress-track">			   <div class="sm2-progress-bar"></div>			   <div class="sm2-progress-ball"><div class="icon-overlay"></div></div>			  </div>			 </div>			 <div class="sm2-inline-duration">0:00</div>			</div>		   </div>		  </div>		  <div class="sm2-inline-element sm2-button-element sm2-volume">		   <div class="sm2-button-bd">			<span class="sm2-inline-button sm2-volume-control volume-shade"></span>			<a href="#volume" class="sm2-inline-button sm2-volume-control">volume</a>		   </div>		  </div>		 </div>		 <div class="bd sm2-playlist-drawer sm2-element">		  <div class="sm2-inline-texture">		   <div class="sm2-box-shadow"></div>		  </div>		  <!-- playlist content is mirrored here -->		  <div class="sm2-playlist-wrapper">			<ul class="sm2-playlist-bd">			 <li><a href="static/single-audio-files/full.mp3"></a></li>			</ul>		  </div>		 </div>		</div>		<!-- end player 2 -->				<img src="static/img/Devil-Glitch-Player_06.png" width="300" height="30" alt="glitch player piece">	</div>	<div id="Devil-Glitch-Player-07">		<img src="static/img/Devil-Glitch-Player_07.png" width="506" height="67" alt="">	</div></div>	</center>  </dd><!-- Contribute --><dt class="accordion__title">Contribute</dt><dd class="accordion__content"><div style="text-align: center"><img class="tabHeading" src="static/img/contribute-title.png" border="0" width="176" height="183" alt=""></div><br><p><b><b>Guidelines for Submissions:</b></b>
-<ul type="square">
-  <li>Submitted audio should be an MP3 or .wav file.<br><br>
-  Preferred: wav file, 44.1 khz, at least 16 bit, 24 bit even better<br>
-  OK: mp3, encoded at best resolution possible, at least 192kbps, 320kbps even better</li>
-<br><br>
-  <li>Keep it down to 2-3 minutes, please.</li>
-<br><br>
-  <li>The click and acoustic track is there for your convenience, but you are not bound to use this. And please no fade-ins or fade-outs if possible...editing this thing is going to be enough of a pain. A "1-2-3-4" count-in would be helpful, too.</li>
-<br><br>
-  <li>Please remember that a "song" is legally defined in America as having "a melody and lyrics", so please include some variation on the "Sometimes you can fix something by..." lyric line. Thus, instrumental-only submissions will probably not be used. I may add some lyrics to your chunk, but it will be a low, low priority. </li>
-<br><br>
-  <li> - Re: censorship. I reserve the right to edit anything that is submitted. That said, I am not a prude, so rough language is not a turn-off...but neither do I wanna get busted for distributing internet obscenity, so use your head about what you say, okay?</li>
-<br><br>
-  <li>Legal stuff: You own your contribution, period - but by submitting it, you are allowing me to use it in this project in perpetuity. If you want to register it with the Library of Congress or any other performance right organization in your country, that is your business. There is a chance that some other media (TV, radio, etc.) might do a news piece on this project and use some of what you've submitted. If this happens, I will do my best to get you a cue sheet so if there is any dough generated, you get it. To that end, you must include some info about yourself, personal web page URL &/or contact info with your submission or it can't be used. You also grant me the right to use this info in the project, but I will not give or sell your info to any third party, so don't get all nutzparanoid about this. Also, you warrant that your submission does not violate the rights of any third party. </li>
-</ul><br><br></p>
-You can submit a track <a href="/submit"><b>HERE</b></a><br><br>
+    <div class="nametime">
+      <button id="trackbutton{{ id }}" class="track-button" data-popup-target=
+      "#storypopup{{ id }}">
+      <div id="artist{{ id }}" class="artist"></div>
 
-The Major Glitch" is a sonic "sculpture" - a single, seamless recording that includes all the submissions to date, plus the original Intro and Ending sections from the original CD recording.<br><div class="entire_length">{{ complete_length }}</div><center><!-- Start Major Glitch Player --><div id="Major_Glitch_Table">	<div id="Major-Glitch-Player-01">		<img src="static/img/Major-Glitch-Player_01.png" width="506" height="122" alt="">	</div>	<div id="Major-Glitch-Player-02">		<img src="static/img/Major-Glitch-Player_02.png" width="104" height="126" alt="">	</div>	<div id="Major-Glitch-Player-03">				<!-- start player 3 -->				<div class="sm2-bar-ui compact">		 <div class="bd sm2-main-controls">		  <div class="sm2-inline-element sm2-button-element">		   <div class="sm2-button-bd">			<a href="#play" class="sm2-inline-button play-pause">Play / pause</a>		   </div>		  </div>		  <div class="sm2-inline-element sm2-inline-status">		   <div class="sm2-playlist">			<div class="sm2-playlist-target">			 <!-- playlist <ul> + <li> markup will be injected here -->			 <!-- if you want default / non-JS content, you can put that here. -->			 <noscript><p>JavaScript is required.</p></noscript>			</div>		   </div>		   <div class="sm2-progress">			<div class="sm2-row">			<div class="sm2-inline-time">0:00</div>			 <div class="sm2-progress-bd">			  <div class="sm2-progress-track">			   <div class="sm2-progress-bar"></div>			   <div class="sm2-progress-ball"><div class="icon-overlay"></div></div>			  </div>			 </div>			 <div class="sm2-inline-duration">0:00</div>			</div>		   </div>		  </div>		  <div class="sm2-inline-element sm2-button-element sm2-volume">		   <div class="sm2-button-bd">			<span class="sm2-inline-button sm2-volume-control volume-shade"></span>			<a href="#volume" class="sm2-inline-button sm2-volume-control">volume</a>		   </div>		  </div>		 </div>		 <div class="bd sm2-playlist-drawer sm2-element">		  <div class="sm2-inline-texture">		   <div class="sm2-box-shadow"></div>		  </div>		  <!-- playlist content is mirrored here -->		  <div class="sm2-playlist-wrapper">			<ul class="sm2-playlist-bd">			 <li><a href="static/single-audio-files/MajorGlitch.mp3"></a></li>			</ul>		  </div>		 </div>		</div>		<!-- end player 3 -->			</div>	<div id="Major-Glitch-Player-04">		<img src="static/img/Major-Glitch-Player_04.png" width="102" height="126" alt="">	</div>	<div id="Major-Glitch-Player-05">		<img src="static/img/Major-Glitch-Player_05.png" width="300" height="96" alt="">	</div></div><!-- End Major Glitch Player --></center></dd><!-- Lyrics -->  <dt class="accordion__title">Lyrics</dt>  <dd class="accordion__content">  <div style="text-align: center"><img class="tabHeading" src="static/img/lyrics.png" border="0" width="164" height="169" alt=""></div>            {{ couplet_count }} couplets as as of today.	{% for section in lyrics %}	<p class="lyric_credits"> {{ section.track_lyrics['couplet_count'] }} couplets 												contributed by {{ section.track_lyrics['artist'] }}: </p>			<p>		{% for line in section.track_lyrics['lyrics'] %}			{{ line }} <br/>		{% end %}	</p>	{% end %}          </dd></dl><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio cumque voluptate consequuntur ex suscipit quas rerum enim sunt ab voluptas laudantium sed voluptates iure magni accusamus ratione tempore consectetur inventore deleniti culpa tempora molestias laboriosam recusandae soluta accusantium voluptatibus est. Incidunt expedita praesentium tempore ullam iusto voluptate facere quod explicabo.</p><p>Beatae voluptas ratione ut non quaerat eum tempora nemo rem voluptatibus assumenda alias sit odio velit mollitia numquam iure quisquam illum repellat ea deserunt. Quo aut porro cum enim officiis mollitia dolorem maiores veniam similique quam voluptate deserunt. Esse facere itaque unde quaerat expedita magni sunt odit sint atque necessitatibus.</p>{% end %}	</body></html>
+      <div id="length{{ id }}" class="length"></div></button>
+
+      <div id="storypopup{{ id }}" class="popup">
+        <div class="popup-body">
+          <div class="popup-content">
+            <h3 class="popup-title">The Story</h3>
+
+            <div id="story{{ id }}" class="story"></div>
+          </div>
+        </div>
+      </div>
+    </div><br />
+
+    <div class="popup-overlay"></div>{% end %}
+
+    <div class="entire_length">
+      Entire duration:{{ complete_length }}
+    </div>
+  </div>{% end %}{% block content %}
+
+  <dl class="accordion">
+    <dt class="accordion__title">Details</dt><!-- Details 28th Feb -->
+
+    <dd class="accordion__content">
+      <div style="text-align: center">
+        <img src="static/img/glitch-cd-case.png" border="0" width="282" height="247" alt="" class=
+        "floatLoose" />
+      </div><br />
+
+      <p>Chris Butler's "The Devil Glitch" was released as a CD in 1996, and the next year was
+      certified by the Guinness Book of World Records as the World's Longest Recorded Pop Song. But
+      there was a. . .well, glitch. . .the song should have been longer, but due to the 74-minute
+      recording time limit of the CD format, parts had to be edited out.<br />
+      <br />
+      Then along came the world wide web, with no time limit for audio, and the 69-minute original
+      version became 199x's "The Major Glitch", clocking in at 3 hours 13 minutes and 32 seconds,
+      thanks to contributions from around the world. But it's STILL not long enough, which brings
+      us to the new, improved "The Infinite Glitch".<br />
+      <br />
+      Enjoy the project in its original CD length, listen chunk by chunk, stream it as an infinite
+      loop, or access the song's wisdom from The Glitch Oracle. But most importantly, PLEASE check
+      out the Submissions page <a href="/submit">HERE</a> for tools and guidelines so YOU can
+      become a part of "The Infinite Glitch" project.<br />
+      <br />
+      TIA &amp; best/CButler<br />
+      <br /></p>
+    </dd><!-- WHAT?!?!?! -->
+
+    <dt class="accordion__title">WHAT?!?!?!</dt>
+
+    <dd class="accordion__content">
+      <div style="text-align: center">
+        <img class="tabHeading" src="static/img/complete-puzzle.png" border="0" width="260" height=
+        "260" alt="" />
+      </div>
+
+      <div style="text-align: center">
+        <img class="tabHeading" src="static/img/whats-it-all-about.png" border="0" width="270"
+        height="35" alt="" />
+      </div><br />
+
+      <p>In 1995, I wrote and recorded a song called "The Devil Glitch", which clocked in at 5:03.
+      One day, I'm trading off playing demos with muso pal Nick Berry from Dots Will Echo, and he
+      plays one and I play one and he plays one and then I play him "The Devil Glitch", apologizing
+      sheepishly 'cause the vamp at the end is 12 choruses long and I don't remember if he said it
+      or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the
+      problem with the song isn't that it's too long it's that it's too <b><i>short</i></b>! and
+      wow!...wouldn't it be cool to fill up a whole CD with choruses??<br />
+      <br />
+      So that's what I did. Three months later I'd written over 550 of them (usually in the early,
+      early morning before the cares of the day shut off the joy valve). I then recorded the whole
+      thing at one sitting with an acoustic guitar (the chords are A Bm D6) to an 114 BPM click
+      track in 20-minute chunks at Harold Dessau Studios in Lower Manhattan, with Scott Anthony
+      engineering (and soon to be drafted as the project's long-time, long-suffering Sys Op). The
+      next step was to pass out 2-3 minute chunks on Alesis ADAT cassettes to people I've worked
+      with and asked them to add their own background accompaniment on synths, spoons, tuned vacuum
+      cleaners...whatever. This was in April of '95, thinking I'd have everything back by May and
+      the whole thing assembled by Memorial Day. Wrong. It took a year to get everything organized,
+      but that's okay 'cause the software to actually glue the thing together wasn't available in
+      '95, and Freedy Johnston took forever to hand in his piece (worth it) and Liam Sternberg (Mr.
+      "Walk Like An Egyptian") from Akron and now France had to do his too and Kramer (who had been
+      the Waitresses original sound man!) had to be goosed to get his bit in (also worth it) and
+      don't get me started about my Mom (never try to produce your Mom).<br />
+      <br />
+      Scott stitched the whole thing together using SAW+ (we had become a Beta project for the
+      software!), having to regrettably edit the long version down to allow for the original 5:03
+      song, since at the time CDs could only hold 74 minutes of audio.<br />
+      <br />
+      For a laugh, i sent a copy of the CD to the Guinness Book people, think i might have
+      inadvertently set a record. Their response was "Maybe. Yep. Prove it." Guinness required for
+      independent verification, and although I knew it to be a valid claim, getting others to
+      confirm it became a "computer era" question, where information becomes available only if the
+      question is phrased correctly.<br />
+      <br />
+      For example, neither the Library of Congress (where American copyrights are registered), BMI
+      and ASCAP (the USA's major performance rights organizations) nor The Harry Fox Agency
+      (collector of mechanical rights) can search their databases for length...only by title and
+      author. Luckily, David Sanjek of the BMI Archives was able to confirm my claim stating that
+      "I know of no other commercial piece of music that received sufficient public distribution
+      that comes close to "The Devil Glitch" in length and scope." William Shurck, the Sound
+      Recordings Archivist at Bowling Green State University's Music Library and Sound Archive,
+      also saw no reason to dispute my claim, based on his "...40-plus years of working with
+      popular music."). Homer's "Illiad" and "Odessey" were actually "sung". . .but no one is
+      around who remembers how it goes. "Alice's Restaurant"? A mere 19-minutes, and it's as much
+      talking as it is a "song", which is legally defined in America as a "lyric with a melody".
+      I'm sure my record has long been broken, and as far as i know, Guinness has retired the
+      category, but the original project was fun to do, and it's nice to be recognized...even for
+      such a dubious achievement.<br />
+      <br />
+      And now we have "The Infinite Glitch which is were you, Dear Reader, come in. Please got to
+      the Submission pages to find out how YOU can contribute to the project. I want this song to
+      contain the sum total of human wisdom (seriously!) and we have. . .a bit of a way to go.</p>
+    </dd>
+
+    <dt class="accordion__title">World Records</dt><!-- World Records -->
+
+    <dd class="accordion__content">
+      <div style="text-align: center">
+        <img class="tabHeading" src="static/img/Where-does-it-come-from.png" border="0" width="209"
+        height="176" alt="" />
+      </div><br />
+      <b>The Devil Glitch</b><br />
+      world's longest pop song - 69 minutes<br />
+      July 11th, 1997,<br />
+      Guinness Book of World Records<br />
+      declares "The Devil Glitch" to be<br />
+      THE WORLD'S LONGEST POP SONG.<br />
+
+      <p>"Then there's ex-Waitress CHRIS BUTLER'S 69-minute (!) single, "The Devil Glitch" (Future
+      Fossil, CD), a screwy swinger with an hour's worth of Butler lyrically vamping on the end
+      chorus as friends, old band mates, and relatives (including Freedy Johnston, Kramer, and
+      Butler's mom) mess with the music. Weird, long-winded, wonderful."</p>
+
+      <p>David Fricke, Rolling Stone Magazine, June 26, 1997, p.56</p>
+
+      <p><b>THE CAST OF CHARACTERS</b></p>
+
+      <ul type="square">
+        <li>Chris Butler - words, music, and production<br /></li>
+
+        <li>Paul Moschella - drums<br /></li>
+
+        <li>Matt Azzarto, Jim Higgins, Paul Moschella, Chris Gefken - backing vocals<br /></li>
+
+        <li>Chris Gefken - extra bass snazz on the Long Version<br /></li>
+
+        <li>Supervising Engineer - Scott Anthony
+
+          <p><u><b>Other Musicians/Bands</b></u><br />
+          in order of appearance<br /></p>
+        </li>
+
+        <li>Mars Williams<br /></li>
+
+        <li>The Whatnots<br /></li>
+
+        <li>Liam Sternberg<br /></li>
+
+        <li>Fear of Falling<br /></li>
+
+        <li>The Gefkens<br /></li>
+
+        <li>Bianca Bob Miller<br /></li>
+
+        <li>Michael Baker<br /></li>
+
+        <li>James MacMillan and Freedy Johnston - The Know It All Boyfriends<br /></li>
+
+        <li>Michael Aylward<br /></li>
+
+        <li>Harvey Gold<br /></li>
+
+        <li>Kramer<br /></li>
+
+        <li>Christopher D. Butler<br /></li>
+
+        <li>Mrs. Irene Elizabeth Butler (Mom)<br /></li>
+
+        <li>Morgan McNeish<br /></li>
+
+        <li>The Fluxus Midwest Paper Cup Marching Band<br /></li>
+
+        <li>Scott Anthony</li>
+      </ul><br />
+      <b>SHORT VERSION</b><br />
+      recorded by Scott Anthony at Harold Dessau in NYC and by Chris Gefken at Jackson Hole in
+      Hoboken. mixed by Dave Derr at Studio E in Garfield, NJ<br />
+      <br />
+      <b>LONG VERSION</b><br />
+      lead vocals recorded (no loops!) at B Jams, Hoboken, by Scott Anthony and Ben Kilmer. Mixed
+      and assembled starting January 8th and 9th during the Blizzard of '96 by Scott Anthony at
+      Harold Dessau in NYC. Additional transfers and duping by Greg, Steve and Chris at Upstart in
+      Hoboken. Final assembly completed spring '96 at Mutiny Zoo in Hoboken. Mastered by Dave
+      Steele at DBS Digital, Hoboken.<br />
+      <br />
+      <br />
+      <hr style="max-width:450px" />
+
+      <table max-width="500" border="0" cellpadding="10">
+        <tbody>
+          <tr>
+            <td>
+              <center>
+                <b>The Story Behind the One-Minute Version of "The Devil Glitch"</b><br />
+              </center>
+
+              <p>Morgan Fisher (ex-Mott The Hoople keyboardist) requested a one-minute version of
+              "The Devil Glitch" for inclusion in his second <em>"Miniatures"</em> CD. The 60 or so
+              compositions on this disc come from around the world and all deal in some way with a
+              Millenium theme.<br />
+              <br />
+              Morgan never said WHICH Millenium, however. "The Devil Glitch" includes an audio
+              time-travel ending, which is a regression back to 1900 via the entire history of
+              audio recording technology (digital-tape-wire-wax cylinder).</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <hr style="max-width:450px" />
+      <br />
+
+      <center>
+        <!-- Start Devil Glitch Player -->
+
+        <div id="Devil_Glitch_Table">
+          <div id="Devil-Glitch-Player-01">
+            <img src="static/img/Devil-Glitch-Player_01.png" width="506" height="117" alt="" />
+          </div>
+
+          <div id="Devil-Glitch-Player-02">
+            <img src="static/img/Devil-Glitch-Player_02.png" width="103" height="101" alt="" />
+          </div>
+
+          <div id="Devil-Glitch-Player-03">
+            <!-- 5-minute song goes here --><!-- start player 1 -->
+
+            <div class="sm2-bar-ui compact">
+              <div class="bd sm2-main-controls">
+                <div class="sm2-inline-element sm2-button-element">
+                  <div class="sm2-button-bd">
+                    <a href="#play" class="sm2-inline-button play-pause">Play / pause</a>
+                  </div>
+                </div>
+
+                <div class="sm2-inline-element sm2-inline-status">
+                  <div class="sm2-playlist">
+                    <div class="sm2-playlist-target">
+                      <!-- playlist <ul> + <li> markup will be injected here -->
+                      <!-- if you want default / non-JS content, you can put that here. --><noscript>
+                      <p>JavaScript is required.</p></noscript>
+                    </div>
+                  </div>
+
+                  <div class="sm2-progress">
+                    <div class="sm2-row">
+                      <div class="sm2-inline-time">
+                        0:00
+                      </div>
+
+                      <div class="sm2-progress-bd">
+                        <div class="sm2-progress-track">
+                          <div class="sm2-progress-bar"></div>
+
+                          <div class="sm2-progress-ball">
+                            <div class="icon-overlay"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="sm2-inline-duration">
+                        0:00
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="sm2-inline-element sm2-button-element sm2-volume">
+                  <div class="sm2-button-bd">
+                    <a href="#volume" class="sm2-inline-button sm2-volume-control">volume</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bd sm2-playlist-drawer sm2-element">
+                <div class="sm2-inline-texture">
+                  <div class="sm2-box-shadow"></div>
+                </div><!-- playlist content is mirrored here -->
+
+                <div class="sm2-playlist-wrapper">
+                  <ul class="sm2-playlist-bd">
+                    <li><a href="static/single-audio-files/short.mp3"></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div><!-- end player 1 --><img src="static/img/Devil-Glitch-Player_03.png" width="300"
+            height="30" alt="" />
+          </div>
+
+          <div id="Devil-Glitch-Player-04">
+            <img src="static/img/Devil-Glitch-Player_04.png" width="103" height="101" alt="" />
+          </div>
+
+          <div id="Devil-Glitch-Player-05">
+            <img src="static/img/Devil-Glitch-Player_05.png" width="300" height="41" alt="" />
+          </div>
+
+          <div id="Devil-Glitch-Player-06">
+            <!-- 69-minute song goes here --><!-- start player 2 -->
+
+            <div class="sm2-bar-ui compact">
+              <div class="bd sm2-main-controls">
+                <div class="sm2-inline-element sm2-button-element">
+                  <div class="sm2-button-bd">
+                    <a href="#play" class="sm2-inline-button play-pause">Play / pause</a>
+                  </div>
+                </div>
+
+                <div class="sm2-inline-element sm2-inline-status">
+                  <div class="sm2-playlist">
+                    <div class="sm2-playlist-target">
+                      <!-- playlist <ul> + <li> markup will be injected here -->
+                      <!-- if you want default / non-JS content, you can put that here. --><noscript>
+                      <p>JavaScript is required.</p></noscript>
+                    </div>
+                  </div>
+
+                  <div class="sm2-progress">
+                    <div class="sm2-row">
+                      <div class="sm2-inline-time">
+                        0:00
+                      </div>
+
+                      <div class="sm2-progress-bd">
+                        <div class="sm2-progress-track">
+                          <div class="sm2-progress-bar"></div>
+
+                          <div class="sm2-progress-ball">
+                            <div class="icon-overlay"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="sm2-inline-duration">
+                        0:00
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="sm2-inline-element sm2-button-element sm2-volume">
+                  <div class="sm2-button-bd">
+                    <a href="#volume" class="sm2-inline-button sm2-volume-control">volume</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bd sm2-playlist-drawer sm2-element">
+                <div class="sm2-inline-texture">
+                  <div class="sm2-box-shadow"></div>
+                </div><!-- playlist content is mirrored here -->
+
+                <div class="sm2-playlist-wrapper">
+                  <ul class="sm2-playlist-bd">
+                    <li><a href="static/single-audio-files/full.mp3"></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div><!-- end player 2 --><img src="static/img/Devil-Glitch-Player_06.png" width="300"
+            height="30" alt="glitch player piece" />
+          </div>
+
+          <div id="Devil-Glitch-Player-07">
+            <img src="static/img/Devil-Glitch-Player_07.png" width="506" height="67" alt="" />
+          </div>
+        </div>
+      </center>
+    </dd><!-- Contribute -->
+
+    <dt class="accordion__title">Contribute</dt>
+
+    <dd class="accordion__content">
+      <div style="text-align: center">
+        <img class="tabHeading" src="static/img/contribute-title.png" border="0" width="176"
+        height="183" alt="" />
+      </div><br />
+
+      <p><b>Guidelines for Submissions:</b></p>
+
+      <ul type="square">
+        <li>Submitted audio should be an MP3 or .wav file.<br />
+        <br />
+        Preferred: wav file, 44.1 khz, at least 16 bit, 24 bit even better<br />
+        OK: mp3, encoded at best resolution possible, at least 192kbps, 320kbps even better</li>
+
+        <li style="list-style: none"><br />
+        <br /></li>
+
+        <li>Keep it down to 2-3 minutes, please.</li>
+
+        <li style="list-style: none"><br />
+        <br /></li>
+
+        <li>The click and acoustic track is there for your convenience, but you are not bound to
+        use this. And please no fade-ins or fade-outs if possible...editing this thing is going to
+        be enough of a pain. A "1-2-3-4" count-in would be helpful, too.</li>
+
+        <li style="list-style: none"><br />
+        <br /></li>
+
+        <li>Please remember that a "song" is legally defined in America as having "a melody and
+        lyrics", so please include some variation on the "Sometimes you can fix something by..."
+        lyric line. Thus, instrumental-only submissions will probably not be used. I may add some
+        lyrics to your chunk, but it will be a low, low priority.</li>
+
+        <li style="list-style: none"><br />
+        <br /></li>
+
+        <li>- Re: censorship. I reserve the right to edit anything that is submitted. That said, I
+        am not a prude, so rough language is not a turn-off...but neither do I wanna get busted for
+        distributing internet obscenity, so use your head about what you say, okay?</li>
+
+        <li style="list-style: none"><br />
+        <br /></li>
+
+        <li>Legal stuff: You own your contribution, period - but by submitting it, you are allowing
+        me to use it in this project in perpetuity. If you want to register it with the Library of
+        Congress or any other performance right organization in your country, that is your
+        business. There is a chance that some other media (TV, radio, etc.) might do a news piece
+        on this project and use some of what you've submitted. If this happens, I will do my best
+        to get you a cue sheet so if there is any dough generated, you get it. To that end, you
+        must include some info about yourself, personal web page URL &amp;/or contact info with
+        your submission or it can't be used. You also grant me the right to use this info in the
+        project, but I will not give or sell your info to any third party, so don't get all
+        nutzparanoid about this. Also, you warrant that your submission does not violate the rights
+        of any third party.</li>
+      </ul><br />
+      <br />
+      You can submit a track <a href="/submit"><b>HERE</b></a><br />
+      <br />
+      The Major Glitch" is a sonic "sculpture" - a single, seamless recording that includes all the
+      submissions to date, plus the original Intro and Ending sections from the original CD
+      recording.<br />
+
+      <div class="entire_length">
+        {{ complete_length }}
+      </div>
+
+      <center>
+        <!-- Start Major Glitch Player -->
+
+        <div id="Major_Glitch_Table">
+          <div id="Major-Glitch-Player-01">
+            <img src="static/img/Major-Glitch-Player_01.png" width="506" height="122" alt="" />
+          </div>
+
+          <div id="Major-Glitch-Player-02">
+            <img src="static/img/Major-Glitch-Player_02.png" width="104" height="126" alt="" />
+          </div>
+
+          <div id="Major-Glitch-Player-03">
+            <!-- start player 3 -->
+
+            <div class="sm2-bar-ui compact">
+              <div class="bd sm2-main-controls">
+                <div class="sm2-inline-element sm2-button-element">
+                  <div class="sm2-button-bd">
+                    <a href="#play" class="sm2-inline-button play-pause">Play / pause</a>
+                  </div>
+                </div>
+
+                <div class="sm2-inline-element sm2-inline-status">
+                  <div class="sm2-playlist">
+                    <div class="sm2-playlist-target">
+                      <!-- playlist <ul> + <li> markup will be injected here -->
+                      <!-- if you want default / non-JS content, you can put that here. --><noscript>
+                      <p>JavaScript is required.</p></noscript>
+                    </div>
+                  </div>
+
+                  <div class="sm2-progress">
+                    <div class="sm2-row">
+                      <div class="sm2-inline-time">
+                        0:00
+                      </div>
+
+                      <div class="sm2-progress-bd">
+                        <div class="sm2-progress-track">
+                          <div class="sm2-progress-bar"></div>
+
+                          <div class="sm2-progress-ball">
+                            <div class="icon-overlay"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="sm2-inline-duration">
+                        0:00
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="sm2-inline-element sm2-button-element sm2-volume">
+                  <div class="sm2-button-bd">
+                    <a href="#volume" class="sm2-inline-button sm2-volume-control">volume</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bd sm2-playlist-drawer sm2-element">
+                <div class="sm2-inline-texture">
+                  <div class="sm2-box-shadow"></div>
+                </div><!-- playlist content is mirrored here -->
+
+                <div class="sm2-playlist-wrapper">
+                  <ul class="sm2-playlist-bd">
+                    <li><a href="static/single-audio-files/MajorGlitch.mp3"></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div><!-- end player 3 -->
+          </div>
+
+          <div id="Major-Glitch-Player-04">
+            <img src="static/img/Major-Glitch-Player_04.png" width="102" height="126" alt="" />
+          </div>
+
+          <div id="Major-Glitch-Player-05">
+            <img src="static/img/Major-Glitch-Player_05.png" width="300" height="96" alt="" />
+          </div>
+        </div><!-- End Major Glitch Player -->
+      </center>
+    </dd><!-- Lyrics -->
+
+    <dt class="accordion__title">Lyrics</dt>
+
+    <dd class="accordion__content">
+      <div style="text-align: center">
+        <img class="tabHeading" src="static/img/lyrics.png" border="0" width="164" height="169"
+        alt="" />
+      </div>{{ couplet_count }} couplets as as of today. {% for section in lyrics %}
+
+      <p class="lyric_credits">{{ section.track_lyrics['couplet_count'] }} couplets contributed by
+      {{ section.track_lyrics['artist'] }}:</p>
+
+      <p>{% for line in section.track_lyrics['lyrics'] %} {{ line }}<br />
+      {% end %}</p>{% end %}
+    </dd>
+  </dl>
+
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odio cumque voluptate consequuntur
+  ex suscipit quas rerum enim sunt ab voluptas laudantium sed voluptates iure magni accusamus
+  ratione tempore consectetur inventore deleniti culpa tempora molestias laboriosam recusandae
+  soluta accusantium voluptatibus est. Incidunt expedita praesentium tempore ullam iusto voluptate
+  facere quod explicabo.</p>
+
+  <p>Beatae voluptas ratione ut non quaerat eum tempora nemo rem voluptatibus assumenda alias sit
+  odio velit mollitia numquam iure quisquam illum repellat ea deserunt. Quo aut porro cum enim
+  officiis mollitia dolorem maiores veniam similique quam voluptate deserunt. Esse facere itaque
+  unde quaerat expedita magni sunt odit sint atque necessitatibus.</p>{% end %}
+</body>
+</html>
