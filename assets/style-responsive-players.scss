@@ -1,51 +1,24 @@
 	/* Major Glitch Table */
 
-	
-	#Major_Glitch_Table {
-		position:relative;
-		left:0px;
-		top:0px;
-		width:506px;
-		height:248px;
+	#Infinite_Chunk_Player {
+			background-image: url(/static/img/Infinite-Chunk-Player.png);
+			background-size:   contain;                    
+			background-repeat: no-repeat;
+			background-position: center center; 
+			max-width:100%;
+			width:379px;
+			height:150px;
 	}
-
-	#Major-Glitch-Player-01 {
-		position:absolute;
-		left:0px;
-		top:0px;
-		width:506px;
-		height:122px;
+	@media only screen and (min-width: 40em) {
+	#Infinite_Chunk_Player { 
+			width:430px;
+			height:170px;
+            }
 	}
-
-	#Major-Glitch-Player-02 {
-		position:absolute;
-		left:0px;
-		top:122px;
-		width:104px;
-		height:126px;
-	}
-
-	#Major-Glitch-Player-03 {
-		position:absolute;
-		left:104px;
-		top:122px;
-		width:300px;
-		height:30px;
-	}
-
-	#Major-Glitch-Player-04 {
-		position:absolute;
-		left:404px;
-		top:122px;
-		width:102px;
-		height:126px;
-	}
-
-	#Major-Glitch-Player-05 {
-		position:absolute;
-		left:104px;
-		top:152px;
-		width:300px;
-		height:96px;
+	@media only screen and (min-width: 60em) {
+	#Infinite_Chunk_Player { 
+			width:506px;
+			height:201px;
+            }
 	}
 	//End Major Glitch Player

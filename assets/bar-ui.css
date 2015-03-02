@@ -30,11 +30,6 @@
  line-height: 1em;
 }
 
-.sm2-bar-ui.compact {
- min-width: 1em;
- max-width: 20em;
-}
-
 .sm2-bar-ui ul {
  line-height: .5em;
 }
@@ -152,11 +147,6 @@
  background-image: url(../image/black-10.png);
  /* modern browsers don't neeed the image */
  background-image: none, none;
-}
-
-.sm2-bar-ui .bd {
- display: table;
- border-bottom: none;
 }
 
 .sm2-bar-ui .sm2-playlist-wrapper {
@@ -895,4 +885,29 @@
  /* re-hide playlist */
  display: block;
  overflow: hidden;
+}
+
+.sm2-bar-ui > .bd {
+	border-radius:20px;
+}
+
+.sm2-bar-ui.compact {
+ min-width: 1em;
+ max-width: 12em;
+ left: 50px;
+ top: 77px;
+}
+
+@media screen and all(min-width:60em){
+	.sm2-bar-ui.compact {
+	 left: 110px;
+	 top: 112px;
+	}
+}
+
+@media screen and all(min-width:40em){
+	.sm2-bar-ui.compact {
+	 left: 90px;
+	 top: 92px;
+	}
 }
