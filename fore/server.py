@@ -483,7 +483,8 @@ class ConfirmAccount(tornado.web.RequestHandler):
 		form = CreateUser()
 		user_name = database.confirm_user(id, hex_string)
 		signup_confirmed = "Sign-up confirmed. Login with email (or username) and password."
-		self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice=signup_confirmed))
+		self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice=signup_confirmed,
+														next="/"))
 
 class CreateAccount(tornado.web.RequestHandler):
 	def get(self):
