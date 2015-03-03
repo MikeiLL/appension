@@ -39,7 +39,7 @@ body {
 	  width: 418px;
 	  height: 104px;
 		background: url(/static/img/glitchlogo-small.jpg);
-		background-size:   cover;                    
+		background-size:   contain;                    
 		background-repeat: no-repeat;
 		background-position: center center; 
 	  /*+box-shadow: 3px 4px 6px #514949 !important;*/
@@ -134,9 +134,7 @@ body {
 		padding: 0;
 		width: 100%;
 	}
-	#header {
-		padding: 0 15px;
-	}
+	
 	
 	.errors {
 		color: red;
@@ -182,6 +180,8 @@ body {
 		font-weight: 800;
 		opacity: 0.5;
 		position: absolute;
+	    top: 622px;
+		left: 33px;
 	}
 	
 	#player {
@@ -292,7 +292,7 @@ body {
 	/************Start Percent Grid**************/
 	.grid {
 		overflow: hidden;
-		padding: 0.5em 0 0 0.5em;
+		padding: 0;
 		/*max-width: 76em;*/
 		margin: 0 auto;
 	}
@@ -300,12 +300,8 @@ body {
 		padding: 0 0.5em 0.5em 0;
 	}
 	.grid li > div {
-		padding: 0.5em;
+		padding: 0;
 		text-align: left;
-		/*+box-shadow: black;*/
-		-moz-box-shadow: black;
-		-webkit-box-shadow: black;
-		box-shadow: black;
 	}
 	
 	.grid li > nav {
@@ -320,7 +316,7 @@ body {
 	.grid li.wide {
 		width: 100%;
 		background-image: url(../img/tile2.jpg);
-		padding: 5px 15px;
+		padding: 5px 0px;
 		/*+border-radius: 12px;*/
 		-moz-border-radius: 12px;
 		-webkit-border-radius: 12px;
@@ -845,7 +841,7 @@ body {
 			width: 310px;
 			height: 84px;
 			background: url(/static/img/glitchlogo.jpg);
-			background-size:   cover;                    
+			background-size:   contain;                    
 			background-repeat: no-repeat;
 			background-position: center center;   	
 			}
@@ -853,7 +849,7 @@ body {
 			width: 310px;
 			height: 84px;
 			background: url(/static/img/glitchlogo.jpg);
-			background-size:   cover;                    
+			background-size:   contain;                    
 			background-repeat: no-repeat;
 			background-position: center center;   	
 			}
@@ -944,6 +940,23 @@ body {
 			color: #000;
 			border-bottom-color: #000;
 		}
+		.grid {
+			overflow: hidden;
+			padding: 0.5em 0 0 0.5em;
+			/*max-width: 76em;*/
+			margin: 0 auto;
+		}
+		.grid li {
+			padding: 0 0.5em 0.5em 0;
+		}
+		.grid li > div {
+			padding: 0.5em;
+			text-align: left;
+			/*+box-shadow: black;*/
+			-moz-box-shadow: black;
+			-webkit-box-shadow: black;
+			box-shadow: black;
+		}
 		
 	}
 	/************Start Percent Grid Media**************/
@@ -994,6 +1007,27 @@ body {
 			width:290px;
 			float:left;
 		}
+		#header {
+			padding: 0 15px;
+		}
+		
+		.grid {
+		overflow: hidden;
+		padding: 0.5em 0 0 0.5em;
+		/*max-width: 76em;*/
+		margin: 0 auto;
+		}
+		.grid li {
+			padding: 0 0.5em 0.5em 0;
+		}
+		.grid li > div {
+			padding: 0.5em;
+			text-align: left;
+			/*+box-shadow: black;*/
+			-moz-box-shadow: black;
+			-webkit-box-shadow: black;
+			box-shadow: black;
+		}
 	}	
 
 	@media all and (min-width: 40em) {
@@ -1004,6 +1038,7 @@ body {
 	  }
 	  .grid li.wide {
 		width: 66.666666%;
+		padding: 5px 15px;
 	  }
 	  .secondary-grid li {
 		float: left;
@@ -1015,14 +1050,9 @@ body {
 	  .main {
 		margin-left:290;
 	  }
-	}
-	
-@media all and (max-width: 60em) {
-
-	  .ui360-vis {
-	    padding-left: 253px;
-    	padding-top: 36px;
-	    }
+	  #header {
+			padding: 0 15px;
+		}
 	  #trackdetails {
 		display: inline-block;
 		margin: 94px 0 0 25px;
@@ -1033,13 +1063,7 @@ body {
 	    }
 	}
 	
-@media all and (max-width:40em) {
-	.entire_length {
-	    top: 622px;
-		left: 33px;
-	    }
-	}
-	
+
 @media all and (min-width: 60em) {
 	
 	  .left-player {
@@ -1051,6 +1075,7 @@ body {
 	  }
 	  .grid li.wide {
 		width: 80%;
+		padding: 5px 15px;
 	  }
 	  .secondary-grid li {
 		width: 20%;
@@ -1068,11 +1093,6 @@ body {
 	  .entire_length {
 	    top: 735px;
 		left: 95px;
-	    }
-	    
-	  .ui360-vis {
-	    padding-left: 253px;
-    	padding-top: 3px;
 	    }
 	}
 	/************End Percent Grid Media**************/

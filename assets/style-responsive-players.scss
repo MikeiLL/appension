@@ -5,20 +5,51 @@
 			background-size:   contain;                    
 			background-repeat: no-repeat;
 			background-position: center center; 
-			max-width:100%;
-			width:379px;
-			height:150px;
-	}
+			width:328px;
+			height:130px;
+			margin-left:-25px;
+			}
+		  .sm2-bar-ui.compact {
+				left: 60px;
+				max-width: 14em;
+				min-width: 1em;
+				top: 65px;
+			}
+			  .ui360-vis {
+			padding-left: 253px;
+			padding-top: 36px;
+			}
+			
 	@media only screen and (min-width: 40em) {
-	#Infinite_Chunk_Player { 
-			width:430px;
-			height:170px;
-            }
+		#Infinite_Chunk_Player { 
+				width:430px;
+				height:170px;
+				}
+		.sm2-bar-ui.compact {
+				left: 80px;
+				max-width: 18em;
+				min-width: 1em;
+				top: 93px;
+				margin-left:0;
+			}
 	}
 	@media only screen and (min-width: 60em) {
-	#Infinite_Chunk_Player { 
+		#Infinite_Chunk_Player { 
 			width:506px;
 			height:201px;
+			margin-left:0;
             }
+             
+	  	.ui360-vis {
+			padding-left: 253px;
+			padding-top: 3px;
+			}
+		
+		.sm2-bar-ui.compact {
+			left: 100px;
+			max-width: 20em;
+			min-width: 1em;
+			top: 112px;
+			}
 	}
 	//End Major Glitch Player
