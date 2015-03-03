@@ -511,7 +511,7 @@ class CreateAccount(tornado.web.RequestHandler):
 			user_message = """Either you or someoe else just created an account at InfiniteGlitch.net. \n \r
 To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, confirmation_url)
 			mailer.AlertMessage(user_message, 'Infinite Glitch Account', you=submitter_email)
-			self.write(templates.load("account_submission.html").generate(compiled=compiled, user_name=submitter_name))
+			self.write(templates.load("account_confirmation.html").generate(compiled=compiled, user_name=submitter_name))
 		else:
 			self.write(templates.load("create_account.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
 			
