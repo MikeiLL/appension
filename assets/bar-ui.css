@@ -273,8 +273,8 @@
   * if you play with UI width/height, these are the important ones.
   * NOTE: match these values if you want square UI buttons.
   */
- min-width: 2em;
- min-height: 2em;
+ min-width: 1.7em;
+ min-height: 1.7em;
 }
 
 .sm2-bar-ui .sm2-inline-button {

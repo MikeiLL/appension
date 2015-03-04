@@ -1,44 +1,168 @@
-	/* Major Glitch Table */
+		/* Infinite Chunk Player */
 
 	#Infinite_Chunk_Player {
-			background-image: url(/static/img/Infinite-Chunk-Player.png);
+			background-image: url(/static/img/Small-Infinite-Chunk-Player.png);
 			background-size:   contain;                    
 			background-repeat: no-repeat;
-			background-position: center center; 
-			width:328px;
-			height:130px;
+			background-position: center; 
+			width:310;
+			height:112px;
 			margin-left:-25px;
-			}
+			
 		  .sm2-bar-ui.compact {
 				left: 60px;
 				max-width: 14em;
 				min-width: 1em;
 				top: 65px;
+				.bd a {
+					left: 4px;
+					text-decoration: none;
+				}
 			}
-			  .ui360-vis {
+		  .ui360-vis {
 			padding-left: 253px;
 			padding-top: 36px;
 			}
+		}
+		
+		/* Devil Glitch Player */
+
+#Devil_Glitch_Player {
+			background-image: url(/static/img/Small-Devil-Glitch-Player.png);
+			background-size:   contain;                    
+			background-repeat: no-repeat;
+			background-position: center; 
+			width:310px;
+			height:168px;
+			margin-left:-25px;
 			
+		  .sm2-bar-ui.compact {
+				border: 2px solid #fff;
+				border-radius: 20px;
+				left: 0;
+				margin-bottom: 5px;
+				max-width: 14em;
+				min-width: 1em;
+				top: 65px;
+				.bd a {
+					left: 4px;
+					text-decoration: none;
+				}
+			}
+	  	.ui360-vis {
+			padding-left: 253px;
+			padding-top: 3px;
+			}
+	}
+		
+		
+		
+		/* Major Glitch Player */
+
+	#Major_Glitch_Player {
+			background-image: url(/static/img/Small-Major-Glitch-Player.png);
+			background-size:   contain;                    
+			background-repeat: no-repeat;
+			background-position: center; 
+			width:310px;
+			height:143px;
+			margin-left:-25px;
+			
+		  .sm2-bar-ui.compact {
+				border: 2px solid #fff;
+				border-radius: 20px;
+				left: 10px;
+				max-width: 14em;
+				min-width: 1em;
+				top: 85px;
+				.bd a {
+					left: 4px;
+					text-decoration: none;
+				}
+			}
+	  	.ui360-vis {
+			padding-left: 253px;
+			padding-top: 3px;
+			}
+		}
+		
 	@media only screen and (min-width: 40em) {
+		/* Show images at 85% */
 		#Infinite_Chunk_Player { 
+				background-image: url(/static/img/Infinite-Chunk-Player.png);
 				width:430px;
 				height:170px;
-				}
+
 		.sm2-bar-ui.compact {
 				left: 80px;
 				max-width: 18em;
 				min-width: 1em;
 				top: 93px;
 				margin-left:0;
+				.bd a {
+					left: 4px;
+					text-decoration: none;
+				}
 			}
+	  	.ui360-vis {
+			padding-left: 253px;
+			padding-top: 3px;
+			}
+		}
+			
+		#Devil_Glitch_Player { 
+				background-image: url(/static/img/Devil-Glitch-Player.png);
+				width:430px;
+				height:242px;
+
+		.sm2-bar-ui.compact {
+				border:0;
+				margin-bottom:15px;
+				left: 0px;
+				max-width: 20em;
+				min-width: 1em;
+				top: 120px;
+				.bd a {
+					left: 4px;
+					text-decoration: none;
+				}
+			}
+	  	.ui360-vis {
+			padding-left: 253px;
+			padding-top: 3px;
+			}
+		}
+		
+		
+		#Major_Glitch_Player { 
+				background-image: url(/static/img/Major-Glitch-Player.png);
+				width:430px;
+				height:210px;
+				
+		.sm2-bar-ui.compact {
+				border: 0 none;
+				border-radius: 0;
+				left: 0;
+				max-width: 18em;
+				min-width: 1em;
+				top: 123px;
+				.bd a {
+					left: 4px;
+					text-decoration: none;
+				}
+			}
+	  	.ui360-vis {
+			padding-left: 253px;
+			padding-top: 3px;
+			}
+		}
 	}
 	@media only screen and (min-width: 60em) {
 		#Infinite_Chunk_Player { 
+			background-image: url(/static/img/Infinite-Chunk-Player.png);
 			width:506px;
 			height:201px;
 			margin-left:0;
-            }
              
 	  	.ui360-vis {
 			padding-left: 253px;
@@ -50,6 +174,59 @@
 			max-width: 20em;
 			min-width: 1em;
 			top: 112px;
+				.bd a {
+					left: 4px;
+					text-decoration: none;
+				}
 			}
+        }
+		
+		#Devil_Glitch_Player { 
+				background-image: url(/static/img/Devil-Glitch-Player.png);
+				width:506;
+				height:285px;
+		
+	  	.ui360-vis {
+			padding-left: 253px;
+			padding-top: 3px;
+			}
+				
+		.sm2-bar-ui.compact {
+				border: 0 none;
+				left: -2px;
+				margin-bottom: 34px;
+				max-width: 19em;
+				min-width: 1em;
+				top: 121px;
+				.bd a {
+					left: 4px;
+					text-decoration: none;
+				}
+			}
+		}
+			
+		#Major_Glitch_Player { 
+				background-image: url(/static/img/Major-Glitch-Player.png);
+				width:506;
+				height:248px;
+		
+	  	.ui360-vis {
+			padding-left: 253px;
+			padding-top: 3px;
+			}
+				
+		.sm2-bar-ui.compact {
+				border: 0 none;
+				border-radius: 0;
+				left: 0;
+				max-width: 18em;
+				min-width: 1em;
+				top: 121px;
+				.bd a {
+					left: 4px;
+					text-decoration: none;
+				}
+			}
+		}
 	}
 	//End Major Glitch Player
