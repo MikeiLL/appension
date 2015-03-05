@@ -14,16 +14,28 @@ stop_words = get_stop_words('en')
 '''Why is this happening multiple times?'''
 if not u'sometimes' in stop_words:
 	stop_words.extend([u'sometimes', u'can', u'will', u'fix', u'just', u'things'])
+	
+vague_responses = ["hmmm....good question.  not sure i can answer that one.  got another?", 
+"i think you're gonna have to answer that for yourself. try another question?", 
+"well, if you don't know, i'm certainly not gonna tell you.  try another question?", 
+"can you be more specific?", "your question is too vague.  please incude more details.", 
+"how in the world would you think i would know about THAT?? Try again with another question.", 
+"i want to help, but that's kind of beyond me.  got another question?", 
+"wow...no one's ever asked that one before!  i have no idea. is there another question i might be able to help you with?", 
+"there are too many ways to answer your question.  can you give me some more details so i can fine tune my response?", 
+"is that really so important to you?   is there something else i can help you with?", 
+"what do you think the answer is?", 
+" i think you should wait and see on that one.  anything else i can help you with?", 
+"i'm not so sure you really want to know the answer to that. ask something different."]
 
 class Couplet(object):
 	
-	def __init__(self, lyric, couplet):
+	def __init__(self, artist, couplet):
 		couplet = string.capitalize(couplet)
 		couplet = couplet.splitlines(True)
 		self.couplet = {
-					'artist': lyric.track_lyrics['artist'],
-					'couplet': couplet,
-					'id': lyric.track_lyrics['id']
+					'artist': artist,
+					'couplet': couplet
 					}
 		
 def get_word_list(question):
@@ -71,7 +83,7 @@ def compare_to_keywords(word):
 	matching_lyrics = keyword_lyrics(word)
 	for lyric in matching_lyrics:
 		for couplet in lyric.track_lyrics['couplets']:
-			track_couplets.append(Couplet(lyric, couplet))
+			track_couplets.append(Couplet(lyric.track_lyrics['artist'], couplet))
 	if len(track_couplets) > 0:
 		return random.choice(track_couplets)
 						 		
@@ -79,7 +91,7 @@ def get_random():
 	from database import random_lyrics
 	lyric = random_lyrics()[0]
 	for couplet in lyric.track_lyrics['couplets']:
-		return Couplet(lyric, couplet)
+		return Couplet(lyric.track_lyrics['artist'], couplet)
 		
 def the_oracle_speaks(question):
 	wordlist = get_word_list(question)
@@ -92,6 +104,7 @@ def the_oracle_speaks(question):
 		two = compare_to_keywords(word)
 		if two:
 			return two
-	return get_random()
+	return Couplet("The Glitch Oracle", random.choice(vague_responses) + u'\r ')
+	 
 	
 		

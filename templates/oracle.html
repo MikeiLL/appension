@@ -13,14 +13,15 @@
 		<center>
 					<P>Enter your question and then press the Glitch Ball</p>
 				{% if not answer == "" %}
-					<p>{{ question }}</p>
-				{% end %}
-				{% if not answer == "" %}
 					<div style="max-width:550px">
-					<p>"{{ answer.couplet['couplet'][0] }}<br/>
-						{{ answer.couplet['couplet'][1] }}."</p>
+					<p>{{ answer.couplet['couplet'][0] }}<br/>
+						{{ answer.couplet['couplet'][1] }}</p>
+					{% if not answer.couplet['artist'] == "The Glitch Oracle" %}
 					<p style="float:right;margin-right:2em">-<a href="/view_artist/{{ url_escape(answer.couplet['artist']) }}">{{ answer.couplet['artist'] }}</a></p>
+					{% else %}
+					<p style="float:right;margin-right:2em">-{{ answer.couplet['artist'] }}</p>
 					</div>
+					{% end %}
 				{% end %}
 				<br style="clear:both"/>
 				<div id="oracle_question">
