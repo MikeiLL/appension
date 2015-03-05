@@ -406,8 +406,9 @@ class OracleHandler(tornado.web.RequestHandler):
 		else:
 			user_name = "Glitcher"
 		form = Oracle()
+		popular_words = oracle.popular_words(70)
 		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
-															question="", answer=""))
+															question="", answer="", popular_words=popular_words))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
@@ -419,11 +420,12 @@ class OracleHandler(tornado.web.RequestHandler):
 			info = self.request.arguments
 			question = info.get("question",[""])[0]
 			answer = oracle.the_oracle_speaks(question)
+			popular_words = oracle.popular_words(70)
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
-													question=question, answer=answer))
+													question=question, answer=answer, popular_words=popular_words))
 		else:
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
-														question="", answer=""))
+														question="", answer="", popular_words=popular_words))
 
 class SMHandler(tornado.web.RequestHandler):
 	def get(self):
