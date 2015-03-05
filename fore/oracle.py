@@ -42,17 +42,6 @@ def get_word_list(question):
 	question = string.lower(question)
 	question = question.translate(string.maketrans("",""), string.punctuation)
 	return [word for word in question.split() if word not in stop_words]
-	
-def compare_to_lyrics(word):
-	from fore.database import get_all_lyrics
-	track_couplets = []
-	all_lyrics = get_all_lyrics()
-	for lyric in all_lyrics:
-		for couplet in lyric.track_lyrics['couplets']:
-			if word in couplet:
-				track_couplets.append(Couplet(lyric, couplet))
-	if len(track_couplets) > 0:
-		return random.choice(track_couplets)
 		
 def popular_words(wordcount=10):
 	from fore.database import get_all_lyrics
@@ -76,7 +65,17 @@ for pair in range(10):
 	y = y + [popular_sorted[pair][1]]
 	print popular_sorted[pair]'''
 				 	
-		
+def compare_to_lyrics(word):
+	from fore.database import get_all_lyrics
+	track_couplets = []
+	all_lyrics = get_all_lyrics()
+	for lyric in all_lyrics:
+		for couplet in lyric.track_lyrics['couplets']:
+			if word in couplet:
+				track_couplets.append(Couplet(lyric.track_lyrics['artist'], couplet))
+	if len(track_couplets) > 0:
+		return random.choice(track_couplets)
+				
 def compare_to_keywords(word):
 	from fore.database import keyword_lyrics
 	track_couplets = []
