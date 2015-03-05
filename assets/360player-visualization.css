@@ -143,7 +143,14 @@
  visibility: hidden;
 }
 
+.ui360-vis,
+	.ui360-vis .sm2-360ui,
+	.sm2-inline-list .ui360-vis {
+    height: 316px;
+    width: 266px;
+}
 
+@media only screen and (min-width: 60em) {
 	.ui360-vis,
 	.ui360-vis .sm2-360ui,
 	.sm2-inline-list .ui360-vis {
@@ -151,4 +158,5 @@
 	 width:256px;
 	 height:256px;
 	 }
+}
 	

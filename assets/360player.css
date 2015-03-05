@@ -315,11 +315,18 @@ div.ui360 a span.metadata * {
 
 	.ui360 .sm2-canvas.hi-dpi {
 	/* hi-dpi / "retina" screens */
-	 top: -50%;
-	 left: -48%;
+	 top: -32%;
+	 left: -50%;
 	 -moz-transform: scale(0.5);
 	 -ms-transform: scale(0.5);
 	 -webkit-transform: scale(0.5);
 	 transform: scale(0.5);
+	}
+	@media only screen and (min-width: 40em) {
+	.ui360 .sm2-canvas.hi-dpi {
+		/* hi-dpi / "retina" screens */
+		 top: -50%;
+		 left: -48%;
+		}
 	}
 	

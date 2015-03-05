@@ -4,8 +4,13 @@
 		{% end %}
 {% block content %}
 
-Some text here.
+<div id="popular_words">
+{% for word, popularity in popular_words.iteritems() %}
+  <a href="/path" rel="{{ popularity }}">{{ word }}</a>
+{% end %}
+</div>
 
+  <a href="/path" rel="10">something</a>
  <!-- Start Infinite Chunk Player -->
 
         <div id="Infinite_Chunk_Player">
@@ -81,18 +86,53 @@ Some text here.
 	
 		{% end %}
 
-		
-
-		<script type="text/javascript"
-		  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
-		<script type="text/javascript" src='{{ compiled(
-		  'spin.min.js',
-		  'soundmanager2.js'
-		  ) }}'></script>
+			{% block footer %}		
+	<div class="container">			
+		<footer role="contentinfo">
+			<div>				
+				<!-- Amended February 28 -->
+				<nav id="menu">
+					<a href="/">Home</a> 
+					<font size="-1">&nbsp;&copy; 2014 Future Fossil</font>
+					<a href="mailto:beezwax@aol.com">Contact</a>					
+					<a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>	
+					<a href="http://www.futurefossilmusic.com/" title="Home for all things Chris Butler">Future Fossil Music</a> 
+				</nav>			
+			</div>		
+		</footer>	
+	</div>				
+	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
+	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
+		'soundmanager2-nodebug-jsmin.js',		  
+		'berniecode-animator.js',		  
+		'360player.js'		  ) }}'>
+	</script>		
+	<script type="text/javascript">		
+		$('#Oracle-03').click(function () {
+		$('#oracle').submit();}
+		);
+	</script>	
+	<script type="text/javascript" >			
+	$(".title").click(function() {
+		window.location = $(this).find("a").attr("href"); 		  
+		return false;		
+		});		
+	</script>		
+		<script type="text/javascript" src='{{ compiled('jquery.tagcloud.js') }}'></script>
 		<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>
 		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
 		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
-		
+		<script type="text/javascript">
+			$.fn.tagcloud.defaults = {
+			  size: {start: 14, end: 28, unit: 'pt'},
+			  color: {start: '#cde', end: '#f52'}
+			};
+
+			$(function () {
+			  $('#popular_words a').tagcloud();
+			});
+		</script>
+	{% end %}	
 
 	</div>
 

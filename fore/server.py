@@ -431,7 +431,9 @@ class SMHandler(tornado.web.RequestHandler):
 			user_name = self.current_user
 		else:
 			user_name = "Glitcher"
-		self.write(templates.load("sm.html").generate(compiled=compiled, user_name=user_name))
+		popular_words = oracle.popular_words(50)
+		self.write(templates.load("sm.html").generate(compiled=compiled, user_name=user_name,
+														popular_words=popular_words))
 
 class TracksByArtist(tornado.web.RequestHandler):
 	def get(self, artist):

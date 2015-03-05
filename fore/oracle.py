@@ -6,10 +6,14 @@ Handle Oracle Question
 """
 import string
 import random
+import operator
 from stop_words import get_stop_words
 
 stop_words = get_stop_words('en')
-stop_words.extend([u'sometimes', u'can', u'will', u'fix', u'just'])
+
+'''Why is this happening multiple times?'''
+if not u'sometimes' in stop_words:
+	stop_words.extend([u'sometimes', u'can', u'will', u'fix', u'just', u'things'])
 
 class Couplet(object):
 	
@@ -37,6 +41,30 @@ def compare_to_lyrics(word):
 				track_couplets.append(Couplet(lyric, couplet))
 	if len(track_couplets) > 0:
 		return random.choice(track_couplets)
+		
+def popular_words(wordcount=10):
+	from fore.database import get_all_lyrics
+	popular = {}
+	all_lyrics = get_all_lyrics()
+	for lyric in all_lyrics:
+		broken_words = [line for line in lyric.track_lyrics['couplets'] for line in line.split()]
+		remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
+		words_only = [s.translate(remove_punctuation_map) for s in broken_words]
+
+		for word in broken_words:
+			if word not in stop_words:
+				if word in popular:
+					popular[word] += 1
+				else:
+					popular[word] = 1
+	return popular
+						
+'''popular_sorted = sorted(popular.iteritems(), key=operator.itemgetter(1), reverse = True)
+y = []
+for pair in range(10):
+	y = y + [popular_sorted[pair][1]]
+	print popular_sorted[pair]'''
+				 	
 		
 def compare_to_keywords(word):
 	from fore.database import keyword_lyrics
