@@ -10,7 +10,10 @@ import operator
 from stop_words import get_stop_words
 
 stop_words = get_stop_words('en')
-stop_words.extend([u'sometimes', u'can', u'will', u'fix', u'just'])
+
+'''Why is this happening multiple times?'''
+if not u'sometimes' in stop_words:
+	stop_words.extend([u'sometimes', u'can', u'will', u'fix', u'just', u'things'])
 
 class Couplet(object):
 	
@@ -47,9 +50,8 @@ def popular_words(wordcount=10):
 		broken_words = [line for line in lyric.track_lyrics['couplets'] for line in line.split()]
 		remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
 		words_only = [s.translate(remove_punctuation_map) for s in broken_words]
-		print("#####")
+
 		for word in broken_words:
-			word = word.lower()
 			if word not in stop_words:
 				if word in popular:
 					popular[word] += 1
