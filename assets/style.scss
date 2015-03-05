@@ -157,7 +157,7 @@ body {
 	}
 	#trackdetails {
 		display: inline-block;
-		margin: 56px 0 0 25px;
+		margin: 36px 0 0 25px;
 	}
 	#trackdetails .artist, #left #trackdetails .length {
 		margin: 0px 8px;
@@ -180,14 +180,16 @@ body {
 		font-weight: 800;
 		opacity: 0.5;
 		position: absolute;
-	    top: 622px;
-		left: 33px;
+		border: 3px solid lime;
+		position: absolute;
+		left: 145px;
+		top: 85px;
 	}
 	
 	#player {
 		width: 256px;
 		margin: 34px 22px 4px 20px;
-		overflow: hidden;
+		/*overflow: hidden;*/
 		z-index: 5;
 		height: 256px;
 	}
@@ -289,6 +291,26 @@ body {
 		border-top: 1px solid teal;
 		border-top-left-radius: 12px;
 	}
+	
+	#oracle_question {
+		background-image: url(../img/oracle-question-box.png);
+		background-size:   contain;                    
+		background-repeat: no-repeat;
+		background-position: center;   
+		max-width:100%;
+		height: 106px;
+		width: 448px;	
+		.oracle_question_field {
+			width: 300px;max-width:70%;
+			border: 0 none;
+			font-size: 13px;
+			max-width: 70%;
+			position: relative;
+			top: 47px;
+			width: 300px;
+		}
+	}
+	
 	/************Start Percent Grid**************/
 	.grid {
 		overflow: hidden;
@@ -311,6 +333,7 @@ body {
 		-moz-box-shadow: black;
 		-webkit-box-shadow: black;
 		box-shadow: black;
+		margin-left: 30%;
 	}
 	
 	.grid li.wide {
@@ -794,6 +817,7 @@ body {
 		font-size: 13px;
 		text-align: justify;
 	}
+	
 	//End popup styling
 	/* ==========================================================================
 	   Paragraph custom styles
@@ -1030,6 +1054,9 @@ body {
 			-webkit-box-shadow: black;
 			box-shadow: black;
 		}
+		.grid li > nav {
+		margin-left: 0;
+		}
 	}	
 
 	@media all and (min-width: 40em) {
@@ -1057,12 +1084,14 @@ body {
 		}
 	  #trackdetails {
 		display: inline-block;
-		margin: 94px 0 0 25px;
+		margin: 54px 0 0 25px;
 		}
 	.entire_length {
-	    top: 738px;
-		left: 68px;
+	    top: 68px;
 	    }
+	    .grid li > nav {
+		margin-left: 0;
+		}
 	}
 	
 
@@ -1093,9 +1122,11 @@ body {
 		margin-left:290px;
 	  }
 	  .entire_length {
-	    top: 735px;
-		left: 95px;
+	    top: 35px;
 	    }
+	    .grid li > nav {
+		margin-left: 0;
+		}
 	}
 	/************End Percent Grid Media**************/
 

@@ -60,6 +60,7 @@
 		/* Major Glitch Player */
 
 	#Major_Glitch_Player {
+			position:relative;
 			background-image: url(/static/img/Small-Major-Glitch-Player.png);
 			background-size:   contain;                    
 			background-repeat: no-repeat;
@@ -87,6 +88,7 @@
 		}
 		
 	@media only screen and (min-width: 40em) {
+	
 		/* Show images at 85% */
 		#Infinite_Chunk_Player { 
 				background-image: url(/static/img/Infinite-Chunk-Player.png);
