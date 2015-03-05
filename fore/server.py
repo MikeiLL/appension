@@ -424,6 +424,7 @@ class OracleHandler(tornado.web.RequestHandler):
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
 													question=question, answer=answer, popular_words=popular_words))
 		else:
+			popular_words = oracle.popular_words(40)
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
 														question="", answer="", popular_words=popular_words))
 
