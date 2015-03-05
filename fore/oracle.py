@@ -52,11 +52,10 @@ def popular_words(wordcount=10):
 		words_only = [s.translate(remove_punctuation_map) for s in broken_words]
 
 		for word in broken_words:
-			if word not in stop_words:
-				if word in popular:
-					popular[word] += 1
-				else:
-					popular[word] = 1
+			if word in popular:
+				popular[word] += 1
+			else:
+				popular[word] = 1
 	return popular
 						
 '''popular_sorted = sorted(popular.iteritems(), key=operator.itemgetter(1), reverse = True)

@@ -352,6 +352,7 @@ body {
 		box-shadow: 3px 4px 6px #514949;
 		color: #C0C0C0;
 		margin: 0 0 10px 0;
+		z-index:1;
 	}
 	.grid li a {
 		color: #0000ff;
@@ -651,6 +652,7 @@ body {
 		top: 0;   
 		width: 220px;
     	margin: 0 auto;
+    	z-index:3;
 	}
 	#Oracle-01 {
 		height: 72px;
@@ -707,10 +709,21 @@ body {
 	}
 //End Glitch Oracle Styling
 	#popular_words{
-		position:relative;
-		font-weight:bold;
-		opacity:0.5;
+		font-weight: bold;
+		max-width: 65%;
+		opacity: 0.5;
+		position: absolute;
+		text-align: center;
+		top: 650px;
+		z-index: 2;
+			a {
+		text-decoration: none;
+		cursor:none;
+		}
 	}
+	#glitch-ball-title {
+		z-index:3;
+		}
   
  //Begin Popup Stying
 

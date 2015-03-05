@@ -3,57 +3,113 @@
 {% from tornado.escape import url_escape %}
 
 {% block content %}
-<p></p><h2><img src="static/img/glitch-ball-title.png" border="0" width="204" height="159" alt=""></h2><p></p>
 
-<div style="text-align: center"><font size="-1"><b><b>For entertainment purposes only.</b></b>  <br>This website and its creators are not responsible for any damages incurred by actions taken based on playing this game.</font></div><br>
-<!-- start ball -->
-<form enctype="multipart/form-data" action="/oracle" method="post" id="oracle">
-<center>
-			<P>Enter your question and then press the Glitch Ball</p>
-		{% if not answer == "" %}
-			<p>{{ question }}</p>
-		{% end %}
-		{% if not answer == "" %}
-			<div style="max-width:550px">
-			<p>"{{ answer.couplet['couplet'][0] }}<br/>
-				{{ answer.couplet['couplet'][1] }}."</p>
-			<p style="float:right;margin-right:2em">-<a href="/view_artist/{{ url_escape(answer.couplet['artist']) }}">{{ answer.couplet['artist'] }}</a></p>
+	<div id="glitch-ball-title">
+		<p></p><h2><img src="static/img/glitch-ball-title.png" border="0" width="204" height="159" alt=""></h2><p></p>
+
+		<div style="text-align: center"><font size="-1"><b><b>For entertainment purposes only.</b></b>  <br>This website and its creators are not responsible for any damages incurred by actions taken based on playing this game.</font></div><br>
+		<!-- start ball -->
+		<form enctype="multipart/form-data" action="/oracle" method="post" id="oracle">
+		<center>
+					<P>Enter your question and then press the Glitch Ball</p>
+				{% if not answer == "" %}
+					<p>{{ question }}</p>
+				{% end %}
+				{% if not answer == "" %}
+					<div style="max-width:550px">
+					<p>"{{ answer.couplet['couplet'][0] }}<br/>
+						{{ answer.couplet['couplet'][1] }}."</p>
+					<p style="float:right;margin-right:2em">-<a href="/view_artist/{{ url_escape(answer.couplet['artist']) }}">{{ answer.couplet['artist'] }}</a></p>
+					</div>
+				{% end %}
+				<br style="clear:both"/>
+				<div id="oracle_question">
+					{{ form.question(class_="oracle_question_field") }}
+				</div>
+		
+
+				{% if form.question.errors %}
+				<ul>
+					{% for error in form.question.errors %}<li class="errors">{{ error }}</li>{% end %}</ul>
+				{% end %}
+		
+				<p>{{ answer }}</p>
+		  </form>
+
+		<div id="Table_01">
+			<div id="Oracle-01">
+				<img src="static/img/Oracle_01.png" width="221" height="72" alt="">
 			</div>
-		{% end %}
-		<br style="clear:both"/>
-		<div id="oracle_question">
-			{{ form.question(class_="oracle_question_field") }}
+			<div id="Oracle-02">
+				<img src="static/img/Oracle_02.png" width="57" height="104" alt="">
+			</div>
+			<div id="Oracle-03">
+		
+			</div>
+			<div id="Oracle-04">
+				<img src="static/img/Oracle_04.png" width="57" height="104" alt="">
+			</div>
+			<div id="Oracle-05">
+				<img src="static/img/Oracle_05.png" width="221" height="75" alt="">
+			</div>
 		</div>
-		
+		</center>
+		<!-- end ball -->
 
-		{% if form.question.errors %}
-		<ul>
-        	{% for error in form.question.errors %}<li class="errors">{{ error }}</li>{% end %}</ul>
-  		{% end %}
-  		
-  		<p>{{ answer }}</p>
-  </form>
-
-<div id="Table_01">
-	<div id="Oracle-01">
-		<img src="static/img/Oracle_01.png" width="221" height="72" alt="">
+		<br><br>
 	</div>
-	<div id="Oracle-02">
-		<img src="static/img/Oracle_02.png" width="57" height="104" alt="">
+	
+	<div id="popular_words">
+		{% for word, popularity in popular_words.iteritems() %}
+		  <a href="#" rel="{{ popularity }}">{{ word }}</a>
+		{% end %}
 	</div>
-	<div id="Oracle-03">
-		
-	</div>
-	<div id="Oracle-04">
-		<img src="static/img/Oracle_04.png" width="57" height="104" alt="">
-	</div>
-	<div id="Oracle-05">
-		<img src="static/img/Oracle_05.png" width="221" height="75" alt="">
-	</div>
-</div>
-</center>
-<!-- end ball -->
-
-<br><br>
 
 {% end %}
+{% block footer %}		
+	<div class="container">			
+		<footer role="contentinfo">
+			<div>				
+				<!-- Amended February 28 -->
+				<nav id="menu">
+					<a href="/">Home</a> 
+					<font size="-1">&nbsp;&copy; 2014 Future Fossil</font>
+					<a href="mailto:beezwax@aol.com">Contact</a>					
+					<a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>	
+					<a href="http://www.futurefossilmusic.com/" title="Home for all things Chris Butler">Future Fossil Music</a> 
+				</nav>			
+			</div>		
+		</footer>	
+	</div>				
+	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
+	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
+		'soundmanager2-nodebug-jsmin.js',		  
+		'berniecode-animator.js',		  
+		'360player.js'		  ) }}'>
+	</script>		
+	<script type="text/javascript">		
+		$('#Oracle-03').click(function () {
+		$('#oracle').submit();}
+		);
+	</script>	
+	<script type="text/javascript" >			
+	$(".title").click(function() {
+		window.location = $(this).find("a").attr("href"); 		  
+		return false;		
+		});		
+	</script>		
+		<script type="text/javascript" src='{{ compiled('jquery.tagcloud.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
+		<script type="text/javascript">
+			$.fn.tagcloud.defaults = {
+			  size: {start: 14, end: 28, unit: 'pt'},
+			  color: {start: '#cde', end: '#f52'}
+			};
+
+			$(function () {
+			  $('#popular_words a').tagcloud();
+			});
+		</script>
+	{% end %}	
