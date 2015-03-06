@@ -706,23 +706,31 @@ body {
 		width: 221px;
 	}
 //End Glitch Oracle Styling
-	#popular_words{
-		font-weight: bold;
-		max-width: 65%;
+
+	
+    #popular_words{
+		font-weight: normal;
+		line-height: 0.9em;
+		max-width: 90%;
 		opacity: 0.2;
 		position: absolute;
 		text-align: center;
-		top: 650px;
+		top: 500px;
 		z-index: 2;
-			a {
-		text-decoration: none;
-		cursor:none;
+		a {
+			text-decoration: none;
+			cursor:none;
 		}
 	}
 	#glitch-ball-title {
 		z-index:3;
 		}
 		
+	img.glitch_title {
+		max-width:40%;
+		height:auto;
+		}
+			
 	.glitch_answer {
 		max-width:550px;
 		padding: 5px 5px;
@@ -923,7 +931,11 @@ body {
 	
 	@media all and (min-width:40em) {
 	
-		padding: 2em;
+		#popular_words {
+			font-weight: bold;
+			max-width: 55%;
+			top: 570px;
+		}
 		
 		h1 {
 			font-size: 3.6em;
@@ -1031,6 +1043,12 @@ body {
 	/* Large Screens */
 	@media all and (min-width: 54em) {
 		padding: 4em;
+		
+		#popular_words {
+			font-weight: bold;
+			max-width: 65%;
+			top: 650px;
+		}
 		
 		h1 {
 			font-size: 2.4em;

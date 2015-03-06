@@ -13,18 +13,34 @@ BODY .grid LI.wide A
 	margin: 0;
 }
 
+	p.floatRight
+	{
+		border-bottom: 1px solid gray;
+		border-top: 1px solid gray;
+		color: #000000;
+		margin-left: 126px;
+		margin-top: -129px;
+		padding-bottom: 5px;
+		padding-top: 5px;
+		position: absolute;
+		text-align: justify;
+		width: 160px;
+	}
 
-P.floatRight
-{
-	width: 300px;
-	/*+placement: displace 306px -149px;*/
-	position: absolute;
-	margin-left: 306px;
-	margin-top: -149px;
-	color: #000000;
-	text-align: justify;
-	border-top: 1px solid gray;
-	border-bottom: 1px solid gray;
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
+	@media all and (min-width: 40em){
+		p.floatRight
+		{
+			width: 200px;
+			margin-left: 226px;
+			margin-top: -149px;
+		}
+	}
+
+	@media all and (min-width: 60em){
+		p.floatRight
+		{
+			width: 300px;
+			margin-left: 306px;
+			margin-top: -149px;
+		}
+	}
