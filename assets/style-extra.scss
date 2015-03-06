@@ -6,3 +6,25 @@ body .grid li.wide {
 		color: black;
 		padding: 0 0 10px 12px;
 	}
+
+BODY .grid LI.wide A
+{
+	color: #3333B5;
+	margin: 0;
+}
+
+
+P.floatRight
+{
+	width: 300px;
+	/*+placement: displace 306px -149px;*/
+	position: absolute;
+	margin-left: 306px;
+	margin-top: -149px;
+	color: #000000;
+	text-align: justify;
+	border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
