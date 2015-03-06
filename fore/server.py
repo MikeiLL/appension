@@ -610,7 +610,6 @@ if __name__ == "__main__":
 			(r"/rebuild_glitch", RenderGlitch),
 			(r"/credits", CreditsHandler),
 			(r"/sm", SMHandler),
-			(r"/credits", CreditsHandler),
 		]),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',

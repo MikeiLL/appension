@@ -180,10 +180,9 @@ body {
 		font-weight: 800;
 		opacity: 0.5;
 		position: absolute;
-		border: 3px solid lime;
-		position: absolute;
 		left: 145px;
 		top: 85px;
+		display:none;
 	}
 	
 	#player {
@@ -333,7 +332,6 @@ body {
 		-moz-box-shadow: black;
 		-webkit-box-shadow: black;
 		box-shadow: black;
-		margin-left: 30%;
 	}
 	
 	.grid li.wide {
@@ -1130,6 +1128,7 @@ body {
 		}
 	.entire_length {
 	    top: 68px;
+	    display:block;
 	    }
 	    .grid li > nav {
 		margin-left: 0;
@@ -1164,7 +1163,8 @@ body {
 		margin-left:290px;
 	  }
 	  .entire_length {
-	    top: 35px;
+	    top: 87px;
+	    display:block;
 	    }
 	    .grid li > nav {
 		margin-left: 0;
