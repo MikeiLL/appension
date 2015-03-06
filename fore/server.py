@@ -437,6 +437,14 @@ class SMHandler(tornado.web.RequestHandler):
 		popular_words = oracle.popular_words(50)
 		self.write(templates.load("sm.html").generate(compiled=compiled, user_name=user_name,
 														popular_words=popular_words))
+														
+class CreditsHandler(tornado.web.RequestHandler):
+	def get(self):
+		if self.current_user:
+			user_name = self.current_user
+		else:
+			user_name = "Glitcher"
+		self.write(templates.load("credits.html").generate(compiled=compiled, user_name=user_name))
 
 class TracksByArtist(tornado.web.RequestHandler):
 	def get(self, artist):
@@ -600,7 +608,9 @@ if __name__ == "__main__":
 			(r"/segment_selection", SegmentHandler),
 			(r"/view_artist/([A-Za-z0-9\+\-\.]+)", TracksByArtist),
 			(r"/rebuild_glitch", RenderGlitch),
+			(r"/credits", CreditsHandler),
 			(r"/sm", SMHandler),
+			(r"/credits", CreditsHandler),
 		]),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',
