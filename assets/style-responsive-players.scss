@@ -1,3 +1,21 @@
+		.ui360-vis,
+		.ui360-vis .sm2-360ui,
+		.sm2-inline-list .ui360-vis {
+		height: 316px;
+		width: 266px;
+		}
+		
+		
+		.ui360 .sm2-canvas.hi-dpi {
+		/* hi-dpi / "retina" screens */
+		 top: -32%;
+		 left: -50%;
+		 -moz-transform: scale(0.5);
+		 -ms-transform: scale(0.5);
+		 -webkit-transform: scale(0.5);
+		 transform: scale(0.5);
+		}
+
 		/* Infinite Chunk Player */
 
 	#Infinite_Chunk_Player {
@@ -87,7 +105,21 @@
 			}
 		}
 		
-	@media only screen and (min-width: 40em) {
+@media all and (min-width: 40em){
+	
+		.ui360-vis,
+		.ui360-vis .sm2-360ui,
+		.sm2-inline-list .ui360-vis {
+		 /* size of the container for the circle, etc. */
+		height: 326px;
+		width: 266px;
+		}
+		
+		.ui360 .sm2-canvas.hi-dpi {
+		/* hi-dpi / "retina" screens */
+		 top: -46%;
+		 left: -45%;
+		}
 	
 		/* Show images at 85% */
 		#Infinite_Chunk_Player { 
@@ -158,58 +190,76 @@
 			padding-top: 3px;
 			}
 		}
-	}
-	@media only screen and (min-width: 60em) {
+	}//End Media querie 40em
+		
+@media all and (min-width: 60em){
+	
+		.ui360 .sm2-canvas.hi-dpi {
+		/* hi-dpi / "retina" screens */
+		 top: -50%;
+		 left: -48%;
+		}
+		
+		.ui360-vis,
+		.ui360-vis .sm2-360ui,
+		.sm2-inline-list .ui360-vis {
+		 /* size of the container for the circle, etc. */
+		 width:256px;
+		 height:256px;
+			 }
+	
+		/* Show images at 85% */
 		#Infinite_Chunk_Player { 
-			background-image: url(/static/img/Infinite-Chunk-Player.png);
-			width:506px;
-			height:201px;
-			margin-left:0;
-             
-	  	.ui360-vis {
-			padding-left: 253px;
-			padding-top: 3px;
-			}
-		
-		.sm2-bar-ui.compact {
-			left: 100px;
-			max-width: 20em;
-			min-width: 1em;
-			top: 112px;
-				.bd a {
-					left: 4px;
-					text-decoration: none;
+				background-image: url(/static/img/Infinite-Chunk-Player.png);
+				width:506px;
+				height:201px;
+				margin-left:0;
+			 
+			.ui360-vis {
+				padding-left: 253px;
+				padding-top: 3px;
 				}
-			}
-        }
-		
-		#Devil_Glitch_Player { 
-				background-image: url(/static/img/Devil-Glitch-Player.png);
-				width:506;
-				height:285px;
-		
-	  	.ui360-vis {
-			padding-left: 253px;
-			padding-top: 3px;
-			}
-				
+
 		.sm2-bar-ui.compact {
-				border: 0 none;
-				left: -2px;
-				margin-bottom: 34px;
-				max-width: 19em;
+				left: 100px;
+				max-width: 20em;
 				min-width: 1em;
-				top: 121px;
-				.bd a {
-					left: 4px;
-					text-decoration: none;
+				top: 112px;
+					.bd a {
+						left: 4px;
+						text-decoration: none;
+					}
 				}
-			}
 		}
 			
+		#Devil_Glitch_Player { 
+				background-image: url(/static/img/Devil-Glitch-Player.png);
+				width:506px;
+				height:285px;
+		
+			.ui360-vis {
+				padding-left: 253px;
+				padding-top: 3px;
+				}
+
+		.sm2-bar-ui.compact {
+					border: 0 none;
+					left: -2px;
+					margin-bottom: 34px;
+					max-width: 19em;
+					min-width: 1em;
+					top: 121px;
+					.bd a {
+						left: 4px;
+						text-decoration: none;
+					}
+				}
+		}
+		
+		
 		#Major_Glitch_Player { 
 				background-image: url(/static/img/Major-Glitch-Player.png);
-				width:506;
+				width:506px;
 				height:248px;
 		
 	  	.ui360-vis {
@@ -230,5 +280,9 @@
 				}
 			}
 		}
-	}
-	//End Major Glitch Player
+	}//End Media querie 60em
+	
+	
+	
+
+	
