@@ -162,9 +162,14 @@ def get_all_lyrics():
 		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE status = 1 AND lyrics != ''")
 		return [Lyric(*row) for row in cur.fetchall()]
 		
-def keyword_lyrics(word):
+def match_lyrics(word):
     with _conn, _conn.cursor() as cur:
-		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE keywords LIKE %s", ('%'+word+'%',))
+		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE lyrics ILIKE %s", ('%'+word+'%',))
+		return [Lyric(*row) for row in cur.fetchall()]
+		
+def match_keywords(word):
+    with _conn, _conn.cursor() as cur:
+		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE keywords ILIKE %s", ('%'+word+'%',))
 		return [Lyric(*row) for row in cur.fetchall()]
 		
 def random_lyrics():

@@ -31,7 +31,7 @@ vague_responses = ["hmmm....good question.  not sure i can answer that one.  got
 class Couplet(object):
 	
 	def __init__(self, artist, couplet):
-		couplet = string.capitalize(couplet)
+		couplet = couplet[:1].upper() + couplet[1:]
 		couplet = couplet.splitlines(True)
 		self.couplet = {
 					'artist': artist,
@@ -66,20 +66,21 @@ for pair in range(10):
 	print popular_sorted[pair]'''
 				 	
 def compare_to_lyrics(word):
-	from fore.database import get_all_lyrics
+	from fore.database import match_lyrics
 	track_couplets = []
-	all_lyrics = get_all_lyrics()
-	for lyric in all_lyrics:
+	matching_lyrics = match_lyrics(word)
+	for lyric in matching_lyrics:
 		for couplet in lyric.track_lyrics['couplets']:
-			if word in couplet:
+			couplet_copy = couplet
+			if word.lower() in couplet_copy.lower():
 				track_couplets.append(Couplet(lyric.track_lyrics['artist'], couplet))
 	if len(track_couplets) > 0:
 		return random.choice(track_couplets)
 				
 def compare_to_keywords(word):
-	from fore.database import keyword_lyrics
+	from fore.database import match_keywords
 	track_couplets = []
-	matching_lyrics = keyword_lyrics(word)
+	matching_lyrics = match_keywords(word)
 	for lyric in matching_lyrics:
 		for couplet in lyric.track_lyrics['couplets']:
 			track_couplets.append(Couplet(lyric.track_lyrics['artist'], couplet))
