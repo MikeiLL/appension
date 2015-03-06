@@ -5,11 +5,10 @@
 {% block content %}
 
 <div id="popular_words">
-{% for word, popularity in popular_words.iteritems() %}
-  <a href="/path" rel="{{ popularity }}">{{ word }}</a>
-{% end %}
-</div>
-
+		{% for popular_word in popular_words %}
+		  <a href="#" rel="{{ popular_word[1] }}">{{ popular_word[0] }}</a>
+		{% end %}
+	</div>
  <!-- Start Infinite Chunk Player -->
 
         <div id="Infinite_Chunk_Player">
