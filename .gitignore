@@ -1,4 +1,5 @@
 echo-nest-remix-examples/*
+static/single-audio-files/
 audio/
 *.mp3
 *.en
