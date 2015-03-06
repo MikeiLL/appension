@@ -422,12 +422,13 @@ class OracleHandler(tornado.web.RequestHandler):
 			question = info.get("question",[""])[0]
 			answer = oracle.the_oracle_speaks(question)
 			popular_words = oracle.popular_words(40)
+		random.shuffle(popular_words)
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
-													question=question, answer=answer, popular_words=popular_words))
+													question=question, answer=answer, popular_words=popular_words[:90]))
 		else:
 			popular_words = oracle.popular_words(40)
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
-														question="", answer="", popular_words=popular_words))
+														question="", answer="", popular_words=popular_words[:90]))
 
 class SMHandler(tornado.web.RequestHandler):
 	def get(self):
