@@ -15,18 +15,27 @@ stop_words = get_stop_words('en')
 if not u'sometimes' in stop_words:
 	stop_words.extend([u'sometimes', u'can', u'will', u'fix', u'just', u'things'])
 	
-vague_responses = ["hmmm....good question.  not sure i can answer that one.  got another?", 
-"i think you're gonna have to answer that for yourself. try another question?", 
-"well, if you don't know, i'm certainly not gonna tell you.  try another question?", 
-"can you be more specific?", "your question is too vague.  please incude more details.", 
-"how in the world would you think i would know about THAT?? Try again with another question.", 
-"i want to help, but that's kind of beyond me.  got another question?", 
-"wow...no one's ever asked that one before!  i have no idea. is there another question i might be able to help you with?", 
-"there are too many ways to answer your question.  can you give me some more details so i can fine tune my response?", 
-"is that really so important to you?   is there something else i can help you with?", 
-"what do you think the answer is?", 
-" i think you should wait and see on that one.  anything else i can help you with?", 
-"i'm not so sure you really want to know the answer to that. ask something different."]
+vague_responses = ["Hmmm....good question.  Not sure i can answer that one.  Got another?", 
+"I think you're gonna have to answer that for yourself. Try another question?", 
+"Well, if you don't know, I'm certainly not gonna tell you.  Try another question?", 
+"Can you be more specific?", "Your question is too vague.  Please incude more details.", 
+"How in the world would you think I would know about THAT?? Try again with another question.", 
+"I want to help, but that's kind of beyond me.  Got another question?", 
+"Wow...no one's ever asked that one before!  I have no idea. Is there another question I might be able to help you with?", 
+"there are too many ways to answer your question.  can you give me some more details so I can fine tune my response?", 
+"Is that really so important to you?  Is there something else i can help you with?", 
+"What do you think the answer is?", 
+"I think you should wait and see on that one.  Anything else I can help you with?", 
+"I'm not so sure you really want to know the answer to that. Ask something different.", 
+"The image is foggy. Be brave. Tell me something more intimate.", 
+"Excuse me!?! I'm an oracle, not a prophet. Feel free to try again, though.", 
+"Meditate on it a little more and try asking again in a different way.", 
+"That's a difficult question. Drink something and ask it in a different way.", 
+"Goodness gracious. I wish I knew. Ask me something easier.",
+"Br$%$%$ttt7&7&8888ixxx$*(@&*&* you're breaking my psychic circuitry. Please ask something easier.",
+"Great question! But I fear it's beyond my abilities. Please try something else.",
+"I'm seeing a blurry vision of YOU writing a verse about that, friend. What else do you desire knowledge about?",
+"The sound of one hand clapping. Ask me something else."]
 
 class Couplet(object):
 	
@@ -57,7 +66,8 @@ def popular_words(wordcount=10):
 				popular[word] += 1
 			else:
 				popular[word] = 1
-	return popular
+	popular_sorted = sorted(popular.iteritems(), key=operator.itemgetter(1), reverse = True)
+	return popular_sorted
 						
 '''popular_sorted = sorted(popular.iteritems(), key=operator.itemgetter(1), reverse = True)
 y = []
