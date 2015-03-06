@@ -11,17 +11,21 @@
 		<!-- start ball -->
 		<form enctype="multipart/form-data" action="/oracle" method="post" id="oracle">
 		<center>
+				<div>
+				{% if answer == "" %}
 					<P>Enter your question and then press the Glitch Ball</p>
+				{% end %}
 				{% if not answer == "" %}
-					<div style="max-width:550px">
-					<p>{{ answer.couplet['couplet'][0] }}<br/>
-						{{ answer.couplet['couplet'][1] }}</p>
-					{% if not answer.couplet['artist'] == "The Glitch Oracle" %}
-					<p style="float:right;margin-right:2em">-<a href="/view_artist/{{ url_escape(answer.couplet['artist']) }}">{{ answer.couplet['artist'] }}</a></p>
-					{% else %}
-					<p style="float:right;margin-right:2em">-{{ answer.couplet['artist'] }}</p>
+					<div class="glitch_answer">{{ answer.couplet['couplet'][0] }}<br/>
+						{{ answer.couplet['couplet'][1] }}<br/>
+						{% if not answer.couplet['artist'] == "The Glitch Oracle" %}
+						<p>-<a href="/view_artist/{{ url_escape(answer.couplet['artist']) }}">{{ answer.couplet['artist'] }}</a></p>
+						{% else %}
+						<p>-{{ answer.couplet['artist'] }}</p>
+						<br style="clear:both"/>
 					</div>
 					{% end %}
+				</div>
 				{% end %}
 				<br style="clear:both"/>
 				<div id="oracle_question">
