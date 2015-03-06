@@ -723,28 +723,35 @@ body {
 		z-index:3;
 		}
 		
-	.glitch_answer {
-		max-width:550px;
-		padding: 5px 5px;
-		margin: 0px auto;
-		position: relative;
-		font-size: 16px;
-		font-weight: bold;
-		font-family: arial;
-		overflow:auto;
-
-		-webkit-box-shadow: 0 0 0 4px #d35537, 2px 1px 4px 4px rgba(10,10,0,.5);
-		-moz-box-shadow: 0 0 0 4px #d35537, 2px 1px 4px 4px rgba(10,10,0,.5);
-		box-shadow: 0 0 0 4px #d35537, 2px 1px 4px 4px rgba(10,10,0,.5);
-		font-weight: normal;
-
-		-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		-ms-box-sizing: border-box;
-		box-sizing: border-box;
-		p {
-			float:right;margin-right:2em
-		   }
+.glitch_answer {
+	max-width: 550px;
+	background-image: url(/static/img/tile3.jpg);
+	/*+border-radius: 12px;*/
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	-khtml-border-radius: 12px;
+	border-radius: 12px;
+	border: 3px ridge silver;
+	padding: 7px 5px 0px;
+	margin: 0px auto;
+	position: relative;
+	text-align: center;
+	font-size: 16px;
+	font-weight: bold;
+	font-family: arial;
+	overflow: auto;
+	-webkit-box-shadow: 0 0 0 4px #d35537, 2px 1px 4px 4px rgba(10,10,0,.5);
+	-moz-box-shadow: 0 0 0 4px #d35537, 2px 1px 4px 4px rgba(10,10,0,.5);
+	box-shadow: 0 0 16px white;
+	font-weight: normal;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+	p {
+		float:right;
+		margin-right:2em;
+	}
 		}
   
  //Begin Popup Stying
