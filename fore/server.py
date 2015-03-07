@@ -406,7 +406,7 @@ class OracleHandler(tornado.web.RequestHandler):
 		else:
 			user_name = "Glitcher"
 		form = Oracle()
-		popular_words = oracle.popular_words(40)
+		popular_words = oracle.popular_words(90)
 		random.shuffle(popular_words)
 		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
 															question="", answer="", popular_words=popular_words[:90]))

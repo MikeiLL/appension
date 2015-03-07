@@ -52,7 +52,7 @@ def get_word_list(question):
 	question = question.translate(string.maketrans("",""), string.punctuation)
 	return [word for word in question.split() if word not in stop_words]
 		
-def popular_words(wordcount=10):
+def popular_words(wordcount=50):
 	from fore.database import get_all_lyrics
 	popular = {}
 	all_lyrics = get_all_lyrics()
