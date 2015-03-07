@@ -67,7 +67,7 @@ def popular_words(wordcount=10):
 			else:
 				popular[word] = 1
 	popular_sorted = sorted(popular.iteritems(), key=operator.itemgetter(1), reverse = True)
-	return popular_sorted
+	return popular_sorted[:wordcount]
 						
 '''popular_sorted = sorted(popular.iteritems(), key=operator.itemgetter(1), reverse = True)
 y = []
