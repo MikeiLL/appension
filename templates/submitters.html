@@ -1,0 +1,43 @@
+{% extends admin_main.html %}
+
+{% block content %}
+<p><h1>All Tracks</h1></p>
+<form enctype="multipart/form-data" action="/submitters" method="post">
+<center>
+<table border="1" cellpadding="3">
+
+{% if notice %}
+	<h2> {{ notice }} </h2>
+{% end %}
+<tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
+<tr><td>Submitter Name</td><td>Submitter Email</td><td>Artist</td><td>Lyrics</td><td>Story</td></tr>
+{% for submitter in submitters %}
+	<input type="hidden" name="track_id" size="15" value="{{ submitter[3] }}">
+	<tr><td><input type="text" name="name" size="15" value="{{ submitter[0] }}"></td>
+	<td><input type="text" name="email" size="15" value="{{ submitter[1] }}"></td>
+	<td><a href="{{ edit_url }}/{{ submitter[3] }}">{{ submitter[2] }}</a></td>
+	
+	<td>{% if not submitter[4] %}
+			<span class="errors">Empty.</span>
+		{% else %}
+			Yes.
+		{% end %}
+	</td>
+	
+	<td>{% if not submitter[5] %}
+			 <span class="errors">Empty.</span>
+		{% else %}
+			Yes.
+		{% end %}
+	</td>
+	</tr>
+
+{% end %}
+<tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
+
+</table>
+</form>
+</center>
+{% end %}
+
+
