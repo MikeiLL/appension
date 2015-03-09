@@ -354,7 +354,7 @@ body {
 		background: url(/static/img/footer-tile.jpg) #000;
 		margin: 0 -1em;
 		position: relative;
-		z-index: 2;
+		z-index: 100;
 	}
 	footer[role=contentinfo] > div {
 		max-width: 70em;
