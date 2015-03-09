@@ -291,25 +291,6 @@ body {
 		border-top-left-radius: 12px;
 	}
 	
-	#oracle_question {
-		background-image: url(../img/oracle-question-box.png);
-		background-size:   contain;                    
-		background-repeat: no-repeat;
-		background-position: center;   
-		max-width:100%;
-		height: 106px;
-		width: 448px;	
-		.oracle_question_field {
-			width: 300px;max-width:70%;
-			border: 0 none;
-			font-size: 13px;
-			max-width: 70%;
-			position: relative;
-			top: 47px;
-			width: 300px;
-		}
-	}
-	
 	/************Start Percent Grid**************/
 	.grid {
 		overflow: hidden;
@@ -522,126 +503,6 @@ body {
 		margin-bottom: 15px;
 	}
 	
-
-
-	/* Major Glitch Table 
-	
-		/* Devil Glitch Table 
-
-	#Devil_Glitch_Table {
-		position:relative;
-		left:0px;
-		top:0px;
-		width:506px;
-		height:285px;
-	}
-
-	#Devil-Glitch-Player-01 {
-		position:absolute;
-		left:0px;
-		top:0px;
-		width:506px;
-		height:117px;
-	}
-
-	#Devil-Glitch-Player-02 {
-		position:absolute;
-		left:0px;
-		top:117px;
-		width:103px;
-		height:101px;
-	}
-
-	#Devil-Glitch-Player-03 {
-		position:absolute;
-		left:103px;
-		top:117px;
-		width:300px;
-		height:30px;
-	}
-
-	#Devil-Glitch-Player-04 {
-		position:absolute;
-		left:403px;
-		top:117px;
-		width:103px;
-		height:101px;
-	}
-
-	#Devil-Glitch-Player-05 {
-		position:absolute;
-		left:103px;
-		top:147px;
-		width:300px;
-		height:41px;
-	}
-
-	#Devil-Glitch-Player-06 {
-		position:absolute;
-		left:103px;
-		top:188px;
-		width:300px;
-		height:30px;
-	}
-
-	#Devil-Glitch-Player-07 {
-		position:absolute;
-		left:0px;
-		top:218px;
-		width:506px;
-		height:67px;
-	}
-
-
-	#Major_Glitch_Table {
-		position:relative;
-		left:0px;
-		top:0px;
-		width:506px;
-		height:248px;
-	}
-
-	#Major-Glitch-Player-01 {
-		position:absolute;
-		left:0px;
-		top:0px;
-		width:506px;
-		height:122px;
-	}
-
-	#Major-Glitch-Player-02 {
-		position:absolute;
-		left:0px;
-		top:122px;
-		width:104px;
-		height:126px;
-	}
-
-	#Major-Glitch-Player-03 {
-		position:absolute;
-		left:104px;
-		top:122px;
-		width:300px;
-		height:30px;
-	}
-
-	#Major-Glitch-Player-04 {
-		position:absolute;
-		left:404px;
-		top:122px;
-		width:102px;
-		height:126px;
-	}
-
-	#Major-Glitch-Player-05 {
-		position:absolute;
-		left:104px;
-		top:152px;
-		width:300px;
-		height:96px;
-	}
-	//End Major Glitch Player  */
-	
 //Begin Glitch Oracle Styling
 	#Table_01 {
 		height: 251px;
@@ -707,6 +568,28 @@ body {
 	}
 //End Glitch Oracle Styling
 
+	#oracle_question {
+		background-image: url(../img/oracle-question-box.png);
+		background-size:   contain;                    
+		background-repeat: no-repeat;
+		background-position: center;   
+		max-width:100%;
+		height: 106px;
+		width: 448px;	
+		.oracle_question_field {
+			width: 300px;
+			max-width:70%;
+			border-radius:20px;
+			border: 0 none;
+			font-size: 13px;
+			max-width: 70%;
+			position: relative;
+			top: 45px;
+			width: 320px;
+			height:auto;
+		}
+	}
+	
 	
     #popular_words{
 		font-weight: normal;
@@ -715,7 +598,7 @@ body {
 		opacity: 0.2;
 		position: absolute;
 		text-align: center;
-		top: 500px;
+		top: 520px;
 		z-index: 2;
 		a {
 			text-decoration: none;
@@ -941,7 +824,7 @@ body {
 		#popular_words {
 			font-weight: bold;
 			max-width: 55%;
-			top: 570px;
+			top: 640px;
 		}
 		
 		h1 {
@@ -1054,7 +937,7 @@ body {
 		#popular_words {
 			font-weight: bold;
 			max-width: 65%;
-			top: 650px;
+			top: 850px;
 			line-height:1.5em
 		}
 		

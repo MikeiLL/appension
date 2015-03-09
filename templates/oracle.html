@@ -12,7 +12,11 @@
 		<center>
 				<div>
 				{% if answer == "" %}
-					<P>Enter your question and then press the Glitch Ball</p>
+					<center><i>"Questions are a burden to others; answers are a prison for oneself."
+</i><br>
+<p class="intro-copy">The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting <i>smarter</i>.<br><br>
+The Glitch Oracle reaches deep into this accumulated wisdom of human experience and finds the answers to your questions, whatever they may be. Consult The Glitch Oracle anytime you need fast, personal guidance. <br><br>You just know what you need. But it knows what you <i>want</i>. </p></center>
+<center><p><b>Enter your question and then press the Glitch Ball</b></p>
 				{% end %}
 				{% if not answer == "" %}
 					<div class="glitch_answer">{{ answer.couplet['couplet'][0] }}<br/>
@@ -66,7 +70,7 @@
 		<font size="-1">The idea for The Glitch Oracle" came from Tom Goodkind, who used the original CD as an aural/I Ching/therapy tool.</font>
 	</div>
 	
-	<div id="popular_words">
+	<div id="popular_words" style="display:{{ show_cloud }}">
 		{% for popular_word in popular_words %}
 		  <a href="#" rel="{{ popular_word[1] }}">{{ popular_word[0] }}</a>
 		{% end %}
