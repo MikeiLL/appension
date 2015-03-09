@@ -117,8 +117,8 @@
 		
 		.ui360 .sm2-canvas.hi-dpi {
 		/* hi-dpi / "retina" screens */
-		 top: -46%;
-		 left: -45%;
+		 top: -32%;
+		 left: -50%;
 		}
 	
 		/* Show images at 85% */
@@ -196,7 +196,7 @@
 	
 		.ui360 .sm2-canvas.hi-dpi {
 		/* hi-dpi / "retina" screens */
-		 top: -50%;
+		 top: -52%;
 		 left: -48%;
 		}
 		
@@ -236,6 +236,8 @@
 				background-image: url(/static/img/Devil-Glitch-Player.png);
 				width:506px;
 				height:285px;
+				
+				.br {margin-top:20px;}
 		
 			.ui360-vis {
 				padding-left: 253px;
@@ -248,7 +250,7 @@
 					margin-bottom: 34px;
 					max-width: 19em;
 					min-width: 1em;
-					top: 121px;
+					top: 119px;
 					.bd a {
 						left: 4px;
 						text-decoration: none;
