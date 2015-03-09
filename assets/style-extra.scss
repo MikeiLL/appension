@@ -27,6 +27,26 @@ BODY .grid LI.wide A
 		width: 160px;
 	}
 
+/*7th March*/
+#creditname
+{
+	border-left: 1px solid teal;
+	border-bottom: 1px solid teal;
+	border-bottom-left-radius: 8px;
+	padding: 0px 0px 0px 3px;
+}
+
+/*Added 8th March*/
+P.intro-copy
+{
+	width: 650px;
+	color: #000000;
+	text-align: left;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+
 	@media all and (min-width: 40em){
 		p.floatRight
 		{
