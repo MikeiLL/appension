@@ -321,7 +321,28 @@ class AdminRender(BaseHandler):
 		track_id=int(self.request.arguments['id'][0])
 		database.update_track(track_id, self.request.arguments)
 		self.write(admin_page(user_name, updated=track_id))
-
+		
+class Submitters(BaseHandler):
+	@tornado.web.authenticated
+	def get(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		submitters = database.get_submitter_info();
+		self.write(templates.load("submitters.html").generate(admin_url=apikeys.admin_url, 
+			compiled=compiled, user_name=user_name, notice="", submitters=submitters, edit_url=apikeys.edit_url))
+		
+	def post(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		print(self.request.arguments)
+		database.update_submitter_info(self.request.arguments)
+		submitters = database.get_submitter_info();
+		self.write(templates.load("submitters.html").generate(admin_url=apikeys.admin_url, 
+			compiled=compiled, user_name=user_name, notice="Submitter List Updated", submitters=submitters,
+			edit_url=apikeys.edit_url,))
+		
 		
 class ManageTransition(BaseHandler):
 	@tornado.web.authenticated
@@ -595,6 +616,7 @@ if __name__ == "__main__":
 			(r"/view_artist/([A-Za-z0-9\+\-\.]+)", TracksByArtist),
 			(r"/rebuild_glitch", RenderGlitch),
 			(r"/credits", CreditsHandler),
+			(r"/submitters", Submitters),
 			(r"/sm", SMHandler),
 		]),
 		cookie_secret=apikeys.cookie_monster,

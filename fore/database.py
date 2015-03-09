@@ -246,6 +246,26 @@ def sequence_tracks(sequence_object):
         seq = sequence_object.get(id,'')[0]
     	with _conn, _conn.cursor() as cur:
 		cur.execute("UPDATE tracks SET sequence = "+str(seq)+", played = 0 WHERE id="+str(id))
+	
+def get_submitter_info():
+    with _conn, _conn.cursor() as cur:
+        query = '''SELECT submitter, submitteremail, artist, id,
+                CASE WHEN lyrics !='' THEN 1
+                ELSE 0
+                END as lyrics,
+                CASE WHEN story !='' THEN 1
+                ELSE 0
+                END as story
+                FROM tracks'''
+        cur.execute(query)
+        return [row for row in cur.fetchall()]
+			
+def update_submitter_info(submitter_object):
+    for track_grouping in zip(submitter_object['track_id'],submitter_object['name'],submitter_object['email']):
+        name = track_grouping[1]
+        email = track_grouping[2]
+    	with _conn, _conn.cursor() as cur:
+		cur.execute("UPDATE tracks SET submitter = '"+str(name)+"', submitteremail = '"+str(email)+"' WHERE id="+str(track_grouping[0]))
 		
 def get_subsequent_track(track_id):
     """Return Track Object for next track in sequence."""
