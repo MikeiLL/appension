@@ -233,6 +233,7 @@ class Submissionform(BaseHandler):
 		
 	def post(self):
 		form = EasyForm(self.request.arguments)
+		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
 		if form.validate():
 			for f in self.request.arguments:
@@ -245,9 +246,9 @@ class Submissionform(BaseHandler):
 			message = "A new file, %s had been submitted by %s at %s."%(fileinfo['filename'],info.get("submitter_name",[""])[0]
 																		, info.get("email",[""])[0])
 			#mailer.AlertMessage(message, 'New Track Submission')
-			self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
+			self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name=user_name))
 		else:
-			self.write(templates.load("fileuploadform.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
+			self.write(templates.load("fileuploadform.html").generate(compiled=compiled, form=form, user_name=user_name))
 			
 
 def admin_page(user_name, deleted=0, updated=0, notice=''):
@@ -399,12 +400,9 @@ class TrackArtwork(tornado.web.RequestHandler):
 class Oracle(Form):
 	question = wtforms.TextField('question', validators=[])
 	
-class OracleHandler(tornado.web.RequestHandler):
+class OracleHandler(BaseHandler):
 	def get(self):
-		if self.current_user:
-			user_name = self.current_user
-		else:
-			user_name = "Glitcher"
+		user_name = self.current_user or 'Glitcher'
 		form = Oracle()
 		popular_words = oracle.popular_words(90)
 		random.shuffle(popular_words)
@@ -414,10 +412,7 @@ class OracleHandler(tornado.web.RequestHandler):
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
-		if self.current_user:
-			user_name = self.current_user
-		else:
-			user_name = "Glitcher"
+		user_name = self.current_user or 'Glitcher'
 		if form.validate():
 			info = self.request.arguments
 			question = info.get("question",[""])[0]
@@ -434,50 +429,35 @@ class OracleHandler(tornado.web.RequestHandler):
 														question="", answer="", popular_words=popular_words,
 														show_cloud="block"))
 
-class SMHandler(tornado.web.RequestHandler):
+class SMHandler(BaseHandler):
 	def get(self):
-		if self.current_user:
-			user_name = self.current_user
-		else:
-			user_name = "Glitcher"
+		user_name = self.current_user or 'Glitcher'
 		popular_words = oracle.popular_words(50)
 		self.write(templates.load("sm.html").generate(compiled=compiled, user_name=user_name,
 														popular_words=popular_words))
 														
-class CreditsHandler(tornado.web.RequestHandler):
+class CreditsHandler(BaseHandler):
 	def get(self):
-		if self.current_user:
-			user_name = self.current_user
-		else:
-			user_name = "Glitcher"
+		user_name = self.current_user or 'Glitcher'
 		self.write(templates.load("credits.html").generate(compiled=compiled, user_name=user_name))
 
-class TracksByArtist(tornado.web.RequestHandler):
+class TracksByArtist(BaseHandler):
 	def get(self, artist):
-		if self.current_user:
-			user_name = self.current_user
-		else:
-			user_name = "Glitcher"
+		user_name = self.current_user or 'Glitcher'
 		tracks_by = database.tracks_by(escape.url_unescape(artist))
 		self.write(templates.load("view_artist.html").generate(compiled=compiled, user_name=user_name, 
 														tracks_by=tracks_by))
 		
-class SegmentHandler(tornado.web.RequestHandler):
+class SegmentHandler(BaseHandler):
 	def get(self):
-		if self.current_user:
-			user_name = self.current_user
-		else:
-			user_name = "Glitcher"
+		user_name = self.current_user or 'Glitcher'
 		form = Oracle()
 		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name=user_name, form=form,
 																	artist_tracks=""))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
-		if self.current_user:
-			user_name = self.current_user
-		else:
-			user_name = "Glitcher"
+		user_name = self.current_user or 'Glitcher'
 		letter = self.request.arguments['letters'][0]
 		artist_tracks = database.browse_tracks(letter)
 		self.write(templates.load("segment_selection.html").generate(compiled=compiled, form=form, user_name=user_name,
