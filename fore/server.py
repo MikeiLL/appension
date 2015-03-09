@@ -397,7 +397,7 @@ class TrackArtwork(tornado.web.RequestHandler):
 			self.write(str(art))
 			
 class Oracle(Form):
-	question = wtforms.TextField('question', validators=[wtforms.validators.DataRequired()])
+	question = wtforms.TextField('question', validators=[])
 	
 class OracleHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -409,7 +409,8 @@ class OracleHandler(tornado.web.RequestHandler):
 		popular_words = oracle.popular_words(90)
 		random.shuffle(popular_words)
 		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
-															question="", answer="", popular_words=popular_words[:90]))
+															question="", answer="", popular_words=popular_words[:90],
+															show_cloud="none"))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
@@ -424,12 +425,14 @@ class OracleHandler(tornado.web.RequestHandler):
 			popular_words = oracle.popular_words(90)
 			random.shuffle(popular_words)
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
-													question=question, answer=answer, popular_words=popular_words))
+														question=question, answer=answer, popular_words=popular_words,
+														show_cloud="block"))
 		else:
 			popular_words = oracle.popular_words(90)
 			random.shuffle(popular_words)
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
-														question="", answer="", popular_words=popular_words))
+														question="", answer="", popular_words=popular_words,
+														show_cloud="block"))
 
 class SMHandler(tornado.web.RequestHandler):
 	def get(self):

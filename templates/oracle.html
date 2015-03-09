@@ -70,7 +70,7 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 		<font size="-1">The idea for The Glitch Oracle" came from Tom Goodkind, who used the original CD as an aural/I Ching/therapy tool.</font>
 	</div>
 	
-	<div id="popular_words">
+	<div id="popular_words" style="display:{{ show_cloud }}">
 		{% for popular_word in popular_words %}
 		  <a href="#" rel="{{ popular_word[1] }}">{{ popular_word[0] }}</a>
 		{% end %}
