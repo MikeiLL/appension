@@ -54,6 +54,9 @@
 			height:168px;
 			margin-left:-25px;
 			
+		
+			.divider {height:12px;display:block}
+		
 		  .sm2-bar-ui.compact {
 				border: 2px solid #fff;
 				border-radius: 20px;
@@ -148,14 +151,16 @@
 				background-image: url(/static/img/Devil-Glitch-Player.png);
 				width:430px;
 				height:242px;
+		
+				.divider {height:20px;display:block}
 
 		.sm2-bar-ui.compact {
 				border:0;
 				margin-bottom:15px;
 				left: 0px;
-				max-width: 20em;
+				max-width: 18em;
 				min-width: 1em;
-				top: 120px;
+				top: 100px;
 				.bd a {
 					left: 4px;
 					text-decoration: none;
@@ -237,7 +242,7 @@
 				width:506px;
 				height:285px;
 				
-				.br {margin-top:20px;}
+				.divider {height:12px;display:block}
 		
 			.ui360-vis {
 				padding-left: 253px;
@@ -275,7 +280,7 @@
 				left: 0;
 				max-width: 18em;
 				min-width: 1em;
-				top: 121px;
+				top: 124px;
 				.bd a {
 					left: 4px;
 					text-decoration: none;
