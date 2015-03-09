@@ -63,14 +63,14 @@ function ThreeSixtyPlayer() {
     autoPlay: false,   // start playing the first sound right away
     allowMultiple: false,  // let many sounds play at once (false = only one sound playing at a time)
     loadRingColor: '#ccc', // how much has loaded
-    playRingColor: '#000000', // how much has played
-    backgroundRingColor: '#b7b7b7', // color shown underneath load + play ("not yet loaded" color)
+    playRingColor: '#8f7869', // how much has played
+    backgroundRingColor: '#8f7869', // color shown underneath load + play ("not yet loaded" color)
 
     // optional segment/annotation (metadata) stuff..
-    segmentRingColor: 'rgba(255,255,255,0.33)', // metadata/annotation (segment) colors
+    segmentRingColor: 'rgba(143,120,105,1)', // metadata/annotation (segment) colors
     segmentRingColorAlt: 'rgba(50,50,50,0.9)',
-    loadRingColorMetadata: '#ddd', // "annotations" load color
-    playRingColorMetadata: 'rgba(128,192,256,0.9)', // how much has played when metadata is present
+    loadRingColorMetadata: '#8f7869', // "annotations" load color
+    playRingColorMetadata: 'rgba(143,120,105,1)', // how much has played when metadata is present
 
     circleDiameter: null, // set dynamically according to values from CSS
     circleRadius: null,
