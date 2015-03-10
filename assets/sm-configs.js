@@ -2,6 +2,7 @@ $(window).load(function(){
 		jQuery(document).ready(function ($) {
 
 			$('[data-popup-target]').click(function () {
+				clearPopup();
 				$('html').addClass('overlay');
 				var activePopup = $(this).attr('data-popup-target');
 				$(activePopup).addClass('visible');
