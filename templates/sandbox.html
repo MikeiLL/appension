@@ -98,7 +98,15 @@
 					<li class="footerlist"><a href="http://www.futurefossilmusic.com/" title="Home for all things Chris Butler">Future Fossil Music</a></li>
 					
 							<div id="fb-root"></div>
-								<script type="text/javascript">
+							<script>(function(d, s, id) {
+							  var js, fjs = d.getElementsByTagName(s)[0];
+							  if (d.getElementById(id)) return;
+							  js = d.createElement(s); js.id = id;
+							  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1571033473154183&version=v2.0";
+							  fjs.parentNode.insertBefore(js, fjs);
+							}(document, 'script', 'facebook-jssdk'));
+							</script>
+							<script type="text/javascript">
 								(function(){
 								var tw = document.createElement('script');
 								tw.type = "text/javascript";
@@ -108,21 +116,12 @@
 								s.parentNode.insertBefore(tw, s);
 								})();
 							</script>
-							<div id="fb-root"></div>
-							<script>(function(d, s, id) {
-							  var js, fjs = d.getElementsByTagName(s)[0];
-							  if (d.getElementById(id)) return;
-							  js = d.createElement(s); js.id = id;
-							  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1571033473154183&version=v2.0";
-							  fjs.parentNode.insertBefore(js, fjs);
-							}(document, 'script', 'facebook-jssdk'));
-							</script>
 					<li class="twitter-like">
 							<a href="http://twitter.com/share" class="twitter-share-button" data-url="<%= url %>" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 						</li>   
 
 						<li class="fb-like">
-						<div class="fb-like" data-href="https://developers.facebook.com/docs/plugins/" data-width="100px" data-layout="button" data-action="recommend" data-show-faces="true" data-share="true"></div>
+						<div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
 						</li>
 					</ul>
 				</nav>			
