@@ -1,0 +1,32 @@
+
+{% extends main.html %}
+{% block content %}
+
+
+<div class="container">
+<h2>Popup with drag support using jQuery, HTML and CSS.</h2>
+<button id="showpopup" class="btn btn-info">Click to pop it up!</button><br/>
+<button id="showpopup2" class="btn btn-info">Click to pop it up too!</button>
+</div>
+<!-- POP up background-->
+<div id="popWindow" class="popup pop-shadow">
+<div class="pop-wrapper">
+<header>
+<div class="pop-header" id="pop-drag">
+<div class="left pop-title">
+Title
+</div>
+<div class="right pop-control">
+<span class="pop-close" id="close-pop">X</span>
+</div>
+</div>
+</header>
+<div class="main-content">
+<h1>Popup sample</h1>
+<p>
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+</p>
+</div>
+</div>
+</div>
+{% end %}

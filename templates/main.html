@@ -50,7 +50,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
   <link href='{{ compiled('tabs.scss') }}' rel='stylesheet' type='text/css' />
-
+	
 
   
 
@@ -142,6 +142,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 		<script type="text/javascript"
 		  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
+		  <script type="text/javascript"
+		  src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+
 		<script type="text/javascript" src='{{ compiled(
 		  'spin.min.js',
 		  'soundmanager2-nodebug-jsmin.js',
@@ -168,7 +171,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		  return false;
 		});
 		</script>
-
 		{% end %}
 	</div>
 
