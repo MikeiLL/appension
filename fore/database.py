@@ -268,13 +268,27 @@ def update_submitter_info(submitter_object):
 		cur.execute("UPDATE tracks SET submitter = '"+str(name)+"', submitteremail = '"+str(email)+"' WHERE id="+str(track_grouping[0]))
 
 def create_outreach_message(message):
-     with _conn, _conn.cursor() as cur:
+    with _conn, _conn.cursor() as cur:
         cur.execute("INSERT INTO outreach (message) VALUES (%s) RETURNING id, message", \
 											(message,))
-
-def retrieve_outreach_message(message):
-     with _conn, _conn.cursor() as cur:
+	return [row for row in cur.fetchone()]
+											
+def update_outreach_message(message, id=1):
+    if retrieve_outreach_message()[0] == '':
+        return create_outreach_message(message)
+    query = "UPDATE outreach SET message = (message) WHERE id = 1 RETURNING id, message"
+    data = (message,)
+    with _conn, _conn.cursor() as cur:
+        cur.execute(query, data)
+	return [row for row in cur.fetchone()]
+											
+def retrieve_outreach_message():
+    with _conn, _conn.cursor() as cur:
         cur.execute("SELECT id, message FROM outreach ORDER BY id LIMIT 1")
+        try:
+            return [row for row in cur.fetchone()]
+        except TypeError: 
+            return ['', '']
 		
 def get_subsequent_track(track_id):
     """Return Track Object for next track in sequence."""
