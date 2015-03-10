@@ -369,7 +369,6 @@ class AuditionTransition(BaseHandler):
 		track2_id=int(self.request.arguments['next_track_id'][0])
 		pair_o_tracks = database.get_track_filename(track1_id), database.get_track_filename(track2_id)
 		import audition
-		log.warning("We got %r from sending %r and %r", str(pair_o_tracks), track1_id, track2_id)
 		threading.Thread(target=audition.audition, args=(pair_o_tracks,track_xfade, track_otrim, next_track_itrim)).start()
 		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
 			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
@@ -533,6 +532,61 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 			self.write(templates.load("account_confirmation.html").generate(compiled=compiled, user_name=submitter_name))
 		else:
 			self.write(templates.load("create_account.html").generate(compiled=compiled, form=form, user_name="new glitcher"))
+
+class OutreachForm(Form):
+	message = wtforms.TextField('email', validators=[wtforms.validators.DataRequired()])
+		
+class Message(BaseHandler):	
+	@tornado.web.authenticated
+
+	def get(self):
+		if database.retrieve_outreach_message()[1] == '':
+			message = '''Well, I seem to have been possessed by The Devil Glitch, which has now gone from Major to Infinite.
+We are now including lyrics and a story for each "chunk" and I'm writing to ask if you would take a minute to send back a copy of the 
+lyrics from your segment and maybe a few words about the submission, which might include a bit about you, a bit about our connection
+and/or a bit about the chunk itself.'''
+		else:
+			message = database.retrieve_outreach_message()[1]
+		form = OutreachForm()
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		self.write(templates.load("message.html").generate(admin_url=apikeys.admin_url, 
+			compiled=compiled, user_name=user_name, notice="", message=message))
+			
+	def post(self):
+		form = OutreachForm(self.request.arguments)
+		info = self.request.arguments
+		message = info.get("message",[""])[0]
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		database.update_outreach_message(message)
+		self.write(templates.load("message.html").generate(admin_url=apikeys.admin_url, 
+			compiled=compiled, user_name=user_name, notice="", message=message))
+			
+class Outreach(BaseHandler):	
+	@tornado.web.authenticated
+
+	def get(self):
+		form = OutreachForm()
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		self.write(templates.load("outreach.html").generate(admin_url=apikeys.admin_url, 
+			compiled=compiled, user_name=user_name, notice="", message=message))
+			
+	def post(self):
+		form = OutreachForm(self.request.arguments)
+		info = self.request.arguments
+		message = info.get("message",[""])[0]
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		database.update_outreach_message(message)
+		self.write(templates.load("outreach.html").generate(admin_url=apikeys.admin_url, 
+			compiled=compiled, user_name=user_name, notice="", message=message))
+	
 			
 class Login(BaseHandler):
 	def get(self):
@@ -616,6 +670,8 @@ if __name__ == "__main__":
 			(r"/rebuild_glitch", RenderGlitch),
 			(r"/credits", CreditsHandler),
 			(r"/submitters", Submitters),
+			(r"/message", Message),
+			(r"/outreach", Outreach),
 			(r"/sb", SandBox),
 		]),
 		cookie_secret=apikeys.cookie_monster,
