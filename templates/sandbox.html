@@ -1,32 +1,179 @@
+{% extends secondary.html %}
 
-{% extends main.html %}
+{% block sidebar %}
+		{% end %}
 {% block content %}
 
+<div id="popular_words">
+		{% for popular_word in popular_words %}
+		  <a href="#" rel="{{ popular_word[1] }}">{{ popular_word[0] }}</a>
+		{% end %}
+	</div>
+ <!-- Start Infinite Chunk Player -->
 
-<div class="container">
-<h2>Popup with drag support using jQuery, HTML and CSS.</h2>
-<button id="showpopup" class="btn btn-info">Click to pop it up!</button><br/>
-<button id="showpopup2" class="btn btn-info">Click to pop it up too!</button>
-</div>
-<!-- POP up background-->
-<div id="popWindow" class="popup pop-shadow">
-<div class="pop-wrapper">
-<header>
-<div class="pop-header" id="pop-drag">
-<div class="left pop-title">
-Title
-</div>
-<div class="right pop-control">
-<span class="pop-close" id="close-pop">X</span>
-</div>
-</div>
-</header>
-<div class="main-content">
-<h1>Popup sample</h1>
-<p>
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-</p>
-</div>
-</div>
-</div>
-{% end %}
+        <div id="Infinite_Chunk_Player">
+            <!-- start player 3 -->
+
+            <div class="sm2-bar-ui compact">
+              <div class="bd sm2-main-controls">
+                <div class="sm2-inline-element sm2-button-element">
+                  <div class="sm2-button-bd">
+                    <a href="#play" class="sm2-inline-button play-pause">Play / pause</a>
+                  </div>
+                </div>
+
+                <div class="sm2-inline-element sm2-inline-status">
+                  <div class="sm2-playlist">
+                    <div class="sm2-playlist-target">
+                      <!-- playlist <ul> + <li> markup will be injected here -->
+                      <!-- if you want default / non-JS content, you can put that here. --><noscript>
+                      <p>JavaScript is required.</p></noscript>
+                    </div>
+                  </div>
+
+                  <div class="sm2-progress">
+                    <div class="sm2-row">
+                      <div class="sm2-inline-time">
+                        0:00
+                      </div>
+
+                      <div class="sm2-progress-bd">
+                        <div class="sm2-progress-track">
+                          <div class="sm2-progress-bar"></div>
+
+                          <div class="sm2-progress-ball">
+                            <div class="icon-overlay"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="sm2-inline-duration">
+                        0:00
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="sm2-inline-element sm2-button-element sm2-volume">
+                  <div class="sm2-button-bd">
+                    <a href="#volume" class="sm2-inline-button sm2-volume-control">volume</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bd sm2-playlist-drawer sm2-element">
+                <div class="sm2-inline-texture">
+                  <div class="sm2-box-shadow"></div>
+                </div><!-- playlist content is mirrored here -->
+
+                <div class="sm2-playlist-wrapper">
+                  <ul class="sm2-playlist-bd">
+                    <li><a href="static/single-audio-files/MajorGlitch.mp3"></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div><!-- end player 3 -->
+          </div>
+
+          
+        </div><!-- End Infinite Chunk Player -->
+
+<br style="clear:both"/>
+
+	Some More Text
+	
+		{% end %}
+
+			{% block footer %}		
+	<div class="container">			
+		<footer role="contentinfo">
+			<div>				
+				<!-- Amended February 28 -->
+				<nav id="menu">
+					<a href="/">Home</a> 
+					<font size="-1">&nbsp;&copy; 2014 Future Fossil</font>
+					<a href="mailto:beezwax@aol.com">Contact</a>					
+					<a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>	
+					<a href="http://www.futurefossilmusic.com/" title="Home for all things Chris Butler">Future Fossil Music</a> 
+					<div id="social">
+						<a href="http://twitter.com/share" class="twitter-share-button"
+						data-count="horizontal" data-text="Loving">
+						Tweet
+						</a>
+						<script type="text/javascript">
+							(function(){
+							var tw = document.createElement('script');
+							tw.type = "text/javascript";
+							tw.async = true;
+							tw.src = "http://platform.twitter.com/widgets.js";
+							var s = document.getElementsByTagName('script')[0];
+							s.parentNode.insertBefore(tw, s);
+							})();
+						</script>
+						<div id="fb-root"></div>
+							<script>
+							  window.fbAsyncInit = function() {
+								FB.init({
+								  appId      : '1571033473154183',
+								  xfbml      : true,
+								  version    : 'v2.2'
+								});
+							  };
+
+							  (function(d, s, id){
+								 var js, fjs = d.getElementsByTagName(s)[0];
+								 if (d.getElementById(id)) {return;}
+								 js = d.createElement(s); js.id = id;
+								 js.src = "//connect.facebook.net/en_US/sdk.js";
+								 fjs.parentNode.insertBefore(js, fjs);
+							   }(document, 'script', 'facebook-jssdk'));
+							</script>
+							
+							<div class="fb-like"
+								data-share="true"
+								data-width="450"
+								data-show-faces="true"
+								data-font="lucida grande"
+							</div>
+						</div>
+				</nav>			
+			</div>		
+		</footer>	
+	</div>				
+	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
+	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
+		'soundmanager2-nodebug-jsmin.js',		  
+		'berniecode-animator.js',		  
+		'360player.js'		  ) }}'>
+	</script>		
+	<script type="text/javascript">		
+		$('#Oracle-03').click(function () {
+		$('#oracle').submit();}
+		);
+	</script>	
+	<script type="text/javascript" >			
+	$(".title").click(function() {
+		window.location = $(this).find("a").attr("href"); 		  
+		return false;		
+		});		
+	</script>		
+		<script type="text/javascript" src='{{ compiled('jquery.tagcloud.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
+		<script type="text/javascript">
+			$.fn.tagcloud.defaults = {
+			  size: {start: 14, end: 28, unit: 'pt'},
+			  color: {start: '#cde', end: '#f52'}
+			};
+
+			$(function () {
+			  $('#popular_words a').tagcloud();
+			});
+		</script>
+	{% end %}	
+
+	</div>
+
+</body>
+</html>
