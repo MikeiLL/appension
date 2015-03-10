@@ -876,6 +876,11 @@ function ThreeSixtyPlayer() {
       self.vuMeter.updateVU(this);
     }
 
+    if (this.muted != this.wasMuted) {
+      if (this.muted) self.events.mute.apply(this);
+      else self.events.play.apply(this);
+      this.wasMuted = this.muted;
+    }
   };
 
   this.updateWaveform = function(oSound) {
