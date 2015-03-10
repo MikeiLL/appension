@@ -256,7 +256,7 @@ def get_submitter_info():
                 CASE WHEN story !='' THEN 1
                 ELSE 0
                 END as story
-                FROM tracks'''
+                FROM tracks ORDER by artist'''
         cur.execute(query)
         return [row for row in cur.fetchall()]
 			
