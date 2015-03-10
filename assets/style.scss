@@ -407,6 +407,29 @@ body {
 		display: inline-block;
 		margin-bottom: -0.22em;
 	}
+	#social .fb-like{
+		display:inline;
+		border:1px solid #fff;
+	}
+	ul.footer_menu{
+	float: left;
+	list-style: none;
+	margin: 5px 0 20px 0;
+	padding: 0;
+	width: 100%;
+	}
+
+	ul.footer_menu li{
+		display: block;
+		float: left;
+		margin-right: 10px;
+	}
+	li.twitter-like{
+		margin-top: 2px;
+	}
+	li.footerlist{
+		margin-top: 2px;
+	}
 	/*End Footer*/
 
 
