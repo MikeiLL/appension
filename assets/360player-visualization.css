@@ -97,6 +97,14 @@
     width: 48px;
 }
 
+	.ui360-vis .sm2-360ui.sm2_muted .sm2-360btn {
+ 	background:transparent url(../img/360-g-play-button.png) no-repeat 50% 50%;
+ 	}
+ 	
+ 	.ui360-vis .sm2-360ui.sm2_playing .sm2-360btn {
+ 	background:transparent url(../img/360-g-mute-button.png) no-repeat 50% 50%;
+ 	}
+ 	
 @media all and (min-width: 40em){
 	.ui360-vis .sm2-360btn,
 	.ui360-vis .sm2-360ui.sm2_paused .sm2-360btn,

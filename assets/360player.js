@@ -116,7 +116,8 @@ function ThreeSixtyPlayer() {
     sDefault: 'sm2_link', // default state
     sBuffering: 'sm2_buffering',
     sPlaying: 'sm2_playing',
-    sPaused: 'sm2_paused'
+    sPaused: 'sm2_paused',
+    sMuted: 'sm2_muted'
 
   };
 
@@ -329,6 +330,12 @@ function ThreeSixtyPlayer() {
       this._360data.className = pl.css.sPaused;
       pl.addClass(this._360data.oUIBox,this._360data.className);
     },
+    
+    mute: function() {
+      pl.removeClass(this._360data.oUIBox,this._360data.className);
+      this._360data.className = pl.css.sMuted;
+      pl.addClass(this._360data.oUIBox,this._360data.className);
+    },
 
     resume: function() {
       pl.removeClass(this._360data.oUIBox,this._360data.className);
@@ -352,7 +359,7 @@ function ThreeSixtyPlayer() {
     },
 
     whileloading: function() {
-      if (this.paused) {
+      if (this.muted) {
         self.updatePlaying.apply(this);
       }
     },
@@ -452,6 +459,7 @@ function ThreeSixtyPlayer() {
        onplay:self.events.play,
        onstop:self.events.stop,
        onpause:self.events.pause,
+       onmute:self.events.mute,
        onresume:self.events.resume,
        onfinish:self.events.finish,
        onbufferchange:self.events.bufferchange,
@@ -484,6 +492,7 @@ function ThreeSixtyPlayer() {
         lastTime: null,
         didFinish: null,
         pauseCount:0,
+        muteCount:0,
         radius:0,
         fontSize: 1,
         fontSizeMax: self.config.fontSizeMax,
@@ -516,7 +525,7 @@ function ThreeSixtyPlayer() {
           //  thisSound._360data.oTiming.style.fontSize = parseInt(Math.max(1,thisSound._360data.fontSizeMax*nProgress), 10)+'px';
           //  thisSound._360data.oTiming.style.opacity = nProgress;
           //}
-          if (thisSound.paused || thisSound.playState === 0 || thisSound._360data.lastValues.bytesLoaded === 0 || thisSound._360data.lastValues.position === 0) {
+          if (thisSound.muted || thisSound.playState === 0 || thisSound._360data.lastValues.bytesLoaded === 0 || thisSound._360data.lastValues.position === 0) {
             self.updatePlaying.apply(thisSound);
           }
         },
@@ -669,7 +678,7 @@ function ThreeSixtyPlayer() {
     self.refreshCoords(thisSound);
     oData = thisSound._360data;
     self.addClass(oData.oUIBox,'sm2_dragging');
-    oData.pauseCount = (self.lastTouchedSound.paused?1:0);
+    oData.muteCount = (self.lastTouchedSound.muted?1:0);
     // self.lastSound.pause();
     self.mmh(e?e:window.event);
 
@@ -692,7 +701,7 @@ function ThreeSixtyPlayer() {
 
     var oData = self.lastTouchedSound._360data;
     self.removeClass(oData.oUIBox,'sm2_dragging');
-    if (oData.pauseCount === 0) {
+    if (oData.muteCount === 0) {
       self.lastTouchedSound.resume();
     }
     if (!isTouchDevice) {
