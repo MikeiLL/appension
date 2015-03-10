@@ -336,7 +336,6 @@ class Submitters(BaseHandler):
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		print(self.request.arguments)
 		database.update_submitter_info(self.request.arguments)
 		submitters = database.get_submitter_info();
 		self.write(templates.load("submitters.html").generate(admin_url=apikeys.admin_url, 
