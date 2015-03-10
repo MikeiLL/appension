@@ -1,0 +1,23 @@
+{% extends admin_main.html %}
+
+{% block content %}
+<p><h1>All Tracks</h1></p>
+<form enctype="multipart/form-data" action="/outreach" method="post">
+<center>
+<table border="1" cellpadding="3">
+
+{% if notice %}
+	<h2> {{ notice }} </h2>
+{% end %}
+<tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
+<tr><td>Submit Email Below</td></tr>
+	<tr><td><textarea rows=10 cols=80 name="message">{{ message }}</textarea></td>
+	</tr>
+<tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
+
+</table>
+</form>
+</center>
+{% end %}
+
+

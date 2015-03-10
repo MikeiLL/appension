@@ -266,6 +266,15 @@ def update_submitter_info(submitter_object):
         email = track_grouping[2]
     	with _conn, _conn.cursor() as cur:
 		cur.execute("UPDATE tracks SET submitter = '"+str(name)+"', submitteremail = '"+str(email)+"' WHERE id="+str(track_grouping[0]))
+
+def create_outreach_message(message):
+     with _conn, _conn.cursor() as cur:
+        cur.execute("INSERT INTO outreach (message) VALUES (%s) RETURNING id, message", \
+											(message,))
+
+def retrieve_outreach_message(message):
+     with _conn, _conn.cursor() as cur:
+        cur.execute("SELECT id, message FROM outreach ORDER BY id LIMIT 1")
 		
 def get_subsequent_track(track_id):
     """Return Track Object for next track in sequence."""
