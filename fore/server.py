@@ -425,9 +425,13 @@ class OracleHandler(BaseHandler):
 		form = Oracle()
 		popular_words = oracle.popular_words(90)
 		random.shuffle(popular_words)
+		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+		page_title="Ask The Glitch Oracle"
+		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
 															question="", answer="", popular_words=popular_words[:90],
-															show_cloud="none"))
+															show_cloud="none", og_description=og_description, 
+															page_title=page_title, meta_description=meta_description))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
@@ -438,49 +442,77 @@ class OracleHandler(BaseHandler):
 			answer = oracle.the_oracle_speaks(question)
 			popular_words = oracle.popular_words(90)
 			random.shuffle(popular_words)
+			og_description="Asked the glitch oracle: "+question+" and learned that "+answer.couplet['couplet'][0]+" "+answer.couplet['couplet'][1]
+			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
+			meta_description="Asked the glitch oracle: "+question+" and learned that "+answer.couplet['couplet'][0]+" "+answer.couplet['couplet'][1]
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
 														question=question, answer=answer, popular_words=popular_words,
-														show_cloud="block"))
+														show_cloud="block", og_description=og_description, 
+														page_title=page_title, meta_description=meta_description))
 		else:
 			popular_words = oracle.popular_words(90)
 			random.shuffle(popular_words)
+			og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+			page_title="Ask The Glitch Oracle"
+			meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
 														question="", answer="", popular_words=popular_words,
-														show_cloud="block"))
+														show_cloud="block", og_description=og_description, 
+														page_title=page_title, meta_description=meta_description))
 
 class SandBox(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
-		popular_words = oracle.popular_words(50)
+		og_description="The world's longest pop song."
+		page_title="Sandbox Page - We Test Stuff Here"
+		meta_description="A page where we test implementations for Infinite Glitch."
 		self.write(templates.load("sandbox.html").generate(compiled=compiled, user_name=user_name,
-														popular_words=popular_words))
+														og_description=og_description, page_title=page_title,
+														meta_description=meta_description))
 														
 class CreditsHandler(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
-		self.write(templates.load("credits.html").generate(compiled=compiled, user_name=user_name))
+		og_description="The world's longest pop song. (Credits)"
+		page_title="Credits: Infinite Glitch - the world's longest pop song, by Chris Butler."
+		meta_description="The people below are partially responsible for bringing you Infinite Glitch - the world's longest pop song."
+		self.write(templates.load("credits.html").generate(compiled=compiled, user_name=user_name,
+														og_description=og_description, page_title=page_title,
+														meta_description=meta_description))
 
 class TracksByArtist(BaseHandler):
 	def get(self, artist):
 		user_name = self.current_user or 'Glitcher'
 		tracks_by = database.tracks_by(escape.url_unescape(artist))
+		og_description= tracks_by[0].track_details['artist']+" contributions to The world's longest pop song."
+		page_title=tracks_by[0].track_details['artist']+": Infinite Glitch - the world's longest pop song, by Chris Butler."
+		meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest pop song."
 		self.write(templates.load("view_artist.html").generate(compiled=compiled, user_name=user_name, 
-														tracks_by=tracks_by))
+														tracks_by=tracks_by, og_description=og_description, 
+														page_title=page_title, meta_description=meta_description))
 		
 class SegmentHandler(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
 		form = Oracle()
+		og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
+		page_title="Browse Artists: Infinite Glitch - the world's longest pop song, by Chris Butler."
+		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
 		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name=user_name, form=form,
-																	artist_tracks=""))
+																	artist_tracks="", og_description=og_description, 
+																	page_title=page_title, meta_description=meta_description))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
 		user_name = self.current_user or 'Glitcher'
 		letter = self.request.arguments['letters'][0]
 		artist_tracks = database.browse_tracks(letter)
-		self.write(templates.load("segment_selection.html").generate(compiled=compiled, form=form, user_name=user_name,
-																	artist_tracks=artist_tracks))
+		og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
+		page_title="Browse Artists: Infinite Glitch - the world's longest pop song, by Chris Butler."
+		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
+		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name=user_name, form=form,
+																	artist_tracks="", og_description=og_description, 
+																	page_title=page_title, meta_description=meta_description))
 			
 class UserForm(Form):
 	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email()])

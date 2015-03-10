@@ -122,56 +122,82 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	</section>	
 	{% end %}
 	</div>
-	{% block footer %}	
-
-	<div class="container">	
-		<footer role="contentinfo">   
-			<div>
+		{% block footer %}		
+	<div class="container">			
+		<footer role="contentinfo">
+			<div>				
 				<!-- Amended February 28 -->
 				<nav id="menu">
-					<a href="/">Home</a> 
-					<font size="-1">&nbsp;&copy; 2014 Future Fossil</font>
-					<a href="mailto:beezwax@aol.com">Contact</a>					
-					<a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>	
-					<a href="http://www.futurefossilmusic.com/" title="Home for all things Chris Butler">Future Fossil Music</a> 
+					<ul class="footer_menu">
+					<li class="footerlist"><a href="/">Home</a> </li>
+					<li class="footerlist"><font size="-1">&nbsp;&copy; 2014 Future Fossil</font></li>
+					<li class="footerlist"><a href="mailto:beezwax@aol.com">Contact</a>	</li>
+					<li class="footerlist"><a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>	</li>
+					<li class="footerlist"><a href="http://www.futurefossilmusic.com/" title="Home for all things Chris Butler">Future Fossil Music</a></li>
 					
-				</nav>	
-			</div>
-		</footer>
-	</div>		
+							<div id="fb-root"></div>
+							<script>(function(d, s, id) {
+							  var js, fjs = d.getElementsByTagName(s)[0];
+							  if (d.getElementById(id)) return;
+							  js = d.createElement(s); js.id = id;
+							  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1571033473154183&version=v2.0";
+							  fjs.parentNode.insertBefore(js, fjs);
+							}(document, 'script', 'facebook-jssdk'));
+							</script>
+							<script type="text/javascript">
+								(function(){
+								var tw = document.createElement('script');
+								tw.type = "text/javascript";
+								tw.async = true;
+								tw.src = "http://platform.twitter.com/widgets.js";
+								var s = document.getElementsByTagName('script')[0];
+								s.parentNode.insertBefore(tw, s);
+								})();
+							</script>
+					<li class="twitter-like">
+							<a href="http://twitter.com/share" class="twitter-share-button" data-url="<%= url %>" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+						</li>   
 
-		<script type="text/javascript"
-		  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
-		  <script type="text/javascript"
-		  src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-
-		<script type="text/javascript" src='{{ compiled(
-		  'spin.min.js',
-		  'soundmanager2-nodebug-jsmin.js',
-		  'berniecode-animator.js',
-		  '360player.js'
-		  ) }}'></script>
-		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+						<li class="fb-like">
+						<div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
+						</li>
+					</ul>
+				</nav>			
+			</div>		
+		</footer>	
+	</div>				
+	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
+	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
+		'soundmanager2-nodebug-jsmin.js',		  
+		'berniecode-animator.js',		  
+		'360player.js'		  ) }}'>
+	</script>		
+	<script type="text/javascript">		
+		$('#Oracle-03').click(function () {
+		$('#oracle').submit();}
+		);
+	</script>	
+	<script type="text/javascript" >			
+	$(".title").click(function() {
+		window.location = $(this).find("a").attr("href"); 		  
+		return false;		
+		});		
+	</script>		
+		<script type="text/javascript" src='{{ compiled('jquery.tagcloud.js') }}'></script>
 		<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>
-		<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
 		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
-		<script type="text/javascript" >
-		// Hide all but first tab content
-		$('.accordion__content:not(:first)').hide();
-		$('.accordion__title:first-child').addClass('active');
-		$('.accordion__title').on('click', function () {
-		$('.accordion__content').hide();
-		$(this).next().show().prev().addClass('active').siblings().removeClass('active');
-		});
-		//@ sourceURL=pen.js
+		<script type="text/javascript">
+			$.fn.tagcloud.defaults = {
+			  size: {start: 14, end: 28, unit: 'pt'},
+			  color: {start: '#cde', end: '#f52'}
+			};
+
+			$(function () {
+			  $('#popular_words a').tagcloud();
+			});
 		</script>
-		<script type="text/javascript" >
-			$(".title").click(function() {
-		  window.location = $(this).find("a").attr("href"); 
-		  return false;
-		});
-		</script>
-		{% end %}
+	{% end %}	
 	</div>
 
 </body>

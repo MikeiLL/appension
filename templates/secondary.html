@@ -3,15 +3,17 @@
 <html lang="en">	
 {% block head %}	
 	<head>	  <meta charset="utf-8">		
-	<title>Infinite Glitch</title>
+	<title>{{ page_title }}</title>
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="og:title" content="Infinite Glitch" />
 	<meta name="og:type" content="song" />
 	<meta name="og:url" content="http://infiniteglitch.net/" />
 	<meta name="og:image" content="http://infiniteglitch.net/static/img/puzzle-stamp.png" />
-	<meta name="og:description" content="The worlds longest pop song." />
+	<meta name="og:description" content="{{ og_description }}" />
 	<meta name="fb:admins" content="100000460115448" />
+	
+	<meta name="description" content="{{ meta_description }}">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">		
   <link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
@@ -77,17 +79,46 @@
 		</section>		
 		{% end %}	
 	</div>	
-	{% block footer %}		
+		{% block footer %}		
 	<div class="container">			
 		<footer role="contentinfo">
 			<div>				
 				<!-- Amended February 28 -->
 				<nav id="menu">
-					<a href="/">Home</a> 
-					<font size="-1">&nbsp;&copy; 2014 Future Fossil</font>
-					<a href="mailto:beezwax@aol.com">Contact</a>					
-					<a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>	
-					<a href="http://www.futurefossilmusic.com/" title="Home for all things Chris Butler">Future Fossil Music</a> 
+					<ul class="footer_menu">
+					<li class="footerlist"><a href="/">Home</a> </li>
+					<li class="footerlist"><font size="-1">&nbsp;&copy; 2014 Future Fossil</font></li>
+					<li class="footerlist"><a href="mailto:beezwax@aol.com">Contact</a>	</li>
+					<li class="footerlist"><a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>	</li>
+					<li class="footerlist"><a href="http://www.futurefossilmusic.com/" title="Home for all things Chris Butler">Future Fossil Music</a></li>
+					
+							<div id="fb-root"></div>
+							<script>(function(d, s, id) {
+							  var js, fjs = d.getElementsByTagName(s)[0];
+							  if (d.getElementById(id)) return;
+							  js = d.createElement(s); js.id = id;
+							  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1571033473154183&version=v2.0";
+							  fjs.parentNode.insertBefore(js, fjs);
+							}(document, 'script', 'facebook-jssdk'));
+							</script>
+							<script type="text/javascript">
+								(function(){
+								var tw = document.createElement('script');
+								tw.type = "text/javascript";
+								tw.async = true;
+								tw.src = "http://platform.twitter.com/widgets.js";
+								var s = document.getElementsByTagName('script')[0];
+								s.parentNode.insertBefore(tw, s);
+								})();
+							</script>
+					<li class="twitter-like">
+							<a href="http://twitter.com/share" class="twitter-share-button" data-url="<%= url %>" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+						</li>   
+
+						<li class="fb-like">
+						<div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
+						</li>
+					</ul>
 				</nav>			
 			</div>		
 		</footer>	
@@ -102,27 +133,17 @@
 		$('#Oracle-03').click(function () {
 		$('#oracle').submit();}
 		);
-	</script>
-	<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>		
-	<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>		
-	<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>		
-	<script type="text/javascript" >		
-	// Hide all but first tab content		
-	$('.accordion__content:not(:first)').hide();		
-	$('.accordion__title:first-child').addClass('active');		
-	$('.accordion__title').on('click', function () {		
-		$('.accordion__content').hide();		
-		$(this).next().show().prev().addClass('active').siblings().removeClass('active');		
-		});		
-	//@ sourceURL=pen.js		
-	</script>		
+	</script>	
 	<script type="text/javascript" >			
 	$(".title").click(function() {
 		window.location = $(this).find("a").attr("href"); 		  
 		return false;		
 		});		
 	</script>		
-	{% end %}	
+		<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
+	{% end %}		
 </div>
 	</body>
 		</html>
