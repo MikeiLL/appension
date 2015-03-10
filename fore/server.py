@@ -449,11 +449,11 @@ class OracleHandler(BaseHandler):
 														question="", answer="", popular_words=popular_words,
 														show_cloud="block"))
 
-class SMHandler(BaseHandler):
+class SandBox(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
 		popular_words = oracle.popular_words(50)
-		self.write(templates.load("sm.html").generate(compiled=compiled, user_name=user_name,
+		self.write(templates.load("sandbox.html").generate(compiled=compiled, user_name=user_name,
 														popular_words=popular_words))
 														
 class CreditsHandler(BaseHandler):
@@ -616,7 +616,7 @@ if __name__ == "__main__":
 			(r"/rebuild_glitch", RenderGlitch),
 			(r"/credits", CreditsHandler),
 			(r"/submitters", Submitters),
-			(r"/sm", SMHandler),
+			(r"/sb", SandBox),
 		]),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',
