@@ -438,14 +438,14 @@ class OracleHandler(BaseHandler):
 	def post(self):
 		form = Oracle(self.request.arguments)
 		user_name = self.current_user or 'Glitcher'
-		og_description="Asked the glitch oracle: "+question+" and learned that "+answer.couplet['couplet'][0]+" "+answer.couplet['couplet'][1]
-		page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
-		meta_description="Asked the glitch oracle: "+question+" and learned that "+answer.couplet['couplet'][0]+" "+answer.couplet['couplet'][1]
 		og_url="http://www.infiniteglitch.net/oracle"
 		if form.validate():
 			info = self.request.arguments
 			question = info.get("question",[""])[0]
 			answer = oracle.the_oracle_speaks(question)
+			og_description="Asked the glitch oracle: "+question+" and learned that "+answer.couplet['couplet'][0]+" "+answer.couplet['couplet'][1]
+			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
+			meta_description="Asked the glitch oracle: "+question+" and learned that "+answer.couplet['couplet'][0]+" "+answer.couplet['couplet'][1]
 			popular_words = oracle.popular_words(90)
 			random.shuffle(popular_words)
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
