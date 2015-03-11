@@ -271,6 +271,33 @@ class Submissionform(BaseHandler):
 																		og_description=og_description))
 			
 
+
+class Recorder(BaseHandler):
+	@tornado.web.authenticated
+	def get(self):
+		form = EasyForm()
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		page_title="Glitch Track Submission Form."
+		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+
+		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name))
+		
+
+	def post(self):
+		form = EasyForm(self.request.arguments)
+		user_name = self.current_user or 'Glitch Hacker'
+		details = 'You submitted:<br/>';
+		page_title="Glitch Track Submission."
+		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+
+		if form.validate():
+			self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name))
+		else:
+			self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name))
+			
+
 def admin_page(user_name, deleted=0, updated=0, notice=''):
 	return templates.load("administration.html").generate(
 		all_tracks=database.get_many_mp3(status="all", order_by='sequence'),
@@ -769,6 +796,7 @@ if __name__ == "__main__":
 			(r"/submitters", Submitters),
 			(r"/message", Message),
 			(r"/outreach", Outreach),
+			(r"/recorder", Recorder),
 			(r"/sb", SandBox),
 		]),
 		cookie_secret=apikeys.cookie_monster,
