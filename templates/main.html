@@ -137,14 +137,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 					<li class="footerlist"><a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>	</li>
 					<li class="footerlist"><a href="http://www.futurefossilmusic.com/" title="Home for all things Chris Butler">Future Fossil Music</a></li>
 					
-							<div id="fb-root"></div>
-							<script>(function(d, s, id) {
-							  var js, fjs = d.getElementsByTagName(s)[0];
-							  if (d.getElementById(id)) return;
-							  js = d.createElement(s); js.id = id;
-							  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1571033473154183&version=v2.0";
-							  fjs.parentNode.insertBefore(js, fjs);
-							}(document, 'script', 'facebook-jssdk'));
+							<script>
+							  window.fbAsyncInit = function() {
+								FB.init({
+								  appId      : '1571033473154183',
+								  xfbml      : true,
+								  version    : 'v2.2'
+								});
+							  };
+
+							  (function(d, s, id){
+								 var js, fjs = d.getElementsByTagName(s)[0];
+								 if (d.getElementById(id)) {return;}
+								 js = d.createElement(s); js.id = id;
+								 js.src = "//connect.facebook.net/en_US/sdk.js";
+								 fjs.parentNode.insertBefore(js, fjs);
+							   }(document, 'script', 'facebook-jssdk'));
 							</script>
 								
 							<script>
@@ -159,7 +167,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 								</li>   
 
 						<li class="fb-like">
-						<div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
+							<div class="fb-share-button" data-href="{{ twitter_url }}" data-layout="button_count"></div>
 						</li>
 					</ul>
 				</nav>			

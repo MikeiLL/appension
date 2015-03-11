@@ -110,6 +110,7 @@
 								 fjs.parentNode.insertBefore(js, fjs);
 							   }(document, 'script', 'facebook-jssdk'));
 							</script>
+							
 							<script>
 							window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
 							</script>
@@ -121,7 +122,7 @@
 								</a></li>   
 
 						<li class="fb-like">
-						<div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
+						<div class="fb-share-button" data-href="{{ twitter_url }}" data-layout="button_count"></div>
 						</li>
 					</ul>
 				</nav>			
