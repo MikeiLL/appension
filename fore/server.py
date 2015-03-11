@@ -466,9 +466,10 @@ class SandBox(BaseHandler):
 		og_description="The world's longest pop song."
 		page_title="Sandbox Page - We Test Stuff Here"
 		meta_description="A page where we test implementations for Infinite Glitch."
+		twitter_url="http://www.infiniteglitch.net/sandbox"
 		self.write(templates.load("sandbox.html").generate(compiled=compiled, user_name=user_name,
 														og_description=og_description, page_title=page_title,
-														meta_description=meta_description))
+														meta_description=meta_description,twitter_url=twitter_url))
 														
 class CreditsHandler(BaseHandler):
 	def get(self):
@@ -476,9 +477,10 @@ class CreditsHandler(BaseHandler):
 		og_description="The world's longest pop song. (Credits)"
 		page_title="Credits: Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="The people below are partially responsible for bringing you Infinite Glitch - the world's longest pop song."
+		twitter_url="http://www.infiniteglitch.net/credits"
 		self.write(templates.load("credits.html").generate(compiled=compiled, user_name=user_name,
 														og_description=og_description, page_title=page_title,
-														meta_description=meta_description))
+														meta_description=meta_description,twitter_url=twitter_url))
 
 class TracksByArtist(BaseHandler):
 	def get(self, artist):
@@ -487,20 +489,24 @@ class TracksByArtist(BaseHandler):
 		og_description= tracks_by[0].track_details['artist']+" contributions to The world's longest pop song."
 		page_title=tracks_by[0].track_details['artist']+": Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest pop song."
+		twitter_url="http://www.infiniteglitch.net/view_artist/"+tracks_by[0].track_details['artist']
 		self.write(templates.load("view_artist.html").generate(compiled=compiled, user_name=user_name, 
 														tracks_by=tracks_by, og_description=og_description, 
-														page_title=page_title, meta_description=meta_description))
+														page_title=page_title, meta_description=meta_description,
+														twitter_url=twitter_url))
 		
-class SegmentHandler(BaseHandler):
+class ChunkHandler(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
 		form = Oracle()
 		og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
 		page_title="Browse Artists: Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
-		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name=user_name, form=form,
+		twitter_url="http://www.infiniteglitch.net/choice_chunks"
+		self.write(templates.load("choice_chunks.html").generate(compiled=compiled, user_name=user_name, form=form,
 																	artist_tracks="", og_description=og_description, 
-																	page_title=page_title, meta_description=meta_description))
+																	page_title=page_title, meta_description=meta_description,
+																	twitter_url=twitter_url))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
@@ -510,9 +516,11 @@ class SegmentHandler(BaseHandler):
 		og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
 		page_title="Browse Artists: Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
-		self.write(templates.load("segment_selection.html").generate(compiled=compiled, user_name=user_name, form=form,
-																	artist_tracks="", og_description=og_description, 
-																	page_title=page_title, meta_description=meta_description))
+		twitter_url="http://www.infiniteglitch.net/choice_chunks"
+		self.write(templates.load("choice_chunks.html").generate(compiled=compiled, user_name=user_name, form=form,
+																	artist_tracks=artist_tracks, og_description=og_description, 
+																	page_title=page_title, meta_description=meta_description,
+																	twitter_url=twitter_url))
 			
 class UserForm(Form):
 	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email()])
@@ -697,7 +705,7 @@ if __name__ == "__main__":
 			(r"/audition/([0-9]+)", AuditionTransition),
 			(r"/artwork/([0-9]+).jpg", TrackArtwork),
 			(r"/oracle", OracleHandler),
-			(r"/segment_selection", SegmentHandler),
+			(r"/choice_chunks", ChunkHandler),
 			(r"/view_artist/([A-Za-z0-9\+\-\.]+)", TracksByArtist),
 			(r"/rebuild_glitch", RenderGlitch),
 			(r"/credits", CreditsHandler),
