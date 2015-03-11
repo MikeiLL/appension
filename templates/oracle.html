@@ -99,19 +99,15 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 							  fjs.parentNode.insertBefore(js, fjs);
 							}(document, 'script', 'facebook-jssdk'));
 							</script>
-							<script type="text/javascript">
-								(function(){
-								var tw = document.createElement('script');
-								tw.type = "text/javascript";
-								tw.async = true;
-								tw.src = "http://platform.twitter.com/widgets.js";
-								var s = document.getElementsByTagName('script')[0];
-								s.parentNode.insertBefore(tw, s);
-								})();
+							<script>
+							window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
 							</script>
-					<li class="twitter-like">
-							<a href="http://twitter.com/share" class="twitter-share-button" data-url="<%= url %>" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-						</li>   
+								<li class="twitter-like">
+									<a class="twitter-share-button"
+								  href="https://twitter.com/share"
+								  data-url="http://www.infiniteglitch.net">
+								Tweet
+								</a></li>   
 
 						<li class="fb-like">
 						<div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>
