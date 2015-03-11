@@ -489,7 +489,10 @@ class TracksByArtist(BaseHandler):
 		og_description= tracks_by[0].track_details['artist']+" contributions to The world's longest pop song."
 		page_title=tracks_by[0].track_details['artist']+": Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest pop song."
-		twitter_url="http://www.infiniteglitch.net/view_artist/"+tracks_by[0].track_details['artist']
+		twitter_url="http://www.infiniteglitch.net/view_artist/"+tornado.escape.url_escape(tracks_by[0].track_details['artist'])
+		print(11111)
+		print(twitter_url)
+		print(22222)
 		self.write(templates.load("view_artist.html").generate(compiled=compiled, user_name=user_name, 
 														tracks_by=tracks_by, og_description=og_description, 
 														page_title=page_title, meta_description=meta_description,
