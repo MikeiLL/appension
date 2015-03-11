@@ -207,11 +207,15 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 
 
 def MpegFile(form, field):
+	from pprint import pprint
+	#pprint(field.__dict__)
+	filename = field.raw_data[0].filename
 	#if file.size > 10*1024*1024:
 		#raise ValidationError("Audio file too large ( > 10mb )")
-	#if not field.content_type in ["audio/mpeg"]:
-	#	raise ValidationError(" must be an audio/mpeg file with extension .mp3.")
-	if not os.path.splitext(field.name)[1] in [".mp3"]:
+	if not field.raw_data[0].content_type in ["audio/mpeg"]:
+		raise ValidationError(" must be an audio/mpeg file.")
+	ext = os.path.splitext(filename)[1]
+	if not ext.lower() in [".mp3"]:
 		raise ValidationError(" must be an audio/mpeg file with extension .mp3.")
 		
 class EasyForm(Form):
@@ -240,6 +244,7 @@ class Submissionform(BaseHandler):
 
 	def post(self):
 		form = EasyForm(self.request.arguments)
+		form.mp3_file.raw_data = self.request.files['mp3_file']
 		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
 		page_title="Glitch Track Submission."
@@ -249,14 +254,14 @@ class Submissionform(BaseHandler):
 		if form.validate():
 			for f in self.request.arguments:
 				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
-			# self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
+			#self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
 			fileinfo = self.request.files['mp3_file'][0]
 			details += "<hr/>" + fileinfo['filename']
-			#database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
+			database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
 			info = self.request.arguments
 			message = "A new file, %s had been submitted by %s at %s."%(fileinfo['filename'],info.get("submitter_name",[""])[0]
 																		, info.get("email",[""])[0])
-			#mailer.AlertMessage(message, 'New Track Submission')
+			mailer.AlertMessage(message, 'New Track Submission')
 			self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
 																			meta_description=meta_description, og_url=config.server_domain,
 																			og_description=og_description))
