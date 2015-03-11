@@ -1,4 +1,5 @@
 app_name: "fore"
+server_domain: "http://www.infiniteglitch.net"
 
 log_file: 'log.txt'
 log_format: '%(asctime)s P%(process)-5d (%(levelname)8s) %(module)16s%(lineno)5d: %(uid)9s %(message)s'
