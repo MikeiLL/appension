@@ -31,8 +31,8 @@ create table users (id serial primary key,
 );
 
 create table outreach (id serial primary key,
-		message varchar not null default ''
+		message varchar not null default '',
 		created timestamptz not null default now(),
-		processed int not null default 0,
+		processed int not null default 0
 );
 
