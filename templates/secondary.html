@@ -9,7 +9,7 @@
   
 	<meta property="og:title" content="{{ page_title }}" />
 	<meta property="og:type" content="song" />
-	<meta property="og:url" content="http://infiniteglitch.net/" />
+	<meta property="og:url" content="{{ og_url }}" />
 	<meta property="og:image" content="http://infiniteglitch.net/static/img/puzzle-stamp.png" />
 	<meta property="og:description" content="{{ og_description }}" />
 	<meta property="fb:admins" content="100000460115448" />
@@ -117,12 +117,12 @@
 								<li class="twitter-like">
 									<a class="twitter-share-button"
 								  href="https://twitter.com/share"
-								  data-url="{{ twitter_url }}">
+								  data-url="{{ og_url }}">
 								Tweet
 								</a></li>   
 
 						<li class="fb-like">
-						<div class="fb-share-button" data-href="{{ twitter_url }}" data-layout="button_count"></div>
+						<div class="fb-share-button" data-href="{{ og_url }}" data-layout="button_count"></div>
 						</li>
 					</ul>
 				</nav>			
