@@ -283,7 +283,7 @@ def generate_metadata(a):
 	m = metadata_of(a)
 	if isinstance(m, tuple):
 		m1, m2 = m
-		log.info("HERE: ", dir(m1))
+		log.info("HERE: %r", dir(m1))
 		d['tracks'] = [{
 			"metadata": m1,
 			"start": a.s1,
