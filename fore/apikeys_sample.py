@@ -1,3 +1,12 @@
+# Sample untracked-keys file
+# If you get errors trying to 'import apikeys', do the following:
+# 1) Copy this file to apikeys.py (keeping it in the package directory)
+# 2) Replace all of the example values with real ones, particularly the
+#    echonest API key
+# 3) Generate your own cookie key, possibly using urandom as per below
+# Be sure to keep the last two lines as-is.
+# You should then be able to start the server.
+
 ECHO_NEST_API_KEY = "BNOAEBT3IZYZI6WXI"
 db_connect_string = ""
 admin_url = "/123administration45"

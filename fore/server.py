@@ -7,7 +7,7 @@ import logging
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO,format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 import config
-import apikeys
+from . import apikeys # ImportError? Check apikeys_sample.py for instructions.
 import mailer
 import oracle
 
