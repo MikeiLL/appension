@@ -29,7 +29,6 @@ import tornado.ioloop
 import tornado.template
 import tornadio2.server
 import multiprocessing
-import pyechonest.config
 from tornado import escape
 
 from daemon import Daemon
@@ -41,9 +40,6 @@ from sockethandler import SocketHandler
 from utils import daemonize, random_hex
 from bufferedqueue import BufferedReadQueue
 from monitor import MonitorHandler, MonitorSocket, monitordaemon
-
-#   API Key setup
-pyechonest.config.ECHO_NEST_API_KEY = apikeys.ECHO_NEST_API_KEY
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
