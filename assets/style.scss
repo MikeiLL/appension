@@ -411,10 +411,11 @@ body {
 		display:inline;
 		border:1px solid #fff;
 	}
+/*Changed 12th march*/
 	ul.footer_menu{
 	float: left;
 	list-style: none;
-	margin: 5px 0 20px 0;
+	margin: 5px 0 0px;
 	padding: 0;
 	width: 100%;
 	}
@@ -424,9 +425,15 @@ body {
 		float: left;
 		margin-right: 10px;
 	}
+/*Changed 12th march*/
 	li.twitter-like{
-		margin-top: 2px;
+	margin-top: 8px;
 	}
+/*Added 12th March*/
+BODY LI.fb-like
+{
+	margin-top: 8px;
+}
 	li.footerlist{
 		margin-top: 2px;
 	}
