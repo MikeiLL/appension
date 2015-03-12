@@ -9,8 +9,7 @@ audio/
 audio_full
 *.pkl
 *~
-api_keys.yml
-=======
+fore/apikeys.py
 build/
 dist/
 js/
@@ -18,9 +17,6 @@ remix/
 uploads/*
 remix.egg-info
 *.so
-*.pyc
-api_keys.yml
-log.txt
 /static/assets/*.*
 /remix/*
 /cache/*
