@@ -770,6 +770,7 @@ if __name__ == "__main__":
 			(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static/"}),
 			(r"/audio/(.*)", tornado.web.StaticFileHandler, {"path": "audio/"}),
 			(r"/transition_audio/(.*)", AuditionStaticFileHandler, {"path": "transition_audio/"}),
+			(r"/instrumentals/(.*)", tornado.web.StaticFileHandler, {"path": "instrumentals/"}),
 			(r"/timing\.json", TimingHandler),
 
 			(r"/all\.json", InfoHandler),
