@@ -96,27 +96,12 @@ def managed_transition(track1, track2, state=None):
         
         pb1 = pb(track1, state['cursor'], playback_duration)
         pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode='linear') #other mode option: 'equal_power'
-        log.warning("Mix looks like start %r track: %r end: %r, duration: %r",pb2.s2, pb2.t2, pb2.e2, pb2.duration)
 
-        log.warning("""
-        Complete length of %s (%d) is %r.
-        """, track1._metadata.track_details['artist'], track1._metadata.track_details['id'], track1._metadata.track_details['length'])
-        
         equal = mix_duration + playback_duration == t1end - state['cursor']
         actual = t1end - state['cursor']
         desired = mix_duration + playback_duration
         diff = actual - desired
-        log.warning("""
-        Playback goes from %r to %r for a total duration of %r.
-        Mix goes from %r to %r for a total duration of %r.
-        Does this all add up? %r.
-        We have %r and we want %r.
-        We're off by %r.
-        Track 2 starts at %r.
-        """, state['cursor'], playback_end, playback_duration, 
-             playback_end, t1end, mix_duration,
-             equal, actual, desired, diff, t2start)
-        log.warning("Actual mix duration is %r.",pb2.duration)
+        
         state['cursor'] = mix_duration + t2start
         return [pb1, pb2]
 

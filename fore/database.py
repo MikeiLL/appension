@@ -26,8 +26,8 @@ class Track(object):
 	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords"
 	def __init__(self, id, filename, artist, title, length, status, 
 				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords):
-		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
-																	length, status, story, lyrics, comments, xfade, itrim, otrim)
+		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
+																	length, status, story, comments, xfade, itrim, otrim)
 
 		self.id = id
 		self.filename = filename

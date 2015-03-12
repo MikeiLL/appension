@@ -25,7 +25,6 @@ def audition(files, xfade=0, otrim=0, itrim=0, user_name="transition"):
     filenames = ['audio/' + filename.encode("UTF-8") for filename in files]
     tracks = [LocalAudioStream(file) for file in filenames]
     transition = managed_transition(tracks[0], tracks[1], xfade=xfade, otrim=otrim, itrim=itrim)
-    log.warning("What we have here is a list and it looks like %r and %r", filenames[0], filenames[1])
     audition_render(transition, 'transition_audio/transition.mp3')
 
 def last_viable(track):
@@ -90,7 +89,6 @@ def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0, mode = '
             mix_duration -= .5
             playback_end += .5
             playback_duration += .5
-        log.warning("Our Start is %r", start)
         pb1 = pb(track1, start, playback_duration)
         pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode=mode) 
         pb3 = pb(track2, t2start + mix_duration, 10)
