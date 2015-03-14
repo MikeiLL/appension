@@ -17,7 +17,8 @@ create table tracks (id serial primary key,
 		enqueued int not null default 0,
 		played int not null default 0,
 		sequence int not null default 0,
-		keywords varchar not null default ''
+		keywords varchar not null default '',
+		userid int not null default 0;
 );
 
 

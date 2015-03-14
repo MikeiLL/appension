@@ -249,14 +249,16 @@ def sequence_tracks(sequence_object):
 	
 def get_submitter_info():
     with _conn, _conn.cursor() as cur:
-        query = '''SELECT submitter, submitteremail, artist, id,
-                CASE WHEN lyrics !='' THEN 1
+        query = '''SELECT a.username, a.email, b.artist, b.id,
+                CASE WHEN b.lyrics !='' THEN 1
                 ELSE 0
                 END as lyrics,
-                CASE WHEN story !='' THEN 1
+                CASE WHEN b.story !='' THEN 1
                 ELSE 0
                 END as story
-                FROM tracks ORDER by artist'''
+                FROM tracks b 
+                join users a
+                on a.id=b.userid GROUP by a.username, a.email, b.artist, b.id'''
         cur.execute(query)
         return [row for row in cur.fetchall()]
 			
