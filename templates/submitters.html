@@ -12,32 +12,42 @@
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
 <tr><td>Submitter Name</td><td>Submitter Email</td><td>Artist</td><td>Lyrics</td><td>Story</td></tr>
 {% for submitter in submitters %}
-	<input type="hidden" name="track_id" size="15" value="{{ submitter[3] }}">
-	<tr><td><input type="text" name="name" size="15" value="{{ submitter[0] }}"></td>
-	<td><input type="text" name="email" size="15" value="{{ submitter[1] }}"></td>
-	<td><a href="{{ edit_url }}/{{ submitter[3] }}">{{ submitter[2] }}</a></td>
+	<input type="hidden" name="user_id" size="15" value="{{ submitter.userid }}">
+	<input type="hidden" name="track_id" size="15" value="{{ submitter.submitted['track_id'] }}">
+	<tr><td><input type="text" id="username{{ submitter.submitted['track_id'] }}" name="username" size="15" value="{{ submitter.username }}"></td>
+	<td><input type="text" id="email{{ submitter.submitted['track_id'] }}" name="email" size="15" value="{{ submitter.email }}"></td>
+	<td><a href="{{ edit_url }}/{{ submitter.submitted['track_id'] }}">{{ submitter.submitted['artist'] }}</a></td>
 	
-	<td>{% if not submitter[4] %}
+	<td>{% if not submitter.submitted['lyrics'] %}
 			<span class="errors">Empty.</span>
 		{% else %}
 			Yes.
 		{% end %}
 	</td>
 	
-	<td>{% if not submitter[5] %}
+	<td>{% if not submitter.submitted['story'] %}
 			 <span class="errors">Empty.</span>
 		{% else %}
 			Yes.
 		{% end %}
 	</td>
 	</tr>
-
+<script type="text/javascript">
+document.getElementById("username{{ submitter.submitted['track_id'] }}").disabled = true;
+var dis1 = document.getElementById("email{{ submitter.submitted['track_id'] }}");
+dis1.onchange = function () {
+   if (this.value != "admin@mzoo.org" || this.value.length > 0) {
+      document.getElementById("username{{ submitter.submitted['track_id'] }}").disabled = false;
+   }
+}
+</script>
 {% end %}
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
 
 </table>
 </form>
 </center>
+
 {% end %}
 
 
