@@ -57,6 +57,20 @@ class Track(object):
 			'comments': comments,
 			'keywords': keywords,
 		}
+		
+class Submitter(object):
+    def __init__(self,username,email,userid,artist,track_id,filename,lyrics,story ):
+        
+        self.userid = userid
+        self.username = username
+        self.email = email
+        self.submitted = {
+            'artist': artist,
+            'track_id': track_id,
+            'filename': filename,
+            'lyrics': lyrics,
+            'story': story
+            }
 
 class Lyric(object):
 	# Select these from the tracks table to construct a track object.
@@ -247,9 +261,9 @@ def sequence_tracks(sequence_object):
     	with _conn, _conn.cursor() as cur:
 		cur.execute("UPDATE tracks SET sequence = "+str(seq)+", played = 0 WHERE id="+str(id))
 	
-def get_submitter_info():
+def get_track_submitter_info():
     with _conn, _conn.cursor() as cur:
-        query = '''SELECT a.username, a.email, b.artist, b.id,
+        query = '''SELECT a.username, a.email, a.id as userid, b.artist, b.id as track_id, b.filename,
                 CASE WHEN b.lyrics !='' THEN 1
                 ELSE 0
                 END as lyrics,
@@ -258,16 +272,34 @@ def get_submitter_info():
                 END as story
                 FROM tracks b 
                 join users a
-                on a.id=b.userid GROUP by a.username, a.email, b.artist, b.id'''
+                on a.id=b.userid GROUP by a.username, a.email, a.id, b.artist, b.id'''
         cur.execute(query)
-        return [row for row in cur.fetchall()]
+        return [Submitter(*row) for row in cur.fetchall()]
 			
-def update_submitter_info(submitter_object):
-    for track_grouping in zip(submitter_object['track_id'],submitter_object['name'],submitter_object['email']):
-        name = track_grouping[1]
-        email = track_grouping[2]
-    	with _conn, _conn.cursor() as cur:
-		cur.execute("UPDATE tracks SET submitter = '"+str(name)+"', submitteremail = '"+str(email)+"' WHERE id="+str(track_grouping[0]))
+def update_track_submitter_info(submitter_object):
+    '''We may not need track id, but it may prove useful at some point.'''
+    for track_grouping in zip(submitter_object['track_id'],submitter_object['user_id'],submitter_object['username'],submitter_object['email']):
+        userid = track_grouping[1]
+        name = track_grouping[2]
+        email = track_grouping[3]
+        track_id = track_grouping[0]
+        with _conn, _conn.cursor() as cur:
+            cur.execute("UPDATE users SET username = '"+str(name)+"', email = '"+str(email)+"' WHERE id = "+str(userid))
+            
+def add_dummy_users():
+    start_default_email_number = 0
+    with _conn, _conn.cursor() as cur:
+        cur.execute("SELECT artist FROM tracks WHERE userid = 0 GROUP BY artist;")
+        artists = cur.fetchall()
+        for artist in artists:
+            start_default_email_number += 1
+            start_default_email = str(start_default_email_number) + '@infiniteglitch.net'
+            cur.execute("INSERT INTO users (username, email) VALUES (%s, %s) RETURNING id", (artist[0], start_default_email))
+            userid = cur.fetchone()
+            print(artist[0], userid)
+            cur.execute("UPDATE tracks SET userid = %s WHERE artist LIKE %s", (userid, artist[0]))
+        
+        
 
 def create_outreach_message(message):
     with _conn, _conn.cursor() as cur:
