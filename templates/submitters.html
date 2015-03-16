@@ -14,8 +14,8 @@
 {% for submitter in submitters %}
 	<input type="hidden" name="user_id" size="15" value="{{ submitter.userid }}">
 	<input type="hidden" name="track_id" size="15" value="{{ submitter.submitted['track_id'] }}">
-	<tr><td><input type="text" id="username{{ submitter.submitted['track_id'] }}" name="username" size="15" value="{{ submitter.username }}"></td>
-	<td><input type="text" id="email{{ submitter.submitted['track_id'] }}" name="email" size="15" value="{{ submitter.email }}"></td>
+	<tr><td><input type="text" id="username" name="username" size="15" value="{{ submitter.username }}"></td>
+	<td><input type="text" id="email" name="email" size="15" value="{{ submitter.email }}"></td>
 	<td><a href="{{ edit_url }}/{{ submitter.submitted['track_id'] }}">{{ submitter.submitted['artist'] }}</a></td>
 	
 	<td>{% if not submitter.submitted['lyrics'] %}
@@ -32,22 +32,14 @@
 		{% end %}
 	</td>
 	</tr>
-<script type="text/javascript">
-document.getElementById("username{{ submitter.submitted['track_id'] }}").disabled = true;
-var dis1 = document.getElementById("email{{ submitter.submitted['track_id'] }}");
-dis1.onchange = function () {
-   if (this.value != "admin@mzoo.org" || this.value.length > 0) {
-      document.getElementById("username{{ submitter.submitted['track_id'] }}").disabled = false;
-   }
-}
-</script>
+
 {% end %}
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
 
 </table>
 </form>
 </center>
-
+</script>
 {% end %}
 
 
