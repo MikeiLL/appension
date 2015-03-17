@@ -112,12 +112,7 @@
           
         case 'mp3':
           var buf = e.data.buf;
-  	  		//e.preventDefault();	
-  	  		//e.stopPropagation();
-          document.getElementById('upload_button').style.display = "inline";
-    	  document.getElementById("clickMe").onclick = function(){
     	  	endFile(buf, 'mp3');
-    	  	}
           // Removed the terminate of the worker - terminate does not allow multiple recordings
           encoderMp3Worker.terminate();
           //encoderMp3Worker = null;
@@ -164,9 +159,10 @@
       li.appendChild(au);
 
       // Upload file to server - uncomment below
-      uploadAudio(blob);
-      console.log("File uploaded");
-      log.innerHTML += "\n" + "File uploaded";
+	  document.getElementById('upload_button').style.display = "inline";
+	  document.getElementById("clickMe").onclick = function(){
+      	uploadAudio(blob);
+      }
 
       recordingslist.appendChild(li);
 
@@ -189,7 +185,8 @@
 				processData: false,
 				contentType: false
 			}).done(function(data) {
-				console.log('Upload.php');
+				console.log("File uploaded");
+      			log.innerHTML += "\n" + "File uploaded";
 			});
 		};      
 		reader.readAsDataURL(mp3Data);
