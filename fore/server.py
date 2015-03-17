@@ -289,6 +289,15 @@ class Recorder(BaseHandler):
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 
 		if form.validate():
+			for f in self.request.arguments:
+				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
+			fileinfo = self.request.files['mp3_file'][0]
+			details += "<hr/>" + fileinfo['filename']
+			database.save_track(fileinfo['body'], fileinfo['filename'])
+			info = self.request.arguments
+			message = "A new file, %s had been submitted by %s at %s."%(fileinfo['filename'],info.get("submitter_name",[""])[0]
+																		, info.get("email",[""])[0])
+			mailer.AlertMessage(message, 'New Track Saved')
 			self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name))
 		else:
 			self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name))

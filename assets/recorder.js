@@ -49,7 +49,7 @@
       recording = true;
 
       var sampleRate = this.context.sampleRate;
-
+/*
       console.log("Initializing WAV");
       log.innerHTML += "\n" + "Creating Empty WAV";
 
@@ -58,7 +58,7 @@
         config: {
           sampleRate: sampleRate
         }
-      });
+      });*/
 
       console.log("Initializing to Mp3");
       log.innerHTML += "\n" + "Creating Empty Mp3:" + sampleRate;
@@ -80,11 +80,11 @@
 
       if (!recording)
         return;
-
+/*
       recordWavWorker.postMessage({
         command: 'finish'
       });
-
+*/
       encoderMp3Worker.postMessage({
         command: 'finish'
       });
@@ -112,13 +112,13 @@
           var buf = e.data.buf;
           endFile(buf, 'mp3');
           // Removed the terminate of the worker - terminate does not allow multiple recordings
-          //encoderMp3Worker.terminate();
+          encoderMp3Worker.terminate();
           //encoderMp3Worker = null;
           break;
       }
 
     };
-
+/*
     recordWavWorker.onmessage = function(e) {
 
       var command = e.data.command;
@@ -132,10 +132,13 @@
       }
 
     };
+    */
 
     function endFile(blob, extension) {
 
       console.log("Done converting to " + extension);
+      var username = document.getElementById('username');
+      console.log(username)
       log.innerHTML += "\n" + "Done converting to " + extension;
 
       console.log("the blob " + blob + " " + blob.size + " " + blob.type);
