@@ -299,7 +299,7 @@ class Recorder(BaseHandler):
 			pass
 		filename = self.get_argument("fname","new.mp3")
 		details += "<hr/>" + filename
-		database.upload_track(mp3data, filename)
+		#database.upload_track(mp3data, filename)
 		info = self.request.arguments
 		message = "A new file, %s had been submitted by %s at %s."%(filename,info.get("submitter_name",[""])[0], info.get("email",[""])[0])
 		mailer.AlertMessage(message, 'New Track Saved')

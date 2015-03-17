@@ -2,13 +2,15 @@
 
   var recordWavWorker = new Worker('static/uncompiledjs/recorderWorker.js');
   var encoderMp3Worker = new Worker('static/uncompiledjs/mp3Worker.js');
-
+  
+  
   var Recorder = function(source) {
 
     var bufferLen = 4096;
     var recording = false;
 
     this.context = source.context;
+    
 
     /*
       ScriptProcessorNode createScriptProcessor (optional unsigned long bufferSize = 0,
@@ -96,7 +98,6 @@
     encoderMp3Worker.onmessage = function(e) {
 
       var command = e.data.command;
-
       console.log('encoderMp3Worker - onmessage: ' + command);
 
       switch (command) {
@@ -108,10 +109,15 @@
           //https://github.com/akrennmair/speech-to-server
 
           break;
+          
         case 'mp3':
           var buf = e.data.buf;
+  	  		//e.preventDefault();	
+  	  		//e.stopPropagation();
           document.getElementById('upload_button').style.display = "inline";
-          document.getElementById("clickMe").onclick = endFile(buf, 'mp3');
+    	  document.getElementById("clickMe").onclick = function(){
+    	  	endFile(buf, 'mp3');
+    	  	}
           // Removed the terminate of the worker - terminate does not allow multiple recordings
           encoderMp3Worker.terminate();
           //encoderMp3Worker = null;

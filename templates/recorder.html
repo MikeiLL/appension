@@ -50,7 +50,6 @@
 		<div id="title-admin">				
 		</div></a>	
   	</header>	
-  	<div id="hidden_form_container" style="display:none;"></div>
   	<br style="clear:both"/>  
   	<!--Pattern HTML-->	
   	<div class="secondary">
@@ -66,7 +65,7 @@
   
   <h2>Recordings</h2>
   <ul id="recordingslist"></ul>
-  <div id="upload_button" style="display:none"><input id="clickMe" type="button" value="upload track"/></div>
+  <div id="upload_button" style="display:none"><a href='#' id="clickMe" class="btn btn-default">Upload</a></div>
   <h2>Log</h2>
   <pre id="log"></pre>
   </div>		
@@ -97,7 +96,7 @@
 
    <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
 	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
-		'recorder.js') }}'>
+													'recorder.js') }}'>
 	</script>		
    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
@@ -140,8 +139,7 @@
 
 
   var _realAudioInput;
-
-
+  
   function handlerStartUserMedia(stream) {
 
     console.log('handlerStartUserMedia');
@@ -198,7 +196,6 @@
  
 
   }
-
 
   window.onload = function init() {
 
