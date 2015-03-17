@@ -739,7 +739,7 @@ class Login(BaseHandler):
 				self.redirect(self.get_argument("next", "/"))
 			else:
 				notice = "LOGIN FAILED. PLEASE TRY AGAIN."
-				self.write(templates.load("login.html").generate(compiled=compiled, form=form, \
+				self.write(templates.load("login.html").generate(compiled=compiled, form=form, next=self.get_argument('next', "/"),
 										notice=notice, user_name=self.current_user, page_title="Login Error", og_url=config.server_domain,
 										meta_description=meta_description, og_description=og_description ))
 		else:
