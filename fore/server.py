@@ -619,6 +619,8 @@ class CreateAccount(tornado.web.RequestHandler):
 		
 	def post(self):
 		form = CreateUser(self.request.arguments)
+		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		if form.validate():
 			info = self.request.arguments
 			submitter_email = info.get("email",[""])[0]
@@ -637,10 +639,6 @@ class CreateAccount(tornado.web.RequestHandler):
 			user_message = """Either you or someoe else just created an account at InfiniteGlitch.net. \n \r
 To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, confirmation_url)
 			mailer.AlertMessage(user_message, 'Infinite Glitch Account', you=submitter_email)
-			
-			og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
-			meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
-		
 			self.write(templates.load("account_confirmation.html").generate(compiled=compiled, user_name=submitter_name, 
 																			page_title="Glitch Account Sign-Up Confirmation",
 																			og_url=config.server_domain,
@@ -741,7 +739,7 @@ class Login(BaseHandler):
 				self.redirect(self.get_argument("next", "/"))
 			else:
 				notice = "LOGIN FAILED. PLEASE TRY AGAIN."
-				self.write(templates.load("login.html").generate(compiled=compiled, form=form, \
+				self.write(templates.load("login.html").generate(compiled=compiled, form=form, next=self.get_argument('next', "/"),
 										notice=notice, user_name=self.current_user, page_title="Login Error", og_url=config.server_domain,
 										meta_description=meta_description, og_description=og_description ))
 		else:
