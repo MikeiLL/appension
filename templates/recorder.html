@@ -43,10 +43,14 @@
   			<p>Hello {{ user_name }}!</p>		
   		</div>		
   	{% end %}		
+  	{% if notice %}
+		<h2> {{ notice }} </h2>
+	{% end %}
   		<a href="/" style="display:block;">		
 		<div id="title-admin">				
 		</div></a>	
   	</header>	
+  	<div id="hidden_form_container" style="display:none;"></div>
   	<br style="clear:both"/>  
   	<!--Pattern HTML-->	
   	<div class="secondary">
@@ -62,11 +66,11 @@
   
   <h2>Recordings</h2>
   <ul id="recordingslist"></ul>
-  
+  <div id="upload_button"><input id="clickMe" type="button" value="upload track" style="display:none"/></div>
   <h2>Log</h2>
   <pre id="log"></pre>
   </div>		
-  <input id="clickMe" type="button" value="clickme" onclick="sayHello();" />
+ 
 					<div style="clear:both;"></div>	
 				</li>			
 				{% block right-nav %}			

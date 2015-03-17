@@ -277,30 +277,31 @@ class Recorder(BaseHandler):
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 
-		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name))
+		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice=''))
 		
 
 	def post(self):
-		form = EasyForm(self.request.arguments)
 		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
 		page_title="Glitch Track Submission."
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 
-		if form.validate():
-			for f in self.request.arguments:
-				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
-			fileinfo = self.request.files['mp3_file'][0]
-			details += "<hr/>" + fileinfo['filename']
-			database.save_track(fileinfo['body'], fileinfo['filename'])
-			info = self.request.arguments
-			message = "A new file, %s had been submitted by %s at %s."%(fileinfo['filename'],info.get("submitter_name",[""])[0]
-																		, info.get("email",[""])[0])
-			mailer.AlertMessage(message, 'New Track Saved')
-			self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name))
-		else:
-			self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name))
+		for f in self.request.arguments:
+			details += "<hr/>" + self.get_argument(f, default=None, strip=False)
+		print(11111111111)
+		print(self.request.files)
+		print(11111111111)
+		fileinfo = self.request.files['data'][0]
+		details += "<hr/>" + fileinfo['filename']
+		database.upload_track(fileinfo['body'], fileinfo['filename'])
+		info = self.request.arguments
+		message = "A new file, %s had been submitted by %s at %s."%(fileinfo['filename'],info.get("submitter_name",[""])[0]
+																	, info.get("email",[""])[0])
+		mailer.AlertMessage(message, 'New Track Saved')
+		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice="Track Uploaded"))
+		
+			
 			
 
 def admin_page(user_name, deleted=0, updated=0, notice=''):

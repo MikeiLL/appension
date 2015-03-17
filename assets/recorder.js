@@ -110,7 +110,8 @@
           break;
         case 'mp3':
           var buf = e.data.buf;
-          endFile(buf, 'mp3');
+          document.getElementById('upload_button').style.display = "inline";
+          document.getElementById("clickMe").onclick = endFile(buf, 'mp3');
           // Removed the terminate of the worker - terminate does not allow multiple recordings
           encoderMp3Worker.terminate();
           //encoderMp3Worker = null;
@@ -157,9 +158,9 @@
       li.appendChild(au);
 
       // Upload file to server - uncomment below
-      // uploadAudio(blob);
-      // console.log("File uploaded");
-      // log.innerHTML += "\n" + "File uploaded";
+      uploadAudio(blob);
+      console.log("File uploaded");
+      log.innerHTML += "\n" + "File uploaded";
 
       recordingslist.appendChild(li);
 
@@ -167,28 +168,48 @@
 
   };
   
-    function sayHello(word){
-    	console.log('Hello, iLL')
-    	}
+function postRefreshPage () {
+  var theForm, newInput1, newInput2;
+  // Start by creating a <form>
+  theForm = document.createElement('form');
+  theForm.action = 'somepage.php';
+  theForm.method = 'post';
+  // Next create the <input>s in the form and give them names and values
+  newInput1 = document.createElement('input');
+  newInput1.type = 'hidden';
+  newInput1.name = 'input_1';
+  newInput1.value = 'value 1';
+  newInput2 = document.createElement('input');
+  newInput2.type = 'hidden';
+  newInput2.name = 'input_2';
+  newInput2.value = 'value 2';
+  // Now put everything together...
+  theForm.appendChild(newInput1);
+  theForm.appendChild(newInput2);
+  // ...and it to the DOM...
+  document.getElementById('hidden_form_container').appendChild(theForm);
+  // ...and submit it
+  theForm.submit();
+}
     
 	function uploadAudio(mp3Data){
+		var newInput1, newInput2;
+		var fd = new FormData();
+        document.getElementById('upload_button').style.display = "inline";
+		var mp3Name = encodeURIComponent('audio_recording_' + new Date().getTime() + '.mp3');
+		console.log("mp3name = " + mp3Name);
+		fd.append('fname', mp3Name);
+		fd.append('data', mp3Data);
 		var reader = new FileReader();
-		reader.onload = function(event){
-			var fd = new FormData();
-			var mp3Name = encodeURIComponent('audio_recording_' + new Date().getTime() + '.mp3');
-			console.log("mp3name = " + mp3Name);
-			fd.append('fname', mp3Name);
-			fd.append('data', event.target.result);
-			$.ajax({
-				type: 'POST',
-				url: 'upload.php',
-				data: fd,
-				processData: false,
-				contentType: false
-			}).done(function(data) {
-				console.log('Upload.php');
-			});
-		};      
+		// Start by creating a <form>
+		theForm = document.createElement('form');
+		fd.action = 'recorder';
+		fd.method = 'post';
+		// ...and it to the DOM...
+		// ...and submit it
+		fd.submit();
+
+		console.log('UPLOADED to SERVER');
 		reader.readAsDataURL(mp3Data);
 	}
 	

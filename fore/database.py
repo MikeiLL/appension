@@ -234,14 +234,14 @@ def create_track(mp3data, filename, info):
 		)
 		return id
 		
-def save_track(mp3data, filename):
+def upload_track(mp3data, filename):
 	"""Save a blob of MP3 data to the specified file and registers it in the database.
 
 	Note that this function breaks encapsulation horribly. The third argument is
 	assumed to be a request object dictionary, with all its quirks. The file is saved
 	to disk as well as being registered with the database. TODO: Clean me up."""
 	with _conn, _conn.cursor() as cur:
-		filename = "audio/%d %s"%(id, filename)
+		filename = "audio/%s"%(filename)
 		with open(filename, "wb") as f: f.write(mp3data)
 		
 def delete_track(input):
