@@ -19,6 +19,7 @@ import copy
 import time
 import info
 import uuid
+import base64
 import random
 import wtforms
 import datetime
@@ -289,20 +290,22 @@ class Recorder(BaseHandler):
 
 		for f in self.request.arguments:
 			details += "<hr/>" + self.get_argument(f, default=None, strip=False)
-		print(11111111111)
-		print(self.request.files)
-		print(11111111111)
-		fileinfo = self.request.files['data'][0]
-		details += "<hr/>" + fileinfo['filename']
-		database.upload_track(fileinfo['body'], fileinfo['filename'])
+		data = self.get_argument("data", "")
+		if data.startswith("data:audio/mp3;base64,"):
+			data = data[22:] # Trim off the expected prefix
+			mp3data = base64.b64decode(data)
+		else:
+			# TODO: Send back some sort of error. For now, that's a 500 UnboundLocalError.
+			pass
+		filename = self.get_argument("fname","new.mp3")
+		details += "<hr/>" + filename
+		database.upload_track(mp3data, filename)
 		info = self.request.arguments
-		message = "A new file, %s had been submitted by %s at %s."%(fileinfo['filename'],info.get("submitter_name",[""])[0]
-																	, info.get("email",[""])[0])
+		message = "A new file, %s had been submitted by %s at %s."%(filename,info.get("submitter_name",[""])[0], info.get("email",[""])[0])
 		mailer.AlertMessage(message, 'New Track Saved')
 		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice="Track Uploaded"))
-		
-			
-			
+
+
 
 def admin_page(user_name, deleted=0, updated=0, notice=''):
 	return templates.load("administration.html").generate(
