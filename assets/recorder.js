@@ -137,7 +137,7 @@
     function endFile(blob, extension) {
 
       console.log("Done converting to " + extension);
-      var username = document.getElementById('username');
+      var username = document.getElementById('username').innerHTML;
       console.log(username)
       log.innerHTML += "\n" + "Done converting to " + extension;
 
@@ -166,6 +166,11 @@
     }
 
   };
+  
+    function sayHello(word){
+    	console.log('Hello, iLL')
+    	}
+    
 	function uploadAudio(mp3Data){
 		var reader = new FileReader();
 		reader.onload = function(event){
