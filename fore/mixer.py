@@ -240,14 +240,13 @@ class LocalAudioStream(AudioStream):
 			fobj.close()
 		track_md5 = md5.hexdigest()
 
-		logging.getLogger(__name__).info("Fetching analysis...")
+		log.info("Fetching analysis...")
 		try:
 			tempanalysis = AudioAnalysis(str(track_md5))
 		except EchoNestAPIError:
 			tempanalysis = AudioAnalysis(initializer, kind)
 
-		logging.getLogger(__name__).info("Fetched analysis in %ss",
-										 (time.time() - start))
+		log.info("Fetched analysis in %ss", time.time() - start)
 		self.analysis = tempanalysis
 		self.analysis.source = weakref.ref(self)
 
