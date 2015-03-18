@@ -604,7 +604,7 @@ class ConfirmAccount(tornado.web.RequestHandler):
 		user_name = database.confirm_user(id, hex_string)
 		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
-		signup_confirmed = "Sign-up confirmed. Login with email (or username) and password."
+		signup_confirmed = "Sign-up confirmed. Login with email and password."
 		self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice=signup_confirmed,
 														next="/", page_title="New User Login", og_url=config.server_domain,
 														meta_description=meta_description,
