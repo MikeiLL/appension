@@ -43,3 +43,9 @@ def SubmitterMessage(message, subject='Major Glitch going Infinite!', me=apikeys
 def test():
 	a_message = 'There is someting I need to tell you.'
 	AlertMessage(a_message)
+
+if not hasattr(apikeys, "SMTP_SERVER_PORT"):
+	# If we don't have a server configured, neuter the mailing functions.
+	# TODO: Should this print a warning on startup?
+	def AlertMessage(*a, **kw): pass
+	def SubmitterMessage(*a, **kw): pass

@@ -2,13 +2,15 @@
 
   var recordWavWorker = new Worker('static/uncompiledjs/recorderWorker.js');
   var encoderMp3Worker = new Worker('static/uncompiledjs/mp3Worker.js');
-
+  
+  
   var Recorder = function(source) {
 
     var bufferLen = 4096;
     var recording = false;
 
     this.context = source.context;
+    
 
     /*
       ScriptProcessorNode createScriptProcessor (optional unsigned long bufferSize = 0,
@@ -49,7 +51,7 @@
       recording = true;
 
       var sampleRate = this.context.sampleRate;
-
+/*
       console.log("Initializing WAV");
       log.innerHTML += "\n" + "Creating Empty WAV";
 
@@ -58,7 +60,7 @@
         config: {
           sampleRate: sampleRate
         }
-      });
+      });*/
 
       console.log("Initializing to Mp3");
       log.innerHTML += "\n" + "Creating Empty Mp3:" + sampleRate;
@@ -80,11 +82,11 @@
 
       if (!recording)
         return;
-
+/*
       recordWavWorker.postMessage({
         command: 'finish'
       });
-
+*/
       encoderMp3Worker.postMessage({
         command: 'finish'
       });
@@ -96,7 +98,6 @@
     encoderMp3Worker.onmessage = function(e) {
 
       var command = e.data.command;
-
       console.log('encoderMp3Worker - onmessage: ' + command);
 
       switch (command) {
@@ -108,17 +109,18 @@
           //https://github.com/akrennmair/speech-to-server
 
           break;
+          
         case 'mp3':
           var buf = e.data.buf;
-          endFile(buf, 'mp3');
+    	  	endFile(buf, 'mp3');
           // Removed the terminate of the worker - terminate does not allow multiple recordings
-          //encoderMp3Worker.terminate();
+          encoderMp3Worker.terminate();
           //encoderMp3Worker = null;
           break;
       }
 
     };
-
+/*
     recordWavWorker.onmessage = function(e) {
 
       var command = e.data.command;
@@ -132,10 +134,13 @@
       }
 
     };
+    */
 
     function endFile(blob, extension) {
 
       console.log("Done converting to " + extension);
+      var username = document.getElementById('username').innerHTML;
+      console.log(username)
       log.innerHTML += "\n" + "Done converting to " + extension;
 
       console.log("the blob " + blob + " " + blob.size + " " + blob.type);
@@ -154,15 +159,17 @@
       li.appendChild(au);
 
       // Upload file to server - uncomment below
-      // uploadAudio(blob);
-      // console.log("File uploaded");
-      // log.innerHTML += "\n" + "File uploaded";
+	  document.getElementById('upload_button').style.display = "inline";
+	  document.getElementById("clickMe").onclick = function(){
+      	uploadAudio(blob);
+      }
 
       recordingslist.appendChild(li);
 
     }
 
   };
+  
 	function uploadAudio(mp3Data){
 		var reader = new FileReader();
 		reader.onload = function(event){
@@ -173,12 +180,13 @@
 			fd.append('data', event.target.result);
 			$.ajax({
 				type: 'POST',
-				url: 'upload.php',
+				url: 'recorder',
 				data: fd,
 				processData: false,
 				contentType: false
 			}).done(function(data) {
-				console.log('Upload.php');
+				console.log("File uploaded");
+      			log.innerHTML += "\n" + "File uploaded";
 			});
 		};      
 		reader.readAsDataURL(mp3Data);

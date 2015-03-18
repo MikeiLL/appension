@@ -19,6 +19,7 @@ import copy
 import time
 import info
 import uuid
+import base64
 import random
 import wtforms
 import datetime
@@ -277,22 +278,34 @@ class Recorder(BaseHandler):
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 
-		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name))
+		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice=''))
 		
 
 	def post(self):
-		form = EasyForm(self.request.arguments)
 		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
 		page_title="Glitch Track Submission."
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 
-		if form.validate():
-			self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name))
+		for f in self.request.arguments:
+			details += "<hr/>" + self.get_argument(f, default=None, strip=False)
+		data = self.get_argument("data", "")
+		if data.startswith("data:audio/mp3;base64,"):
+			data = data[22:] # Trim off the expected prefix
+			mp3data = base64.b64decode(data)
 		else:
-			self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name))
-			
+			# TODO: Send back some sort of error. For now, that's a 500 UnboundLocalError.
+			pass
+		filename = self.get_argument("fname","new.mp3")
+		details += "<hr/>" + filename
+		#database.upload_track(mp3data, filename)
+		info = self.request.arguments
+		message = "A new file, %s had been submitted by %s at %s."%(filename,info.get("submitter_name",[""])[0], info.get("email",[""])[0])
+		#mailer.AlertMessage(message, 'New Track Saved')
+		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice="Track Uploaded"))
+
+
 
 def admin_page(user_name, deleted=0, updated=0, notice=''):
 	return templates.load("administration.html").generate(
@@ -591,7 +604,7 @@ class ConfirmAccount(tornado.web.RequestHandler):
 		user_name = database.confirm_user(id, hex_string)
 		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
-		signup_confirmed = "Sign-up confirmed. Login with email (or username) and password."
+		signup_confirmed = "Sign-up confirmed. Login with email and password."
 		self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice=signup_confirmed,
 														next="/", page_title="New User Login", og_url=config.server_domain,
 														meta_description=meta_description,
@@ -609,6 +622,8 @@ class CreateAccount(tornado.web.RequestHandler):
 		
 	def post(self):
 		form = CreateUser(self.request.arguments)
+		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		if form.validate():
 			info = self.request.arguments
 			submitter_email = info.get("email",[""])[0]
@@ -627,10 +642,6 @@ class CreateAccount(tornado.web.RequestHandler):
 			user_message = """Either you or someoe else just created an account at InfiniteGlitch.net. \n \r
 To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, confirmation_url)
 			mailer.AlertMessage(user_message, 'Infinite Glitch Account', you=submitter_email)
-			
-			og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
-			meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
-		
 			self.write(templates.load("account_confirmation.html").generate(compiled=compiled, user_name=submitter_name, 
 																			page_title="Glitch Account Sign-Up Confirmation",
 																			og_url=config.server_domain,
@@ -731,7 +742,7 @@ class Login(BaseHandler):
 				self.redirect(self.get_argument("next", "/"))
 			else:
 				notice = "LOGIN FAILED. PLEASE TRY AGAIN."
-				self.write(templates.load("login.html").generate(compiled=compiled, form=form, \
+				self.write(templates.load("login.html").generate(compiled=compiled, form=form, next=self.get_argument('next', "/"),
 										notice=notice, user_name=self.current_user, page_title="Login Error", og_url=config.server_domain,
 										meta_description=meta_description, og_description=og_description ))
 		else:
