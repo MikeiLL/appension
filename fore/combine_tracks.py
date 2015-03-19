@@ -7,6 +7,9 @@ audition.py
 Functions to combine 'Basic' and 'Overdub' tracks from 'Glitch Recording Studio'.
 
 Created by Mike iLL with mentorship of Rosuav.
+
+track1 = audio.LocalAudioFile('acapella/Mike_iLL_a_capella.mp3')
+track2 = audio.LocalAudioFile('instrumentals/dgacousticlikMP3.mp3')
 """
 from __future__ import print_function
 import echonest.remix.audio as audio
@@ -22,9 +25,9 @@ LOUDNESS_THRESH = -8
 
 def combine_tracks(track1, track2, remove=0):
     if remove == 'left':
-        track1 = remove_channel(track1)
+        track2 = remove_channel(track2)
     elif remove == 'right':
-        track1 = remove_channel(track1, remove="right")
+        track2 = remove_channel(track2, remove="right")
     return left_right_merge(track1, track2)
     
 	
