@@ -36,6 +36,7 @@ def make_mono(track):
 def make_stereo(track):
 	"""If the track is mono, doubles it. otherwise, does nothing."""
 	if track.data.ndim == 1:
+		# NOTE: This may need dtype=numpy.int16 to avoid use of numpy floats.
 		stereo = zeros((len(track.data), 2))
 		stereo[:, 0] = copy(track.data)
 		stereo[:, 1] = copy(track.data)
@@ -45,18 +46,15 @@ def make_stereo(track):
 
 def remove_channel(track, remove="left"):
 	"""
-	Remove left or right channel from stereo track.
+	Remove left or right channel from stereo track, duplicating the other
+	channel over it. Mutates track and returns it.
 	"""
 	if track.data.ndim == 2:
-		import numpy as np
 		if remove == 'left':
-			track.data = np.delete(track.data, 0, 1)
+			mixed.data[:,0] = mixed.data[:,1]
 		else:
-			track.data = np.delete(track.data, 1, 1) 
-		track = make_stereo(track)
-		return track
-	else:
-		return track
+			mixed.data[:,1] = mixed.data[:,0]
+	return track
 				
 def left_right_merge(f1, f2):
 	"""Merge the left track of f1 with the right track of f2"""
