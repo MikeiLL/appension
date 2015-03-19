@@ -17,7 +17,7 @@ from lame import Lame
 from timer import Timer
 import database
 
-from audio import AudioData
+from echonest.remix.audio import AudioData
 
 from capsule_support import resample_features, \
 	timbre_whiten, terminate, \
