@@ -3,10 +3,6 @@
 app_name = "fore"
 server_domain = "http://www.infiniteglitch.net"
 
-log_file = 'log.txt'
-log_format = '%(asctime)s P%(process)-5d (%(levelname)8s) %(module)16s%(lineno)5d: %(uid)9s %(message)s'
-log_config_file_changes = False
-
 lag_limit = 88200        #   samples - how much we can lag by before dropping frames.
 restart_timeout = 3      #   seconds between polls to restart.txt
 http_port = 80
