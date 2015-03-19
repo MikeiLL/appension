@@ -25,6 +25,7 @@ import wtforms
 import datetime
 import threading
 import traceback
+import subprocess
 import tornado.web
 import tornado.ioloop
 import tornado.template
@@ -282,6 +283,7 @@ class Recorder(BaseHandler):
 		
 
 	def post(self):
+		from combine_tracks import render_track
 		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
 		page_title="Glitch Track Submission."
@@ -300,10 +302,18 @@ class Recorder(BaseHandler):
 		filename = self.get_argument("fname","new.mp3")
 		username = self.get_argument("username","Unknown/Hacker?")
 		details += "<hr/>" + filename
+		print(datetime.datetime.now())
+		print(111111)
 		database.upload_track(mp3data, filename)
+		time.sleep(0)
+		print(22222)
+		print(datetime.datetime.now())
+		render_track(filename, 'dgacousticlikMP3.mp3', itrim=8)
+		#threading.Thread(target=render_track, args=(pair_o_tracks,track_xfade, track_otrim, next_track_itrim)).start()
+		threading.Thread(target=render_track, args=(filename, 'dgacousticlikMP3.mp3'), kwargs={itrim:8}).start()
 		info = self.request.arguments
 		message = "A new file, %s had been created by %s."%(filename, username)
-		mailer.AlertMessage(message, 'New A Capella Track Saved')
+		mailer.AlertMessage(message, 'New A Capella Track Created')
 		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice="Track Uploaded"))
 
 

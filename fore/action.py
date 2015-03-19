@@ -88,7 +88,51 @@ def audition_render(actions, filename):
 		encoder.add_pcm(a)
 	encoder.finish()
 	print("render() finished!")
+class Playback_static(object):
+    """A snippet of the given track with start and duration. Volume leveling 
+    may be applied."""
+    def __init__(self, track, start, duration):
+        self.track = track
+        self.start = float(start)
+        self.duration = float(duration)
+    
+    def render(self):
+        # self has start and duration, so it is a valid index into track.
+        output = self.track[self]
+        # Normalize volume if necessary
+        gain = getattr(self.track, 'gain', None)
+        if gain != None:
+            # limit expects a float32 vector
+            output.data = limit(multiply(output.data, float32(gain)))
+            
+        return output
+    
+    def __repr__(self):
+        return "<Playback '%s'>" % self.track.filename
+    
+    def __str__(self):
+        args = (self.start, self.start + self.duration, 
+                self.duration, self.track.filename)
+        return "Playback\t%.3f\t-> %.3f\t (%.3f)\t%s" % args
 
+
+class Fadeout_static(Playback_static):
+    """Fadeout"""
+    def render(self):
+        gain = getattr(self.track, 'gain', 1.0)
+        output = self.track[self]
+        # second parameter is optional -- in place function for now
+        output.data = fadeout(output.data, gain)
+        return output
+    
+    def __repr__(self):
+        return "<Fadeout '%s'>" % self.track.filename
+    
+    def __str__(self):
+        args = (self.start, self.start + self.duration, 
+                self.duration, self.track.filename)
+        return "Fade out\t%.3f\t-> %.3f\t (%.3f)\t%s" % args
+        
 class Playback(object):
 	"""A snippet of the given track with start and duration. Volume leveling
 	may be applied."""
