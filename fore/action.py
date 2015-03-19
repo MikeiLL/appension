@@ -43,6 +43,16 @@ def make_stereo(track):
 		track.numChannels = 2
 	return track
 
+def left_right_merge(f1, f2):
+	"""Merge the left track of f1 with the right track of f2"""
+	## NOT WORKING YET ##
+	left = f1.data[:,0]
+	right = f2.data[:,1]
+	stereo = numpy.zeros((max(left.shape[0],right.shape[0]),2),dtype=numpy.int16)
+	stereo[:left.shape[0],0] = left
+	stereo[:right.shape[0],1] = right
+	# either patch that into track.data or just render it directly
+	audition_render([stereo],"out.mp3")
 
 def render(actions, filename, verbose=True):
 	"""Calls render on each action in actions, concatenates the results,
