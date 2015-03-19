@@ -36,6 +36,7 @@ def make_mono(track):
 def make_stereo(track):
 	"""If the track is mono, doubles it. otherwise, does nothing."""
 	if track.data.ndim == 1:
+		# NOTE: This may need dtype=numpy.int16 to avoid use of numpy floats.
 		stereo = zeros((len(track.data), 2))
 		stereo[:, 0] = copy(track.data)
 		stereo[:, 1] = copy(track.data)
