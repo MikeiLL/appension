@@ -2,9 +2,9 @@
 # encoding: utf=8
 
 """
-capsule_support.py
+transitions.py
 
-Created by Tristan Jehan and Jason Sundram.
+Created by Mike iLL/mZoo with Rosuav oversight and input
 """
 import logging
 from action import Crossfade as cf

@@ -43,16 +43,31 @@ def make_stereo(track):
 		track.numChannels = 2
 	return track
 
+def remove_channel(track, remove="left"):
+	"""
+	Remove left or right channel from stereo track.
+	"""
+	if track.data.ndim == 2:
+		import numpy as np
+		if remove == 'left':
+			track.data = np.delete(track.data, 0, 1)
+		else:
+			track.data = np.delete(track.data, 1, 1) 
+		track = make_stereo(track)
+		return track
+	else:
+		return track
+				
 def left_right_merge(f1, f2):
 	"""Merge the left track of f1 with the right track of f2"""
-	## NOT WORKING YET ##
 	left = f1.data[:,0]
 	right = f2.data[:,1]
-	stereo = numpy.zeros((max(left.shape[0],right.shape[0]),2),dtype=numpy.int16)
+	# Create holder for both tracks by measuring longer track
+	stereo = zeros((max(left.shape[0],right.shape[0]),2),dtype=numpy.int16)
 	stereo[:left.shape[0],0] = left
 	stereo[:right.shape[0],1] = right
-	# either patch that into track.data or just render it directly
-	audition_render([stereo],"out.mp3")
+	f1.data = stereo
+	return f1
 
 def render(actions, filename, verbose=True):
 	"""Calls render on each action in actions, concatenates the results,
@@ -151,8 +166,8 @@ class Fadeout(Playback):
 
 	def __str__(self):
 		args = (self.start, self.start + self.duration,
-				self.duration, self.track.analysis.pyechonest_track.title)
-		return "Fade out\t%.3f\t-> %.3f\t (%.3f)\t%r" % args
+				self.duration)#, self.track.analysis.pyechonest_track.title)
+		return "Fade out\t%.3f\t-> %.3f\t (%.3f)\t" % args
 
 
 class Fadein(Playback):
