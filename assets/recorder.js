@@ -139,8 +139,7 @@
     function endFile(blob, extension) {
 
       console.log("Done converting to " + extension);
-      var username = document.getElementById('username').innerHTML;
-      console.log(username)
+      
       log.innerHTML += "\n" + "Done converting to " + extension;
 
       console.log("the blob " + blob + " " + blob.size + " " + blob.type);
@@ -160,25 +159,33 @@
 
       // Upload file to server - uncomment below
 	  document.getElementById('upload_button').style.display = "inline";
-	  document.getElementById("clickMe").onclick = function(){
+	  document.getElementById("upload").onclick = function(){
       	uploadAudio(blob);
       }
+      document.getElementById("reset").onclick = function(){
+  		window.location.reload(false);
+      }
+      
 
       recordingslist.appendChild(li);
 
     }
 
   };
-  
+
 	function uploadAudio(mp3Data){
 		var reader = new FileReader();
 		reader.onload = function(event){
 			var fd = new FormData();
-			var mp3Name = encodeURIComponent('audio_recording_' + new Date().getTime() + '.mp3');
+			var username = document.getElementById('username').innerHTML;
+			file_username = username.replace(/ /g,"_");
+      		console.log(username, file_username)
+			var mp3Name = encodeURIComponent(file_username + '_' + new Date().getTime() + '.mp3');
 			console.log("mp3name = " + mp3Name);
 			fd.append('fname', mp3Name);
+			fd.append('username', username);
 			fd.append('data', event.target.result);
-			$.ajax({
+			jQuery.ajax({
 				type: 'POST',
 				url: 'recorder',
 				data: fd,

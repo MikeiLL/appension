@@ -65,7 +65,8 @@
   
 				  <h2>Recordings</h2>
 				  <ul id="recordingslist"></ul>
-				  <div id="upload_button" style="display:none"><a href='#' id="clickMe" class="btn btn-default">Upload</a></div>
+				  <div id="upload_button" style="display:none"><a href='#' id="upload" class="btn btn-default">Upload</a> |
+				   <a href='#' id="reset" class="btn btn-default">Reset</a></div>
 				  <h2>Log</h2>
 				  <pre id="log"></pre>
 				  </div>		
@@ -212,6 +213,7 @@
 
 
   }
+  
 
   function handlerErrorUserMedia(e) {
       logHTML('No live audio input: ' + e);
