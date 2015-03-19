@@ -27,7 +27,7 @@ def rows(m):
 def make_mono(track):
 	"""Converts stereo tracks to mono; leaves mono tracks alone."""
 	if track.data.ndim == 2:
-		mono = mean(track.data, 1)
+		mono = mean(track.data, 1, dtype=numpy.int16)
 		track.data = mono
 		track.numChannels = 1
 	return track
@@ -36,10 +36,9 @@ def make_mono(track):
 def make_stereo(track):
 	"""If the track is mono, doubles it. otherwise, does nothing."""
 	if track.data.ndim == 1:
-		# NOTE: This may need dtype=numpy.int16 to avoid use of numpy floats.
-		stereo = zeros((len(track.data), 2))
-		stereo[:, 0] = copy(track.data)
-		stereo[:, 1] = copy(track.data)
+		stereo = zeros((len(track.data), 2), dtype=numpy.int16)
+		stereo[:, 0] = track.data
+		stereo[:, 1] = track.data
 		track.data = stereo
 		track.numChannels = 2
 	return track
