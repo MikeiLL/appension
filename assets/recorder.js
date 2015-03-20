@@ -199,10 +199,13 @@
 			}).done(function(data) {
 				console.log("File uploaded");
       			log.innerHTML += "\n" + "File uploaded";
+      			var li = document.createElement('li');
 	  			document.getElementById('audition_player').style.display = "block";
 				var au2 = document.createElement('audio');
 				au2.controls = true;
-				au2.src = 'audition_audio/Mike_iLL_1426814986639.mp3';
+				au2.src = 'audition_audio/'+mp3Name;
+      			li.appendChild(au2);
+      			demo_player.appendChild(li);
 			});
 		};      
 		reader.readAsDataURL(mp3Data);
