@@ -322,20 +322,6 @@ class Recorder(BaseHandler):
 																		meta_description=meta_description, og_url=config.server_domain,
 																		og_description=og_description))
 
-class AuditionRecording(BaseHandler):
-	@tornado.web.authenticated
-	def get(self, input):
-		# This is a POST endpoint only.
-		return self.redirect("/")
-		
-	def post(self, track_id):
-		self.get_current_user()
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("user_recording.html").generate(admin_url=apikeys.admin_url, 
-			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
-			user_track='Mike_iLL_1426814986639.mp3'))
-
 def admin_page(user_name, deleted=0, updated=0, notice=''):
 	return templates.load("administration.html").generate(
 		all_tracks=database.get_many_mp3(status="all", order_by='sequence'),
