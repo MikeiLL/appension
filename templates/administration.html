@@ -1,7 +1,7 @@
 {% extends admin_main.html %}
 
 {% block content %}
-<p><h1>All Tracks</h1></p>
+<h1>All Tracks</h1>
 <form enctype="multipart/form-data" action="/sequence" method="post">
 <table border="1" cellpadding="3">
 {% if deleted %}
@@ -17,14 +17,14 @@
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
 <tr><td>Sequence</td><td>ID</td><td>Artist</td><td>Filename</td><td>Track Length</td><td>status</td></tr>
 {% for track in all_tracks %}
-	<tr><td><a name="track{{ track.id }}"><input type="text" name="{{ track.id }}" size="5" value="{{ track.track_details['sequence'] }}"></td>
+	<tr><td><a name="track{{ track.id }}"><input type="text" name="{{ track.id }}" size="5" value="{{ track.track_details['sequence'] }}"/></a></td>
 	<td>{{ track.id }}</td><td>{{ track.track_details['artist'] }}</td>
 	<td>{{ track.filename }}</td><td>{{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</td>
 	<td>{% if track.track_details['status'] == 1 %}Active{% else %}Inactive{% end %}</td>
 	<td>
 	<div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="/audio/{{ track.filename }}" type="audio/mpeg"></a></div>
           
-    </td><form enctype="multipart/form-data" action="{{ admin_url }}" method="post">
+    </td>
 	<td><a href="{{ delete_url }}/{{ track.id }}" class="confirmation">delete</a></td>
 	<td><a href="{{ edit_url }}/{{ track.id }}">edit</a></td>
 	</tr>
@@ -32,7 +32,7 @@
 	<td colspan="1">iTrim: {{ track.track_details['itrim'] }}</td>
 	<td colspan="6">oTrim: {{ track.track_details['otrim'] }} | <a href="manage/{{ track.id }}">manage transition</a></td></tr>
 {% end %}
-<tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
+<tr><td colspan="10" align="right"><input type="submit" value="Submit"/></td></tr>
 <tr><td colspan="10" align="right"><a href="rebuild_glitch">Generate Major Glitch Track</a></td></tr>
 
 </table>
