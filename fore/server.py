@@ -302,11 +302,7 @@ class Recorder(BaseHandler):
 		filename = self.get_argument("fname","new.mp3")
 		username = self.get_argument("username","Unknown/Hacker?")
 		details += "<hr/>" + filename
-		print(datetime.datetime.now())
-		print(111111)
 		database.upload_track(mp3data, filename)
-		print(22222)
-		print(datetime.datetime.now())
 		render_track(filename, 'dgacousticlikMP3.mp3', itrim=8.3)
 		#threading.Thread(target=render_track, args=(filename, 'dgacousticlikMP3.mp3'), kwargs={'itrim':8.2}).start()
 		info = self.request.arguments

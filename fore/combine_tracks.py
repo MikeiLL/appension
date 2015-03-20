@@ -41,13 +41,6 @@ def format_track(track, itrim=0, otrim=0, fadeout=5):
     fade = fo(track, track.analysis.duration - otrim, fadeout)
     return [playback, fade]
     
-    25.73061
-25.73061
-77777
-260.46694
-8888
--234.73633
-	
 def render_track(file1, file2, itrim=0, fadeout=5, remove=0):
     filename = file1
     track2 = audio.LocalAudioFile('instrumentals/'+file2)
