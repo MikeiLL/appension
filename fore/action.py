@@ -27,7 +27,7 @@ def rows(m):
 def make_mono(track):
 	"""Converts stereo tracks to mono; leaves mono tracks alone."""
 	if track.data.ndim == 2:
-		mono = mean(track.data, 1)
+		mono = mean(track.data, 1, dtype=numpy.int16)
 		track.data = mono
 		track.numChannels = 1
 	return track
@@ -36,23 +36,40 @@ def make_mono(track):
 def make_stereo(track):
 	"""If the track is mono, doubles it. otherwise, does nothing."""
 	if track.data.ndim == 1:
-		stereo = zeros((len(track.data), 2))
-		stereo[:, 0] = copy(track.data)
-		stereo[:, 1] = copy(track.data)
+		stereo = zeros((len(track.data), 2), dtype=numpy.int16)
+		stereo[:, 0] = track.data
+		stereo[:, 1] = track.data
 		track.data = stereo
 		track.numChannels = 2
 	return track
 
+def remove_channel(track, remove="left"):
+	"""
+	Remove left or right channel from stereo track, duplicating the other
+	channel over it. Mutates track and returns it.
+	"""
+	if track.data.ndim == 2:
+		if remove == 'left':
+			mixed.data[:,0] = mixed.data[:,1]
+		else:
+			mixed.data[:,1] = mixed.data[:,0]
+	return track
+				
 def left_right_merge(f1, f2):
 	"""Merge the left track of f1 with the right track of f2"""
-	## NOT WORKING YET ##
 	left = f1.data[:,0]
 	right = f2.data[:,1]
-	stereo = numpy.zeros((max(left.shape[0],right.shape[0]),2),dtype=numpy.int16)
+	if f1.analysis.duration > f2.analysis.duration:
+		tr_analysis = f1.analysis
+	else:
+		tr_analysis = f2.analysis
+	# Create holder for both tracks by measuring longer track
+	stereo = zeros((max(left.shape[0],right.shape[0]),2),dtype=numpy.int16)
 	stereo[:left.shape[0],0] = left
 	stereo[:right.shape[0],1] = right
-	# either patch that into track.data or just render it directly
-	audition_render([stereo],"out.mp3")
+	f1.data = stereo
+	f1.analysis = tr_analysis
+	return f1
 
 def render(actions, filename, verbose=True):
 	"""Calls render on each action in actions, concatenates the results,
@@ -76,7 +93,52 @@ def audition_render(actions, filename):
 		encoder.add_pcm(a)
 	encoder.finish()
 	print("render() finished!")
+	
+class Playback_static(object):
+    """A snippet of the given track with start and duration. Volume leveling 
+    may be applied."""
+    def __init__(self, track, start, duration):
+        self.track = track
+        self.start = float(start)
+        self.duration = float(duration)
+    
+    def render(self):
+        # self has start and duration, so it is a valid index into track.
+        output = self.track[self]
+        # Normalize volume if necessary
+        gain = getattr(self.track, 'gain', None)
+        if gain != None:
+            # limit expects a float32 vector
+            output.data = limit(multiply(output.data, float32(gain)))
+            
+        return output
+    
+    def __repr__(self):
+        return "<Playback '%s'>" % self.track.filename
+    
+    def __str__(self):
+        args = (self.start, self.start + self.duration, 
+                self.duration, self.track.filename)
+        return "Playback\t%.3f\t-> %.3f\t (%.3f)\t%s" % args
 
+
+class Fadeout_static(Playback_static):
+    """Fadeout"""
+    def render(self):
+        gain = getattr(self.track, 'gain', 1.0)
+        output = self.track[self]
+        # second parameter is optional -- in place function for now
+        output.data = fadeout(output.data, gain)
+        return output
+    
+    def __repr__(self):
+        return "<Fadeout '%s'>" % self.track.filename
+    
+    def __str__(self):
+        args = (self.start, self.start + self.duration, 
+                self.duration, self.track.filename)
+        return "Fade out\t%.3f\t-> %.3f\t (%.3f)\t%s" % args
+        
 class Playback(object):
 	"""A snippet of the given track with start and duration. Volume leveling
 	may be applied."""
@@ -151,8 +213,8 @@ class Fadeout(Playback):
 
 	def __str__(self):
 		args = (self.start, self.start + self.duration,
-				self.duration, self.track.analysis.pyechonest_track.title)
-		return "Fade out\t%.3f\t-> %.3f\t (%.3f)\t%r" % args
+				self.duration)#, self.track.analysis.pyechonest_track.title)
+		return "Fade out\t%.3f\t-> %.3f\t (%.3f)\t" % args
 
 
 class Fadein(Playback):

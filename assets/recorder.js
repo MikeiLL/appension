@@ -155,13 +155,16 @@
       var au = document.createElement('audio');
       au.controls = true;
       au.src = url;
+      au2 = document.getElementById('BackgroundTrack');
       li.appendChild(au);
 
       // Upload file to server - uncomment below
 	  document.getElementById('upload_button').style.display = "inline";
+      
 	  document.getElementById("upload").onclick = function(){
       	uploadAudio(blob);
       }
+      
       document.getElementById("reset").onclick = function(){
   		window.location.reload(false);
       }
@@ -173,6 +176,7 @@
 
   };
 
+	
 	function uploadAudio(mp3Data){
 		var reader = new FileReader();
 		reader.onload = function(event){

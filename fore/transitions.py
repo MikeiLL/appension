@@ -2,9 +2,9 @@
 # encoding: utf=8
 
 """
-capsule_support.py
+transitions.py
 
-Created by Tristan Jehan and Jason Sundram.
+Created by Mike iLL/mZoo with Rosuav oversight and input
 """
 import logging
 from action import Crossfade as cf
@@ -77,8 +77,6 @@ def managed_transition(track1, track2, state=None):
         pb2 = pb(track2, t2start, t2_length - t2_otrim - 2)
         '''Set cursor to 2 seconds'''
         state['cursor'] = max(t2start + t2_length - t2_otrim - 2, 0)
-        log.warning("""No xfade and %r, plus
-        %r""",str(pb1), str(pb2))
         return [pb1, pb2]
     else:
         '''offset between start and first theoretical beat.'''

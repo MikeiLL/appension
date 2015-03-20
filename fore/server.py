@@ -25,6 +25,7 @@ import wtforms
 import datetime
 import threading
 import traceback
+import subprocess
 import tornado.web
 import tornado.ioloop
 import tornado.template
@@ -282,6 +283,7 @@ class Recorder(BaseHandler):
 		
 
 	def post(self):
+		from combine_tracks import render_track
 		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
 		page_title="Glitch Track Submission."
@@ -298,11 +300,14 @@ class Recorder(BaseHandler):
 			# TODO: Send back some sort of error. For now, that's a 500 UnboundLocalError.
 			pass
 		filename = self.get_argument("fname","new.mp3")
+		username = self.get_argument("username","Unknown/Hacker?")
 		details += "<hr/>" + filename
-		#database.upload_track(mp3data, filename)
+		database.upload_track(mp3data, filename)
+		render_track(filename, 'dgacousticlikMP3.mp3', itrim=8.3)
+		#threading.Thread(target=render_track, args=(filename, 'dgacousticlikMP3.mp3'), kwargs={'itrim':8.2}).start()
 		info = self.request.arguments
-		message = "A new file, %s had been submitted by %s at %s."%(filename,info.get("submitter_name",[""])[0], info.get("email",[""])[0])
-		#mailer.AlertMessage(message, 'New Track Saved')
+		message = "A new file, %s had been created by %s."%(filename, username)
+		mailer.AlertMessage(message, 'New A Capella Track Created')
 		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice="Track Uploaded"))
 
 
