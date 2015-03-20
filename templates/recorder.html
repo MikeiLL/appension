@@ -62,11 +62,21 @@
 						<div id="info"></div>
 						Due to the magic of modern technology......</p>
 					  <div class="errors">(This will only work in Chrome (version 3.2+) and recent versions of Firefox)</div>
-				  
+
+				  		<div id="loading">
+							<div id="loadingcontent">
+								<p id="loadingspinner">
+									I'm uploading your recording to the server now...<br/>
+									This might take a few minutes 'cause we have to then analyze the audio using Echonest's API <br/>
+									and it's Remix library and layer the two tracks together.
+								</p>
+							</div>
+						</div>
+
+
 					  <div id="record_controls">
 						  <button  class="btn btn-default" onclick="startRecording(this);">Record</button>
 						  <button   class="btn btn-default"  onclick="stopRecording(this);" disabled>Stop</button>
-						
 						  <h2>Recordings</h2>
 						  <ul id="recordingslist"></ul>
 						  <div id="upload_button" style="display:none">
@@ -77,7 +87,6 @@
 					  <div id="audition_player" style="display:none">
 					  	<ul id="demo_player"></ul>
 					  </div>
-
 				   
 					  <h2>Log</h2>
 					  <pre id="log"></pre>
@@ -86,13 +95,6 @@
  
 					<div style="clear:both;"></div>	
 					
-					<div id="loading">
-						<div id="loadingcontent">
-							<p id="loadingspinner">
-								Making Transition...
-							</p>
-						</div>
-					</div>
 			
 				</li>			
 				{% block right-nav %}			
@@ -142,7 +144,6 @@
 		</footer>	
 	</div>				
 		
-</div>
 	
 	<script type="text/javascript" >
 	jQuery.noConflict();
@@ -152,114 +153,138 @@
 			return false;		
 			});	
 		});	
-	</script>		
-		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
-		  <script>
-
-  function logHTML(e, data) {
-    log.innerHTML += "\n" + e + " " + (data || '');
-  }
-
-
-  var audioContext;
-  var audioRecorder;
-
-
-  var _realAudioInput;
-  
-  function handlerStartUserMedia(stream) {
-
-    console.log('handlerStartUserMedia');
-    console.log('sampleRate:'+ audioContext.sampleRate);
-
-    // MEDIA STREAM SOURCE -> ZERO GAIN >
-    _realAudioInput = audioContext.createMediaStreamSource(stream);
-
-    audioRecorder = new Recorder(_realAudioInput);
-
-
-  }
-  
-
-  function handlerErrorUserMedia(e) {
-      logHTML('No live audio input: ' + e);
-  }
-
-  function startRecording(button) {
-
-    if(!audioRecorder)
-      return;
-    
-   	var thissound=document.getElementById('BackgroundTrack');
-    	thissound.load();
-    	thissound.play();
- 
-    audioRecorder && audioRecorder.record();
-
-    //GUI
-    button.disabled = true;
-    button.nextElementSibling.disabled = false;
-
-    logHTML('Recording...');
-
-
-  }
-
-  function stopRecording(button) {
-
-    if(!audioRecorder)
-      return;
-
-	   	var thissound=document.getElementById('BackgroundTrack');
-    	thissound.pause();
-   		thissound.currentTime = 0;
+	</script>	
 	
-    audioRecorder && audioRecorder.stop();
+	<script type="text/javascript">
+				jQuery.noConflict();
+				jQuery( document ).ready(function( $ ) {
+					$(function () {
+						$("#upload").click(function () {
+							$("#loading").fadeIn();
+							var opts = {
+								lines: 12, // The number of lines to draw
+								length:7, // The length of each line
+								width: 4, // The line thickness
+								radius: 10, // The radius of the inner circle
+								color: '#000', // #rgb or #rrggbb
+								speed: 1, // Rounds per second
+								trail: 60, // Afterglow percentage
+								shadow: false, // Whether to render a shadow
+								hwaccel: false // Whether to use hardware acceleration
+							};
+							var target = document.getElementById('loading');
+							var spinner = new Spinner(opts).spin(target);
+						});
+					});
+				});	
+	</script>	
+		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+		
+		  <script>
+			  function logHTML(e, data) {
+				log.innerHTML += "\n" + e + " " + (data || '');
+			  }
 
-    //GUI
-    button.disabled = true;
-    button.previousElementSibling.disabled = false;
 
-    logHTML('Stopped recording.');
+			  var audioContext;
+			  var audioRecorder;
+
+
+			  var _realAudioInput;
+  
+			  function handlerStartUserMedia(stream) {
+
+				console.log('handlerStartUserMedia');
+				console.log('sampleRate:'+ audioContext.sampleRate);
+
+				// MEDIA STREAM SOURCE -> ZERO GAIN >
+				_realAudioInput = audioContext.createMediaStreamSource(stream);
+
+				audioRecorder = new Recorder(_realAudioInput);
+
+
+			  }
+  
+
+			  function handlerErrorUserMedia(e) {
+				  logHTML('No live audio input: ' + e);
+			  }
+
+			  function startRecording(button) {
+
+				if(!audioRecorder)
+				  return;
+	
+				var thissound=document.getElementById('BackgroundTrack');
+					thissound.load();
+					thissound.play();
+ 
+				audioRecorder && audioRecorder.record();
+
+				//GUI
+				button.disabled = true;
+				button.nextElementSibling.disabled = false;
+
+				logHTML('Recording...');
+
+
+			  }
+
+			  function stopRecording(button) {
+
+				if(!audioRecorder)
+				  return;
+
+					var thissound=document.getElementById('BackgroundTrack');
+					thissound.pause();
+					thissound.currentTime = 0;
+	
+				audioRecorder && audioRecorder.stop();
+
+				//GUI
+				button.disabled = true;
+				button.previousElementSibling.disabled = false;
+
+				logHTML('Stopped recording.');
  
 
-  }
+			  }
 
-  window.onload = function init() {
+			  window.onload = function init() {
 
-		var $ = jQuery
-		$.noConflict()
-		console.log(1111)
-		console.log($)
-		var contextFunction = window.webkitAudioContext || window.AudioContext;
-		if (contextFunction === undefined) {
-			$("#info").text("Sorry, this app needs advanced web audio. Your browser doesn't"
-				+ " support it. Try the latest version of Chrome");
-		}
+					var $ = jQuery
+					$.noConflict()
+					console.log(1111)
+					console.log($)
+					var contextFunction = window.webkitAudioContext || window.AudioContext;
+					if (contextFunction === undefined) {
+						$("#info").text("Sorry, this app needs advanced web audio. Your browser doesn't"
+							+ " support it. Try the latest version of Chrome");
+					}
 		
-      // webkit shim.
-      window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext;
+				  // webkit shim.
+				  window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext;
 
-      navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+				  navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
 
-      window.URL = window.URL || window.webkitURL;
-      
-      audioContext = new AudioContext;
+				  window.URL = window.URL || window.webkitURL;
+	  
+				  audioContext = new AudioContext;
 
-      logHTML('Audio context set up.');
-      logHTML('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+				  logHTML('Audio context set up.');
+				  logHTML('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
 
-    //} catch (e) {
+				//} catch (e) {
 
-    //  alert('No web audio support in this browser!');
+				//  alert('No web audio support in this browser!');
 
-    //}
+				//}
 
-    
-    navigator.getUserMedia({vide:false, audio: true}, handlerStartUserMedia, handlerErrorUserMedia);
+	
+				navigator.getUserMedia({vide:false, audio: true}, handlerStartUserMedia, handlerErrorUserMedia);
 
-  };
+			  };
 
-  </script>
+		  </script>
 	</body>
-		</html>
+</html>

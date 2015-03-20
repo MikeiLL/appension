@@ -176,9 +176,11 @@
 
   };
 
-	
+
+      			
 	function uploadAudio(mp3Data){
 	  	document.getElementById('record_controls').style.display = "none";
+        log.innerHTML += "\n" + "Uploading track... ";
 		var reader = new FileReader();
 		reader.onload = function(event){
 			var fd = new FormData();
@@ -199,13 +201,20 @@
 			}).done(function(data) {
 				console.log("File uploaded");
       			log.innerHTML += "\n" + "File uploaded";
+        		setTimeout(function(){
+        			log.innerHTML += "\n" + "Analyzing Audio ";
+        			}, 3000);
       			var li = document.createElement('li');
 	  			document.getElementById('audition_player').style.display = "block";
-				var au2 = document.createElement('audio');
-				au2.controls = true;
-				au2.src = 'audition_audio/'+mp3Name;
-      			li.appendChild(au2);
-      			demo_player.appendChild(li);
+	  			setTimeout(function(){
+        			var au2 = document.createElement('audio');
+					au2.controls = true;
+					au2.src = 'audition_audio/'+mp3Name;
+					li.appendChild(au2);
+					demo_player.appendChild(li);
+					document.getElementById('loading').style.display = "none";
+        			}, 3000);
+				
 			});
 		};      
 		reader.readAsDataURL(mp3Data);

@@ -311,7 +311,7 @@ class Recorder(BaseHandler):
 		mailer.AlertMessage(message, 'New A Capella Track Created')
 		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice="Track Uploaded", page_title=page_title,
 																		meta_description=meta_description, og_url=config.server_domain,
-																		og_description=og_description, user_track='Mike_iLL_1426814986639.mp3'))
+																		og_description=og_description))
 
 class AuditionRecording(BaseHandler):
 	@tornado.web.authenticated

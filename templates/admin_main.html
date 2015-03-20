@@ -65,6 +65,8 @@
 				});
 			</script>
 				<script type="text/javascript">
+				jQuery.noConflict();
+				jQuery( document ).ready(function( $ ) {
 					$(function () {
 						$("#submitbtn").click(function () {
 							$("#loading").fadeIn();
@@ -83,6 +85,7 @@
 							var spinner = new Spinner(opts).spin(target);
 						});
 					});
+				});	
 				</script>	
 		{% end %}
 	</div>
