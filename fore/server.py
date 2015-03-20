@@ -170,7 +170,7 @@ class InfoHandler(tornado.web.RequestHandler):
 			log.error("Data:\n%s", self.actions)
 			self.write(json.dumps([]))
 
-@route("[/a-zA-Z0-9_]*/timing\.json")
+@route("/timing\.json")
 class TimingHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.set_header("Content-Type", "application/json")
