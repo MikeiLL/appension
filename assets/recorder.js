@@ -180,7 +180,7 @@
 					console.log(url)
 					if(url){
 						var req = new XMLHttpRequest();
-						req.open('GET', url, false);
+						req.open('HEAD', url, false);
 						req.send();
 						return req.status==200;
 					} else {
