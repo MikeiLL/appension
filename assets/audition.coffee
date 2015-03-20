@@ -232,7 +232,7 @@ $(document).ready ->
 				window.threeSixtyPlayer.handleClick {target: $('a.sm2_link')[0]}
 
 	getTrackInfo = ->
-		$.getJSON "all.json", (segments) ->
+		$.getJSON "/all.json", (segments) ->
 			console.log("getTrackInfo")
 			console.log(segments)
 			trackids = []

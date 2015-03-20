@@ -115,7 +115,7 @@ class MainHandler(BaseHandler):
 	def get(self):
 		self.finish(self.__gen())
 
-@route("[/a-zA-Z0-9_]*/all\.json")
+@route("/all\.json")
 class InfoHandler(tornado.web.RequestHandler):
 	actions = []
 	started = None
