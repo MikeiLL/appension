@@ -57,8 +57,10 @@ def remove_channel(track, remove="left"):
 				
 def left_right_merge(f1, f2):
 	"""Merge the left track of f1 with the right track of f2"""
-	left = f1.data[:,0]
-	right = f2.data[:,1]
+	left = f1.data
+	if left.ndim > 1: left = left[:,0]
+	right = f2.data
+	if right.ndim > 1: right = right[:,1]
 	if f1.analysis.duration > f2.analysis.duration:
 		tr_analysis = f1.analysis
 	else:

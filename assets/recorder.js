@@ -187,16 +187,38 @@
 					});
 				});
 			}
+
+	function probe(url) {
+		console.log("Probing "+url+"...");
+		var xhr = new XMLHttpRequest();
+		xhr.open("HEAD", url);
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState != 4) return;
+			if (xhr.status == 404) {
+				setTimeout(probe, 1000, url);
+				log.innerHTML += " .";
+			} else {
+				var au2 = document.createElement('audio');
+				au2.controls = true;
+				au2.src = url;
+				var li = document.createElement('li');
+				li.appendChild(au2);
+				document.getElementById("demo_player").appendChild(li);
+				document.getElementById('loading').style.display = "none";
+			}
+		};
+		xhr.send();
+	}
       			
 	function uploadAudio(mp3Data){
 	  	document.getElementById('record_controls').style.display = "none";
-        log.innerHTML += "\n" + "Uploading track... ";
+		log.innerHTML += "\n" + "Uploading track... ";
 		var reader = new FileReader();
 		reader.onload = function(event){
 			var fd = new FormData();
 			var username = document.getElementById('username').innerHTML;
 			file_username = username.replace(/ /g,"_");
-      		console.log(username, file_username)
+			console.log(username, file_username)
 			var mp3Name = encodeURIComponent(file_username + '_' + new Date().getTime() + '.mp3');
 			console.log("mp3name = " + mp3Name);
 			fd.append('fname', mp3Name);
@@ -210,29 +232,10 @@
 				contentType: false
 			}).done(function(data) {
 				console.log("File uploaded");
-      			log.innerHTML += "\n" + "File uploaded";
-        		setTimeout(function(){
-        			log.innerHTML += "\n" + "Analyzing Audio ";
-        			}, 3000);
-      			var li = document.createElement('li');
+				log.innerHTML += "\n" + "File uploaded, analyzing...";
 	  			document.getElementById('audition_player').style.display = "block";
+				probe('audition_audio/'+mp3Name);
 			});
-			jQuery.ajax({
-				  url: 'localhost.com/', //or your url
-				  success: function(data){
-					alert('exists');
-				  },
-				  error: function(data){
-					alert('does not exist');
-				  },
-				}).done(function(data) {				
-					var au2 = document.createElement('audio');
-					au2.controls = true;
-					au2.src = 'audition_audio/'+mp3Name;
-					li.appendChild(au2);
-					demo_player.appendChild(li);
-					document.getElementById('loading').style.display = "none";
-				});
 		};      
 		reader.readAsDataURL(mp3Data);
 	}
