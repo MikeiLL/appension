@@ -32,9 +32,12 @@ def combine_tracks(track1, track2, remove=0):
     
 	
 def format_track(track, itrim=0, otrim=0, fadeout=5):
-	playback = pb(track, itrim, track.analysis.duration - otrim)
-	fade = fo(track, track.analysis.duration - otrim, fadeout)
-	return [playback, fade]
+    print(track.analysis.duration)
+    print(77777)
+    print(otrim)
+    playback = pb(track, itrim, track.analysis.duration - otrim)
+    fade = fo(track, track.analysis.duration - otrim, fadeout)
+    return [playback, fade]
 	
 def render_track(file1, file2, itrim=0, fadeout=5, remove=0):
     filename = file1
@@ -42,7 +45,7 @@ def render_track(file1, file2, itrim=0, fadeout=5, remove=0):
     track2 = audio.LocalAudioFile('instrumentals/'+file2)
     print(track2)
     track1 = audio.LocalAudioFile('acapella/'+file1)
-    otrim = min(track1.analysis.duration, track2.analysis.duration)
+    otrim = max(track1.analysis.duration, track2.analysis.duration) - min(track1.analysis.duration, track2.analysis.duration)
     together = combine_tracks(track1, track2, remove=remove)
     formatted = format_track(together, itrim=itrim, otrim=otrim, fadeout=fadeout)
     render(formatted, 'audition_audio/'+filename)
