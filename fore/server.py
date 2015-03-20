@@ -305,7 +305,6 @@ class Recorder(BaseHandler):
 		print(datetime.datetime.now())
 		print(111111)
 		database.upload_track(mp3data, filename)
-		#time.sleep(30)
 		print(22222)
 		print(datetime.datetime.now())
 		render_track(filename, 'dgacousticlikMP3.mp3', itrim=8.3)

@@ -35,15 +35,22 @@ def format_track(track, itrim=0, otrim=0, fadeout=5):
     print(track.analysis.duration)
     print(77777)
     print(otrim)
+    print(8888)
+    print(track.analysis.duration - otrim)
     playback = pb(track, itrim, track.analysis.duration - otrim)
     fade = fo(track, track.analysis.duration - otrim, fadeout)
     return [playback, fade]
+    
+    25.73061
+25.73061
+77777
+260.46694
+8888
+-234.73633
 	
 def render_track(file1, file2, itrim=0, fadeout=5, remove=0):
     filename = file1
-    print('instrumentals/'+file2)
     track2 = audio.LocalAudioFile('instrumentals/'+file2)
-    print(track2)
     track1 = audio.LocalAudioFile('acapella/'+file1)
     otrim = max(track1.analysis.duration, track2.analysis.duration) - min(track1.analysis.duration, track2.analysis.duration)
     together = combine_tracks(track1, track2, remove=remove)

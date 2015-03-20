@@ -59,11 +59,16 @@ def left_right_merge(f1, f2):
 	"""Merge the left track of f1 with the right track of f2"""
 	left = f1.data[:,0]
 	right = f2.data[:,1]
+	if f1.analysis.duration > f2.analysis.duration:
+		tr_analysis = f1.analysis
+	else:
+		tr_analysis = f2.analysis
 	# Create holder for both tracks by measuring longer track
 	stereo = zeros((max(left.shape[0],right.shape[0]),2),dtype=numpy.int16)
 	stereo[:left.shape[0],0] = left
 	stereo[:right.shape[0],1] = right
 	f1.data = stereo
+	f1.analysis = tr_analysis
 	return f1
 
 def render(actions, filename, verbose=True):
@@ -88,6 +93,7 @@ def audition_render(actions, filename):
 		encoder.add_pcm(a)
 	encoder.finish()
 	print("render() finished!")
+	
 class Playback_static(object):
     """A snippet of the given track with start and duration. Volume leveling 
     may be applied."""
