@@ -71,9 +71,29 @@ for dir in ("audio", "instrumentals", "static"):
 for dir in ("audition_audio", "transition_audio"):
 	routes.append(("/%s/(.*)"%dir, NonCachingStaticFileHandler, {"path": dir+"/"}))
 
+def authenticated(func):
+	"""Wrapper around tornado.web.authenticated to retain the original function for introspection"""
+	newfunc = tornado.web.authenticated(func)
+	newfunc.original = func
+	return func
+
 def route(url):
 	"""Snag a class into the routes[] collection"""
 	def deco(cls):
+		# Check the parameter count on get() and post() methods, if they exist.
+		# The expected parameter count is the number of parenthesized slots in
+		# the URL, plus one for 'self'. If the function exists and has the wrong
+		# number of arguments, throw a big fat noisy error, because it's only
+		# going to fail on usage.
+		expected = url.count("(")+1
+		for fn in ('get', 'post'):
+			try:
+				func = getattr(cls,fn)
+				func = getattr(func, "original", func).im_func
+				if func.__module__ != __name__: continue # Function was inherited from elsewhere - ignore it
+				args = func.func_code.co_argcount
+				if args!=expected: raise TypeError("%s.%s should take %d arguments, is taking %d" % (cls.__name__, fn, expected, args))
+			except AttributeError: pass
 		routes.append((url, cls))
 		return cls
 	return deco
@@ -237,7 +257,7 @@ class EasyForm(Form):
 
 @route("/submit")
 class Submissionform(BaseHandler):
-	@tornado.web.authenticated
+	@authenticated
 	def get(self):
 		form = EasyForm()
 		user_name = tornado.escape.xhtml_escape(self.current_user)
@@ -280,7 +300,7 @@ class Submissionform(BaseHandler):
 
 @route("/recorder")
 class Recorder(BaseHandler):
-	@tornado.web.authenticated
+	@authenticated
 	def get(self):
 		form = EasyForm()
 		user_name = tornado.escape.xhtml_escape(self.current_user)
@@ -332,7 +352,7 @@ def admin_page(user_name, deleted=0, updated=0, notice=''):
 
 @route(apikeys.delete_url+"/([0-9]+)")
 class DeleteTrack(BaseHandler):
-	@tornado.web.authenticated
+	@authenticated
 	def get(self, input):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
@@ -343,7 +363,7 @@ class DeleteTrack(BaseHandler):
 
 @route(apikeys.edit_url+"/([0-9]+)")
 class EditTrack(BaseHandler):
-	@tornado.web.authenticated
+	@authenticated
 	def get(self, input):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
@@ -352,7 +372,7 @@ class EditTrack(BaseHandler):
 
 @route("/sequence")		
 class SequenceHandler(BaseHandler):
-	@tornado.web.authenticated
+	@authenticated
 	def get(self):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
@@ -382,7 +402,7 @@ class ShowLyrics(BaseHandler):
 
 @route(apikeys.admin_url)
 class AdminRender(BaseHandler):
-	@tornado.web.authenticated
+	@authenticated
 	def get(self):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
@@ -398,7 +418,7 @@ class AdminRender(BaseHandler):
 
 @route("/submitters")
 class Submitters(BaseHandler):
-	@tornado.web.authenticated
+	@authenticated
 	def get(self):
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
@@ -420,7 +440,7 @@ class Submitters(BaseHandler):
 
 @route("/manage/([0-9]+)")
 class ManageTransition(BaseHandler):
-	@tornado.web.authenticated
+	@authenticated
 	def get(self, input):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
@@ -430,7 +450,7 @@ class ManageTransition(BaseHandler):
 
 @route("/audition/([0-9]+)")
 class AuditionTransition(BaseHandler):
-	@tornado.web.authenticated
+	@authenticated
 	def get(self, input):
 		# This is a POST endpoint only.
 		return self.redirect("/")
@@ -454,7 +474,7 @@ class AuditionTransition(BaseHandler):
 
 @route("/rebuild_glitch")
 class RenderGlitch(BaseHandler):
-	@tornado.web.authenticated
+	@authenticated
 	def get(self):
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
@@ -472,7 +492,7 @@ class RenderGlitch(BaseHandler):
 
 @route("/confirm_transition")
 class ConfirmTransition(BaseHandler):
-	@tornado.web.authenticated
+	@authenticated
 	def post(self):
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
@@ -688,7 +708,7 @@ class OutreachForm(Form):
 
 @route("/message")
 class Message(BaseHandler):	
-	@tornado.web.authenticated
+	@authenticated
 
 	def get(self):
 		if database.retrieve_outreach_message()[1] == '':
@@ -718,7 +738,7 @@ and/or a bit about the chunk itself.'''
 
 @route("/outreach")
 class Outreach(BaseHandler):	
-	@tornado.web.authenticated
+	@authenticated
 
 	def get(self):
 		form = OutreachForm()
