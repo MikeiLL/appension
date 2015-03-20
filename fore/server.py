@@ -74,14 +74,17 @@ routes = [
 	("/transition_audio/(.*)", NonCachingStaticFileHandler, {"path": "transition_audio/"}),
 	("/audition_audio/(.*)", NonCachingStaticFileHandler, {"path": "audition_audio/"}),
 	("/instrumentals/(.*)", tornado.web.StaticFileHandler, {"path": "instrumentals/"}),
+	("/monitor", MonitorHandler),
 ]
 
 def route(url):
+	"""Snag a class into the routes[] collection"""
 	def deco(cls):
 		routes.append((url, cls))
 		return cls
 	return deco
 
+@route("/")
 class MainHandler(BaseHandler):
 	mtime = 0
 	template = 'index.html'
@@ -117,7 +120,8 @@ class MainHandler(BaseHandler):
 
 	def get(self):
 		self.finish(self.__gen())
-		
+
+@route("[/a-zA-Z0-9_]*/all\.json")
 class InfoHandler(tornado.web.RequestHandler):
 	actions = []
 	started = None
@@ -172,13 +176,13 @@ class InfoHandler(tornado.web.RequestHandler):
 			log.error("Data:\n%s", self.actions)
 			self.write(json.dumps([]))
 
-
+@route("[/a-zA-Z0-9_]*/timing\.json")
 class TimingHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.set_header("Content-Type", "application/json")
 		self.write(json.dumps({"time": time.time() * 1000}, ensure_ascii=False).encode('utf-8'))
 
-
+@route("/all\.mp3")
 class StreamHandler(tornado.web.RequestHandler):
 	clients = []
 	listeners = []
@@ -209,7 +213,6 @@ class StreamHandler(tornado.web.RequestHandler):
 			self.clients.remove(self)
 			log.info("Removed client at %s", self.request.remote_ip)
 
-
 class SocketConnection(tornadio2.conn.SocketConnection):
 	__endpoints__ = {
 		"/info.websocket": SocketHandler,   #TODO: Rename
@@ -239,6 +242,7 @@ class EasyForm(Form):
 	lyrics = wtforms.TextAreaField('lyrics', validators=[])
 	comments = wtforms.TextAreaField('comments', validators=[])
 
+@route("/submit")
 class Submissionform(BaseHandler):
 	@tornado.web.authenticated
 	def get(self):
@@ -280,9 +284,8 @@ class Submissionform(BaseHandler):
 			self.write(templates.load("fileuploadform.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
 																		meta_description=meta_description, og_url=config.server_domain,
 																		og_description=og_description))
-			
 
-
+@route("/recorder")
 class Recorder(BaseHandler):
 	@tornado.web.authenticated
 	def get(self):
@@ -348,6 +351,7 @@ def admin_page(user_name, deleted=0, updated=0, notice=''):
 		user_name=user_name, admin_url=apikeys.admin_url, notice=notice,
 	)
 
+@route(apikeys.delete_url+"/([0-9]+)")
 class DeleteTrack(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, input):
@@ -358,6 +362,7 @@ class DeleteTrack(BaseHandler):
 		database.delete_track(input)
 		self.write(admin_page(user_name, deleted=input))
 
+@route(apikeys.edit_url+"/([0-9]+)")
 class EditTrack(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, input):
@@ -365,7 +370,8 @@ class EditTrack(BaseHandler):
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		self.write(templates.load("track_edit.html").generate(admin_url=apikeys.admin_url, 
 		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name))
-		
+
+@route("/sequence")		
 class SequenceHandler(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, input):
@@ -379,8 +385,7 @@ class SequenceHandler(BaseHandler):
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		database.sequence_tracks(self.request.arguments)
 		self.write(admin_page(user_name, notice='Transitions Updated.'))
-		
-	
+
 class ShowLyrics(BaseHandler):
 	def couplet_count(self, lyrics):
 		total = 0
@@ -395,7 +400,8 @@ class ShowLyrics(BaseHandler):
 														user_name=self.current_user or 'Glitcher',
 														lyrics=lyrics,
 														couplet_count=couplet_count))
-	
+
+@route(apikeys.admin_url)
 class AdminRender(BaseHandler):
 	@tornado.web.authenticated
 	def get(self):
@@ -410,7 +416,8 @@ class AdminRender(BaseHandler):
 		track_id=int(self.request.arguments['id'][0])
 		database.update_track(track_id, self.request.arguments)
 		self.write(admin_page(user_name, updated=track_id))
-		
+
+@route("/submitters")
 class Submitters(BaseHandler):
 	@tornado.web.authenticated
 	def get(self):
@@ -431,8 +438,8 @@ class Submitters(BaseHandler):
 		self.write(templates.load("submitters.html").generate(admin_url=apikeys.admin_url, 
 			compiled=compiled, user_name=user_name, notice="Submitter List Updated", submitters=submitters,
 			edit_url=apikeys.edit_url,number=1))
-		
-		
+
+@route("/manage/([0-9]+)")
 class ManageTransition(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, input):
@@ -441,7 +448,8 @@ class ManageTransition(BaseHandler):
 		self.write(templates.load("manage_transition.html").generate(admin_url=apikeys.admin_url, 
 		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name,
 		next_track=database.get_subsequent_track(int(input))))
-		
+
+@route("/audition/([0-9]+)")
 class AuditionTransition(BaseHandler):
 	@tornado.web.authenticated
 	def get(self, input):
@@ -464,7 +472,8 @@ class AuditionTransition(BaseHandler):
 			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
 			next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,
 			track_otrim=track_otrim, next_track_itrim=next_track_itrim))
-			
+
+@route("/rebuild_glitch")
 class RenderGlitch(BaseHandler):
 	@tornado.web.authenticated
 	def get(self):
@@ -481,7 +490,7 @@ class RenderGlitch(BaseHandler):
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		threading.Thread(target=rebuild_major_glitch).start()
 		self.write(admin_page(user_name, notice="Major Glitch rebuild has been started in the background. Will complete on its own."))
-		
+
 class ConfirmTransition(BaseHandler):
 	@tornado.web.authenticated
 	def post(self):
@@ -495,7 +504,8 @@ class ConfirmTransition(BaseHandler):
 		database.update_track(out_track_id, self.request.arguments)
 		database.update_track(next_track_id, in_track_data)
 		self.write(admin_page(user_name, notice="Transition Settings Adjusted"))
-		
+
+@route("/artwork/([0-9]+).jpg")
 class TrackArtwork(tornado.web.RequestHandler):
 	def get(self, id):
 		art = database.get_track_artwork(int(id))
@@ -508,7 +518,8 @@ class TrackArtwork(tornado.web.RequestHandler):
 			
 class Oracle(Form):
 	question = wtforms.TextField('question', validators=[])
-	
+
+@route("/oracle")
 class OracleHandler(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
@@ -555,6 +566,7 @@ class OracleHandler(BaseHandler):
 														page_title=page_title, meta_description=meta_description,
 														og_url=og_url))
 
+@route("/sb")
 class SandBox(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
@@ -565,7 +577,8 @@ class SandBox(BaseHandler):
 		self.write(templates.load("sandbox.html").generate(compiled=compiled, user_name=user_name,
 														og_description=og_description, page_title=page_title,
 														meta_description=meta_description,og_url=og_url))
-														
+
+@route("/credits")
 class CreditsHandler(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
@@ -577,6 +590,7 @@ class CreditsHandler(BaseHandler):
 														og_description=og_description, page_title=page_title,
 														meta_description=meta_description,og_url=og_url))
 
+@route("/view_artist/([A-Za-z0-9\+\-\.]+)")
 class TracksByArtist(BaseHandler):
 	def get(self, artist):
 		user_name = self.current_user or 'Glitcher'
@@ -589,7 +603,8 @@ class TracksByArtist(BaseHandler):
 														tracks_by=tracks_by, og_description=og_description, 
 														page_title=page_title, meta_description=meta_description,
 														og_url=og_url))
-		
+
+@route("/choice_chunks")
 class ChunkHandler(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
@@ -630,7 +645,8 @@ class CreateUser(UserForm):
 	])
 	confirm = wtforms.PasswordField('Repeat Password')
 	accept_tos = wtforms.BooleanField('I accept the TOS', [wtforms.validators.Required()])
-	
+
+@route("/confirm/([0-9]+)/([A-Fa-f0-9]+)")
 class ConfirmAccount(tornado.web.RequestHandler):
 	def get(self, id, hex_string):
 		form = CreateUser()
@@ -643,6 +659,7 @@ class ConfirmAccount(tornado.web.RequestHandler):
 														meta_description=meta_description,
 														og_description=og_description))
 
+@route("/create_account")
 class CreateAccount(tornado.web.RequestHandler):
 	def get(self):
 		form = CreateUser()
@@ -688,7 +705,8 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 
 class OutreachForm(Form):
 	message = wtforms.TextField('email', validators=[wtforms.validators.DataRequired()])
-		
+
+@route("/message")
 class Message(BaseHandler):	
 	@tornado.web.authenticated
 
@@ -717,7 +735,8 @@ and/or a bit about the chunk itself.'''
 		database.update_outreach_message(message)
 		self.write(templates.load("message.html").generate(admin_url=apikeys.admin_url, 
 			compiled=compiled, user_name=user_name, notice="", message=message))
-			
+
+@route("/outreach")
 class Outreach(BaseHandler):	
 	@tornado.web.authenticated
 
@@ -739,8 +758,8 @@ class Outreach(BaseHandler):
 		database.update_outreach_message(message)
 		self.write(templates.load("outreach.html").generate(admin_url=apikeys.admin_url, 
 			compiled=compiled, user_name=user_name, notice="", message=message))
-	
-			
+
+@route("/login")
 class Login(BaseHandler):
 	def get(self):
 		form = UserForm()
@@ -781,41 +800,12 @@ class Login(BaseHandler):
 		else:
 			self.set_status(400)
 			self.write(form.errors)
-			
+
+@route("/logout")
 class Logout(BaseHandler):
     def get(self):
         self.clear_cookie("userid")
         self.redirect(self.get_argument("next", "/"))
-
-routes += [
-	("[/a-zA-Z0-9_]*/timing\.json", TimingHandler),
-	("[/a-zA-Z0-9_]*/all\.json", InfoHandler),
-	("/all\.mp3", StreamHandler),
-	("/sequence", SequenceHandler),
-	("/monitor", MonitorHandler),
-	("/", MainHandler),
-	("/submit", Submissionform),
-	("/create_account", CreateAccount),
-	("/login", Login),
-	("/logout", Logout),
-	("/confirm/([0-9]+)/([A-Fa-f0-9]+)", ConfirmAccount),
-	(apikeys.admin_url, AdminRender),
-	(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
-	(apikeys.edit_url+"/([0-9]+)", EditTrack),
-	("/manage/([0-9]+)", ManageTransition),
-	("/audition/([0-9]+)", AuditionTransition),
-	("/artwork/([0-9]+).jpg", TrackArtwork),
-	("/oracle", OracleHandler),
-	("/choice_chunks", ChunkHandler),
-	("/view_artist/([A-Za-z0-9\+\-\.]+)", TracksByArtist),
-	("/rebuild_glitch", RenderGlitch),
-	("/credits", CreditsHandler),
-	("/submitters", Submitters),
-	("/message", Message),
-	("/outreach", Outreach),
-	("/recorder", Recorder),
-	("/sb", SandBox),
-]
 
 if __name__ == "__main__":
 	Daemon()
