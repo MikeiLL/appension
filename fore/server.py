@@ -59,8 +59,22 @@ class BaseHandler(tornado.web.RequestHandler):
 		username, self._user_perms = database.get_user_info(int(self.get_secure_cookie("userid") or 0))
 		log.warning("WE HAVE A USERID %r and username: %r", self.get_secure_cookie("userid"), username)
 		if self._user_perms: return username # If perms==0, the user has been banned, and should be treated as not-logged-in.
-        
 
+class NonCachingStaticFileHandler(tornado.web.StaticFileHandler):
+    def set_extra_headers(self, path):
+        # Disable cache
+        self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')			
+
+
+routes = [
+	# Static assets for local development
+	(r"/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"}),
+	(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static/"}),
+	(r"/audio/(.*)", tornado.web.StaticFileHandler, {"path": "audio/"}),
+	(r"/transition_audio/(.*)", NonCachingStaticFileHandler, {"path": "transition_audio/"}),
+	(r"/audition_audio/(.*)", NonCachingStaticFileHandler, {"path": "audition_audio/"}),
+	(r"/instrumentals/(.*)", tornado.web.StaticFileHandler, {"path": "instrumentals/"}),
+]
 
 class MainHandler(BaseHandler):
 	mtime = 0
@@ -98,13 +112,6 @@ class MainHandler(BaseHandler):
 	def get(self):
 		self.finish(self.__gen())
 		
-
-class NonCachingStaticFileHandler(tornado.web.StaticFileHandler):
-    def set_extra_headers(self, path):
-        # Disable cache
-        self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')			
-
-
 class InfoHandler(tornado.web.RequestHandler):
 	actions = []
 	started = None
@@ -774,6 +781,35 @@ class Logout(BaseHandler):
         self.clear_cookie("userid")
         self.redirect(self.get_argument("next", "/"))
 
+routes += [
+	(r"[/a-zA-Z0-9_]*/timing\.json", TimingHandler),
+	(r"[/a-zA-Z0-9_]*/all\.json", InfoHandler),
+	(r"/all\.mp3", StreamHandler),
+	(r"/sequence", SequenceHandler),
+	(r"/monitor", MonitorHandler),
+	(r"/", MainHandler),
+	(r"/submit", Submissionform),
+	(r"/create_account", CreateAccount),
+	(r"/login", Login),
+	(r"/logout", Logout),
+	(r"/confirm/([0-9]+)/([A-Fa-f0-9]+)", ConfirmAccount),
+	(apikeys.admin_url, AdminRender),
+	(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
+	(apikeys.edit_url+"/([0-9]+)", EditTrack),
+	(r"/manage/([0-9]+)", ManageTransition),
+	(r"/audition/([0-9]+)", AuditionTransition),
+	(r"/artwork/([0-9]+).jpg", TrackArtwork),
+	(r"/oracle", OracleHandler),
+	(r"/choice_chunks", ChunkHandler),
+	(r"/view_artist/([A-Za-z0-9\+\-\.]+)", TracksByArtist),
+	(r"/rebuild_glitch", RenderGlitch),
+	(r"/credits", CreditsHandler),
+	(r"/submitters", Submitters),
+	(r"/message", Message),
+	(r"/outreach", Outreach),
+	(r"/recorder", Recorder),
+	(r"/sb", SandBox),
+]
 
 if __name__ == "__main__":
 	Daemon()
@@ -792,42 +828,7 @@ if __name__ == "__main__":
 	tornado.ioloop.PeriodicCallback(InfoHandler.clean, 5 * 1000).start()
 
 	application = tornado.web.Application(
-		tornadio2.TornadioRouter(SocketConnection).apply_routes([
-			# Static assets for local development
-			(r"/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"}),
-			(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static/"}),
-			(r"/audio/(.*)", tornado.web.StaticFileHandler, {"path": "audio/"}),
-			(r"/transition_audio/(.*)", NonCachingStaticFileHandler, {"path": "transition_audio/"}),
-			(r"/audition_audio/(.*)", NonCachingStaticFileHandler, {"path": "audition_audio/"}),
-			(r"/instrumentals/(.*)", tornado.web.StaticFileHandler, {"path": "instrumentals/"}),
-			(r"[/a-zA-Z0-9_]*/timing\.json", TimingHandler),
-			(r"[/a-zA-Z0-9_]*/all\.json", InfoHandler),
-			(r"/all\.mp3", StreamHandler),
-			(r"/sequence", SequenceHandler),
-			(r"/monitor", MonitorHandler),
-			(r"/", MainHandler),
-			(r"/submit", Submissionform),
-			(r"/create_account", CreateAccount),
-			(r"/login", Login),
-			(r"/logout", Logout),
-			(r"/confirm/([0-9]+)/([A-Fa-f0-9]+)", ConfirmAccount),
-			(apikeys.admin_url, AdminRender),
-			(apikeys.delete_url+"/([0-9]+)", DeleteTrack),
-			(apikeys.edit_url+"/([0-9]+)", EditTrack),
-			(r"/manage/([0-9]+)", ManageTransition),
-			(r"/audition/([0-9]+)", AuditionTransition),
-			(r"/artwork/([0-9]+).jpg", TrackArtwork),
-			(r"/oracle", OracleHandler),
-			(r"/choice_chunks", ChunkHandler),
-			(r"/view_artist/([A-Za-z0-9\+\-\.]+)", TracksByArtist),
-			(r"/rebuild_glitch", RenderGlitch),
-			(r"/credits", CreditsHandler),
-			(r"/submitters", Submitters),
-			(r"/message", Message),
-			(r"/outreach", Outreach),
-			(r"/recorder", Recorder),
-			(r"/sb", SandBox),
-		]),
+		tornadio2.TornadioRouter(SocketConnection).apply_routes(routes),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',
 		admin_url=apikeys.admin_url,
