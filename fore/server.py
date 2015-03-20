@@ -470,6 +470,7 @@ class RenderGlitch(BaseHandler):
 		threading.Thread(target=rebuild_major_glitch).start()
 		self.write(admin_page(user_name, notice="Major Glitch rebuild has been started in the background. Will complete on its own."))
 
+@route("/confirm_transition")
 class ConfirmTransition(BaseHandler):
 	@tornado.web.authenticated
 	def post(self):
