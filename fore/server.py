@@ -76,6 +76,12 @@ routes = [
 	(r"/instrumentals/(.*)", tornado.web.StaticFileHandler, {"path": "instrumentals/"}),
 ]
 
+def route(url):
+	def deco(cls):
+		routes.append((url, cls))
+		return cls
+	return deco
+
 class MainHandler(BaseHandler):
 	mtime = 0
 	template = 'index.html'
