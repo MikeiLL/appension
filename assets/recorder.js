@@ -176,17 +176,17 @@
 
   };
 
-			function fileExists(url) {
-					console.log(url)
-					if(url){
-						var req = new XMLHttpRequest();
-						req.open('HEAD', url, false);
-						req.send();
-						return req.status==200;
-					} else {
+		function UrlExists(url) {
+			console.log(url)
+			jQuery.noConflict();
+				jQuery( document ).ready(function( $ ) {
+					(url).load(function() {
+					return true;
+					}).bind('error', function() {
 						return false;
-					}
-				}
+					});
+				});
+			}
       			
 	function uploadAudio(mp3Data){
 	  	document.getElementById('record_controls').style.display = "none";
@@ -217,18 +217,22 @@
       			var li = document.createElement('li');
 	  			document.getElementById('audition_player').style.display = "block";
 			});
-				while (fileExists('audition_audio/'+mp3Name) == false){
-						setTimeout(function(){
-										log.innerHTML += ". ";
-									}, 1000);
-					}
-					var li2 = document.createElement('li');
+			jQuery.ajax({
+				  url: 'localhost.com/', //or your url
+				  success: function(data){
+					alert('exists');
+				  },
+				  error: function(data){
+					alert('does not exist');
+				  },
+				}).done(function(data) {				
 					var au2 = document.createElement('audio');
 					au2.controls = true;
 					au2.src = 'audition_audio/'+mp3Name;
-					li2.appendChild(au2);
-					demo_player.appendChild(li2);
+					li.appendChild(au2);
+					demo_player.appendChild(li);
 					document.getElementById('loading').style.display = "none";
+				});
 		};      
 		reader.readAsDataURL(mp3Data);
 	}
