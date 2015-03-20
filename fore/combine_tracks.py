@@ -24,6 +24,8 @@ log = logging.getLogger(__name__)
 LOUDNESS_THRESH = -8
 
 def combine_tracks(track1, track2, remove=0):
+    #trim beginning of track1
+    track1.data = track1.data[5000:]
     if remove == 'right':
         track2 = remove_channel(track2, remove="right")
     return left_right_merge(track1, track2)
@@ -40,7 +42,7 @@ def render_track(file1, file2, itrim=0, fadeout=5, remove=0):
     track2 = audio.LocalAudioFile('instrumentals/'+file2)
     print(track2)
     track1 = audio.LocalAudioFile('acapella/'+file1)
-    otrim = max(track1.analysis.duration, track2.analysis.duration) - min(track1.analysis.duration, track2.analysis.duration)
+    otrim = min(track1.analysis.duration, track2.analysis.duration)
     together = combine_tracks(track1, track2, remove=remove)
     formatted = format_track(together, itrim=itrim, otrim=otrim, fadeout=fadeout)
     render(formatted, 'audition_audio/'+filename)
