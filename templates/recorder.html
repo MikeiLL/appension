@@ -3,7 +3,7 @@
 <html lang="en">	
 	<head>	  <meta charset="utf-8">
 	
-	<title>Glitch Recording Studio</title>
+	<title>{{ page_title }}</title>
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   
@@ -53,26 +53,46 @@
 			<ul class="grid">
 				<li class="wide">		
 					<div class="secondary-two">	
-					<div id="info"></div>
-				  <h2>Welcome to Glitch Recording Studio</h2>
-					<p>I'm your engineer, Glitchy. </p>
 					
-					<div id="info"></div>
-					Due to the magic of modern technology......</p>
-				  <div class="errors">(This will only work in Chrome (version 3.2+) and recent versions of Firefox)</div>
-				  <button  class="btn btn-default" onclick="startRecording(this);">Record</button>
-				  <button   class="btn btn-default"  onclick="stopRecording(this);" disabled>Stop</button>
-  
-				  <h2>Recordings</h2>
-				  <ul id="recordingslist"></ul>
-				  <div id="upload_button" style="display:none">
-				   <a href='#' id="upload" class="btn btn-default">Upload</a> |
-				   <a href='#' id="reset" class="btn btn-default">Reset</a></div>
-				  <h2>Log</h2>
-				  <pre id="log"></pre>
+						<div id="info"></div>
+					  <h2>Welcome to Glitch Recording Studio</h2>
+						<p>I'm your engineer, Glitchy. </p>
+					
+						<div id="info"></div>
+						Due to the magic of modern technology......</p>
+					  <div class="errors">(This will only work in Chrome (version 3.2+) and recent versions of Firefox)</div>
+				  
+					  <div id="record_controls">
+						  <button  class="btn btn-default" onclick="startRecording(this);">Record</button>
+						  <button   class="btn btn-default"  onclick="stopRecording(this);" disabled>Stop</button>
+						
+						  <h2>Recordings</h2>
+						  <ul id="recordingslist"></ul>
+						  <div id="upload_button" style="display:none">
+						   <a href='#' id="upload" class="btn btn-default">Upload</a> |
+						   <a href='#' id="reset" class="btn btn-default">Reset</a></div>
+					  </div>
+					  
+					  <div id="audition_player" style="display:none">
+					  
+					  </div>
+
+				   
+					  <h2>Log</h2>
+					  <pre id="log"></pre>
+					  
 				  </div>		
  
 					<div style="clear:both;"></div>	
+					
+					<div id="loading">
+						<div id="loadingcontent">
+							<p id="loadingspinner">
+								Making Transition...
+							</p>
+						</div>
+					</div>
+			
 				</li>			
 				{% block right-nav %}			
 				<li>				

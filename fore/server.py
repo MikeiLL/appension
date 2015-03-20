@@ -99,7 +99,7 @@ class MainHandler(BaseHandler):
 		self.finish(self.__gen())
 		
 
-class AuditionStaticFileHandler(tornado.web.StaticFileHandler):
+class NonCachingStaticFileHandler(tornado.web.StaticFileHandler):
     def set_extra_headers(self, path):
         # Disable cache
         self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')			
@@ -275,18 +275,20 @@ class Recorder(BaseHandler):
 	def get(self):
 		form = EasyForm()
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		page_title="Glitch Track Submission Form."
+		page_title="Glitch Recording Studio"
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 
-		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice=''))
+		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice='', page_title=page_title,
+															meta_description=meta_description, og_url=config.server_domain,
+															og_description=og_description))
 		
 
 	def post(self):
 		from combine_tracks import render_track
 		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
-		page_title="Glitch Track Submission."
+		page_title="Glitch Track Submission"
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 
@@ -304,13 +306,26 @@ class Recorder(BaseHandler):
 		details += "<hr/>" + filename
 		database.upload_track(mp3data, filename)
 		render_track(filename, 'dgacousticlikMP3.mp3', itrim=8.3)
-		#threading.Thread(target=render_track, args=(filename, 'dgacousticlikMP3.mp3'), kwargs={'itrim':8.2}).start()
 		info = self.request.arguments
 		message = "A new file, %s had been created by %s."%(filename, username)
 		mailer.AlertMessage(message, 'New A Capella Track Created')
-		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice="Track Uploaded"))
+		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice="Track Uploaded", page_title=page_title,
+																		meta_description=meta_description, og_url=config.server_domain,
+																		og_description=og_description, user_track='Mike_iLL_1426814986639.mp3'))
 
-
+class AuditionRecording(BaseHandler):
+	@tornado.web.authenticated
+	def get(self, input):
+		# This is a POST endpoint only.
+		return self.redirect("/")
+		
+	def post(self, track_id):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		self.write(templates.load("user_recording.html").generate(admin_url=apikeys.admin_url, 
+			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
+			user_track='Mike_iLL_1426814986639.mp3'))
 
 def admin_page(user_name, deleted=0, updated=0, notice=''):
 	return templates.load("administration.html").generate(
@@ -782,7 +797,8 @@ if __name__ == "__main__":
 			(r"/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"}),
 			(r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static/"}),
 			(r"/audio/(.*)", tornado.web.StaticFileHandler, {"path": "audio/"}),
-			(r"/transition_audio/(.*)", AuditionStaticFileHandler, {"path": "transition_audio/"}),
+			(r"/transition_audio/(.*)", NonCachingStaticFileHandler, {"path": "transition_audio/"}),
+			(r"/audition_audio/(.*)", NonCachingStaticFileHandler, {"path": "audition_audio/"}),
 			(r"/instrumentals/(.*)", tornado.web.StaticFileHandler, {"path": "instrumentals/"}),
 			(r"/timing\.json", TimingHandler),
 			(r"/all\.json", InfoHandler),

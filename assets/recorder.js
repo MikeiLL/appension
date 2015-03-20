@@ -150,7 +150,7 @@
       hf.href = url;
       hf.download = new Date().toISOString() + '.' + extension;
       hf.innerHTML = hf.download;
-      li.appendChild(hf);
+      //li.appendChild(hf);
 
       var au = document.createElement('audio');
       au.controls = true;
@@ -178,6 +178,7 @@
 
 	
 	function uploadAudio(mp3Data){
+	  	document.getElementById('record_controls').style.display = "none";
 		var reader = new FileReader();
 		reader.onload = function(event){
 			var fd = new FormData();
@@ -198,6 +199,10 @@
 			}).done(function(data) {
 				console.log("File uploaded");
       			log.innerHTML += "\n" + "File uploaded";
+	  			document.getElementById('audition_player').style.display = "block";
+				var au2 = document.createElement('audio');
+				au2.controls = true;
+				au2.src = 'audition_audio/Mike_iLL_1426814986639.mp3';
 			});
 		};      
 		reader.readAsDataURL(mp3Data);
