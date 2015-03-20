@@ -65,10 +65,7 @@ class NonCachingStaticFileHandler(tornado.web.StaticFileHandler):
         self.set_header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')			
 
 
-routes = [
-	# Static assets for local development
-	("/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"}),
-]
+routes = [("/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"})]
 for dir in ("audio", "instrumentals", "static"):
 	routes.append(("/%s/(.*)"%dir, tornado.web.StaticFileHandler, {"path": dir+"/"}))
 for dir in ("audition_audio", "transition_audio"):
