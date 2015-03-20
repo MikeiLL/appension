@@ -176,7 +176,17 @@
 
   };
 
-
+		function UrlExists(url) {
+			console.log(url)
+			jQuery.noConflict();
+				jQuery( document ).ready(function( $ ) {
+					(url).load(function() {
+					return true;
+					}).bind('error', function() {
+						return false;
+					});
+				});
+			}
       			
 	function uploadAudio(mp3Data){
 	  	document.getElementById('record_controls').style.display = "none";
@@ -206,16 +216,23 @@
         			}, 3000);
       			var li = document.createElement('li');
 	  			document.getElementById('audition_player').style.display = "block";
-	  			setTimeout(function(){
-        			var au2 = document.createElement('audio');
+			});
+			jQuery.ajax({
+				  url: 'localhost.com/', //or your url
+				  success: function(data){
+					alert('exists');
+				  },
+				  error: function(data){
+					alert('does not exist');
+				  },
+				}).done(function(data) {				
+					var au2 = document.createElement('audio');
 					au2.controls = true;
 					au2.src = 'audition_audio/'+mp3Name;
 					li.appendChild(au2);
 					demo_player.appendChild(li);
 					document.getElementById('loading').style.display = "none";
-        			}, 3000);
-				
-			});
+				});
 		};      
 		reader.readAsDataURL(mp3Data);
 	}
