@@ -232,7 +232,7 @@ $(document).ready ->
 				window.threeSixtyPlayer.handleClick {target: $('a.sm2_link')[0]}
 
 	getTrackInfo = ->
-		$.getJSON "all.json", (segments) ->
+		$.getJSON "/all.json", (segments) ->
 			console.log("getTrackInfo")
 			console.log(segments)
 			trackids = []
@@ -289,7 +289,7 @@ $(document).ready ->
 
 	getPing = ->
 		start_time = +new Date
-		$.getJSON "timing.json", (data) ->
+		$.getJSON "/timing.json", (data) ->
 			window.ping = start_time - data.time
 	window.getPing = getPing
 	setInterval getPing, TIMING_INTERVAL

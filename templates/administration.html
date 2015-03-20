@@ -25,8 +25,8 @@
 	<div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="/audio/{{ track.filename }}" type="audio/mpeg"></a></div>
           
     </td>
-	<td><a href="{{ delete_url }}/{{ track.id }}" class="confirmation">delete</a></td>
-	<td><a href="{{ edit_url }}/{{ track.id }}">edit</a></td>
+	<td><a href="/delete/{{ track.id }}" class="confirmation">delete</a></td>
+	<td><a href="/edit/{{ track.id }}">edit</a></td>
 	</tr>
 	<tr><td colspan="3">Crossfade: {{ track.track_details['xfade'] }}</td>
 	<td colspan="1">iTrim: {{ track.track_details['itrim'] }}</td>

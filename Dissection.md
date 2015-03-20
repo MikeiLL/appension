@@ -1,3 +1,5 @@
+NOTE: This file is hopelessly out of date now, I think. Use the source, Luke!
+
 # Forever.Server #
 ### Main ###
 > `Daemon()` which only does something IF server is called with an argv beyond the script name.
