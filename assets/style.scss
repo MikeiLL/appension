@@ -16,6 +16,15 @@ ol, ul {
 	margin: 0;
 	padding: 0;
 }
+#submit-points LI
+{
+	padding-left: 36px;
+	background-image: url(/static/img/globe.png);
+	background-repeat: no-repeat;
+	background-position: 0px -4px;
+	line-height: 20px;
+	margin: 0px 0 0 -5px;
+}
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
