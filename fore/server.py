@@ -68,11 +68,11 @@ class NonCachingStaticFileHandler(tornado.web.StaticFileHandler):
 routes = [
 	# Static assets for local development
 	("/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"}),
-	("/transition_audio/(.*)", NonCachingStaticFileHandler, {"path": "transition_audio/"}),
-	("/audition_audio/(.*)", NonCachingStaticFileHandler, {"path": "audition_audio/"}),
 ]
 for dir in ("audio", "instrumentals", "static"):
 	routes.append(("/%s/(.*)"%dir, tornado.web.StaticFileHandler, {"path": dir+"/"}))
+for dir in ("audition_audio", "transition_audio"):
+	routes.append(("/%s/(.*)"%dir, NonCachingStaticFileHandler, {"path": dir+"/"}))
 
 def route(url):
 	"""Snag a class into the routes[] collection"""
