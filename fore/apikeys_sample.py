@@ -9,9 +9,6 @@
 
 ECHO_NEST_API_KEY = "BNOAEBT3IZYZI6WXI"
 db_connect_string = ""
-admin_url = "/123administration45"
-delete_url = "/x1x2x3x4x5"
-edit_url = "/hard_to_guess"
 cookie_monster = "llsfZyohQDa4kRdCCqnoV3gpD8jaHUY0kfkKI3pZlZ4="
 # in Python you can generate like this:
 # import base64

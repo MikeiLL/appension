@@ -346,11 +346,10 @@ def admin_page(user_name, deleted=0, updated=0, notice=''):
 	return templates.load("administration.html").generate(
 		all_tracks=database.get_many_mp3(status="all", order_by='sequence'),
 		deleted=deleted, updated=updated, compiled=compiled,
-		delete_url=apikeys.delete_url, edit_url=apikeys.edit_url,
-		user_name=user_name, admin_url=apikeys.admin_url, notice=notice,
+		user_name=user_name, notice=notice,
 	)
 
-@route(apikeys.delete_url+"/([0-9]+)")
+@route("/delete/([0-9]+)")
 class DeleteTrack(BaseHandler):
 	@authenticated
 	def get(self, input):
@@ -361,13 +360,13 @@ class DeleteTrack(BaseHandler):
 		database.delete_track(input)
 		self.write(admin_page(user_name, deleted=input))
 
-@route(apikeys.edit_url+"/([0-9]+)")
+@route("/edit/([0-9]+)")
 class EditTrack(BaseHandler):
 	@authenticated
 	def get(self, input):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("track_edit.html").generate(admin_url=apikeys.admin_url, 
+		self.write(templates.load("track_edit.html").generate(
 		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name))
 
 @route("/sequence")		
@@ -400,10 +399,10 @@ class ShowLyrics(BaseHandler):
 														lyrics=lyrics,
 														couplet_count=couplet_count))
 
-@route(apikeys.admin_url)
+@route("/gmin")
 class AdminRender(BaseHandler):
-	@authenticated
 	def get(self):
+		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		self.write(admin_page(user_name))
@@ -424,8 +423,8 @@ class Submitters(BaseHandler):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		submitters = database.get_track_submitter_info();
-		self.write(templates.load("submitters.html").generate(admin_url=apikeys.admin_url, 
-			compiled=compiled, user_name=user_name, notice="", submitters=submitters, edit_url=apikeys.edit_url,
+		self.write(templates.load("submitters.html").generate(
+			compiled=compiled, user_name=user_name, notice="", submitters=submitters,
 			number=1))
 		
 	def post(self):
@@ -434,9 +433,9 @@ class Submitters(BaseHandler):
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		database.update_track_submitter_info(self.request.arguments)
 		submitters = database.get_track_submitter_info();
-		self.write(templates.load("submitters.html").generate(admin_url=apikeys.admin_url, 
+		self.write(templates.load("submitters.html").generate(
 			compiled=compiled, user_name=user_name, notice="Submitter List Updated", submitters=submitters,
-			edit_url=apikeys.edit_url,number=1))
+			number=1))
 
 @route("/manage/([0-9]+)")
 class ManageTransition(BaseHandler):
@@ -444,7 +443,7 @@ class ManageTransition(BaseHandler):
 	def get(self, input):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("manage_transition.html").generate(admin_url=apikeys.admin_url, 
+		self.write(templates.load("manage_transition.html").generate(
 		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name,
 		next_track=database.get_subsequent_track(int(input))))
 
@@ -467,7 +466,7 @@ class AuditionTransition(BaseHandler):
 		pair_o_tracks = database.get_track_filename(track1_id), database.get_track_filename(track2_id)
 		import audition
 		threading.Thread(target=audition.audition, args=(pair_o_tracks,track_xfade, track_otrim, next_track_itrim)).start()
-		self.write(templates.load("audition.html").generate(admin_url=apikeys.admin_url, 
+		self.write(templates.load("audition.html").generate(
 			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
 			next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,
 			track_otrim=track_otrim, next_track_itrim=next_track_itrim))
@@ -479,8 +478,7 @@ class RenderGlitch(BaseHandler):
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("rebuild_glitch.html").generate(admin_url=apikeys.admin_url, 
-			compiled=compiled, user_name=user_name))
+		self.write(templates.load("rebuild_glitch.html").generate(compiled=compiled, user_name=user_name))
 		
 	def post(self):
 		from mixer import rebuild_major_glitch
@@ -722,8 +720,7 @@ and/or a bit about the chunk itself.'''
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("message.html").generate(admin_url=apikeys.admin_url, 
-			compiled=compiled, user_name=user_name, notice="", message=message))
+		self.write(templates.load("message.html").generate(compiled=compiled, user_name=user_name, notice="", message=message))
 			
 	def post(self):
 		form = OutreachForm(self.request.arguments)
@@ -733,8 +730,7 @@ and/or a bit about the chunk itself.'''
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		database.update_outreach_message(message)
-		self.write(templates.load("message.html").generate(admin_url=apikeys.admin_url, 
-			compiled=compiled, user_name=user_name, notice="", message=message))
+		self.write(templates.load("message.html").generate(compiled=compiled, user_name=user_name, notice="", message=message))
 
 @route("/outreach")
 class Outreach(BaseHandler):	
@@ -745,8 +741,7 @@ class Outreach(BaseHandler):
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("outreach.html").generate(admin_url=apikeys.admin_url, 
-			compiled=compiled, user_name=user_name, notice="", message=message))
+		self.write(templates.load("outreach.html").generate(compiled=compiled, user_name=user_name, notice="", message=message))
 			
 	def post(self):
 		form = OutreachForm(self.request.arguments)
@@ -756,8 +751,7 @@ class Outreach(BaseHandler):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		database.update_outreach_message(message)
-		self.write(templates.load("outreach.html").generate(admin_url=apikeys.admin_url, 
-			compiled=compiled, user_name=user_name, notice="", message=message))
+		self.write(templates.load("outreach.html").generate(compiled=compiled, user_name=user_name, notice="", message=message))
 
 @route("/login")
 class Login(BaseHandler):
@@ -826,7 +820,6 @@ if __name__ == "__main__":
 		tornadio2.TornadioRouter(SocketConnection).apply_routes(routes),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',
-		admin_url=apikeys.admin_url,
 	)
 
 	frame_sender = tornado.ioloop.PeriodicCallback(
