@@ -33,7 +33,6 @@ from listeners import Listeners
 from wtforms_tornado import Form
 from assetcompiler import compiled
 from sockethandler import SocketHandler
-from monitor import MonitorHandler, MonitorSocket, monitordaemon
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
@@ -169,7 +168,6 @@ class StreamHandler(tornado.web.RequestHandler):
 class SocketConnection(tornadio2.conn.SocketConnection):
 	__endpoints__ = {
 		"/info.websocket": SocketHandler,   #TODO: Rename
-		"/monitor.websocket": MonitorSocket
 	}
 
 class EasyForm(Form):
@@ -347,7 +345,6 @@ if __name__ == "__main__":
 			(r"/all\.json", InfoHandler),
 			(r"/all\.mp3", StreamHandler),
 
-			(r"/monitor", MonitorHandler),
 			(r"/", MainHandler),
 			(r"/submit", Submissionform),
 			(r"/create_account", CreateAccount),

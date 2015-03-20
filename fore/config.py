@@ -12,7 +12,6 @@ gid = 1000 # Set both to 0 to not drop privileges, eg if the server is started w
 use_sudo_uid_gid = True # If set, uid/gid will be overridden with SUDO_UID/SUDO_GID if available
 frontend_buffer = 20    #   seconds of audio to buffer in frontend
 past_played_buffer = 600 #   seconds of audio to store track metadata for in the past
-monitor_update_time = 0.5
 template_dir = "templates/"
 drift_limit = 0.1        #   seconds of audio after which drift should be corrected
 

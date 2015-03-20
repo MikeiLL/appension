@@ -41,7 +41,6 @@ from wtforms import ValidationError
 from sockethandler import SocketHandler
 from utils import daemonize, random_hex
 from bufferedqueue import BufferedReadQueue
-from monitor import MonitorHandler, MonitorSocket, monitordaemon
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
@@ -74,7 +73,6 @@ routes = [
 	("/transition_audio/(.*)", NonCachingStaticFileHandler, {"path": "transition_audio/"}),
 	("/audition_audio/(.*)", NonCachingStaticFileHandler, {"path": "audition_audio/"}),
 	("/instrumentals/(.*)", tornado.web.StaticFileHandler, {"path": "instrumentals/"}),
-	("/monitor", MonitorHandler),
 ]
 
 def route(url):
@@ -216,7 +214,6 @@ class StreamHandler(tornado.web.RequestHandler):
 class SocketConnection(tornadio2.conn.SocketConnection):
 	__endpoints__ = {
 		"/info.websocket": SocketHandler,   #TODO: Rename
-		"/monitor.websocket": MonitorSocket
 	}
 
 
@@ -819,7 +816,6 @@ if __name__ == "__main__":
 
 	daemonize(info.generate, info_queue, first_frame, InfoHandler)
 	StreamHandler.clients = Listeners(v2_queue, "All", first_frame)
-	daemonize(monitordaemon,StreamHandler.clients,InfoHandler.stats,{"mp3_queue":v2_queue})
 
 	tornado.ioloop.PeriodicCallback(InfoHandler.clean, 5 * 1000).start()
 
