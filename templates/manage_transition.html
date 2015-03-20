@@ -45,23 +45,20 @@
 	<input type="text" name="next_track_itrim" size="5" value="{{ next_track.track_details['itrim'] }}">
 	Sequence: 
 	{{ next_track.track_details['sequence'] }}</p>
-	{% if next_track.track_details['status'] == 0 %}<p class="status_alert">Inactive</p>{% end %}</p>
-	<p><a href="{{ admin_url }}#track{{ track.id }}">Cancel</a> &nbsp; <input type="submit" value="Audition" id="submitbtn">
+	{% if next_track.track_details['status'] == 0 %}<p class="status_alert">Inactive</p>{% end %}
+	<p><a href="{{ admin_url }}#track{{ track.id }}">Cancel</a> &nbsp; | &nbsp; <input type="submit" value="Audition" id="submitbtn">
 	
 			
 
 </div>
-
-	</form>
 	
-	<div id="loading">
-			<div id="loadingcontent">
-				<p id="loadingspinner">
-					Making Transition...
-				</p>
+			<div id="loading">
+				<div id="loadingcontent">
+					<p id="loadingspinner">
+						Making Transition...
+					</p>
+				</div>
 			</div>
-			</div>
-		</div>
 
 
 {% end %}

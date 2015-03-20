@@ -150,7 +150,7 @@
       hf.href = url;
       hf.download = new Date().toISOString() + '.' + extension;
       hf.innerHTML = hf.download;
-      li.appendChild(hf);
+      //li.appendChild(hf);
 
       var au = document.createElement('audio');
       au.controls = true;
@@ -176,8 +176,21 @@
 
   };
 
-	
+		function UrlExists(url) {
+			console.log(url)
+			jQuery.noConflict();
+				jQuery( document ).ready(function( $ ) {
+					(url).load(function() {
+					return true;
+					}).bind('error', function() {
+						return false;
+					});
+				});
+			}
+      			
 	function uploadAudio(mp3Data){
+	  	document.getElementById('record_controls').style.display = "none";
+        log.innerHTML += "\n" + "Uploading track... ";
 		var reader = new FileReader();
 		reader.onload = function(event){
 			var fd = new FormData();
@@ -198,7 +211,28 @@
 			}).done(function(data) {
 				console.log("File uploaded");
       			log.innerHTML += "\n" + "File uploaded";
+        		setTimeout(function(){
+        			log.innerHTML += "\n" + "Analyzing Audio ";
+        			}, 3000);
+      			var li = document.createElement('li');
+	  			document.getElementById('audition_player').style.display = "block";
 			});
+			jQuery.ajax({
+				  url: 'localhost.com/', //or your url
+				  success: function(data){
+					alert('exists');
+				  },
+				  error: function(data){
+					alert('does not exist');
+				  },
+				}).done(function(data) {				
+					var au2 = document.createElement('audio');
+					au2.controls = true;
+					au2.src = 'audition_audio/'+mp3Name;
+					li.appendChild(au2);
+					demo_player.appendChild(li);
+					document.getElementById('loading').style.display = "none";
+				});
 		};      
 		reader.readAsDataURL(mp3Data);
 	}
