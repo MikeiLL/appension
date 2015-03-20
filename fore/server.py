@@ -353,7 +353,7 @@ class EditTrack(BaseHandler):
 @route("/sequence")		
 class SequenceHandler(BaseHandler):
 	@tornado.web.authenticated
-	def get(self, input):
+	def get(self):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		self.write(admin_page(user_name))
