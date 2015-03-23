@@ -41,6 +41,7 @@ from wtforms import ValidationError
 from sockethandler import SocketHandler
 from utils import daemonize, random_hex
 from bufferedqueue import BufferedReadQueue
+from combine_tracks import render_track
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
@@ -314,7 +315,6 @@ class Recorder(BaseHandler):
 		
 
 	def post(self):
-		from combine_tracks import render_track
 		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
 		page_title="Glitch Track Submission"
