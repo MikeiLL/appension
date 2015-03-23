@@ -20,8 +20,7 @@ H2
 {
 	font-size: 20px;
 	color: white;
-	text-shadow:2px 2px 1px black;;
-	text-decoration: none;
+	text-shadow: 2px 2px 1px black;
 }
 
 #submit-points LI
@@ -59,10 +58,10 @@ body {
 		background-size:   contain;                    
 		background-repeat: no-repeat;
 		background-position: center center; 
-	  /*+box-shadow: 3px 4px 6px #514949 !important;*/
-	  -moz-box-shadow: 3px 4px 6px #514949 !important;
-	  -webkit-box-shadow: 3px 4px 6px #514949 !important;
-	  box-shadow: 3px 4px 6px #514949 !important;
+	  /*+box-shadow: 3px 4px 6px #272626 !important;*/
+	  -moz-box-shadow: 3px 4px 6px #272626 !important;
+	  -webkit-box-shadow: 3px 4px 6px #272626 !important;
+	  box-shadow: 3px 4px 6px #272626 !important;
 	  background-color: #B06E6C;
 	  /*+border-radius: 12px;*/
 	  -moz-border-radius: 12px;
@@ -539,13 +538,14 @@ body {
 	}
 	
 	table.secondary	{
-		background-image: url(../img/tile3.jpg);
-		border: 7px solid transparent;
-		border-collapse: collapse;
-		border-radius: 10px;
-		border-spacing: 0;
-		box-shadow: 0 0 4px #514949;
-	}
+	background-image: url(../img/tile3.jpg);
+	border: 7px solid transparent;
+	border-collapse: collapse;
+	border-radius: 10px;
+	border-spacing: 0;
+	box-shadow: 0 0 4px #514949;
+	margin: 0 10px 0 0;
+}
 
 	#header {
 		margin-bottom: 15px;
