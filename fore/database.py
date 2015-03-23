@@ -233,15 +233,7 @@ def create_track(mp3data, filename, info):
 			id)
 		)
 		return id
-		
-def upload_track(mp3data, filename):
-	"""Save a blob of MP3 data to the specified file.
 
-	"""
-	with _conn, _conn.cursor() as cur:
-		filename = "acapella/%s"%(filename)
-		with open(filename, "wb") as f: f.write(mp3data)
-		
 def delete_track(input):
 	"""Delete the given track ID - no confirmation"""
 	with _conn, _conn.cursor() as cur:

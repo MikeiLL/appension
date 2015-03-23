@@ -23,6 +23,7 @@ import base64
 import random
 import wtforms
 import datetime
+import tempfile
 import threading
 import traceback
 import subprocess
@@ -333,7 +334,20 @@ class Recorder(BaseHandler):
 		filename = self.get_argument("fname","new.mp3")
 		username = self.get_argument("username","Unknown/Hacker?")
 		details += "<hr/>" + filename
-		database.upload_track(mp3data, filename)
+
+		# Ensure that the file is stereo. For some reason, manipulating mono files
+		# causes problems, so let's just quickly avconv this thing on arrival. Note
+		# that this can cause some slight loss of quality, as we're decoding from
+		# MP3 and reencoding to MP3, but this shouldn't be human-visible. It's not
+		# like we're doing a 1% speed change and realigning everything - it's just
+		# duplicating the one channel into two. (Or maybe folding a bunch of them
+		# down to a single channel, if someone uploads a 5.1 surround sound file.)
+		temp, tempfn = tempfile.mkstemp(".mp3")
+		os.write(temp, mp3data)
+		os.close(temp)
+		subprocess.check_call(["avconv","-i",tempfn,"-y","-ac","2","acapella/"+filename])
+		os.remove(tempfn)
+
 		render_track(filename, 'dgacousticlikMP3.mp3', itrim=8.3)
 		info = self.request.arguments
 		message = "A new file, %s had been created by %s."%(filename, username)
