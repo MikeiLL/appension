@@ -243,3 +243,17 @@
   window.Recorder = Recorder;
 
 })(window);
+
+		function displaySubmissionForm(mp3Name){
+		submission_form=document.createElement('FORM');
+			submission_form.name='myForm';
+			submission_form.method='POST';
+			submission_form.action='/submit_track';
+			mp3_file_data=document.createElement('INPUT');
+			mp3_file_data.type='HIDDEN';
+			mp3_file_data.name='mp3Name';
+			mp3_file_data.value=mp3Name;
+			submission_form.appendChild(mp3_file_data);
+			document.body.appendChild(submission_form);
+			submission_form.submit();
+}
