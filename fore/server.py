@@ -23,6 +23,7 @@ import base64
 import random
 import wtforms
 import datetime
+import tempfile
 import threading
 import traceback
 import subprocess
@@ -333,7 +334,13 @@ class Recorder(BaseHandler):
 		filename = self.get_argument("fname","new.mp3")
 		username = self.get_argument("username","Unknown/Hacker?")
 		details += "<hr/>" + filename
-		database.upload_track(mp3data, filename)
+
+		temp, tempfn = tempfile.mkstemp(".mp3")
+		os.write(temp, mp3data)
+		os.close(temp)
+		subprocess.check_call(["avconv","-i",tempfn,"-y","-ac","2","acapella/"+filename])
+		os.remove(tempfn)
+
 		render_track(filename, 'dgacousticlikMP3.mp3', itrim=8.3)
 		info = self.request.arguments
 		message = "A new file, %s had been created by %s."%(filename, username)
