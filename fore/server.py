@@ -74,10 +74,15 @@ for dir in ("audition_audio", "transition_audio"):
 	routes.append(("/%s/(.*)"%dir, NonCachingStaticFileHandler, {"path": dir+"/"}))
 
 def authenticated(func):
-	"""Wrapper around tornado.web.authenticated to retain the original function for introspection"""
+	"""Wrapper around tornado.web.authenticated to retain the original function for introspection
+
+	Note that tornado.web.authenticated uses functools.wraps, but in Python 2, that doesn't save
+	the original function in __wrapped__ the way it does in Python 3. So we save it manually.
+	For Py3, we can drop this altogether, use tornado.web.authenticated everywhere, and just use
+	__wrapped__ inside route() to access the original function for introspection of argcount."""
 	newfunc = tornado.web.authenticated(func)
 	newfunc.original = func
-	return func
+	return newfunc
 
 def route(url):
 	"""Snag a class into the routes[] collection"""
