@@ -250,8 +250,10 @@ def MpegFile(form, field):
 class EasyForm(Form):
 	submitter_name = wtforms.TextField('submitter_name', validators=[wtforms.validators.DataRequired()], default=u'Your Name')
 	email = wtforms.TextField('email', validators=[wtforms.validators.Email(), wtforms.validators.DataRequired()])
-	artist = wtforms.TextField('artist', validators=[])
-	track_title = wtforms.TextField('track_title', validators=[])
+	
+class SubmissionForm(Form):
+	artist = wtforms.TextField('artist', validators=[wtforms.validators.DataRequired()])
+	track_title = wtforms.TextField('track_title', validators=[wtforms.validators.DataRequired()])
 	mp3_file = wtforms.FileField(u'mp3_file', validators=[MpegFile])
 	story = wtforms.TextAreaField('story', validators=[])
 	lyrics = wtforms.TextAreaField('lyrics', validators=[])
@@ -261,19 +263,18 @@ class EasyForm(Form):
 class Submissionform(BaseHandler):
 	@authenticated
 	def get(self):
-		form = EasyForm()
+		form = SubmissionForm()
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		page_title="Glitch Track Submission Form."
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 
-		self.write(templates.load("fileuploadform.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
+		self.write(templates.load("submit_track.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
 																meta_description=meta_description, og_url=config.server_domain,
 																og_description=og_description))
-		
 
 	def post(self):
-		form = EasyForm(self.request.arguments)
+		form = SubmissionForm(self.request.arguments)
 		form.mp3_file.raw_data = self.request.files['mp3_file']
 		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
@@ -287,16 +288,15 @@ class Submissionform(BaseHandler):
 			#self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
 			fileinfo = self.request.files['mp3_file'][0]
 			details += "<hr/>" + fileinfo['filename']
-			database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments)
+			database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments, user_name)
 			info = self.request.arguments
-			message = "A new file, %s had been submitted by %s at %s."%(fileinfo['filename'],info.get("submitter_name",[""])[0]
-																		, info.get("email",[""])[0])
+			message = "A new file, %s had been submitted by %s."%(fileinfo['filename'], user_name)
 			mailer.AlertMessage(message, 'New Track Submission')
 			self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
 																			meta_description=meta_description, og_url=config.server_domain,
 																			og_description=og_description))
 		else:
-			self.write(templates.load("fileuploadform.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
+			self.write(templates.load("submit_track.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
 																		meta_description=meta_description, og_url=config.server_domain,
 																		og_description=og_description))
 

@@ -198,7 +198,7 @@ def get_track_artwork(id):
 		row = cur.fetchone()
 		return row and row[0]
 
-def create_track(mp3data, filename, info):
+def create_track(mp3data, filename, info, user_name):
 	"""Save a blob of MP3 data to the specified file and registers it in the database.
 
 	Note that this function breaks encapsulation horribly. The third argument is
@@ -209,9 +209,11 @@ def create_track(mp3data, filename, info):
 		# until we have a file, and we want to name the file based on the track ID.
 		# Resolution: Either save the file to a temporary name and then rename it,
 		# or insert a dummy row and then update it. Using the latter approach.
-		cur.execute("""INSERT INTO tracks (submitter, submitteremail, lyrics, story, comments)
-			VALUES (%s, %s, %s, %s, %s) RETURNING id""",
-			(info.get("submitter_name",[""])[0], info.get("email",[""])[0], info.get("lyrics",[""])[0], info.get("story",[""])[0], info.get("comments",[""])[0]))
+		cur.execute("""INSERT INTO tracks (userid, lyrics, story, comments)
+			VALUES ((
+			select id from users where username = %s
+			), %s, %s, %s) RETURNING id""",
+			(user_name, info.get("lyrics",[""])[0], info.get("story",[""])[0], info.get("comments",[""])[0]))
 		id = cur.fetchone()[0]
 		filename = "audio/%d %s"%(id, filename)
 		with open(filename, "wb") as f: f.write(mp3data)

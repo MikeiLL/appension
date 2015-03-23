@@ -7,18 +7,6 @@
 <form enctype="multipart/form-data" action="/submit" method="post">
 
 <table class="secondary">
-<tr><td width="200px">Your Name:</td><td> {{ form.submitter_name }}</td></tr>
-	{% if form.submitter_name.errors %}
-		<tr><td colspan=2> 
-        <ul class="errors">{% for error in form.submitter_name.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
-		</td></tr>
-    {% end %}
-<tr><td>Email: </td><td>{{ form.email }}</td></tr>
-	{% if form.email.errors %}
-		<tr><td colspan=2> 
-        <ul class="errors">{% for error in form.email.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
-		</td></tr>
-    {% end %}
 <tr><td>Artist Name: </td><td>{{ form.artist }} (used if missing from mp3 data)</td></tr>
 <tr><td>Track Title: </td><td>{{ form.track_title }} (used if missing from mp3 data)</td></tr>
 <tr><td colspan="2">MP3 File: {{ form.mp3_file }}</td></tr>
