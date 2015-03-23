@@ -189,7 +189,7 @@ class Lame(threading.Thread):
 							 traceback.format_exc())
 			finally:
 				self.encode.release()
-		log.critical("Encoder finishing!")
+		log.info("Encoder finishing!")
 
 	#   TODO: Extend me to work for all samplerates
 	def start(self, *args, **kwargs):
