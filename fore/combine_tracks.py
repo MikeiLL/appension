@@ -25,7 +25,7 @@ LOUDNESS_THRESH = -8
 
 def combine_tracks(track1, track2, remove=0):
     #trim beginning of track1
-    track1.data = track1.data[5000:]
+    track1.data = track1.data[10000:]
     if remove == 'right':
         track2 = remove_channel(track2, remove="right")
     return left_right_merge(track1, track2)
