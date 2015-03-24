@@ -279,31 +279,34 @@ class Submissionform(BaseHandler):
 																og_description=og_description))
 
 	def post(self):
-		form = SubmissionForm(self.request.arguments)
-		form.mp3_file.raw_data = self.request.files['mp3_file']
 		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
 		page_title="Glitch Track Submission."
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 
+		form = SubmissionForm(self.request.arguments)
+		try:
+			form.mp3_file.raw_data = self.request.files['mp3_file']
+		except KeyError:
+			print("NOTHING")
 		if form.validate():
 			for f in self.request.arguments:
 				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
 			#self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
 			fileinfo = self.request.files['mp3_file'][0]
 			details += "<hr/>" + fileinfo['filename']
-			database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments, user_name)
+			#database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments, user_name)
 			info = self.request.arguments
-			message = "A new file, %s had been submitted by %s."%(fileinfo['filename'], user_name)
-			mailer.AlertMessage(message, 'New Track Submission')
+			#message = "A new file, %s had been submitted by %s."%(fileinfo['filename'], user_name)
+			#mailer.AlertMessage(message, 'New Track Submission')
 			self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
-																			meta_description=meta_description, og_url=config.server_domain,
-																			og_description=og_description))
+											meta_description=meta_description, og_url=config.server_domain,
+											og_description=og_description))
 		else:
 			self.write(templates.load("submit_track.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
-																		meta_description=meta_description, og_url=config.server_domain,
-																		og_description=og_description))
+											meta_description=meta_description, og_url=config.server_domain,
+											og_description=og_description))
 
 @route("/recorder")
 class Recorder(BaseHandler):
