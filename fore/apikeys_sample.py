@@ -24,6 +24,19 @@ SMTP_SERVER_PORT = "smtp.gmail.com:587"
 SMTP_USERNAME = "email@gmail.com"
 SMTP_PASSWORD = "yourpassword"
 
+# HACK: In some cases, the fetching of AudioAnalysis fails. The exact cause is
+# currently unknown, but it seems that we can fix the problem by fetching one
+# analysis early in the startup process. The fetching MUST be done prior to the
+# starting of the mixer, which starts a bunch of processes and threads. I (CJA)
+# suspect that there may be an issue with forking and/or threads, but I have no
+# idea exactly what's going on here. All I know is that putting a hash in here
+# (any existing audio file's hash can be used, I think) seems to fix or mask
+# the problem, and the subsequent analysis retrieval always works.
+#
+# If you don't have problems with AudioAnalysis hanging, don't use this option.
+# It slows startup by one entire network round trip - several seconds.
+# prime_the_pump = "some md5 hash"
+
 # Keep the below lines as they are.
 # Post our API key into the config for EchoNest
 import pyechonest.config
