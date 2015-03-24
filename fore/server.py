@@ -874,6 +874,9 @@ if __name__ == "__main__":
 	import audition
 	from mixer import Mixer
 	mixer = Mixer(v2_queue.raw,info_queue)
+	if hasattr(apikeys, 'prime_the_pump'): 
+		from echonest.remix.audio import AudioAnalysis
+		AudioAnalysis(apikeys.prime_the_pump)
 	mixer.start()
 	try:
 		tornado.ioloop.IOLoop.instance().start()
