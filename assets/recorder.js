@@ -218,9 +218,7 @@
 			var fd = new FormData();
 			var username = document.getElementById('username').innerHTML;
 			file_username = username.replace(/ /g,"_");
-			console.log(username, file_username)
 			var mp3Name = encodeURIComponent(file_username + '_' + new Date().getTime() + '.mp3');
-			console.log("mp3name = " + mp3Name);
 			fd.append('fname', mp3Name);
 			fd.append('username', username);
 			fd.append('data', event.target.result);
@@ -235,25 +233,46 @@
 				log.innerHTML += "\n" + "File uploaded, analyzing...";
 	  			document.getElementById('audition_player').style.display = "block";
 				probe('audition_audio/'+mp3Name);
+				displaySubmissionForm(mp3Name);
 			});
 		};      
 		reader.readAsDataURL(mp3Data);
 	}
 	
-  window.Recorder = Recorder;
-
-})(window);
-
 		function displaySubmissionForm(mp3Name){
-		submission_form=document.createElement('FORM');
-			submission_form.name='myForm';
+			var submission_form=document.createElement('FORM');
+			submission_form.name='submissionForm';
 			submission_form.method='POST';
-			submission_form.action='/submit_track';
-			mp3_file_data=document.createElement('INPUT');
+			submission_form.action='/submit';
+			var title = document.createElement("INPUT");
+			
+			title.type = "text";
+			//title.className = "css-class-name";
+			button.type='SUBMIT';
+			button.value='Submit Track';
+			var button = document.createElement("BUTTON");
+			button.type='SUBMIT';
+			button.value='Submit Track';
+            		button.innerHTML='Submit Track';
+			button.onclick=displaySubmissionForm;
+			var mp3_file_data=document.createElement('INPUT');
 			mp3_file_data.type='HIDDEN';
 			mp3_file_data.name='mp3Name';
 			mp3_file_data.value=mp3Name;
 			submission_form.appendChild(mp3_file_data);
-			document.body.appendChild(submission_form);
-			submission_form.submit();
-}
+			submission_form.appendChild(button);
+			document.getElementById('submit_buttons').style.display = "block";
+			document.getElementById('submit_buttons').appendChild(submission_form);
+			
+			}
+
+		function displaySubmissionForm(mp3Name){
+			alert(mp3Name);
+			}
+	
+  window.Recorder = Recorder;
+
+
+})(window);
+
+		
