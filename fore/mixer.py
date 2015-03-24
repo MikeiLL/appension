@@ -142,6 +142,8 @@ class AudioStream(object):
 	"""
 
 	def __init__(self, fobj):
+	        log.info("Audio Stream Init")
+	        print("Audio Stream Init")
 		self.sampleRate = 44100
 		self.numChannels = 2
 		self.fobj = fobj
@@ -239,14 +241,17 @@ class LocalAudioStream(AudioStream):
 		if not hasattr(initializer, 'seek'):
 			fobj.close()
 		track_md5 = md5.hexdigest()
+		print(11111111111)
+                try:
+                        log.info("Fetching analysis...")
+                        try:
+                                tempanalysis = AudioAnalysis(str(track_md5))
+                        except EchoNestAPIError:
+                                tempanalysis = AudioAnalysis(initializer, kind)
 
-		log.info("Fetching analysis...")
-		try:
-			tempanalysis = AudioAnalysis(str(track_md5))
-		except EchoNestAPIError:
-			tempanalysis = AudioAnalysis(initializer, kind)
-
-		log.info("Fetched analysis in %ss", time.time() - start)
+                        log.info("Fetched analysis in %ss", time.time() - start)
+                finally:
+                        print(222222222222)
 		self.analysis = tempanalysis
 		self.analysis.source = weakref.ref(self)
 
