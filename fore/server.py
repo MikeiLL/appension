@@ -874,6 +874,13 @@ if __name__ == "__main__":
 	import audition
 	from mixer import Mixer
 	mixer = Mixer(v2_queue.raw,info_queue)
+	if hasattr(apikeys, 'prime_the_pump'): 
+		# HACK: Prime the analysis pump to enable stall-free loading in
+		# the mixer. Seems to help, although it does delay startup by
+		# several seconds (one round-trip to the echonest server). See
+		# comments in apikeys_sample.py for more detailed explanation.
+		from echonest.remix.audio import AudioAnalysis
+		AudioAnalysis(apikeys.prime_the_pump)
 	mixer.start()
 	try:
 		tornado.ioloop.IOLoop.instance().start()
