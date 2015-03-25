@@ -31,97 +31,129 @@
  
 </head>
 <body>
-	<div id="username" style="display:none">{{ user_name }}</div>
-	<header id="header" role="banner">
-  	{% block user %}		
-  		<div class="user">				
-  			<p>Hello {{ user_name }}!</p>		
-  		</div>		
-  	{% end %}		
-  	{% if notice %}
-		<h2> {{ notice }} </h2>
-	{% end %}
-  		<a href="/" style="display:block;">		
-		<div id="title-admin">				
-		</div></a>	
-  	</header>	
-  	<br style="clear:both"/>  
-  	<!--Pattern HTML-->	
-  	<div class="secondary">
-		 <section id="pattern" class="pattern">  	
-			<ul class="grid">
-				<li class="wide">		
-					<div class="secondary-two">	
-					
+<div id="username" style="display:none">{{ user_name }}</div>
+<header id="header" role="banner">
+{% block user %}		
+	<div class="user">				
+		<p>Hello {{ user_name }}!</p>		
+	</div>		
+{% end %}		
+{% if notice %}
+	<h2> {{ notice }} </h2>
+{% end %}
+	<a href="/" style="display:block;">		
+	<div id="title-admin">				
+	</div></a>	
+</header>	
+<br style="clear:both"/>  
+<!--Pattern HTML-->	
+<div class="secondary">
+	 <section id="pattern" class="pattern">  	
+		<ul class="grid">
+			<li class="wide">		
+				<div class="secondary-two">	
+				
+				<div id="info"></div>
+				  <img src="static/img/studio-title.png" border="0" width="266" height="195" alt=""><br/>
+				  <div id="recorder_content">
+				  
+					<div id="intro">
+						<h2>Welcome to The Studio</h2>
+						I'm your engineer, Glitchy.
+						<br/><br/>
 						<div id="info"></div>
-					  <img src="static/img/studio-title.png" border="0" width="266" height="195" alt=""><br>
-					  <p><h2>Welcome to The Studio</h2>
-					  I'm your engineer, Glitchy.
-					  <br><br>
-						<div id="info"></div>
+
+						<p>Due to the magic of modern technology we can now record you right here in your browser. Glitch Studio does have some limitations at the moment, though. Here's how it works.</p>
+						<ul>
+						<li>There is a single "backing" track to sing along with. You'll here it when you press record.</li>
+						<li>It only keeps the section from the first downbeat following the count-in until you press stop.</li>
+						<li>If you record without headphones, the "backing" track will be included in your "overdub" track, which will sound a bit ah... interesting.</li>
+						<li>When listening back to your "overdub", prior to uploading and combining with "backing" track, ignore the silence (or other noise) prior to where the click and count-in end.</li>
+						</ul>
+						<div class="errors">(This will probably only work in Chrome version 3.2+ and recent versions of Firefox and Opera)</div><br>
 						
-						Due to the magic of modern technology......</p>
-					  <div class="errors">(This will only work in Chrome version 3.2+ and recent versions of Firefox)</div><br>
-
-				  		<div id="loading">
-							<div id="loadingcontent">
-								<p id="loadingspinner">
-									<br/>
-									I'm uploading your recording to the server now...<br/>
-									This might take a few minutes 'cause we have to then analyze the audio using Echonest's API <br/>
-									and it's Remix library and layer the two tracks together.
-								</p>
-							</div>
-						</div>
-
-
-					  <div id="record_controls">
+						
+						<div id="record_controls">
 						  <button  class="btn btn-default" onclick="startRecording(this);">Record</button>
 						  <button   class="btn btn-default"  onclick="stopRecording(this);" disabled>Stop</button>
-						  <h2>Recordings</h2>
-						  <ul id="recordingslist"></ul>
-						  <div id="upload_button" style="display:none">
-						   <a href='#' id="upload" class="btn btn-default">Upload</a> |
-						   <a href='#' id="reset" class="btn btn-default">Reset</a></div>
-					  </div>
-					  
-					  <div id="audition_player" style="display:none">
-					  	Check out your track... THEN WE WILL ALLOW THEM TO ADD LYRICS, STORY, IMAGE and Submit it!
-					  	<ul id="demo_player"></ul>
-					  </div>
-					  <div id="submit_buttons" style="display:none">
-					  
-					  </div>
-				   
-					  <h2>Log</h2>
-					  <pre id="log"></pre>
-					  
-				  </div>		
- 
-					<div style="clear:both;"></div>	
-					
-			
-				</li>			
-				{% block right-nav %}			
-				<li>				
-					<nav role="navigation">					
-						<div style="text-align: center"><ul>
-							<li><a href="/create_account"><img src="static/img/sign-up.png" border="0" width="78" height="23" alt=""></a></li>
-							<li><a href="/login"><img src="static/img/login-link.png" border="0" width="62" height="25" alt=""></a></li>
-							<li><a href="/logout"><img src="static/img/logout-link.png" border="0" width="47" height="39" alt=""></a></li>
-							<li><a href="/choice_chunks"><img src="static/img/segment-selection-link.png" border="0" width="82" height="38" alt=""></a></li>
-							<li><a href="/submit"><img src="static/img/submit-link.png" border="0" width="137" height="26" alt=""></a></li>
-							<li><a href="/oracle"><img src="static/img/magic-ball-link.png" border="0" width="114" height="96" alt=""></a></li>
-							<li><a href="/credits"><img src="static/img/credits-link.png" border="0" width="85" height="21" alt=""></a></li>
-						</ul></div>				
-					</nav>			
-				</li>					
-			</ul>	
-		</section>		
-		{% end %}	
-	</div>	
-	
-  <audio id='BackgroundTrack' src='/instrumentals/dgacousticlikMP3.mp3'/>
+						</div>
+
+					</div>
+
+						
+					<div id="overdub_player" style="display:none">
+					<h2>The Recording</h2>
+						<p>This is what you just recorded. Remember, ignore the silence (or other noise) prior to where the click and count-in end.</p>
+						<ul id="recordingslist"></ul>
+						<a href='#' id="upload" class="btn btn-default">Upload</a> |
+						<a href='#' id="reset" class="btn btn-default">Reset</a>
+					</div>
+
+					<div id="audition_player" style="display:none">
+						Check out the combined track:
+						<ul id="demo_player"></ul>
+					</div>
+
+					<h2>Log</h2>
+					<pre id="log"></pre>
+				</div> <!-- End recorder-content -->
+				<div id="submission_form" style="display:none">
+					<p></p>
+					<img width="212" border="0" height="38" alt="" src="static/img/submit-title.png">
+					<p></p>
+					<form enctype="multipart/form-data" action="/submit" method="post" id="submit_track">
+
+					<table class="secondary">
+					<tr><td>Artist Name: </td><td>{{ form.artist }} (used if missing from mp3 data)</td></tr>
+					<tr><td>Track Title: </td><td>{{ form.track_title }} (used if missing from mp3 data)</td></tr>
+						{% if form.mp3_file.errors %}
+							<tr><td colspan=2> 
+						<ul class="errors">{% for error in form.mp3_file.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
+							</td></tr>
+					    {% end %}
+					<tr><td colspan="2">Story behind the track:<br/> {{ form.story(rows=10,cols=60) }}</td></tr>
+					<tr><td colspan="2">Lyrics: <br/>{{ form.lyrics(rows=10,cols=60) }}</textarea></td></tr>
+					<tr><td colspan="2">Comments: <br/>{{ form.comments(rows=10,cols=60)}}</td></tr>
+
+					<tr><td colspan="2" align="right"><input type="submit" value="submit track" /></td></tr>
+					</table>
+					</form>
+				</div><!-- End submission form -->					  
+			  </div><!-- End secondary two -->		
+
+				<div style="clear:both;"></div>	
+				
+		
+			</li>			
+			{% block right-nav %}			
+			<li>				
+				<nav role="navigation">					
+					<div style="text-align: center"><ul>
+						<li><a href="/create_account"><img src="static/img/sign-up.png" border="0" width="78" height="23" alt=""></a></li>
+						<li><a href="/login"><img src="static/img/login-link.png" border="0" width="62" height="25" alt=""></a></li>
+						<li><a href="/logout"><img src="static/img/logout-link.png" border="0" width="47" height="39" alt=""></a></li>
+						<li><a href="/choice_chunks"><img src="static/img/segment-selection-link.png" border="0" width="82" height="38" alt=""></a></li>
+						<li><a href="/submit"><img src="static/img/submit-link.png" border="0" width="137" height="26" alt=""></a></li>
+						<li><a href="/oracle"><img src="static/img/magic-ball-link.png" border="0" width="114" height="96" alt=""></a></li>
+						<li><a href="/credits"><img src="static/img/credits-link.png" border="0" width="85" height="21" alt=""></a></li>
+					</ul></div>				
+				</nav>			
+			</li>					
+		</ul>	
+	</section>		
+	{% end %}	
+</div>	
+<div id="loading">
+	<div id="loadingcontent">
+		<p id="loadingspinner">
+			<br/>
+			I'm uploading your recording to the server now...<br/>
+			This might take a few minutes 'cause we have to then analyze the audio using Echonest's API <br/>
+			and it's Remix library and layer the two tracks together.
+		</p>
+	</div>
+</div>	
+<audio id='BackgroundTrack' src='/instrumentals/dgacousticlikMP3.mp3'/>
 
 
    <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		

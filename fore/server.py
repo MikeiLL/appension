@@ -284,7 +284,6 @@ class Submissionform(BaseHandler):
 		page_title="Glitch Track Submission."
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
-
 		form = SubmissionForm(self.request.arguments)
 		try:
 			form.mp3_file.raw_data = self.request.files['mp3_file']
@@ -292,20 +291,18 @@ class Submissionform(BaseHandler):
 			body = fileinfo['body']
 			filename = fileinfo['filename']
 		except KeyError:
-			with open("audition_audio/Mike_iLL_a_capella.mp3","rb") as f: body = f.read()
-			filename = self.request.files['mp3Name']
+			#Delete MP3 field w/o validator because file is already on the server
+			form.__delitem__('mp3_file');
+			filename = self.request.arguments['mp3Name'][0]
+			with open("audition_audio/"+filename,"rb") as f: body = f.read()
 		if form.validate():
 			for f in self.request.arguments:
 				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
-			print(11111)
-			print(filename)
-			print(22222)
 			#self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
-			details += "<hr/>" + fileinfo['filename']
-			#database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments, user_name)
+			database.create_track(body, filename, self.request.arguments, user_name)
 			info = self.request.arguments
-			#message = "A new file, %s had been submitted by %s."%(fileinfo['filename'], user_name)
-			#mailer.AlertMessage(message, 'New Track Submission')
+			message = "A new file, %s had been submitted by %s."%(filename, user_name)
+			mailer.AlertMessage(message, 'New Track Submission')
 			self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
 											meta_description=meta_description, og_url=config.server_domain,
 											og_description=og_description))
@@ -318,15 +315,15 @@ class Submissionform(BaseHandler):
 class Recorder(BaseHandler):
 	@authenticated
 	def get(self):
-		form = EasyForm()
+		form = SubmissionForm()
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		page_title="Glitch Recording Studio"
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 
 		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice='', page_title=page_title,
-															meta_description=meta_description, og_url=config.server_domain,
-															og_description=og_description))
+								meta_description=meta_description, og_url=config.server_domain,
+								og_description=og_description, form=form))
 		
 
 	def post(self):
@@ -335,6 +332,7 @@ class Recorder(BaseHandler):
 		page_title="Glitch Track Submission"
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+		form = SubmissionForm(self.request.arguments)
 
 		for f in self.request.arguments:
 			details += "<hr/>" + self.get_argument(f, default=None, strip=False)
@@ -368,8 +366,8 @@ class Recorder(BaseHandler):
 		message = "A new file, %s had been created by %s."%(filename, username)
 		mailer.AlertMessage(message, 'New A Capella Track Created')
 		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice="Track Uploaded", page_title=page_title,
-																		meta_description=meta_description, og_url=config.server_domain,
-																		og_description=og_description))
+									meta_description=meta_description, og_url=config.server_domain,
+									og_description=og_description,form=form))
 
 def admin_page(user_name, deleted=0, updated=0, notice=''):
 	return templates.load("administration.html").generate(

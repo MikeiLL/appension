@@ -138,35 +138,35 @@
 
     function endFile(blob, extension) {
 
-      console.log("Done converting to " + extension);
+	console.log("Done converting to " + extension);
+
+	log.innerHTML += "\n" + "Done converting to " + extension;
+
+	console.log("the blob " + blob + " " + blob.size + " " + blob.type);
+
+	var url = URL.createObjectURL(blob);
+	var li = document.createElement('li');
+	var hf = document.createElement('a');
+	hf.href = url;
+	hf.download = new Date().toISOString() + '.' + extension;
+	hf.innerHTML = hf.download;
+
+	var au = document.createElement('audio');
+	au.controls = true;
+	au.src = url;
+	au2 = document.getElementById('BackgroundTrack');
+	li.appendChild(au);
+
+	document.getElementById('intro').style.display = "none";
+	document.getElementById('overdub_player').style.display = "inline";
+
+	document.getElementById("upload").onclick = function(){
+      		uploadAudio(blob);
+	}
       
-      log.innerHTML += "\n" + "Done converting to " + extension;
-
-      console.log("the blob " + blob + " " + blob.size + " " + blob.type);
-
-      var url = URL.createObjectURL(blob);
-      var li = document.createElement('li');
-      var hf = document.createElement('a');
-      hf.href = url;
-      hf.download = new Date().toISOString() + '.' + extension;
-      hf.innerHTML = hf.download;
-
-      var au = document.createElement('audio');
-      au.controls = true;
-      au.src = url;
-      au2 = document.getElementById('BackgroundTrack');
-      li.appendChild(au);
-
-      // Upload file to server - uncomment below
-	  document.getElementById('upload_button').style.display = "inline";
-      
-	  document.getElementById("upload").onclick = function(){
-      	uploadAudio(blob);
-      }
-      
-      document.getElementById("reset").onclick = function(){
-  		window.location.reload(false);
-      }
+	document.getElementById("reset").onclick = function(){
+		window.location.reload(false);
+	}
       
 
       recordingslist.appendChild(li);
@@ -175,19 +175,19 @@
 
   };
 
-		function UrlExists(url) {
-			console.log(url)
-			jQuery.noConflict();
-				jQuery( document ).ready(function( $ ) {
-					(url).load(function() {
-					return true;
-					}).bind('error', function() {
-						return false;
-					});
+	function UrlExists(url) {
+		console.log(url)
+		jQuery.noConflict();
+			jQuery( document ).ready(function( $ ) {
+				(url).load(function() {
+				return true;
+				}).bind('error', function() {
+					return false;
 				});
-			}
+			});
+		}
 
-	function probe(url) {
+	function probe(url, mp3Name) {
 		console.log("Probing "+url+"...");
 		var xhr = new XMLHttpRequest();
 		xhr.open("HEAD", url);
@@ -203,19 +203,30 @@
 				var li = document.createElement('li');
 				li.appendChild(au2);
 				document.getElementById("demo_player").appendChild(li);
+				document.getElementById('overdub_player').style.display = "none";
 				document.getElementById('loading').style.display = "none";
-				var hf = document.createElement('a');
-				hf.href = '#';
-				hf.onclick = displaySubmissionForm;
-				hf.innerHTML = 'Enter Track Details';
-				document.getElementById("demo_player").appendChild(hf);
+				var enter_track_details = document.createElement('a');
+				enter_track_details.href = '#';
+				enter_track_details.onclick = function(){
+						displaySubmissionForm(mp3Name);
+					}
+				enter_track_details.innerHTML = 'Enter Track Details';
+				enter_track_details.className = 'btn btn-default';
+				var reset = document.createElement('a');
+				reset.href = '#';
+				reset.onclick = function(){
+						window.location.reload(false);
+					}
+				reset.innerHTML = 'Reset';
+				reset.className = 'btn btn-default';
+				document.getElementById("demo_player").appendChild(enter_track_details);
+				document.getElementById("demo_player").appendChild(reset);
 			}
 		};
 		xhr.send();
 	}
       			
 	function uploadAudio(mp3Data){
-	  	document.getElementById('record_controls').style.display = "none";
 		log.innerHTML += "\n" + "Uploading track... ";
 		var reader = new FileReader();
 		reader.onload = function(event){
@@ -236,36 +247,20 @@
 				console.log("File uploaded");
 				log.innerHTML += "\n" + "File uploaded, analyzing...";
 	  			document.getElementById('audition_player').style.display = "block";
-				probe('audition_audio/'+mp3Name);
+				probe('audition_audio/'+mp3Name, mp3Name);
 			});
 		};      
 		reader.readAsDataURL(mp3Data);
 	}
 	
 		function displaySubmissionForm(mp3Name){
-			var submission_form=document.createElement('FORM');
-			submission_form.name='submissionForm';
-			submission_form.method='POST';
-			submission_form.action='/submit';
-			var track_title = document.createElement("INPUT");
-			track_title.type = "text";
-			track_title.name = "track_title";
-			//track_title.className = "css-class-name";
-			var button = document.createElement("BUTTON");
-			button.type='SUBMIT';
-			button.value='Submit Track';
-            		button.innerHTML='Submit Track';
-			button.onclick=displaySubmissionForm;
-			var mp3_file_data=document.createElement('INPUT');
+			var mp3_file_data = document.createElement("INPUT");
 			mp3_file_data.type='HIDDEN';
 			mp3_file_data.name='mp3Name';
 			mp3_file_data.value=mp3Name;
-			submission_form.appendChild(mp3_file_data);
-			submission_form.appendChild(button);
-			submission_form.appendChild(track_title);
-			document.getElementById('submit_buttons').style.display = "block";
-			document.getElementById('submit_buttons').appendChild(submission_form);
-			
+			document.getElementById('recorder_content').style.display = "none";
+			document.getElementById('submission_form').style.display = "block";
+			document.getElementById('submit_track').appendChild(mp3_file_data);
 			}
   window.Recorder = Recorder;
 
