@@ -349,7 +349,7 @@ def get_track_filename(track_id):
 
 def browse_tracks(letter):
     """Return artist, id for tracks, where artist name starts with letter in expression or higher, limit 20."""
-    query = "SELECT {cols} FROM tracks WHERE status = 1 AND artist >= '{letter}' ORDER BY artist LIMIT 20".format(cols=Track.columns, letter=letter)
+    query = "SELECT DISTINCT {cols} FROM tracks WHERE status = 1 AND artist >= '{letter}' ORDER BY artist LIMIT 20".format(cols=Track.columns, letter=letter)
     print(query)
     with _conn, _conn.cursor() as cur:
         cur.execute(query)
