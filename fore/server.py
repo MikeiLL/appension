@@ -625,9 +625,9 @@ class TracksByArtist(BaseHandler):
 		meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest pop song."
 		og_url="http://www.infiniteglitch.net/view_artist/"+tornado.escape.url_escape(tracks_by[0].track_details['artist'])
 		self.write(templates.load("view_artist.html").generate(compiled=compiled, user_name=user_name, 
-														tracks_by=tracks_by, og_description=og_description, 
-														page_title=page_title, meta_description=meta_description,
-														og_url=og_url))
+									tracks_by=tracks_by, og_description=og_description, 
+									page_title=page_title, meta_description=meta_description,
+									og_url=og_url))
 
 @route("/choice_chunks")
 class ChunkHandler(BaseHandler):
@@ -639,9 +639,9 @@ class ChunkHandler(BaseHandler):
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
 		og_url=og_url=config.server_domain+"/choice_chunks"
 		self.write(templates.load("choice_chunks.html").generate(compiled=compiled, user_name=user_name, form=form,
-																	artist_tracks="", og_description=og_description, 
-																	page_title=page_title, meta_description=meta_description,
-																	og_url=og_url))
+									artist_tracks="", og_description=og_description, 
+									page_title=page_title, meta_description=meta_description,
+									og_url=og_url))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
@@ -653,9 +653,9 @@ class ChunkHandler(BaseHandler):
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
 		og_url=og_url=config.server_domain+"/choice_chunks"
 		self.write(templates.load("choice_chunks.html").generate(compiled=compiled, user_name=user_name, form=form,
-																	artist_tracks=artist_tracks, og_description=og_description, 
-																	page_title=page_title, meta_description=meta_description,
-																	og_url=og_url))
+									artist_tracks=artist_tracks, og_description=og_description, 
+									page_title=page_title, meta_description=meta_description,
+									og_url=og_url))
 		
 class UserForm(Form):
 	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email()])

@@ -17,12 +17,23 @@
 
 {% for track in tracks_by %}
 <tr><td><h3>{{ track.track_details['artist'] }}</h3></td></tr>
-<tr><td>{% for line in track.track_details['lyrics'].splitlines() %}
+<tr><td><h2>Lyrics</h2></td></tr>
+<tr><td>{% if len(track.track_details['lyrics']) > 0 %}
+		{% for line in track.track_details['lyrics'].splitlines() %}
 			{{ line }} <br/>
 		{% end %}</td></tr>
-<tr><td>{% for line in track.track_details['story'].splitlines() %}
+	{% else %}
+		<p>We still need to get these lyrics. Feel like transcribing?</p>
+	{% end %}
+<tr><td><h2>The Story</h2></td></tr>
+<tr><td>
+<tr><td>{% if len(track.track_details['lyrics']) > 0 %}
+		{% for line in track.track_details['story'].splitlines() %}
 			{{ line }} <br/>
-		{% end %}</td></tr>
+		{% end %}
+	{% else %}
+		<p>Do you know the story behind this track, 'cause we still need it.</p>
+	{% end %}</td></tr>
 <tr><td>
 
 <!-- Start Infinite Chunk Player -->
