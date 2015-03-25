@@ -150,7 +150,6 @@
       hf.href = url;
       hf.download = new Date().toISOString() + '.' + extension;
       hf.innerHTML = hf.download;
-      //li.appendChild(hf);
 
       var au = document.createElement('audio');
       au.controls = true;
@@ -205,6 +204,11 @@
 				li.appendChild(au2);
 				document.getElementById("demo_player").appendChild(li);
 				document.getElementById('loading').style.display = "none";
+				var hf = document.createElement('a');
+				hf.href = '#';
+				hf.onclick = displaySubmissionForm;
+				hf.innerHTML = 'Enter Track Details';
+				document.getElementById("demo_player").appendChild(hf);
 			}
 		};
 		xhr.send();
@@ -233,7 +237,6 @@
 				log.innerHTML += "\n" + "File uploaded, analyzing...";
 	  			document.getElementById('audition_player').style.display = "block";
 				probe('audition_audio/'+mp3Name);
-				displaySubmissionForm(mp3Name);
 			});
 		};      
 		reader.readAsDataURL(mp3Data);
@@ -244,12 +247,10 @@
 			submission_form.name='submissionForm';
 			submission_form.method='POST';
 			submission_form.action='/submit';
-			var title = document.createElement("INPUT");
-			
-			title.type = "text";
-			//title.className = "css-class-name";
-			button.type='SUBMIT';
-			button.value='Submit Track';
+			var track_title = document.createElement("INPUT");
+			track_title.type = "text";
+			track_title.name = "track_title";
+			//track_title.className = "css-class-name";
 			var button = document.createElement("BUTTON");
 			button.type='SUBMIT';
 			button.value='Submit Track';
@@ -261,15 +262,11 @@
 			mp3_file_data.value=mp3Name;
 			submission_form.appendChild(mp3_file_data);
 			submission_form.appendChild(button);
+			submission_form.appendChild(track_title);
 			document.getElementById('submit_buttons').style.display = "block";
 			document.getElementById('submit_buttons').appendChild(submission_form);
 			
 			}
-
-		function displaySubmissionForm(mp3Name){
-			alert(mp3Name);
-			}
-	
   window.Recorder = Recorder;
 
 

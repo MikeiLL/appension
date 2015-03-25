@@ -288,13 +288,19 @@ class Submissionform(BaseHandler):
 		form = SubmissionForm(self.request.arguments)
 		try:
 			form.mp3_file.raw_data = self.request.files['mp3_file']
+			fileinfo = self.request.files['mp3_file'][0]
+			body = fileinfo['body']
+			filename = fileinfo['filename']
 		except KeyError:
-			print("NOTHING")
+			with open("audition_audio/Mike_iLL_a_capella.mp3","rb") as f: body = f.read()
+			filename = self.request.files['mp3Name']
 		if form.validate():
 			for f in self.request.arguments:
 				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
+			print(11111)
+			print(filename)
+			print(22222)
 			#self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
-			fileinfo = self.request.files['mp3_file'][0]
 			details += "<hr/>" + fileinfo['filename']
 			#database.create_track(fileinfo['body'], fileinfo['filename'], self.request.arguments, user_name)
 			info = self.request.arguments
