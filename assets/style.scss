@@ -52,6 +52,27 @@ body {
   	background-color: #B06E6C;
   	
   	/** bootstrap buttons**/
+
+.btn-default {
+background: url(/static/img/tile2.jpg) black;
+	cursor: pointer;
+	color: white;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	-khtml-border-radius: 20px;
+	border-radius: 20px;
+	margin: 8px 2px 2px;
+	-moz-box-shadow: 3px 2px 2px black;
+	-webkit-box-shadow: 3px 2px 2px black;
+	box-shadow: 3px 2px 2px black;
+	border: 2px outset silver;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.42857;
+	padding: 3px 6px;
+	}
+
+
  .btn
 {
 	background: url(/static/img/tile2.jpg) black;
@@ -71,6 +92,7 @@ body {
 	line-height: 1.42857;
 	padding: 3px 6px;
 }
+
 
 
 .btn:hover, .btn:focus
@@ -107,6 +129,10 @@ body {
 	border: 2px inset silver;
 }
 
+.grid LI.wide A:visited {
+    color: #fff;
+    margin: 0;
+}
 
 	#title-admin {
 	  width: 418px;
