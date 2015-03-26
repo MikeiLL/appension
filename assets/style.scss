@@ -52,33 +52,61 @@ body {
   	background-color: #B06E6C;
   	
   	/** bootstrap buttons**/
-	.btn {
-	    -moz-user-select: none;
-	    background-image: none;
-	    border: 1px solid transparent;
-	    border-radius: 4px;
-	    cursor: pointer;
-	    display: inline-block;
-	    font-size: 14px;
-	    font-weight: 400;
-	    line-height: 1.42857;
-	    margin-bottom: 0;
-	    padding: 6px 12px;
-	    text-align: center;
-	    vertical-align: middle;
-	    white-space: nowrap;
-	}
-	.btn-default {
-	    background-color: #fff;
-	    border-color: #ccc;
-	    color: #333;
-	}
-	.btn:hover, .btn:focus{
-		background-color: #999;
-	}
-	.btn:active {
-		background-color: #333;
-	}
+ .btn
+{
+	background: url(/static/img/tile2.jpg) black;
+	cursor: pointer;
+	color: white;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	-khtml-border-radius: 20px;
+	border-radius: 20px;
+	margin: 8px 2px 2px;
+	-moz-box-shadow: 3px 2px 2px black;
+	-webkit-box-shadow: 3px 2px 2px black;
+	box-shadow: 3px 2px 2px black;
+	border: 2px outset silver;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.42857;
+	padding: 3px 6px;
+}
+
+
+.btn:hover, .btn:focus
+{
+	background: url(/static/img/tile2.jpg) black;
+	cursor: pointer;
+	color: yellow;
+	margin: 8px 2px 2px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	-khtml-border-radius: 20 px;
+	border-radius: 20px;
+	-moz-box-shadow: 3px 2px 2px black;
+	-webkit-box-shadow: 3px 2px 2px black;
+	box-shadow: 3px 2px 2px black;
+	border: 2px outset silver;
+	text-shadow: 0 0 8px yellow;
+}
+
+
+
+.btn:active
+{
+	background: url(/static/img/tile2.jpg) black;
+	cursor: pointer;
+	color: silver;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	-khtml-border-radius: 20 px;
+	border-radius: 20px;
+	-moz-box-shadow: 3px 2px 2px transparent;
+	-webkit-box-shadow: 3px 2px 2px transparent;
+	box-shadow: 3px 2px 2px transparent;
+	border: 2px inset silver;
+}
+
 
 	#title-admin {
 	  width: 418px;
@@ -252,7 +280,7 @@ body {
 		-moz-box-shadow: 3px 2px 2px black;
 		-webkit-box-shadow: 3px 2px 2px black;
 		box-shadow: 3px 2px 2px black;
-		border: 1px outset silver;
+		border: 2px outset silver;
 	}
 	.track-button:HOVER {
 		background: url(/static/img/tile2.jpg) black;
@@ -268,7 +296,7 @@ body {
 		-moz-box-shadow: 3px 2px 2px black;
 		-webkit-box-shadow: 3px 2px 2px black;
 		box-shadow: 3px 2px 2px black;
-		border: 1px outset silver;
+		border: 2px outset silver;
 	}
 	.track-button:ACTIVE {
 		background: url(/static/img/tile2.jpg) black;
@@ -284,7 +312,7 @@ body {
 		-moz-box-shadow: 3px 2px 2px transparent;
 		-webkit-box-shadow: 3px 2px 2px transparent;
 		box-shadow: 3px 2px 2px transparent;
-		border: 1px inset silver;
+		border: 2px inset silver;
 	}
 	#title {
 		width: 620px;
