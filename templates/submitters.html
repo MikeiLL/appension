@@ -16,7 +16,7 @@
 	<input type="hidden" name="track_id" size="15" value="{{ submitter.submitted['track_id'] }}">
 	<tr><td><input type="text" id="username" name="username" size="15" value="{{ submitter.username }}"></td>
 	<td><input type="text" id="email" name="email" size="15" value="{{ submitter.email }}"></td>
-	<td><a href="manage/{{ submitter.submitted['track_id'] }}">{{ submitter.submitted['artist'] }}</a></td>
+	<td><a href="edit/{{ submitter.submitted['track_id'] }}">{{ submitter.submitted['artist'] }}</a></td>
 	
 	<td>{% if not submitter.submitted['lyrics'] %}
 			<span class="errors">Empty.</span>
