@@ -219,8 +219,8 @@
 					}
 				reset.innerHTML = 'Reset';
 				reset.className = 'btn btn-default';
-				document.getElementById("demo_player").appendChild(enter_track_details);
-				document.getElementById("demo_player").appendChild(reset);
+				document.getElementById("demo_player_controls").appendChild(enter_track_details);
+				document.getElementById("demo_player_controls").appendChild(reset);
 			}
 		};
 		xhr.send();
@@ -254,11 +254,13 @@
 	}
 	
 		function displaySubmissionForm(mp3Name){
+	  		document.getElementById('check_out').style.display = "none";
 			var mp3_file_data = document.createElement("INPUT");
 			mp3_file_data.type='HIDDEN';
 			mp3_file_data.name='mp3Name';
 			mp3_file_data.value=mp3Name;
 			document.getElementById('recorder_content').style.display = "none";
+			document.getElementById('demo_player_controls').style.display = "none";
 			document.getElementById('submission_form').style.display = "block";
 			document.getElementById('submit_track').appendChild(mp3_file_data);
 			}

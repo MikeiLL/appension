@@ -65,12 +65,14 @@
 
 						<p>Due to the magic of modern technology we can now record you right here in your browser. Glitch Studio does have some limitations at the moment, though. Here's how it works.</p>
 						<ul id="submit-points">
+						<li>The browser will ask you if the application can "borrow" one of your computer microphones.</li>
 						<li>There is a single "backing" track to sing along with. You'll hear it when you press record.</li>
 						<li>It only keeps the section from the first downbeat following the count-in until you press stop.</li>
 						<li>If you record without headphones, the "backing" track will be included in your "overdub" track, which will sound a bit ah... interesting.</li>
-						<li>When listening back to your "overdub", prior to uploading and combining with "backing" track, ignore the silence (or other noise) prior to where the click and count-in end.</li>
+						<li>When listening back to your "overdub", prior to uploading and combining with "backing" track, there will be a few seconds of silence (or other "room noise") which is just what was happening during the click and count-in. 
+						This time segment will not be included in the final track.</li>
 						</ul>
-						<div class="errors">(This will probably only work in Chrome version 3.2+ and recent versions of Firefox and Opera)</div><br>
+						<div class="errors">(This will probably only work in Chrome version 3.2+ and recent versions of Firefox)</div><br>
 						
 						
 						<div id="record_controls">
@@ -83,20 +85,23 @@
 						
 					<div id="overdub_player" style="display:none">
 					<h2>The Recording</h2>
-						<p>This is what you just recorded. Remember, ignore the silence (or other noise) prior to where the click and count-in end.</p>
+						<p>This is what you just recorded. Remember, ignore the silence (or other noise) which is just what was happening during the click and count-in.</p>
 						<ul id="recordingslist"></ul>
 						<a href='#' id="upload" class="btn btn-default">Upload</a> |
 						<a href='#' id="reset" class="btn btn-default">Reset</a>
 					</div>
 
-					<div id="audition_player" style="display:none">
-						Check out the combined track:
-						<ul id="demo_player"></ul>
-					</div>
 
 					<h2>Log</h2>
 					<pre id="log"></pre>
 				</div> <!-- End recorder-content -->
+				
+				<div id="audition_player" style="display:none;margin-top:1em">
+					<p id="check_out">Check out the combined track:</p>
+					<ul id="demo_player"></ul>
+					<ul id="demo_player_controls"></ul>
+				</div>
+				
 				<div id="submission_form" style="display:none">
 					<p></p>
 					<img width="212" border="0" height="38" alt="" src="static/img/submit-title.png">
