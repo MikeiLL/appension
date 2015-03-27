@@ -15,22 +15,38 @@
 	<h2> {{ notice }} </h2>
 {% end %}
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
-<tr><td>Sequence</td><td>ID</td><td>Artist</td><td>Filename</td><td>Track Length</td><td>status</td></tr>
+<tr>
+	<td>Sequence</td>
+	<td>ID</td>
+	<td>Artist</td>
+	<td>Track Length</td>
+	
+	<td>Status</td>
+	<td>Player</td>
+	<td>Lyrics</td>
+	<td>Story</td>
+	<td>Delete</td>
+</tr>
 {% for track in all_tracks %}
-	<tr><td><a name="track{{ track.id }}"><input type="text" name="{{ track.id }}" size="5" value="{{ track.track_details['sequence'] }}"/></a></td>
-	<td>{{ track.id }}</td><td>{{ track.track_details['artist'] }}</td>
-	<td>{{ track.filename }}</td><td>{{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</td>
+<tr>
+	<td><a name="track{{ track.id }}"><input type="text" name="{{ track.id }}" size="5" value="{{ track.track_details['sequence'] }}"/></a></td>
+	<td>{{ track.id }}</td>
+	<td style="width:300px;word-wrap: break-word;"><a href="/edit/{{ track.id }}" title="file: {{ track.filename }}">{{ track.track_details['artist'] }}</a></td>
+	<td>{{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</td>
+	
 	<td>{% if track.track_details['status'] == 1 %}Active{% else %}Inactive{% end %}</td>
 	<td>
 	<div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="/audio/{{ track.filename }}" type="audio/mpeg"></a></div>
-          
-    </td>
+        </td>
+        <td>{% if track.track_details['lyrics'] == '' %}<span class="errors">X</span>{% else %}Yes{% end %}</td>
+        <td>{% if track.track_details['story'] == '' %}<span class="errors">X</span>{% else %}Yes{% end %}</td>
 	<td><a href="/delete/{{ track.id }}" class="confirmation">delete</a></td>
-	<td><a href="/edit/{{ track.id }}">edit</a></td>
-	</tr>
-	<tr><td colspan="3">Crossfade: {{ track.track_details['xfade'] }}</td>
+</tr>
+<tr>
+	<td colspan="3">Crossfade: {{ track.track_details['xfade'] }}</td>
 	<td colspan="1">iTrim: {{ track.track_details['itrim'] }}</td>
-	<td colspan="6">oTrim: {{ track.track_details['otrim'] }} | <a href="manage/{{ track.id }}">manage transition</a></td></tr>
+	<td colspan="5">oTrim: {{ track.track_details['otrim'] }} | <a href="manage/{{ track.id }}">manage transition</a></td>
+</tr>
 {% end %}
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"/></td></tr>
 <tr><td colspan="10" align="right"><a href="rebuild_glitch">Generate Major Glitch Track</a></td></tr>
