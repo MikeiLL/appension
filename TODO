@@ -3,6 +3,7 @@
 	Display Recent Additions in Chunk Selector
 	Test glitch recording studio more
 	Submit & display images facility
+	Strategy for monitoring uptime & system outage
 	Explanation of couplet format on forms DONE
 	Explanation of couplet format on contribute page
 	Update link to download the instrumental: http://infiniteglitch.net/instrumentals/dgacousticlikMP3.mp3
@@ -13,6 +14,9 @@
 	Update Artist search alphabetization (remove "the" and address Last, First formatting)
 	Clean up and document code
 	HTML and CSS Validation
+	Update list of Open Source libraries used with links
+	Manage Logging - remove old debug logging
+	Go through recent emails and update TODO (how self-referential!)
 
 2/18/15
 	PSQL Back-Up DONE
