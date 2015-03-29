@@ -1,5 +1,5 @@
 3/28/15
-	PSQL Back-Up
+	PSQL Back-Up DONE
 	Display Recent Additions in Chunk Selector
 	Test glitch recording studio more
 	Submit & display images facility
@@ -18,15 +18,6 @@
 	Manage Logging - remove old debug logging
 	Go through recent emails and update TODO (how self-referential!)
 
-2/18/15
-	PSQL Back-Up DONE
-	Populate Front End Images and Players DONE
-	Have Scott Test Admin PARTIAL
-	MultiThread Audition DONE
-	Generate Single Track - multithread DONE
-	Implement 8-Ball DONE
-	Implement Keywords - with administration DONE
-	Implement Segment Browse/Search DONE
 
 REQUIREMENTS
         Add Navigation and Informational Pages (everything on current site)
