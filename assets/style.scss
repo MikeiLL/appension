@@ -174,7 +174,18 @@ background: url(/static/img/tile2.jpg) black;
 		color: red;
 		font-weight: 900;
 	}
-	#loading
+	
+p.infinite-aside {
+    background-color: silver;
+    border: 1px solid gray;
+    border-radius: 12px;
+    color: #000000;
+    padding: 10px;
+    text-align: justify;
+    width: 80%;
+}
+
+    #loading
     {
         display:none;
         position:fixed;
