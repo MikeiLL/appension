@@ -19,6 +19,7 @@ import copy
 import time
 import info
 import uuid
+import string
 import base64
 import random
 import wtforms
@@ -33,6 +34,7 @@ import tornado.template
 import tornadio2.server
 import multiprocessing
 from tornado import escape
+from collections import OrderedDict
 
 from daemon import Daemon
 from listeners import Listeners
@@ -701,12 +703,22 @@ class ChunkHandler(BaseHandler):
 		user_name = self.current_user or 'Glitcher'
 		letter = self.request.arguments['letters'][0]
 		artist_tracks = database.browse_tracks(letter)
+		artists_order = {}
+		for artist in artist_tracks:
+			if string.lower(artist[0][:4]) == 'the ':
+				artists_order[artist[0][4:]] = artist[0]
+			elif len(artist[0].split(',')) > 1:
+				the_artist = artist[0].split(',')
+				artists_order[the_artist[0]] = ' '.join([the_artist[1], the_artist[0]])
+			else:
+				artists_order[artist[0]] = artist[0]
+		ordered = OrderedDict(sorted(artists_order.items()))
 		og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
 		page_title="Browse Artists: Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
 		og_url=og_url=config.server_domain+"/choice_chunks"
 		self.write(templates.load("choice_chunks.html").generate(compiled=compiled, user_name=user_name, form=form,
-									artist_tracks=artist_tracks, og_description=og_description, 
+									artist_tracks=ordered, og_description=og_description, 
 									page_title=page_title, meta_description=meta_description,
 									og_url=og_url))
 		

@@ -19,15 +19,15 @@ If they have used their own lyrics, these will be displayed with the player, alo
 <form enctype="multipart/form-data" action="/choice_chunks" method="post">
 <table class="secondary">
 
-<tr><td width="200px">Browse Artists: <select name="letters">
+<tr><td>Browse Artists: <select name="letters">
 						{% for letter in string.uppercase[:26] %}
 							<option value="{{ letter }}">{{ letter }}</option>
 						{% end %}
 					</select></tr>
 <tr><td align="right"><input type="submit" value="Browse" /></td></tr>
 {% if not artist_tracks == "" %}
-	{% for track in artist_tracks %}
-	<tr><td><a href="/view_artist/{{ url_escape(track[0]) }}">{{ track[0] }}</a></td></tr>
+	{% for key, track in artist_tracks.iteritems() %}
+	<tr><td><a href="/view_artist/{{ url_escape(track) }}">{{ track }}</a></td></tr>
 	{% end %}
 {% end %}
 </table>
