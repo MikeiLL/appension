@@ -6,7 +6,7 @@
 	Strategy for monitoring uptime & system outage
 	Explanation of couplet format on forms DONE
 	Explanation of couplet format on contribute page
-	Update link to download the instrumental: http://infiniteglitch.net/instrumentals/dgacousticlikMP3.mp3
+	Update link to download the instrumental DONE
 	Short prompt or two for the Story field (how'd you hear about? What was hard about? etc)
 	Fix Set Transitions Process
 	Set a “release” date
@@ -16,12 +16,13 @@
 	HTML and CSS Validation
 	Update list of Open Source libraries used with links
 	Manage Logging - remove old debug logging
-	Go through recent emails and update TODO (how self-referential!)
+	Go through recent emails and update TODO (how self-referential!) DONE
 	Automate database backup?
-	Update the copyright date.
+	Update the copyright date. DONE
 	Forgot password feature
 	Configure and generate MajorGlitch Track
-
+	Add home page url for each user
+	Finalize and implement text/info/players structure
 
 REQUIREMENTS
         Add Navigation and Informational Pages (everything on current site)
