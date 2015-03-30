@@ -378,7 +378,21 @@ background: url(/static/img/tile2.jpg) black;
 		-moz-box-shadow: 2px 3px 4px #514949;
 		-webkit-box-shadow: 2px 3px 4px #514949;
 		box-shadow: 2px 3px 4px #514949;
-	}
+	} 
+P.infinite-intro
+{
+	width: 400px;
+	color: #000000;
+	text-align: justify;
+	border: 1px solid gray;
+	padding: 10px;
+	/*+border-radius: 12px;*/
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	-khtml-border-radius: 12px;
+	border-radius: 12px;
+	background-color: silver;
+}
 	.lyric_credits {
 		color: #015656;
 		margin-left: 0px;
