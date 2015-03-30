@@ -48,6 +48,18 @@ P.intro-copy
 	max-width: 95%;
 }
 
+p.infinite-aside {
+	    background-color: silver;
+	    border: 1px solid gray;
+	    border-radius: 12px;
+	    color: #000000;
+	    font-size: 12px;
+	    padding: 10px;
+	    text-align: justify;
+	    width: 80%;
+	}
+
+
 
 	@media all and (min-width: 40em){
 		p.floatRight
