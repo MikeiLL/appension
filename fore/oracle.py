@@ -42,6 +42,9 @@ class Couplet(object):
 	def __init__(self, artist, couplet):
 		couplet = couplet[:1].upper() + couplet[1:]
 		couplet = couplet.splitlines(True)
+		if len(artist.split(',')) > 1:
+			an_artist = artist.split(',')
+			artist = ' '.join([an_artist[1], an_artist[0]])
 		self.couplet = {
 					'artist': artist,
 					'couplet': couplet
