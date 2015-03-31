@@ -19,6 +19,7 @@
 <tr><td><h3>{{ track.track_details['artist'] }}</h3></td></tr>
 <tr><td><h2>Lyrics</h2></td></tr>
 <tr><td>{% if len(track.track_details['lyrics']) > 0 %}
+<img src="/artwork/{{ track.id }}.jpg" class="track_art" style="float:right">
 		{% for line in track.track_details['lyrics'].splitlines() %}
 			{{ line }} <br/>
 		{% end %}</td></tr>
