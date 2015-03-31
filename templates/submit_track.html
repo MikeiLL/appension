@@ -7,17 +7,23 @@
 <form enctype="multipart/form-data" action="/submit" method="post">
 
 <table class="secondary">
+
 <tr><td>Artist Name: </td><td>{{ form.artist }} (used if missing from mp3 data)</td></tr>
+{% if form.artist.errors %}
+		<tr><td> 
+        <ul class="errors">{% for error in form.artist.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
+		</td></tr>
+    {% end %}
 <tr><td colspan="2"><p class="infinite-aside">For proper names like Marvin Gaye and Janice Joplin, please enter as: Last, First.
 Also consider format like Costello, Elvis and the Attractions</p></td></tr>
 <tr><td>Track Title: </td><td>{{ form.track_title }} (used if missing from mp3 data)</td></tr>
 <tr><td colspan="2">MP3 File: {{ form.mp3_file }}</td></tr>
-	{% if form.artist.errors %}
+	{% if form.mp3_file.errors %}
 		<tr><td colspan=2> 
-        <ul class="errors">{% for error in form.artist.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
+        <ul class="errors">{% for error in form.mp3_file.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
 		</td></tr>
     {% end %}
-
+<tr><td colspan="2">Image: {{ form.track_image }}</td></tr>
 <tr><td colspan="2">Story behind the track:<br/> {{ form.story(rows=10,cols=60) }}</td></tr>
 <tr><td colspan="2">Lyrics:  (in couplet form if possible - two lines, space and so on)<br/>{{ form.lyrics(rows=10,cols=60,placeholder="Sometimes you can fix...                               Elaborate on bla bla bla...") }}</textarea></td></tr>
 <tr><td colspan="2">Comments: <br/>{{ form.comments(rows=10,cols=60)}}</td></tr>

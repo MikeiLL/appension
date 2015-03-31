@@ -260,12 +260,13 @@ class EasyForm(Form):
 	
 class SubmissionForm(Form):
 	artist = wtforms.TextField('artist', validators=[wtforms.validators.DataRequired()])
-	track_title = wtforms.TextField('track_title', validators=[wtforms.validators.DataRequired()])
-	mp3_file = wtforms.FileField(u'mp3_file', validators=[wtforms.validators.DataRequired(), MpegFile])
+	track_title = wtforms.TextField('track_title', validators=[])
+	mp3_file = wtforms.FileField(u'mp3_file', validators=[MpegFile])
 	story = wtforms.TextAreaField('story', validators=[])
 	lyrics = wtforms.TextAreaField('lyrics', validators=[])
 	comments = wtforms.TextAreaField('comments', validators=[])
 	track_source = wtforms.HiddenField('track_source', validators=[])
+	track_image = wtforms.FileField(u'track_image', validators=[]) #wtforms.validators.regexp(u'^[^/\\]\.jpg$')])
 
 @route("/submit")
 class Submissionform(BaseHandler):
@@ -287,11 +288,18 @@ class Submissionform(BaseHandler):
 		page_title="Glitch Track Submission."
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
-		form = SubmissionForm(self.request.arguments)
+		
 		if self.request.arguments['track_source'] == ['user_form']:
+			form = SubmissionForm(self.request.arguments)
+			form.mp3_file.raw_data = self.request.files['mp3_file']
 			if form.validate():
-					form.mp3_file.raw_data = self.request.files['mp3_file']
+					print(5555555)
 					fileinfo = self.request.files['mp3_file'][0]
+					form.track_image.raw_data = self.request.files['track_image']
+					track_image_fileinfo = self.request.files['track_image'][0]
+					print(12345)
+					print(track_image_fileinfo)
+					print(len(self.request.files['track_image']))
 					body = fileinfo['body']
 					filename = fileinfo['filename']
 					for f in self.request.arguments:
@@ -305,11 +313,13 @@ class Submissionform(BaseHandler):
 													meta_description=meta_description, og_url=config.server_domain,
 													og_description=og_description))
 			else:
+				print(11111111,"badddd")
 				self.write(templates.load("submit_track.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
 												meta_description=meta_description, og_url=config.server_domain,
 												og_description=og_description))
 
 		else:
+			#Do this if track is already in browser memory from Glitch Studio
 			#Delete MP3 field w/o validator because file is already on the server
 			form.__delitem__('mp3_file')
 			filename = self.request.arguments['mp3Name'][0]
