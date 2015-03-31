@@ -44,10 +44,12 @@ class Couplet(object):
 		couplet = couplet.splitlines(True)
 		if len(artist.split(',')) > 1:
 			an_artist = artist.split(',')
-			artist = ' '.join([an_artist[1], an_artist[0]])
+			artist_formatted = ' '.join([an_artist[1], an_artist[0]])
+		else: artist_formatted = artist
 		self.couplet = {
 					'artist': artist,
-					'couplet': couplet
+					'couplet': couplet,
+					'artist_formatted': artist_formatted
 					}
 		
 def get_word_list(question):

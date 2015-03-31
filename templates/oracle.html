@@ -25,7 +25,7 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 					<div class="glitch_answer">{{ answer.couplet['couplet'][0] }}<br/>
 						{% if not answer.couplet['artist'] == "The Glitch Oracle" %}
 						{{ answer.couplet['couplet'][1] }}.<br/>
-						<p>-<a href="/view_artist/{{ url_escape(answer.couplet['artist']) }}">{{ answer.couplet['artist'] }}</a></p>
+						<p>-<a href="/view_artist/{{ url_escape(answer.couplet['artist']) }}">{{ answer.couplet['artist_formatted'] }}</a></p>
 						{% else %}
 						<p>-{{ answer.couplet['artist'] }}</p>
 						<br style="clear:both"/>
