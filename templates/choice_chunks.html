@@ -20,8 +20,8 @@ If they have used their own lyrics, these will be displayed with the player, alo
 <table class="secondary">
 
 <tr><td>Browse Artists: <select name="letters">
-						{% for letter in string.uppercase[:26] %}
-							<option value="{{ letter }}">{{ letter }}</option>
+						{% for selected_letter in string.uppercase[:26] %}
+							<option value="{{ selected_letter }}" {% if letter == selected_letter %} SELECTED {% end %}>{{ selected_letter }}</option>
 						{% end %}
 					</select></tr>
 <tr><td><p class="infinite-aside">We'll show up to 20 at a time so may return more than just letter searched.</p></td></tr>

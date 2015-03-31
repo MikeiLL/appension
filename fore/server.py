@@ -694,7 +694,7 @@ class ChunkHandler(BaseHandler):
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
 		og_url=og_url=config.server_domain+"/choice_chunks"
 		self.write(templates.load("choice_chunks.html").generate(compiled=compiled, user_name=user_name, form=form,
-									artist_tracks="", og_description=og_description, 
+									artist_tracks="", letter = '', og_description=og_description, 
 									page_title=page_title, meta_description=meta_description,
 									og_url=og_url))
 		
@@ -720,7 +720,7 @@ class ChunkHandler(BaseHandler):
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
 		og_url=og_url=config.server_domain+"/choice_chunks"
 		self.write(templates.load("choice_chunks.html").generate(compiled=compiled, user_name=user_name, form=form,
-									artist_tracks=ordered, og_description=og_description, 
+									artist_tracks=ordered, letter=letter, og_description=og_description, 
 									page_title=page_title, meta_description=meta_description,
 									og_url=og_url))
 		
