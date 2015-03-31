@@ -28,7 +28,11 @@ If they have used their own lyrics, these will be displayed with the player, alo
 <tr><td align="right"><input type="submit" value="Browse" /></td></tr>
 {% if not artist_tracks == "" %}
 	{% for key, track in artist_tracks.iteritems() %}
-	<tr><td><a href="/view_artist/{{ url_escape(track) }}">{{ track }}</a></td></tr>
+		{% if track[0] == '' %}
+		<tr><td><a href="/view_artist/{{ url_escape(track[1]) }}">{{ track[1] }}</a></td></tr>
+		{% else %}
+		<tr><td><a href="/view_artist/{{ url_escape(', '.join(track)) }}">{{ track[1] }} {{ track[0] }}</a></td></tr>
+		{% end %}
 	{% end %}
 {% end %}
 </table>

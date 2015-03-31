@@ -28,7 +28,11 @@ class Track(object):
 				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords):
 		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
 																	length, status, story, comments, xfade, itrim, otrim)
-
+                if len(artist.split(',')) > 1:
+                        the_artist = artist.split(',')
+                        artist_exact = artist
+                        artist = ' '.join([the_artist[1], the_artist[0]])
+                else: artist_exact = artist
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
@@ -36,6 +40,7 @@ class Track(object):
 		self.track_details = {
 			'id': id,
 			'artist': artist,
+			'artist_exact': artist_exact,
 			'title': title,
 			'length': length,
 			'status': status,

@@ -7,7 +7,7 @@
 <table border="1" width="800px" cellpadding="5">
 	<tr><td>id</td><td>Artist</td><td>Filename</td><td>Length</td><td>Status</td><td>Play</td></tr>
 	<tr><td>{{ track.id }}</td><td>
-	<input type="text" name="artist" value="{{ track.track_details['artist'] }}"></td>
+	<input type="text" name="artist" value="{{ track.track_details['artist_exact'] }}"></td>
 	<td>{{ track.filename }}</td><td>{{ track.track_details['length'] }}</td>
 	<td>
 		<select name=status>
