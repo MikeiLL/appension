@@ -706,14 +706,14 @@ class ChunkHandler(BaseHandler):
 		artists_order = {}
 		for artist in artist_tracks:
 			if string.lower(artist[0][:4]) == 'the ':
-				artists_order[artist[0][4:]] = ('', artist[0])
+				artists_order[artist[0][4:].upper()] = ('', artist[0])
 			elif len(artist[0].split(',')) > 1:
 				# if artist contains a comma, split into Last, First
 				the_artist = artist[0].split(',')
 				the_artist[1] = the_artist[1].lstrip()
-				artists_order[the_artist[0]] = the_artist
+				artists_order[the_artist[0].upper()] = the_artist
 			else:
-				artists_order[artist[0]] = ('', artist[0])
+				artists_order[artist[0].upper()] = ('', artist[0])
 		ordered = OrderedDict(sorted(artists_order.items()))
 		og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
 		page_title="Browse Artists: Infinite Glitch - the world's longest pop song, by Chris Butler."
