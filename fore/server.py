@@ -293,7 +293,6 @@ class Submissionform(BaseHandler):
 			form = SubmissionForm(self.request.arguments)
 			form.mp3_file.raw_data = self.request.files['mp3_file']
 			if form.validate():
-					print(5555555)
 					fileinfo = self.request.files['mp3_file'][0]
 					try:
 						form.track_image.raw_data = self.request.files['track_image']
@@ -452,6 +451,7 @@ class ShowLyrics(BaseHandler):
 
 @route("/gmin")
 class AdminRender(BaseHandler):
+	@authenticated
 	def get(self):
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
@@ -463,7 +463,13 @@ class AdminRender(BaseHandler):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		track_id=int(self.request.arguments['id'][0])
-		database.update_track(track_id, self.request.arguments)
+		print(self.request.arguments)
+		print(1234554321)
+		try:
+			artwork = self.request.files['artwork'][0]['body']
+		except KeyError:
+			artwork = None
+		database.update_track(track_id, self.request.arguments, artwork)
 		self.write(admin_page(user_name, updated=track_id))
 
 @route("/submitters")

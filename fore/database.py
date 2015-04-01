@@ -226,7 +226,6 @@ def create_track(mp3data, filename, imagefile, info, user_name):
 		if imagefile:
 		        pic = imagefile
 		else:
-		        print(track)
 		        pic=next((k for k in track if k.startswith("APIC:")), None)
 		        pic = pic and track[pic].data
                         
@@ -235,8 +234,6 @@ def create_track(mp3data, filename, imagefile, info, user_name):
 		except KeyError: artist = info.get("artist",[""])[0] or u'(unknown artist)'
 		try: title = u', '.join(track['TIT2'].text)
 		except KeyError: title = info.get("track_title",[""])[0] or u'(unknown title)'
-		print(4444)
-		print(pic)
 		cur.execute("UPDATE tracks SET artist=%s, title=%s, filename=%s, artwork=%s, length=%s WHERE id=%s",
 			(artist,
 			title,
@@ -257,15 +254,19 @@ def reset_played():
     with _conn, _conn.cursor() as cur:
         cur.execute("UPDATE tracks SET played = 0")
 
-def update_track(id, info):
+def update_track(id, info, artwork):
 	"""Update the given track ID based on the info mapping.
 
 	This breaks encapsulation just as create_track() does."""
 	with _conn, _conn.cursor() as cur:
 		# Enumerate all updateable fields. If they're not provided, they won't be updated;
 		# any other fields will be ignored. This is basically set intersection on a dict.
-		fields = ("artist", "status", "lyrics", "story", "xfade", "otrim", "itrim", "keywords")
+		fields = ("artist", "status", "lyrics", "story", "xfade", "otrim", "itrim", "keywords", "artwork")
 		param = {k:info[k][0] for k in fields if k in info}
+		if not artwork == None:
+		        param['artwork'] = memoryview(artwork)
+		for k,v in param.iteritems():
+		        print("{}: {}".format(k, len(v)))
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
 		
 def sequence_tracks(sequence_object):
