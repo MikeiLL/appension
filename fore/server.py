@@ -255,9 +255,9 @@ def MpegFile(form, field):
 def ImageFile(form, field):
 	try:
 		filename = field.raw_data[0].filename
+		ext = os.path.splitext(filename)[1]
 		if not ext.lower() in [".jpg", ".png", ".bmp", ".gif", ".jpeg"]:
 			raise ValidationError(" must be an image file with extension .png, .gif, .jpg or .bmp.")
-		ext = os.path.splitext(filename)[1]
 		if not len(field.raw_data[0].body) < 500000:
 			raise ValidationError(" should be less than 500kb (1/2 a megabyte), please.")
 	except AttributeError:
