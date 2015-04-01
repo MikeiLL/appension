@@ -243,14 +243,18 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 
 
 def MpegFile(form, field):
-	filename = field.raw_data[0].filename
-	#if file.size > 10*1024*1024:
-		#raise ValidationError("Audio file too large ( > 10mb )")
-	if not field.raw_data[0].content_type in ["audio/mpeg"]:
-		raise ValidationError(" must be an audio/mpeg file.")
-	ext = os.path.splitext(filename)[1]
-	if not ext.lower() in [".mp3"]:
-		raise ValidationError(" must be an audio/mpeg file with extension .mp3.")
+	try:
+		filename = field.raw_data[0].filename
+		#if file.size > 10*1024*1024:
+			#raise ValidationError("Audio file too large ( > 10mb )")
+		if not field.raw_data[0].content_type in ["audio/mpeg"]:
+			raise ValidationError(" must be an audio/mpeg file.")
+		ext = os.path.splitext(filename)[1]
+		if not ext.lower() in [".mp3"]:
+			raise ValidationError(" must be an audio/mpeg file with extension .mp3.")
+	
+	except AttributeError:
+		raise ValidationError(" We need a valid mp3 file to create a track submission.")
 		
 def ImageFile(form, field):
 	try:
@@ -270,7 +274,7 @@ class EasyForm(Form):
 class SubmissionForm(Form):
 	artist = wtforms.TextField('artist', validators=[wtforms.validators.DataRequired()])
 	track_title = wtforms.TextField('track_title', validators=[])
-	mp3_file = wtforms.FileField(u'mp3_file', validators=[wtforms.validators.DataRequired(), MpegFile])
+	mp3_file = wtforms.FileField(u'mp3_file', validators=[MpegFile])
 	story = wtforms.TextAreaField('story', validators=[])
 	lyrics = wtforms.TextAreaField('lyrics', validators=[])
 	comments = wtforms.TextAreaField('comments', validators=[])
