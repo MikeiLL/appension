@@ -394,8 +394,19 @@ def create_user(username, email, password, hex_key):
 					
 def confirm_user(id, hex_key):
     with _conn, _conn.cursor() as cur:
-        cur.execute("UPDATE users SET status = 1, hex_key = '' WHERE id = %s AND hex_key = %s RETURNING username", (id, hex_key))
-        return cur.fetchone()[0]
+        cur.execute("UPDATE users SET status = 1, hex_key = '' WHERE id = %s AND hex_key = %s RETURNING username, email", (id, hex_key))
+        try:
+                return cur.fetchone()[0]
+        except TypeError:
+                return [None, None]
+                
+def test_reset_permissions(id, hex_key):
+    with _conn, _conn.cursor() as cur:
+        cur.execute("SELECT id, username, email FROM users WHERE id = %s AND hex_key = %s", (id, hex_key))
+        try:
+                return cur.fetchone()
+        except TypeError:
+                return [None, None]
 
 def set_user_password(user_or_email, password):
 	"""Change a user's password (administratively) - returns None on success, or error message"""
@@ -441,9 +452,16 @@ def get_user_info(id):
 		row = cur.fetchone()
 		return row or (None, 0)
 
-def reset_user_password(email, hex_key):
+def hex_user_password(email, hex_key):
         """Return username and id that matches email."""
 	with _conn, _conn.cursor() as cur:
 		cur.execute("UPDATE users set hex_key = %s WHERE email=%s RETURNING username, id", (hex_key, email))
 		row = cur.fetchone()
 		return row or (None, 0)
+
+def reset_user_password(id, hex_key, password):
+    with _conn, _conn.cursor() as cur:
+        salt = os.urandom(16)
+        hash = hashlib.sha256(salt+password).hexdigest()
+        pwd = salt.encode("hex")+"-"+hash
+        cur.execute("update users set password=%s, hex_key='' where id=%s and hex_key=%s", (pwd, id, hex_key))

@@ -739,6 +739,10 @@ class UserForm(Form):
 	confirm = wtforms.PasswordField('Repeat Password')
 	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email()])
 	accept_checkbox = wtforms.BooleanField('Confirm', [wtforms.validators.Required()])
+	
+class LoginForm(Form):
+	password = wtforms.PasswordField('Password', [wtforms.validators.DataRequired()])
+	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email()])
 		
 class CreateUser(UserForm):
 	user_name = wtforms.TextField('user_name', validators=[wtforms.validators.Length(min=4, max=25), wtforms.validators.DataRequired()], default=u'Your Name')
@@ -747,12 +751,17 @@ class CreateUser(UserForm):
 	
 class ResetRequestForm(UserForm):
 	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email(), UserNotInDatabase])
+	
+class ResetPasswordForm(UserForm):
+	email = wtforms.HiddenField('email', validators=[])
 
 @route("/confirm/([0-9]+)/([A-Fa-f0-9]+)")
 class ConfirmAccount(tornado.web.RequestHandler):
 	def get(self, id, hex_string):
 		form = CreateUser()
-		user_name = database.confirm_user(id, hex_string)
+		user_name = database.confirm_user(id, hex_string)[0]
+		if user_name == None:
+			self.write("That link is no longer valid. Please try your procedure again and get a new link.")
 		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		signup_confirmed = "Sign-up confirmed. Login with email and password."
@@ -822,17 +831,14 @@ class ResetPassword(tornado.web.RequestHandler):
 		form.__delitem__('confirm')
 		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
-		log.info(1111)
 		if form.validate():
 			info = self.request.arguments
 			user_email = info.get("email",[""])[0]
 			hex_key = random_hex()
-			username, id = database.reset_user_password(user_email, hex_key)
+			# set hex key for user and get user details
+			username, id = database.hex_user_password(user_email, hex_key)
 			user_name = username
 			log.info("user info: %r %r", username, id)
-			details = 'Account request submitted for %s. <br/>'%(user_email);
-			log.warning("New User looks like %r", username)
-			details += 'Please check your email to confirm.<br/>'
 			admin_message = "Password requested for %s at %s."%(user_name, user_email)
 			mailer.AlertMessage(admin_message, 'Password Reset')
 			confirmation_url = ("%s://%s/new_password/%s/%s" %
@@ -858,14 +864,33 @@ To confirm for %s at %s, please visit %s"""%(user_name, user_email, confirmation
 @route("/new_password/([0-9]+)/([A-Fa-f0-9]+)")
 class NewPassword(tornado.web.RequestHandler):
 	def get(self, id, hex_string):
-		user_name = database.confirm_user(id, hex_string)
-		current_user = database.set_user_password(submitter_email, self.get_argument('password'))
-		log.info(current_user)
+		id, username, email = database.test_reset_permissions(id, hex_string)
+		form=ResetPasswordForm()
+		if email == None:
+			self.write("That link is no longer valid. Please try your procedure again and get a new link.")
+			return
 		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
-		reset_confirmed = "Password reset. Login with email and password."
-		self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name=user_name, notice=reset_confirmed,
-								next="/", page_title="Reset Password Login", og_url=config.server_domain,
+		self.write(templates.load("new_password.html").generate(compiled=compiled, form=form, user_name='Glitch Resetter', email=email, notice='',
+								hex_key=hex_string, id=id, next="/", page_title="Create New Password ", og_url=config.server_domain,
+								meta_description=meta_description,
+								og_description=og_description))
+								
+	def post(self, id, hex_string):
+		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
+		form=LoginForm(self.request.arguments)
+		id, username, email = database.test_reset_permissions(id, hex_string)
+		if form.validate():
+			password = self.request.arguments['password'][0]
+			database.reset_user_password(id, hex_string, password)
+			self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name='Glitch Resetter', email=email, notice='Success! Login with your new password.',
+								hex_key=hex_string, id=id, next="/", page_title="Create New Password ", og_url=config.server_domain,
+								meta_description=meta_description,
+								og_description=og_description))
+		else:
+			self.write(templates.load("new_password.html").generate(compiled=compiled, form=form, user_name='Glitch Resetter', email=email, notice='',
+								hex_key=hex_string, id=id, next="/", page_title="Create New Password ", og_url=config.server_domain,
 								meta_description=meta_description,
 								og_description=og_description))
 
@@ -925,7 +950,7 @@ class Outreach(BaseHandler):
 @route("/login")
 class Login(BaseHandler):
 	def get(self):
-		form = UserForm()
+		form = LoginForm()
 		errormessage = self.get_argument("error", "")
 		username = self.get_current_user()
 		
@@ -942,7 +967,7 @@ class Login(BaseHandler):
 							og_description=og_description ))
 		
 	def post(self):
-		form = UserForm(self.request.arguments)
+		form = LoginForm(self.request.arguments)
 		
 		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
@@ -961,8 +986,9 @@ class Login(BaseHandler):
 										notice=notice, user_name=self.current_user, page_title="Login Error", og_url=config.server_domain,
 										meta_description=meta_description, og_description=og_description ))
 		else:
-			self.set_status(400)
-			self.write(form.errors)
+			self.write(templates.load("login.html").generate(compiled=compiled, form=form, next=self.get_argument('next', "/"),
+										notice='', user_name=self.current_user, page_title="Login Error", og_url=config.server_domain,
+										meta_description=meta_description, og_description=og_description ))
 
 @route("/logout")
 class Logout(BaseHandler):
