@@ -267,7 +267,7 @@ class CreateUser(UserForm):
 		wtforms.validators.EqualTo('confirm', message='Passwords must match')
 	])
 	confirm = wtforms.PasswordField('Repeat Password')
-	accept_tos = wtforms.BooleanField('I accept the TOS', [wtforms.validators.Required()])
+	accept_checkbox = wtforms.BooleanField('I accept the TOS', [wtforms.validators.Required()])
 	
 	
 class CreateAccount(tornado.web.RequestHandler):

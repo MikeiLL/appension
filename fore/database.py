@@ -409,6 +409,18 @@ def set_user_password(user_or_email, password):
 		rows=cur.fetchall()
 		if len(rows)!=1: return "There is already an account for that email."
 		cur.execute("update users set password=%s where id=%s", (pwd, rows[0][0]))
+		
+def check_db_for_user(user_or_email):
+	"""Change a user's password (administratively) - returns None on success, or error message"""
+	user_or_email = user_or_email.lower()
+	if not isinstance(password, bytes): password=password.encode("utf-8")
+	with _conn, _conn.cursor() as cur:
+		salt = os.urandom(16)
+		hash = hashlib.sha256(salt+password).hexdigest()
+		pwd = salt.encode("hex")+"-"+hash
+		cur.execute("SELECT id FROM users WHERE username=%s OR email=%s AND status=1", (user_or_email, user_or_email))
+		rows=cur.fetchall()
+		if len(rows)!=1: return "There is already an account for that email."
 
 def verify_user(user_or_email, password):
 	"""Verify a user name/email and password, returns the ID if valid or None if not"""
@@ -428,5 +440,12 @@ def get_user_info(id):
 	"""Return the user name and permissions level for a given UID, or (None,0) if not logged in"""
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT username, user_level FROM users WHERE id=%s", (id,))
+		row = cur.fetchone()
+		return row or (None, 0)
+
+def reset_user_password(email, hex_key):
+        """Return username and id that matches email."""
+	with _conn, _conn.cursor() as cur:
+		cur.execute("UPDATE users set hex_key = %s WHERE email=%s RETURNING username, id", (hex_key, email))
 		row = cur.fetchone()
 		return row or (None, 0)

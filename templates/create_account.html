@@ -36,10 +36,10 @@ Ideally, use <a href="http://xkcd.com/936/">four common words</a> for your passw
 <p>If this happens, I will do my best to get you a cue sheet so if there is any dough generated, you get it. To that end, you must include some info about yourself, personal web page URL &amp;/or contact info with your submission or it can't be used. You also grant me the right to use this info in the project, but I will not give or sell your info to any third party, so don't get all nutzparanoid about this. Also, you warrant that your submission does not violate the rights of any third party.</p>
 
 
-{{ form.accept_tos }} I agree with the legal stuff
+{{ form.accept_checkbox }} I agree with the legal stuff
 
-	{% if form.accept_tos.errors %}
-        <ul class="errors">{% for error in form.accept_tos.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
+	{% if form.accept_checkbox.errors %}
+        <ul class="errors">{% for error in form.accept_checkbox.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
     {% end %}
 	
 	</td></tr>

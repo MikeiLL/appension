@@ -722,11 +722,7 @@ class ChunkHandler(BaseHandler):
 									og_url=og_url))
 		
 def NotInDatabase(form, field):
-	from pprint import pprint
-	pprint(field.__dict__)
-	response = database.set_user_password(field.raw_data[0], 'xxx')
-	log.info(response)
-	log.info(12345432123454321)
+	response = database.check_db_for_user(field.raw_data[0])
 	if response == "There is already an account for that email.":
 		raise ValidationError(response + " Need to reset your password? There's a link on the login page.")
 
@@ -737,11 +733,12 @@ class UserForm(Form):
 	])
 	confirm = wtforms.PasswordField('Repeat Password')
 	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email()])
+	accept_checkbox = wtforms.BooleanField('Confirm', [wtforms.validators.Required()])
 		
 class CreateUser(UserForm):
 	user_name = wtforms.TextField('user_name', validators=[wtforms.validators.Length(min=4, max=25), wtforms.validators.DataRequired()], default=u'Your Name')
 	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email(), NotInDatabase])
-	accept_tos = wtforms.BooleanField('I accept the TOS', [wtforms.validators.Required()])
+	accept_checkbox = wtforms.BooleanField('I accept the TOS', [wtforms.validators.Required()])
 
 @route("/confirm/([0-9]+)/([A-Fa-f0-9]+)")
 class ConfirmAccount(tornado.web.RequestHandler):
@@ -796,9 +793,74 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 											og_description=og_description))
 		else:
 			self.write(templates.load("create_account.html").generate(compiled=compiled, form=form, user_name="new glitcher", 
-																		page_title="Glitch Account Sign-Up", og_url=config.server_domain,
-																		meta_description=meta_description,
-																		og_description=og_description))
+										page_title="Glitch Account Sign-Up", og_url=config.server_domain,
+										meta_description=meta_description,
+										og_description=og_description))
+										
+@route("/reset_password")
+class CreateAccount(tornado.web.RequestHandler):
+	def get(self):
+		form = UserForm()
+		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
+		self.write(templates.load("reset_password.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice='', 
+									page_title="Reset Password Request", og_url=config.server_domain,
+									meta_description=meta_description,
+									og_description=og_description))
+		
+	def post(self):
+		form = UserForm(self.request.arguments)
+		form.__delitem__('password')
+		form.__delitem__('confirm')
+		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
+		log.info(1111)
+		if form.validate():
+			info = self.request.arguments
+			user_email = info.get("email",[""])[0]
+			hex_key = random_hex()
+			username, id = database.reset_user_password(user_email, hex_key)
+			user_name = username
+			log.info("user info: %r %r", username, id)
+			details = 'Account request submitted for %s. <br/>'%(user_email);
+			log.warning("New User looks like %r", username)
+			details += 'Please check your email to confirm.<br/>'
+			admin_message = "Password requested for %s at %s."%(user_name, user_email)
+			mailer.AlertMessage(admin_message, 'Password Reset')
+			confirmation_url = ("%s://%s/new_password/%s/%s" %
+				  (self.request.protocol,
+				  self.request.host, str(id), str(hex_key)))
+			log.info(confirmation_url)
+			notice = "Password reset link sent. Please check your email."
+			user_message = """Either you or someoe else requested a password reset for InfiniteGlitch.net. \n \r
+To confirm for %s at %s, please visit %s"""%(user_name, user_email, confirmation_url)
+			mailer.AlertMessage(user_message, 'Infinite Glitch Password Reset Request', you=user_email)
+			notice = "Password reset link sent. Please check your email."
+			self.write(templates.load("reset_password.html").generate(compiled=compiled, user_name="Glitcher", notice=notice,
+											page_title="Glitch Password Reset", form=form,
+											og_url=config.server_domain,
+											meta_description=meta_description,
+											og_description=og_description))
+		else:
+			self.write(templates.load("reset_password.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice='',
+										page_title="Glitch Password Reset", og_url=config.server_domain,
+										meta_description=meta_description,
+										og_description=og_description))
+
+@route("/new_password/([0-9]+)/([A-Fa-f0-9]+)")
+class NewPassword(tornado.web.RequestHandler):
+	def get(self, id, hex_string):
+		user_name = database.confirm_user(id, hex_string)
+		current_user = database.set_user_password(submitter_email, self.get_argument('password'))
+		log.info(current_user)
+		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
+		reset_confirmed = "Password reset. Login with email and password."
+		self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name=user_name, notice=reset_confirmed,
+								next="/", page_title="Reset Password Login", og_url=config.server_domain,
+								meta_description=meta_description,
+								og_description=og_description))
+
 
 class OutreachForm(Form):
 	message = wtforms.TextField('email', validators=[wtforms.validators.DataRequired()])
