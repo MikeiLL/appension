@@ -721,10 +721,15 @@ class ChunkHandler(BaseHandler):
 									page_title=page_title, meta_description=meta_description,
 									og_url=og_url))
 		
-def NotInDatabase(form, field):
+def UserInDatabase(form, field):
 	response = database.check_db_for_user(field.raw_data[0])
 	if response == "There is already an account for that email.":
 		raise ValidationError(response + " Need to reset your password? There's a link on the login page.")
+		
+def UserNotInDatabase(form, field):
+	response = database.check_db_for_user(field.raw_data[0])
+	if response == "No account found.":
+		raise ValidationError(response + " Try a different email or just make a new account.")
 
 class UserForm(Form):
 	password = wtforms.PasswordField('New Password', [
@@ -737,8 +742,11 @@ class UserForm(Form):
 		
 class CreateUser(UserForm):
 	user_name = wtforms.TextField('user_name', validators=[wtforms.validators.Length(min=4, max=25), wtforms.validators.DataRequired()], default=u'Your Name')
-	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email(), NotInDatabase])
+	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email(), UserInDatabase])
 	accept_checkbox = wtforms.BooleanField('I accept the TOS', [wtforms.validators.Required()])
+	
+class ResetRequestForm(UserForm):
+	email = wtforms.TextField('email', validators=[wtforms.validators.DataRequired(), wtforms.validators.Email(), UserNotInDatabase])
 
 @route("/confirm/([0-9]+)/([A-Fa-f0-9]+)")
 class ConfirmAccount(tornado.web.RequestHandler):
@@ -798,9 +806,9 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 										og_description=og_description))
 										
 @route("/reset_password")
-class CreateAccount(tornado.web.RequestHandler):
+class ResetPassword(tornado.web.RequestHandler):
 	def get(self):
-		form = UserForm()
+		form = ResetRequestForm()
 		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		self.write(templates.load("reset_password.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice='', 
@@ -809,7 +817,7 @@ class CreateAccount(tornado.web.RequestHandler):
 									og_description=og_description))
 		
 	def post(self):
-		form = UserForm(self.request.arguments)
+		form = ResetRequestForm(self.request.arguments)
 		form.__delitem__('password')
 		form.__delitem__('confirm')
 		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."

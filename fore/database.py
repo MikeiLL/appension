@@ -413,14 +413,12 @@ def set_user_password(user_or_email, password):
 def check_db_for_user(user_or_email):
 	"""Change a user's password (administratively) - returns None on success, or error message"""
 	user_or_email = user_or_email.lower()
-	if not isinstance(password, bytes): password=password.encode("utf-8")
 	with _conn, _conn.cursor() as cur:
-		salt = os.urandom(16)
-		hash = hashlib.sha256(salt+password).hexdigest()
-		pwd = salt.encode("hex")+"-"+hash
-		cur.execute("SELECT id FROM users WHERE username=%s OR email=%s AND status=1", (user_or_email, user_or_email))
+		cur.execute("SELECT id, status FROM users WHERE username=%s OR email=%s", (user_or_email, user_or_email))
 		rows=cur.fetchall()
-		if len(rows)!=1: return "There is already an account for that email."
+		print(rows)
+		if not len(rows)>=1: return "No account found."
+		else: return "There is already an account for that email."
 
 def verify_user(user_or_email, password):
 	"""Verify a user name/email and password, returns the ID if valid or None if not"""
