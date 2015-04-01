@@ -32,11 +32,6 @@ def combine_tracks(track1, track2, remove=0):
     
 	
 def format_track(track, itrim=0, otrim=0, fadeout=5):
-    print(track.analysis.duration)
-    print(77777)
-    print(otrim)
-    print(8888)
-    print(track.analysis.duration - otrim)
     playback = pb(track, itrim, track.analysis.duration - otrim)
     fade = fo(track, track.analysis.duration - otrim, fadeout)
     return [playback, fade]
