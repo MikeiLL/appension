@@ -253,12 +253,15 @@ def MpegFile(form, field):
 		raise ValidationError(" must be an audio/mpeg file with extension .mp3.")
 		
 def ImageFile(form, field):
-	filename = field.raw_data[0].filename
-	if not ext.lower() in [".jpg", ".png", ".bmp", ".gif", ".jpeg"]:
-		raise ValidationError(" must be an image file with extension .png, .gif, .jpg or .bmp.")
-	ext = os.path.splitext(filename)[1]
-	if not len(field.raw_data[0].body) < 500000:
-		raise ValidationError(" should be less than 500kb (1/2 a megabyte), please.")
+	try:
+		filename = field.raw_data[0].filename
+		if not ext.lower() in [".jpg", ".png", ".bmp", ".gif", ".jpeg"]:
+			raise ValidationError(" must be an image file with extension .png, .gif, .jpg or .bmp.")
+		ext = os.path.splitext(filename)[1]
+		if not len(field.raw_data[0].body) < 500000:
+			raise ValidationError(" should be less than 500kb (1/2 a megabyte), please.")
+	except AttributeError:
+		pass
 		
 class EasyForm(Form):
 	submitter_name = wtforms.TextField('submitter_name', validators=[wtforms.validators.DataRequired()], default=u'Your Name')
@@ -302,7 +305,8 @@ class Submissionform(BaseHandler):
 		try:
 			form.track_image.raw_data = self.request.files['track_image']
 		except KeyError: 
-			form.__delitem__('track_image')
+			pass
+			
 		if self.request.arguments['track_source'] == ['user_form']:
 			if form.validate():
 					fileinfo = self.request.files['mp3_file'][0]
