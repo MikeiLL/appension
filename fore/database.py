@@ -407,7 +407,7 @@ def set_user_password(user_or_email, password):
 		pwd = salt.encode("hex")+"-"+hash
 		cur.execute("SELECT id FROM users WHERE username=%s OR email=%s AND status=1", (user_or_email, user_or_email))
 		rows=cur.fetchall()
-		if len(rows)!=1: return "This works only if the user/email provided is unique."
+		if len(rows)!=1: return "There is already an account for that email."
 		cur.execute("update users set password=%s where id=%s", (pwd, rows[0][0]))
 
 def verify_user(user_or_email, password):

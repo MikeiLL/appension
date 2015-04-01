@@ -15,6 +15,11 @@
 		</td></tr>
     {% end %}
 <tr><td>Email: </td><td>{{ form.email }}</td></tr>
+	{% if form.email.errors %}
+		<tr><td colspan=2> 
+        <ul class="errors">{% for error in form.email.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
+		</td></tr>
+    {% end %}
 <tr><td>Password: </td><td>{{ form.password }} </td></tr>
 <tr><td colspan="2"><p>(At least eight characters, please.
 Ideally, use <a href="http://xkcd.com/936/">four common words</a> for your password.)</p></td></tr>
