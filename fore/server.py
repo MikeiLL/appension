@@ -243,8 +243,6 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 
 
 def MpegFile(form, field):
-	from pprint import pprint
-	#pprint(field.__dict__)
 	filename = field.raw_data[0].filename
 	#if file.size > 10*1024*1024:
 		#raise ValidationError("Audio file too large ( > 10mb )")
@@ -254,6 +252,14 @@ def MpegFile(form, field):
 	if not ext.lower() in [".mp3"]:
 		raise ValidationError(" must be an audio/mpeg file with extension .mp3.")
 		
+def ImageFile(form, field):
+	filename = field.raw_data[0].filename
+	if not ext.lower() in [".jpg", ".png", ".bmp", ".gif", ".jpeg"]:
+		raise ValidationError(" must be an image file with extension .png, .gif, .jpg or .bmp.")
+	ext = os.path.splitext(filename)[1]
+	if not len(field.raw_data[0].body) < 500000:
+		raise ValidationError(" should be less than 500kb (1/2 a megabyte), please.")
+		
 class EasyForm(Form):
 	submitter_name = wtforms.TextField('submitter_name', validators=[wtforms.validators.DataRequired()], default=u'Your Name')
 	email = wtforms.TextField('email', validators=[wtforms.validators.Email(), wtforms.validators.DataRequired()])
@@ -261,12 +267,12 @@ class EasyForm(Form):
 class SubmissionForm(Form):
 	artist = wtforms.TextField('artist', validators=[wtforms.validators.DataRequired()])
 	track_title = wtforms.TextField('track_title', validators=[])
-	mp3_file = wtforms.FileField(u'mp3_file', validators=[MpegFile])
+	mp3_file = wtforms.FileField(u'mp3_file', validators=[wtforms.validators.DataRequired(), MpegFile])
 	story = wtforms.TextAreaField('story', validators=[])
 	lyrics = wtforms.TextAreaField('lyrics', validators=[])
 	comments = wtforms.TextAreaField('comments', validators=[])
 	track_source = wtforms.HiddenField('track_source', validators=[])
-	track_image = wtforms.FileField(u'track_image', validators=[]) #wtforms.validators.regexp(u'^[^/\\]\.jpg$')])
+	track_image = wtforms.FileField(u'track_image', validators=[ImageFile])
 
 @route("/submit")
 class Submissionform(BaseHandler):
@@ -288,14 +294,19 @@ class Submissionform(BaseHandler):
 		page_title="Glitch Track Submission."
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
-		
-		if self.request.arguments['track_source'] == ['user_form']:
-			form = SubmissionForm(self.request.arguments)
+		form = SubmissionForm(self.request.arguments)
+		try:
 			form.mp3_file.raw_data = self.request.files['mp3_file']
+		except KeyError: 
+			pass
+		try:
+			form.track_image.raw_data = self.request.files['track_image']
+		except KeyError: 
+			form.__delitem__('track_image')
+		if self.request.arguments['track_source'] == ['user_form']:
 			if form.validate():
 					fileinfo = self.request.files['mp3_file'][0]
 					try:
-						form.track_image.raw_data = self.request.files['track_image']
 						track_image_file = self.request.files['track_image'][0]['body']
 					except KeyError:
 						track_image_file = 0
@@ -305,14 +316,13 @@ class Submissionform(BaseHandler):
 						details += "<hr/>" + self.get_argument(f, default=None, strip=False)
 					#self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
 					database.create_track(body, filename, track_image_file, self.request.arguments, user_name)
-					info = self.request.arguments
 					message = "A new file, %s had been submitted by %s."%(filename, user_name)
 					mailer.AlertMessage(message, 'New Track Submission')
 					self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
 													meta_description=meta_description, og_url=config.server_domain,
 													og_description=og_description))
 			else:
-				print(11111111,"badddd")
+				log.info("Failed Form Submission.")
 				self.write(templates.load("submit_track.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
 												meta_description=meta_description, og_url=config.server_domain,
 												og_description=og_description))
@@ -325,9 +335,11 @@ class Submissionform(BaseHandler):
 			with open("audition_audio/"+filename,"rb") as f: body = f.read()
 			for f in self.request.arguments:
 				details += "<hr/>" + self.get_argument(f, default=None, strip=False)
-			#self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
-			database.create_track(body, filename, self.request.arguments, user_name)
-			info = self.request.arguments
+			try:
+				track_image_file = self.request.files['track_image'][0]['body']
+			except KeyError:
+				track_image_file = 0
+			database.create_track(body, filename, track_image_file, self.request.arguments, user_name)
 			message = "A new Glitch Studio Track, %s had been submitted by %s."%(filename, user_name)
 			mailer.AlertMessage(message, 'New Glitch Studio Track Submission')
 			self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
