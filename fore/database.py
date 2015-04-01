@@ -203,7 +203,7 @@ def get_track_artwork(id):
 		row = cur.fetchone()
 		return row and row[0]
 
-def create_track(mp3data, filename, info, user_name):
+def create_track(mp3data, filename, imagefile, info, user_name):
 	"""Save a blob of MP3 data to the specified file and registers it in the database.
 
 	Note that this function breaks encapsulation horribly. The third argument is
@@ -223,14 +223,20 @@ def create_track(mp3data, filename, info, user_name):
 		filename = "audio/%d %s"%(id, filename)
 		with open(filename, "wb") as f: f.write(mp3data)
 		track = MP3(filename)
-		pic=next((k for k in track if k.startswith("APIC:")), None)
-		pic = pic and track[pic].data
-		if pic: print("length of pic: {}".format(len(pic)))
+		if imagefile:
+		        pic = imagefile
+		else:
+		        print(track)
+		        pic=next((k for k in track if k.startswith("APIC:")), None)
+		        pic = pic and track[pic].data
+                        
 		# Note: These need to fold absent and blank both to the given string.
 		try: artist = u', '.join(track['TPE1'].text)
 		except KeyError: artist = info.get("artist",[""])[0] or u'(unknown artist)'
 		try: title = u', '.join(track['TIT2'].text)
 		except KeyError: title = info.get("track_title",[""])[0] or u'(unknown title)'
+		print(4444)
+		print(pic)
 		cur.execute("UPDATE tracks SET artist=%s, title=%s, filename=%s, artwork=%s, length=%s WHERE id=%s",
 			(artist,
 			title,

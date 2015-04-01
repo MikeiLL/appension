@@ -295,17 +295,17 @@ class Submissionform(BaseHandler):
 			if form.validate():
 					print(5555555)
 					fileinfo = self.request.files['mp3_file'][0]
-					form.track_image.raw_data = self.request.files['track_image']
-					track_image_fileinfo = self.request.files['track_image'][0]
-					print(12345)
-					print(track_image_fileinfo)
-					print(len(self.request.files['track_image']))
+					try:
+						form.track_image.raw_data = self.request.files['track_image']
+						track_image_file = self.request.files['track_image'][0]['body']
+					except KeyError:
+						track_image_file = 0
 					body = fileinfo['body']
 					filename = fileinfo['filename']
 					for f in self.request.arguments:
 						details += "<hr/>" + self.get_argument(f, default=None, strip=False)
 					#self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
-					database.create_track(body, filename, self.request.arguments, user_name)
+					database.create_track(body, filename, track_image_file, self.request.arguments, user_name)
 					info = self.request.arguments
 					message = "A new file, %s had been submitted by %s."%(filename, user_name)
 					mailer.AlertMessage(message, 'New Track Submission')
@@ -560,7 +560,9 @@ class TrackArtwork(tornado.web.RequestHandler):
 		art = database.get_track_artwork(int(id))
 		# TODO: If the track hasn't been approved yet, return 404 unless the user is an admin.
 		if art is None:
-			self.send_error(404)
+			self.redirect('../static/img/cd.gif')
+		if len(art) is 0:
+			self.redirect('../static/img/cd.gif')
 		else:
 			self.set_header("Content-Type","image/jpeg")
 			self.write(str(art))
