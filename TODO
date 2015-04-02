@@ -24,6 +24,7 @@
 	Add home page url for each user
 	Finalize and implement text/info/players structure
 	Can facebook text in Oracle include question and answer?
+	Disable REWIND in main player.
 
 REQUIREMENTS
         Add Navigation and Informational Pages (everything on current site)

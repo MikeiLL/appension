@@ -234,7 +234,6 @@ $(document).ready ->
 	getTrackInfo = ->
 		$.getJSON "/all.json", (segments) ->
 			#console.log("getTrackInfo")
-			#console.log(segments)
 			trackids = []
 			for segment in segments
 				if segment.tracks?
@@ -265,7 +264,7 @@ $(document).ready ->
 							#TODO do this using .split and join
 							story = story.replace(/\r?\n|\r+|\r/g, "<br/>");
 						else
-							story = "This one is still a mystery. Please let us know if you can solve."
+							story = "The story behind this track is still a mystery. Please let us know if you can solve."
 						minutes = Math.floor(length/60)
 						seconds = Math.floor(length%60)
 						if seconds < 10
@@ -280,7 +279,6 @@ $(document).ready ->
 							document.getElementById('story'+tag).innerHTML = story
 							document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
 				# console.log(segment.tracks[0].metadata)
-				# console.log(segment.tracks[0].metadata.id)
 			# Sorry, subsequent maintainer, more bad code here. -- Rosuav
 			tag = trackids.length
 			while 1
@@ -288,8 +286,8 @@ $(document).ready ->
 				artist = document.getElementById('artist'+tag)
 				if artist
 					artist.innerHTML = ""
-					document.getElementById('length'+tag).innerHTML = "Loading..."
-					document.getElementById('story'+tag).innerHTML = "We're still loading info for that track, sit tight! :)"
+					document.getElementById('length'+tag).innerHTML = "Chunk digging..."
+					document.getElementById('story'+tag).innerHTML = "Still digging around in the chunk selector, dear. Sit tight! :)"
 				else
 					break
 	setTimeout getTrackInfo, 1000
