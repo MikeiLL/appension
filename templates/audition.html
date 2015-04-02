@@ -40,7 +40,11 @@
 	
 	<a href="/manage/{{ track.id }}">Cancel/Reset</a> 	&nbsp; <input type="submit" value="Set Transition Parameters"> 
 	</form>
-
+<script type="text/javascript"
+			  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
+<script type="text/javascript" src='{{ compiled(
+			  'spin.min.js'
+			  ) }}'></script>
 <script type="text/javascript">
 	function probe(url) {
 		console.log("Probing "+url+"...");
@@ -57,7 +61,25 @@
 		};
 		xhr.send();
 	}
+	my_spinner()
 	probe("../transition_audio/{{ trackfn }}");
+	
+	function my_spinner() {
+			jQuery("#loading").fadeIn();
+			var opts = {
+				lines: 12, // The number of lines to draw
+				length: 7, // The length of each line
+				width: 4, // The line thickness
+				radius: 10, // The radius of the inner circle
+				color: '#000', // #rgb or #rrggbb
+				speed: 1, // Rounds per second
+				trail: 60, // Afterglow percentage
+				shadow: false, // Whether to render a shadow
+				hwaccel: false // Whether to use hardware acceleration
+			};
+			var target = document.getElementById('loading');
+			var spinner = new Spinner(opts).spin(target);
+		}
 </script>
 
 {% end %}
