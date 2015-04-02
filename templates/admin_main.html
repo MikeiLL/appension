@@ -67,8 +67,38 @@
 				<script type="text/javascript">
 				jQuery.noConflict();
 				jQuery( document ).ready(function( $ ) {
-					$(function () {
-						$("#submitbtn").click(function () {
+					$('form').on('submit', function(e) {
+						e.preventDefault();
+
+						// cache the current form so you make sure to only have data from this one
+						var form = this,
+						    $form = $(form);
+						    
+						$.ajax({
+						    url: form.action,
+						    type: form.method,
+						    data: $form.serialize(),
+						    audition_file: 'http://infiniteglitch.net/transition_audio/transition.mp3',
+						    success: function(data, audition_file) {
+							if (fileModified(audition_file) == 'true')
+							{
+							    $form.attr('action', '/audition').off('submit').submit();
+							}
+							else
+							{	
+							    my_spinner();
+							    setTimeout(function(){
+							    	return fileModified
+							    	}, 1000, audition_file);
+							}
+						    },
+						    error: function() {
+							alert('There has been an error, please alert us immediately');
+						    }
+						});
+					});
+
+					var my_spinner = function () {
 							$("#loading").fadeIn();
 							var opts = {
 								lines: 12, // The number of lines to draw
@@ -83,9 +113,23 @@
 							};
 							var target = document.getElementById('loading');
 							var spinner = new Spinner(opts).spin(target);
-						});
+						}
+					
+					function fileModified(url){
+						var now = $.now()
+						xhr.open('HEAD', url, true); // use HEAD - we only need the headers
+						xhr.onreadystatechange = function() {
+						    if (xhr.readyState === 4 && xhr.status === 200) {
+						      var mtime = new Date(xhr.getResponseHeader('Last-Modified'));
+						      if (mtime.toString() === 'Invalid Date') {
+							return false;
+						      } else {
+							return now <= mtime;
+						      }
+						    }
+						  }
+						}
 					});
-				});	
 				</script>	
 		{% end %}
 	</div>
