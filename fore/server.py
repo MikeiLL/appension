@@ -577,8 +577,8 @@ class ConfirmTransition(BaseHandler):
 		next_track_id = self.request.arguments.pop('next_track_id')[0]
 		in_track_data['itrim'] = self.request.arguments.pop('itrim')
 		out_track_id = self.request.arguments.pop('track_id')[0]
-		database.update_track(out_track_id, self.request.arguments)
-		database.update_track(next_track_id, in_track_data)
+		database.update_track(out_track_id, self.request.arguments, artwork=None)
+		database.update_track(next_track_id, in_track_data, artwork=None)
 		self.write(admin_page(user_name, notice="Transition Settings Adjusted"))
 
 @route("/artwork/([0-9]+).jpg")
