@@ -587,9 +587,9 @@ class TrackArtwork(tornado.web.RequestHandler):
 		art = database.get_track_artwork(int(id))
 		# TODO: If the track hasn't been approved yet, return 404 unless the user is an admin.
 		if art is None:
-			self.redirect('../static/img/cd.gif')
+			self.redirect('../static/img/Default-artwork-200.png')
 		if len(art) is 0:
-			self.redirect('../static/img/cd.gif')
+			self.redirect('../static/img/Default-artwork-200.png')
 		else:
 			self.set_header("Content-Type","image/jpeg")
 			self.write(str(art))
