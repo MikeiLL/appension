@@ -16,16 +16,27 @@ from action import Playback as pb
 from action import render, audition_render
 from Queue import Queue
 import os
+import time
 
 log = logging.getLogger(__name__)
 
 LOUDNESS_THRESH = -8
 
-def audition(files, xfade=0, otrim=0, itrim=0, user_name="transition"):
+def audition(files, xfade=0, otrim=0, itrim=0, dest="transition.mp3"):
     filenames = ['audio/' + filename.encode("UTF-8") for filename in files]
     tracks = [LocalAudioStream(file) for file in filenames]
     transition = managed_transition(tracks[0], tracks[1], xfade=xfade, otrim=otrim, itrim=itrim)
-    audition_render(transition, 'transition_audio/transition.mp3')
+    audition_render(transition, 'transition_audio/'+dest)
+    # Once we're done rendering, and still on a background thread,
+    # clean out the transition_audio directory of files that are more
+    # than a week old. We could use st_atime instead of st_mtime, but
+    # not all file systems reliably record atimes, and the chances
+    # that someone is actively using a transition file for a week are
+    # sufficiently low that we can say "don't do that then".
+    now = time.time()
+    for fn in os.listdir("transition_audio"):
+        if now-os.stat("transition_audio/"+fn).st_mtime > 604800:
+            os.remove("transition_audio/"+fn)
 
 def last_viable(track):
     """Return end time of last audible segment"""
