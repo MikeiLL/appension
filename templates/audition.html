@@ -24,7 +24,7 @@
 	{{ next_track.track_details['sequence'] }}
 	<table><tr>
 	<td><img src="/artwork/{{ track.id }}.jpg" class="track_art"></td>
-	<td><div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../transition_audio/transition.mp3" type="audio/mpeg"></a></td>
+	<td><div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../transition_audio/{{ trackfn }}" type="audio/mpeg"></a></td>
 	<td><img src="/artwork/{{ next_track.id }}.jpg" class="track_art"></td></table>
 	
 	<a href="/manage/{{ track.id }}">Cancel/Reset</a> 	&nbsp; <input type="submit" value="Set Transition Parameters"> 

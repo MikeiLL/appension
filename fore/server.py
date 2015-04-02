@@ -541,12 +541,13 @@ class AuditionTransition(BaseHandler):
 		next_track_itrim=int(self.request.arguments['next_track_itrim'][0])
 		track2_id=int(self.request.arguments['next_track_id'][0])
 		pair_o_tracks = database.get_track_filename(track1_id), database.get_track_filename(track2_id)
+		fn = os.urandom(4).encode("hex")+".mp3" # Give us a nice simple eight-character random hex file name
 		import audition
-		threading.Thread(target=audition.audition, args=(pair_o_tracks,track_xfade, track_otrim, next_track_itrim)).start()
+		threading.Thread(target=audition.audition, args=(pair_o_tracks,track_xfade, track_otrim, next_track_itrim, fn)).start()
 		self.write(templates.load("audition.html").generate(
 			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
 			next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,
-			track_otrim=track_otrim, next_track_itrim=next_track_itrim))
+			track_otrim=track_otrim, next_track_itrim=next_track_itrim, trackfn=fn))
 
 @route("/rebuild_glitch")
 class RenderGlitch(BaseHandler):
