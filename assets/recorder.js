@@ -194,7 +194,7 @@
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState != 4) return;
 			if (xhr.status == 404) {
-				setTimeout(probe, 1000, url);
+				setTimeout(probe, 1000, url, mp3Name);
 				log.innerHTML += " .";
 			} else {
 				var au2 = document.createElement('audio');

@@ -24,10 +24,62 @@
 	{{ next_track.track_details['sequence'] }}
 	<table><tr>
 	<td><img src="/artwork/{{ track.id }}.jpg" class="track_art"></td>
-	<td><div class="ui360" style="margin-top:-0.55em"><a id="endpoint_link" href="../transition_audio/transition.mp3" type="audio/mpeg"></a></td>
+	<td>
+		<!-- Spinner - visible only until the file exists -->
+			<div id="loading">
+				<div id="loadingcontent">
+					<p id="loadingspinner">
+						Making Transition...
+					</p>
+				</div>
+			</div>
+		<!-- Player - hidden until the file exists -->
+		<div id="player" class="ui360" style="margin-top:-0.55em; display:none"><a id="endpoint_link" href="../transition_audio/{{ trackfn }}" type="audio/mpeg"></a></div>
+	</td>
 	<td><img src="/artwork/{{ next_track.id }}.jpg" class="track_art"></td></table>
 	
 	<a href="/manage/{{ track.id }}">Cancel/Reset</a> 	&nbsp; <input type="submit" value="Set Transition Parameters"> 
 	</form>
+<script type="text/javascript"
+			  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
+<script type="text/javascript" src='{{ compiled(
+			  'spin.min.js'
+			  ) }}'></script>
+<script type="text/javascript">
+	function probe(url) {
+		console.log("Probing "+url+"...");
+		var xhr = new XMLHttpRequest();
+		xhr.open("HEAD", url);
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState != 4) return;
+			if (xhr.status == 404) {
+				setTimeout(probe, 1000, url);
+				return;
+			}
+			document.getElementById("loading").style.display = "none";
+			document.getElementById("player").style.display = "block";
+		};
+		xhr.send();
+	}
+	my_spinner()
+	probe("../transition_audio/{{ trackfn }}");
 	
+	function my_spinner() {
+			jQuery("#loading").fadeIn();
+			var opts = {
+				lines: 12, // The number of lines to draw
+				length: 7, // The length of each line
+				width: 4, // The line thickness
+				radius: 10, // The radius of the inner circle
+				color: '#000', // #rgb or #rrggbb
+				speed: 1, // Rounds per second
+				trail: 60, // Afterglow percentage
+				shadow: false, // Whether to render a shadow
+				hwaccel: false // Whether to use hardware acceleration
+			};
+			var target = document.getElementById('loading');
+			var spinner = new Spinner(opts).spin(target);
+		}
+</script>
+
 {% end %}
