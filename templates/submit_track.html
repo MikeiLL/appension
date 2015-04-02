@@ -23,7 +23,7 @@ Also consider format like Costello, Elvis and the Attractions</p></td></tr>
         <ul class="errors">{% for error in form.mp3_file.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
 		</td></tr>
     {% end %}
-<tr><td colspan="2">Thumbnail Image (up to 500kb): {{ form.track_image }}</td></tr>
+<tr><td colspan="2">Artist Image (up to 500kb) - will be displayed at 200 x 200 px: {{ form.track_image }}</td></tr>
 {% if form.track_image.errors %}
 		<tr><td colspan=2> 
         <ul class="errors">{% for error in form.track_image.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
