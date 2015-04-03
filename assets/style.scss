@@ -130,10 +130,9 @@ background: url(/static/img/tile2.jpg) black;
 }
 
 .grid LI.wide A:visited {
-    color: #fff;
-    margin: 0;
+	color: #800080;
+	margin: 0;
 }
-
 	#title-admin {
 	  width: 418px;
 	  height: 104px;
@@ -225,19 +224,17 @@ background: url(/static/img/tile2.jpg) black;
 	}
 	
 	.track_art {
-		max-width:200px;
-		max-height: 200px
-		margin: 8px;
-		
-		-webkit-border-radius: 10px;
-		-moz-border-radius: 10px;
-		-khtml-border-radius: 10px;
-		border-radius: 10px;
-		
-		-moz-box-shadow: 3px 4px 6px #272626 !important;
-		-webkit-box-shadow: 3px 4px 6px #272626 !important;
-		box-shadow: 3px 4px 6px #272626 !important;
-	}
+	max-width: 200px;
+	max-height: 200px;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	-khtml-border-radius: 12px;
+	border-radius: 12px;
+	-moz-box-shadow: 3px 4px 6px #272626 !important;
+	-webkit-box-shadow: 3px 4px 6px #272626 !important;
+	box-shadow: 3px 4px 6px #272626 !important;
+	margin: 0 12px 0 26px;
+}
 
 	/*! HTML5 Boilerplate v4.3.0 | MIT License | http://h5bp.com/ */
 /*
@@ -313,53 +310,50 @@ background: url(/static/img/tile2.jpg) black;
 	}
 
 	.track-button {
-		background: url(/static/img/tile2.jpg) black;
-		cursor: pointer;
-		color: white;
-		/*+border-radius: 10px;*/
-		-moz-border-radius: 10px;
-		-webkit-border-radius: 10px;
-		-khtml-border-radius: 10px;
-		border-radius: 10px;
-		margin: 8px 2px 2px;
-		/*+box-shadow: 3px 2px 2px black;*/
-		-moz-box-shadow: 3px 2px 2px black;
-		-webkit-box-shadow: 3px 2px 2px black;
-		box-shadow: 3px 2px 2px black;
-		border: 2px outset silver;
-	}
+	background: url(/static/img/tile2.jpg) black;
+	cursor: pointer;
+	color: white;
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	-khtml-border-radius: 12px;
+	border-radius: 12px;
+	margin: 17px 2px -6px;
+	-moz-box-shadow: 3px 2px 2px black;
+	-webkit-box-shadow: 3px 2px 2px black;
+	box-shadow: 3px 2px 2px black;
+	border: 2px outset silver;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
 	.track-button:HOVER {
-		background: url(/static/img/tile2.jpg) black;
-		cursor: pointer;
-		color: #EBEB9D;
-		/*+border-radius: 10px;*/
-		-moz-border-radius: 10px;
-		-webkit-border-radius: 10px;
-		-khtml-border-radius: 10px;
-		border-radius: 10px;
-		margin: 8px 2px 2px;
-		/*+box-shadow: 3px 2px 2px black;*/
-		-moz-box-shadow: 3px 2px 2px black;
-		-webkit-box-shadow: 3px 2px 2px black;
-		box-shadow: 3px 2px 2px black;
-		border: 2px outset silver;
-	}
+	background: url(/static/img/tile2.jpg) black;
+	cursor: pointer;
+	color: #EBEB9D;
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	-khtml-border-radius: 12px;
+	border-radius: 12px;
+	margin: 17px 2px -6px;
+	-moz-box-shadow: 3px 2px 2px black;
+	-webkit-box-shadow: 3px 2px 2px black;
+	box-shadow: 3px 2px 2px black;
+	border: 2px outset silver;
+}
+
 	.track-button:ACTIVE {
-		background: url(/static/img/tile2.jpg) black;
-		cursor: pointer;
-		color: silver;
-		/*+border-radius: 10px;*/
-		-moz-border-radius: 10px;
-		-webkit-border-radius: 10px;
-		-khtml-border-radius: 10px;
-		border-radius: 10px;
-		margin: 9px 2px 1px 4px;
-		/*+box-shadow: 3px 2px 2px transparent;*/
-		-moz-box-shadow: 3px 2px 2px transparent;
-		-webkit-box-shadow: 3px 2px 2px transparent;
-		box-shadow: 3px 2px 2px transparent;
-		border: 2px inset silver;
-	}
+	background: url(/static/img/tile2.jpg) black;
+	cursor: pointer;
+	color: silver;
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	-khtml-border-radius: 12px;
+	border-radius: 12px;
+	margin: 17px 2px -7px 4px;
+	-moz-box-shadow: 3px 2px 2px transparent;
+	-webkit-box-shadow: 3px 2px 2px transparent;
+	box-shadow: 3px 2px 2px transparent;
+	border: 2px inset silver;
+}
 	#title {
 		width: 620px;
 		height: 168px;
