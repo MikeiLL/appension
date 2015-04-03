@@ -40,7 +40,7 @@
 	<tr><td colspan="6">Track URL: <input type="text" name="url" size="60" value="{{ track.track_details['url'] }}" placeholder="http://"> 
 	{% if check_url == 'Valid' %} 
 			<em><font color="blue">Link checks good.</font></em>
-	{% else %}
+	{% elif check_url == 'Invalid' %}
 			<em><font color="red">Link appears to be broken.</font></em>
 	{% end %}
 	</td></tr>
