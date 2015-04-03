@@ -8,7 +8,6 @@
 }
 
 .accordion__title {
-  padding: 0 1em;
   background: url(../img/tile3.jpg) #CCC;
   border-top: 1px solid #C0C0C0;
   color: #222;
@@ -21,7 +20,9 @@
   -moz-border-radius: 12px;
   -webkit-border-radius: 12px;
   -khtml-border-radius: 12px;
-  border-radius: 12px;
+  border-radius: 12px; 
+  padding: 0 .4em;
+  font-size: 14px;
 }
 
 .no-js .accordion__title {
@@ -35,7 +36,7 @@
 .accordion__content {
   float: right;
   width: 100%;
-  margin: 3em 0 0 -100%;
+  margin: 2.6em 0 0 -100%;
   padding: 2em;
   background: url(../img/tile.jpg) transparent;
   /*+border-radius: 0px 8px 12px 12px;*/
@@ -115,12 +116,12 @@
   
 }
 
-@media (max-width: 65em) {
-  .accordion__title {
-	  padding: 0 .4em;
-	  font-size: 14px;
+@media (min-width: 65em) {
+  .accordion__title { 
+  	  padding: 0 1em;
+	  font-size: 18px;
   }
   .accordion__content{
-  	margin: 2.6em 0 0 -100%;
+  	margin: 3em 0 0 -100%;
   }
 }
