@@ -241,15 +241,13 @@ class LocalAudioStream(AudioStream):
 		if not hasattr(initializer, 'seek'):
 			fobj.close()
 		track_md5 = md5.hexdigest()
+                log.info("Fetching analysis...")
                 try:
-                        log.info("Fetching analysis...")
-                        try:
-                                tempanalysis = AudioAnalysis(str(track_md5))
-                        except EchoNestAPIError:
-                                tempanalysis = AudioAnalysis(initializer, kind)
+                        tempanalysis = AudioAnalysis(str(track_md5))
+                except EchoNestAPIError:
+                        tempanalysis = AudioAnalysis(initializer, kind)
 
-                        log.info("Fetched analysis in %ss", time.time() - start)
-                finally:
+                log.info("Fetched analysis in %ss", time.time() - start)
 		self.analysis = tempanalysis
 		self.analysis.source = weakref.ref(self)
 

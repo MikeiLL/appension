@@ -259,6 +259,11 @@ $(document).ready ->
 						trackids.push(id)
 						tag = trackids.length
 						length = segment.tracks[0].metadata.length
+						if segment.tracks[0].metadata.url.length == 0
+							track_url = ''
+						else
+							track_url = '<a href="http://'+segment.tracks[0].metadata.url+'" target="_blank">'+segment.tracks[0].metadata.url+'</a>'
+
 						if segment.tracks[0].metadata.story
 							story = segment.tracks[0].metadata.story
 							#TODO do this using .split and join
@@ -276,7 +281,7 @@ $(document).ready ->
 							# Assume that every artistN has corresponding other stash-targets lengthN
 							# and (eventually) titleN.
 							artist.innerHTML = segment.tracks[0].metadata.artist
-							document.getElementById('story'+tag).innerHTML = story
+							document.getElementById('story'+tag).innerHTML = story + '<div class="track_url">' + track_url + '</div>'
 							document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
 				# console.log(segment.tracks[0].metadata)
 			# Sorry, subsequent maintainer, more bad code here. -- Rosuav
