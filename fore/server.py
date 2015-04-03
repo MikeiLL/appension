@@ -483,12 +483,15 @@ class AdminRender(BaseHandler):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		track_id=int(self.request.arguments['id'][0])
-		print(self.request.arguments)
-		print(1234554321)
 		try:
 			artwork = self.request.files['artwork'][0]['body']
 		except KeyError:
 			artwork = None
+		self.request.arguments['url'][0] = self.request.arguments['url'][0].lower()
+		if self.request.arguments['url'][0][:8] == 'https://':
+			self.request.arguments['url'][0] = self.request.arguments['url'][0][8:]
+		elif self.request.arguments['url'][0][:7 ] =='http://':
+			self.request.arguments['url'][0] = self.request.arguments['url'][0][7:]
 		database.update_track(track_id, self.request.arguments, artwork)
 		self.write(admin_page(user_name, updated=track_id))
 
@@ -1007,6 +1010,7 @@ class GetInstrumental(BaseHandler):
 	    self.set_header ('Content-Type', 'audio/mpeg')
 	    self.set_header ('Content-Disposition', 'attachment; filename=devilGlitchAcousticInstrumental.mp3')
 	    self.write (ifile.read())
+	    self.finish()
 
 if __name__ == "__main__":
 	Daemon()

@@ -23,11 +23,11 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 class Track(object):
 	# Select these from the tracks table to construct a track object.
-	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords"
+	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords,url"
 	def __init__(self, id, filename, artist, title, length, status, 
-				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords):
+				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords, url):
 		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
-																	length, status, story, comments, xfade, itrim, otrim)
+											length, status, story, comments, xfade, itrim, otrim)
                 if len(artist.split(',')) > 1:
                         the_artist = artist.split(',')
                         artist_exact = artist
@@ -51,6 +51,7 @@ class Track(object):
 			'otrim': otrim,
 			'comments': comments,
 			'sequence': sequence,
+			'url': url,
 		}
 		self.full_track_details = {
 			'status': status,
@@ -261,7 +262,7 @@ def update_track(id, info, artwork):
 	with _conn, _conn.cursor() as cur:
 		# Enumerate all updateable fields. If they're not provided, they won't be updated;
 		# any other fields will be ignored. This is basically set intersection on a dict.
-		fields = ("artist", "status", "lyrics", "story", "xfade", "otrim", "itrim", "keywords", "artwork")
+		fields = ("artist", "status", "lyrics", "story", "xfade", "otrim", "itrim", "keywords", "artwork", "url")
 		param = {k:info[k][0] for k in fields if k in info}
 		if not artwork == None:
 		        param['artwork'] = memoryview(artwork)

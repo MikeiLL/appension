@@ -241,7 +241,6 @@ class LocalAudioStream(AudioStream):
 		if not hasattr(initializer, 'seek'):
 			fobj.close()
 		track_md5 = md5.hexdigest()
-		print(11111111111)
                 try:
                         log.info("Fetching analysis...")
                         try:
@@ -251,7 +250,6 @@ class LocalAudioStream(AudioStream):
 
                         log.info("Fetched analysis in %ss", time.time() - start)
                 finally:
-                        print(222222222222)
 		self.analysis = tempanalysis
 		self.analysis.source = weakref.ref(self)
 
