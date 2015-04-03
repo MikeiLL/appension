@@ -4,6 +4,8 @@
 """
 transitions.py
 
+Create transitions between tracks. Used by Mixer and Audition.
+
 Created by Mike iLL/mZoo with Rosuav oversight and input
 """
 import logging
@@ -93,7 +95,7 @@ def managed_transition(track1, track2, state=None):
             
         
         pb1 = pb(track1, state['cursor'], playback_duration)
-        pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode='linear') #other mode option: 'equal_power'
+        pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode='equal_power') #other mode option: 'linear'
 
         equal = mix_duration + playback_duration == t1end - state['cursor']
         actual = t1end - state['cursor']

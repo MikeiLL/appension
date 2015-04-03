@@ -25,6 +25,11 @@
 	Finalize and implement text/info/players structure
 	Can facebook text in Oracle include question and answer?
 	Disable REWIND in main player.
+	Check transition type - set to 'equal_power'
+	Add artist url and display in Story pop-up
+	Automate 'track activated' email and track "notified" status.
+	
+VERSION TWO WISH LIST:
 
 REQUIREMENTS
         Add Navigation and Informational Pages (everything on current site)

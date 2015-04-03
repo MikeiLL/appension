@@ -4,6 +4,9 @@
 """
 audition.py
 
+Used to create a transition between two files for admin to reference in setting crossfade and trim between 
+Track1 and Track2 in sequential series.
+
 Created by Mike iLL with mentorship of Rosuav.
 """
 from __future__ import print_function

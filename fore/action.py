@@ -267,7 +267,7 @@ class Edit(object):
 class Crossfade(object):
 	"""Crossfades between two tracks, at the start points specified,
 	for the given duration"""
-	def __init__(self, tracks, starts, duration, mode='linear'):
+	def __init__(self, tracks, starts, duration, mode='equal_power'):
 		self.t1, self.t2 = tracks
 		self.s1, self.s2 = starts
 		self.e1, self.e2 = [s + duration for s in starts]
