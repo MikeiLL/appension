@@ -28,7 +28,7 @@
 	{% end %}
 <tr><td><h2>The Story</h2></td></tr>
 <tr><td>
-<tr><td>{% if len(track.track_details['lyrics']) > 0 %}
+<tr><td>{% if len(track.track_details['story']) > 0 %}
 		{% for line in track.track_details['story'].splitlines() %}
 			{{ line }} <br/>
 		{% end %}
