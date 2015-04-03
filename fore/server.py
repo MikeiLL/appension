@@ -24,6 +24,7 @@ import base64
 import random
 import wtforms
 import datetime
+import requests
 import tempfile
 import threading
 import traceback
@@ -437,8 +438,19 @@ class EditTrack(BaseHandler):
 	def get(self, input):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
+		track = database.get_single_track(int(input))
+		track_url = 'http://'+track.track_details['url']
+		try:
+			resp = requests.head(track_url)
+			if resp.status_code == 200:
+				check_url = 'Valid'
+			else:
+				check_url = 'Invalid'
+		except requests.exceptions.ConnectionError:
+			check_url = 'Invalid'
 		self.write(templates.load("track_edit.html").generate(
-		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name))
+		track=track, compiled=compiled, user_name=user_name, check_url=check_url))
+	
 
 @route("/sequence")		
 class SequenceHandler(BaseHandler):

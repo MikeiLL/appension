@@ -37,7 +37,13 @@
 	<p>Artwork:<br>
 	<img src="/artwork/{{ track.id }}.jpg" class="track_art"></p></td></tr>
 	<tr><td colspan="6">Update Artwork: <input type="file" name="artwork" size="40"></td></tr>
-	<tr><td colspan="6">Track URL: <input type="text" name="url" value="{{ track.track_details['url'] }}" placeholder="http://"></td></tr>
+	<tr><td colspan="6">Track URL: <input type="text" name="url" size="60" value="{{ track.track_details['url'] }}" placeholder="http://"> 
+	{% if check_url == 'Valid' %} 
+			<em><font color="blue">Link checks good.</font></em>
+	{% else %}
+			<em><font color="red">Link appears to be broken.</font></em>
+	{% end %}
+	</td></tr>
 	<tr><td colspan="6" align="right"><input type="submit" value="Update"></td></tr>
 </table>
 </form>
