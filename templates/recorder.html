@@ -126,7 +126,8 @@
 					    {% end %}
 					<tr><td colspan="2">Story behind the track:<br/> {{ form.story(rows=10,cols=60) }}</td></tr>
 					<tr><td colspan="2">Lyrics: (in couplet form if possible - two lines, space and so on)<br/>{{ form.lyrics(rows=10,cols=60,placeholder="Sometimes you can fix...                               Elaborate on bla bla bla...") }}</textarea></td></tr>
-					<tr><td colspan="2">Comments: <br/>{{ form.comments(rows=10,cols=60)}}</td></tr>
+					<tr><td colspan="2">Comments: <br/>{{ form.comments(rows=10,cols=60) }}</td></tr>
+					<tr><td colspan="2">Web Site: <br/>{{ form.url(placeholder="http://") }}</td></tr>
 					<input name="track_source" type="hidden" value="glitch_studio" />
 
 					<tr><td colspan="2" align="right"><input type="submit" value="submit track" /></td></tr>

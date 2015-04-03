@@ -210,16 +210,18 @@ def create_track(mp3data, filename, imagefile, info, user_name):
 	Note that this function breaks encapsulation horribly. The third argument is
 	assumed to be a request object dictionary, with all its quirks. The file is saved
 	to disk as well as being registered with the database. TODO: Clean me up."""
+	log.info(info)
 	with _conn, _conn.cursor() as cur:
 		# We have a chicken-and-egg problem here. We can't (AFAIK) get the ID3 data
 		# until we have a file, and we want to name the file based on the track ID.
 		# Resolution: Either save the file to a temporary name and then rename it,
 		# or insert a dummy row and then update it. Using the latter approach.
-		cur.execute("""INSERT INTO tracks (userid, lyrics, story, comments)
+		cur.execute("""INSERT INTO tracks (userid, lyrics, story, comments, url)
 			VALUES ((
 			select id from users where username = %s
-			), %s, %s, %s) RETURNING id""",
-			(user_name, info.get("lyrics",[""])[0], info.get("story",[""])[0], info.get("comments",[""])[0]))
+			), %s, %s, %s, %s) RETURNING id""",
+			(user_name, info.get("lyrics",[""])[0], info.get("story",[""])[0], info.get("comments",[""])[0],
+			info.get("url",[""])[0]))
 		id = cur.fetchone()[0]
 		filename = "audio/%d %s"%(id, filename)
 		with open(filename, "wb") as f: f.write(mp3data)

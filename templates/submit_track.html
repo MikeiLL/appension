@@ -31,7 +31,13 @@ Also consider format like Costello, Elvis and the Attractions</p></td></tr>
     {% end %}
 <tr><td colspan="2">Story behind the track:<br/> {{ form.story(rows=10,cols=60) }}</td></tr>
 <tr><td colspan="2">Lyrics:  (in couplet form if possible - two lines, space and so on)<br/>{{ form.lyrics(rows=10,cols=60,placeholder="Sometimes you can fix...                               Elaborate on bla bla bla...") }}</textarea></td></tr>
-<tr><td colspan="2">Comments: <br/>{{ form.comments(rows=10,cols=60)}}</td></tr>
+<tr><td colspan="2">Comments: <br/>{{ form.comments(rows=10,cols=60) }}</td></tr>
+<tr><td colspan="2">Web Site: <br/>{{ form.url(placeholder="http://") }}</td></tr>
+{% if form.url.errors %}
+		<tr><td colspan=2> 
+        <ul class="errors">{% for error in form.url.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
+		</td></tr>
+    {% end %}
 <input name="track_source" type="hidden" value="user_form" />
 
 <tr><td colspan="2" align="right"><input type="submit" value="upload" /></td></tr>
