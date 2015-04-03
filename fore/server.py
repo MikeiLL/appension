@@ -710,8 +710,22 @@ class ChunkHandler(BaseHandler):
 		page_title="Browse Artists: Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
 		og_url=og_url=config.server_domain+"/choice_chunks"
+		recent_submitters = database.get_recent_tracks(10)
+		recent_order = {}
+		for submitter in recent_submitters:
+			if string.lower(submitter[0][:4]) == 'the ':
+				recent_order[submitter[0][4:].upper()] = ('', submitter[0])
+			elif len(submitter[0].split(',')) > 1:
+				# if artist contains a comma, split into Last, First
+				the_submitter = submitter[0].split(',')
+				the_submitter[1] = the_submitter[1].lstrip()
+				recent_order[the_submitter[0].upper()] = the_submitter
+			else:
+				recent_order[submitter[0].upper()] = ('', submitter[0])
+				
+		ordered_submitters = OrderedDict(sorted(recent_order.items()))
 		self.write(templates.load("choice_chunks.html").generate(compiled=compiled, user_name=user_name, form=form,
-									artist_tracks="", letter = '', og_description=og_description, 
+									artist_tracks="", recent_submitters=ordered_submitters, letter = '', og_description=og_description, 
 									page_title=page_title, meta_description=meta_description,
 									og_url=og_url))
 		
@@ -721,6 +735,7 @@ class ChunkHandler(BaseHandler):
 		letter = self.request.arguments['letters'][0]
 		artist_tracks = database.browse_tracks(letter)
 		artists_order = {}
+		#TODO abstract me, please and stop wetting
 		for artist in artist_tracks:
 			if string.lower(artist[0][:4]) == 'the ':
 				artists_order[artist[0][4:].upper()] = ('', artist[0])
@@ -731,13 +746,29 @@ class ChunkHandler(BaseHandler):
 				artists_order[the_artist[0].upper()] = the_artist
 			else:
 				artists_order[artist[0].upper()] = ('', artist[0])
-		ordered = OrderedDict(sorted(artists_order.items()))
+		ordered_artists = OrderedDict(sorted(artists_order.items()))
+		
+		recent_submitters = database.get_recent_tracks(10)
+		recent_order = {}
+		for submitter in recent_submitters:
+			if string.lower(submitter[0][:4]) == 'the ':
+				recent_order[submitter[0][4:].upper()] = ('', submitter[0])
+			elif len(submitter[0].split(',')) > 1:
+				# if artist contains a comma, split into Last, First
+				the_submitter = submitter[0].split(',')
+				the_submitter[1] = the_submitter[1].lstrip()
+				recent_order[the_submitter[0].upper()] = the_submitter
+			else:
+				recent_order[submitter[0].upper()] = ('', submitter[0])
+				
+		ordered_submitters = OrderedDict(sorted(recent_order.items()))
 		og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
 		page_title="Browse Artists: Infinite Glitch - the world's longest pop song, by Chris Butler."
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
 		og_url=og_url=config.server_domain+"/choice_chunks"
-		self.write(templates.load("choice_chunks.html").generate(compiled=compiled, user_name=user_name, form=form,
-									artist_tracks=ordered, letter=letter, og_description=og_description, 
+		self.write(templates.load("choice_chunks.html").generate(compiled=compiled, user_name=user_name, form=form, 
+									recent_submitters=ordered_submitters,
+									artist_tracks=ordered_artists, letter=letter, og_description=og_description, 
 									page_title=page_title, meta_description=meta_description,
 									og_url=og_url))
 		

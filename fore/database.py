@@ -169,7 +169,7 @@ def get_single_track(track_id):
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE id=%s", (track_id,))
 		return Track(*cur.fetchone())
-
+                
 def get_complete_length():
 	"""Get the sum of length of all active tracks."""
 	with _conn, _conn.cursor() as cur:
@@ -365,10 +365,16 @@ def get_track_filename(track_id):
 def browse_tracks(letter):
     """Return artist, id for tracks, where artist name starts with letter in expression or higher, limit 20."""
     query = "SELECT DISTINCT artist FROM tracks WHERE status = 1 AND (case when artist ilike 'The %' then substr(upper(artist), 5, 100) else upper(artist) end) >= '{letter}' ORDER BY artist LIMIT 20".format(cols=Track.columns, letter=letter)
-    print(query)
     with _conn, _conn.cursor() as cur:
         cur.execute(query)
         return [row for row in cur.fetchall()]
+        
+def get_recent_tracks(number):
+        """Retrieve [number] number of most recently activated tracks"""
+        query = "SELECT DISTINCT artist, submitted FROM tracks WHERE status = 1 ORDER BY submitted DESC LIMIT {number}".format(cols=Track.columns, number=number)
+        with _conn, _conn.cursor() as cur:
+                cur.execute(query)
+                return [row for row in cur.fetchall()]
         
 def tracks_by(artist):
     """Return artist, id for tracks, where artist name starts with letter in expression"""

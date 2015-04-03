@@ -35,6 +35,17 @@ If they have used their own lyrics, these will be displayed with the player, alo
 		{% end %}
 	{% end %}
 {% end %}
+
+<tr><td><h2>Recent Submissions From:</h2></td></tr>
+{% if not recent_submitters == "" %}
+	{% for key, track in recent_submitters.iteritems() %}
+		{% if track[0] == '' %}
+		<tr><td><a href="/view_artist/{{ url_escape(track[1]) }}">{{ track[1] }}</a></td></tr>
+		{% else %}
+		<tr><td><a href="/view_artist/{{ url_escape(', '.join(track)) }}">{{ track[1] }} {{ track[0] }}</a></td></tr>
+		{% end %}
+	{% end %}
+{% end %}
 </table>
 </form>
 {% end %}
