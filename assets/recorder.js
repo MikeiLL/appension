@@ -213,6 +213,8 @@
 				enter_track_details.innerHTML = 'Enter Track Details';
 				enter_track_details.className = 'btn btn-default';
 				var reset = document.createElement('a');
+				var spacer = document.createElement('text');
+				spacer.innerHTML = "&nbsp;  &nbsp;";
 				reset.href = '#';
 				reset.onclick = function(){
 						window.location.reload(false);
@@ -220,6 +222,7 @@
 				reset.innerHTML = 'Reset';
 				reset.className = 'btn btn-default';
 				document.getElementById("demo_player_controls").appendChild(enter_track_details);
+				document.getElementById("demo_player_controls").appendChild(spacer);
 				document.getElementById("demo_player_controls").appendChild(reset);
 			}
 		};
