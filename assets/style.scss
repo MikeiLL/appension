@@ -505,7 +505,7 @@ P.infinite-intro
 	/*Footer*/
 	footer[role=contentinfo] {
 		color: #FFF;
-		background: url(/static/img/footer-tile.jpg) #000;
+		background: url(/static/img/slim-footer-tile.jpg) #000;
 		margin: 0 -1em;
 		position: relative;
 		z-index: 100;
@@ -1036,6 +1036,7 @@ P.infinite-intro
 			left: 0;
 			width: 100%;
 			margin: 0;
+			background: url(/static/img/footer-tile.jpg) #000;
 		}
 		footer[role=contentinfo] .nav {
 			float: left;
