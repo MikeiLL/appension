@@ -288,6 +288,8 @@ background: url(/static/img/tile2.jpg) black;
 		-moz-box-shadow: 3px 4px 6px #272626 !important;
 		-webkit-box-shadow: 3px 4px 6px #272626 !important;
 		box-shadow: 3px 4px 6px #272626 !important;
+		margin-left: 5%;
+		margin-bottom: .7em;
 	}
 	#trackdetails {
 		display: inline-block;
@@ -684,7 +686,7 @@ P.infinite-intro
 }
 
 	#header {
-		margin-bottom: 15px;
+		margin-bottom: -35px;
 	}
 	
 	.nav_image {
@@ -1011,6 +1013,10 @@ P.infinite-intro
 	
 	@media all and (min-width:40em) {
 	
+		#header {
+			margin-bottom: 15px;
+		}
+	
 		#popular_words {
 			font-weight: bold;
 			max-width: 55%;
@@ -1240,6 +1246,8 @@ P.infinite-intro
 	  .left-player {
 		float:left;
 		width:290px;
+		margin-left: 0;
+		margin-bottom: 0;
 	  }
 	  .grid li {
 		width: 20%;
@@ -1253,10 +1261,6 @@ P.infinite-intro
 	  }
 	  .secondary-grid li.wide {
 		width: 80%;
-	  }
-	  .left-player {
-		float:left;
-		width:290px;
 	  }
 	  .main {
 		margin-left:290px;
