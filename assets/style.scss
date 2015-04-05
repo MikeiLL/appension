@@ -689,6 +689,10 @@ P.infinite-intro
 		margin-bottom: -35px;
 	}
 	
+	#secondary_header {
+		margin-bottom: 0;
+	}
+	
 	.nav_image {
 		max-width: 100%;
 		height: auto;
@@ -1129,7 +1133,11 @@ P.infinite-intro
 
 	/* Large Screens */
 	@media all and (min-width: 54em) {
-		padding: 4em;
+		padding: .1em 4em 1em;
+		
+		#title {
+			margin-top: 2em;
+			}
 		
 		#popular_words {
 			font-weight: bold;
