@@ -124,32 +124,35 @@ background: url(/static/img/tile2.jpg) black;
 		box-shadow: 3px 2px 2px transparent;
 		border: 2px inset silver;
 	}
-
-	.grid LI.wide .btn:visited
-	{
-		color: white;
-	}
 	
-	.grid LI.wide .btn:hover, .btn:focus
-	{
-		background: url(/static/img/tile2.jpg) black;
-		cursor: pointer;
-		color: yellow;
-		-moz-border-radius: 20px;
-		-webkit-border-radius: 20px;
-		-khtml-border-radius: 20 px;
-		border-radius: 20px;
-		-moz-box-shadow: 3px 2px 2px black;
-		-webkit-box-shadow: 3px 2px 2px black;
-		box-shadow: 3px 2px 2px black;
-		border: 2px outset silver;
-		text-shadow: 0 0 8px yellow;
-	}
+	.grid LI.wide #overdub_player, .grid LI.wide #recordingslist,.grid LI.wide .btn:hover, .btn:focus {
+			
+			.btn, a, a:visited {
+				color: white; // was #800080
+				margin: 8px 2px 2px;
+			}
+			
+			.btn:hover, .btn:focus
+			{
+				background: url(/static/img/tile2.jpg) black;
+				cursor: pointer;
+				color: yellow;
+				margin: 8px 2px 2px;
+				-moz-border-radius: 20px;
+				-webkit-border-radius: 20px;
+				-khtml-border-radius: 20 px;
+				border-radius: 20px;
+				-moz-box-shadow: 3px 2px 2px black;
+				-webkit-box-shadow: 3px 2px 2px black;
+				box-shadow: 3px 2px 2px black;
+				border: 2px outset silver;
+				text-shadow: 0 0 8px yellow;
+			}
+		}
+	
+	
 
-	.grid LI.wide a:visited {
-		color: #800080;
-		margin: 0;
-	}
+	
 	
 	#title-admin {
 	  width: 418px;
@@ -487,10 +490,7 @@ P.infinite-intro
 		margin: 0 0 10px 0;
 		z-index:1;
 	}
-	.grid li a {
-		color: #0000ff;
-		margin: 0 0 0 0;
-	}
+	
 	/************End Percent Grid**************/
 	/************Structure**************/
 	.container {
