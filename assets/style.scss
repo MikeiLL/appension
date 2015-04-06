@@ -1215,13 +1215,20 @@ P.infinite-intro
 
 	@media all and (min-width: 40em) {
 	
+	  .left-player {
+		float:left;
+		width:290px;
+		margin-left: 0;
+		margin-bottom: 0;
+	  }
+	
 	  .grid li {
 		float: left;
-		width: 33.3333333%;
+		width: 20%;
 	  }
 	  .grid li.wide {
-		width: 66.666666%;
-		padding: 5px 15px;
+		width: 80%;
+		padding: 5px 0px;
 	  }
 	  .secondary-grid li {
 		float: left;
@@ -1234,7 +1241,7 @@ P.infinite-intro
 		margin-left:290;
 	  }
 	  #header {
-			padding: 0 15px;
+		padding: 0 15px;
 		}
 	  #trackdetails {
 		display: inline-block;
@@ -1250,7 +1257,7 @@ P.infinite-intro
 	}
 	
 
-@media all and (min-width: 60em) {
+@media all and (min-width: 65em) {
 	
 	  .left-player {
 		float:left;
@@ -1263,7 +1270,7 @@ P.infinite-intro
 	  }
 	  .grid li.wide {
 		width: 80%;
-		padding: 5px 15px;
+		padding: 5px 0px;
 	  }
 	  .secondary-grid li {
 		width: 20%;
