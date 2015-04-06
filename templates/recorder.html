@@ -32,7 +32,8 @@
 </head>
 <body>
 <div id="username" style="display:none">{{ user_name }}</div>
-<header id="header" role="banner">
+<header id="secondary_header" role="banner">
+<br style="clear:both">
 {% block user %}		
 	<div class="user">				
 		<p>Hello {{ user_name }}!</p>		
@@ -51,33 +52,33 @@
 	 <section id="pattern" class="pattern">  	
 		<ul class="grid">
 			<li class="wide">		
-				<div class="secondary-two">	
+				<div class="secondary-two">
 				
 				<div id="info"></div>
 				  <img src="static/img/studio-title.png" border="0" width="266" height="195" alt=""><br/>
 				  <p class="floatRight-studio">
 <img src="static/img/warning-stamp.png" border="0" width="117" height="100" class="floatLeft">
-		<font size="-1"><b>Sometimes you can fix something by being a pioneer,<br>
-The Cavy is a noble creature;</b><br><br>
+		<font size="-1"><b>Sometimes you can fix something by being a pioneer,<br/>
+The Cavy is a noble creature;</b><br/><br/>
 
-We're constantly developing and improving The Studio but if you should encounter a ... glitch, please try again and let us know.</font></
+We're constantly developing and improving The Studio but if you should encounter a ... glitch, please try again and let us know.</font></p>
 				  <div id="recorder_content">
 				  
 					<div id="intro">
 						<h2>Welcome to The Studio</h2>
-						I'm your engineer, Glitchy.
+						I'm your engineer, Glitch Johns.
 						<br/><br/>
 						<div id="info"></div>
 
-						<p>Due to the magic of modern technology we can now record you right here in your browser. Glitch Studio does have some limitations at the moment, though. Here's how it works.</p>
-						<ul id="submit-points">
-						<li>The browser will ask you if the application can "borrow" one of your computer microphones.</li>
-						<li>There is a single "backing" track to sing along with. You'll hear it when you press record.</li>
-						<li>It only keeps the section from the first downbeat following the count-in until you press stop.</li>
-						<li>If you record without headphones, the "backing" track will be included in your "overdub" track, which will sound a bit ah... interesting.</li>
-						<li>When listening back to your "overdub", prior to uploading and combining with "backing" track, there will be a few seconds of silence (or other "room noise") which is just what was happening during the click and count-in. 
-						This time segment will not be included in the final track.</li>
-						</ul>
+							<p>Due to the magic of modern technology we can now record you right here in your browser. Glitch Studio does have some limitations at the moment, though. Here's how it works.</p>
+							<ul id="submit-points">
+							<li>The browser will ask you if the application can "borrow" one of your computer microphones.</li>
+							<li>There is a single "backing" track to sing along with. You'll hear it when you press record.</li>
+							<li>It only keeps the section from the first downbeat following the count-in until you press stop.</li>
+							<li>If you record without headphones, the "backing" track will be included in your "overdub" track, which will sound a bit ah... interesting.</li>
+							<li>When listening back to your "overdub", prior to uploading and combining with "backing" track, there will be a few seconds of silence (or other "room noise") which is just what was happening during the click and count-in. 
+							This time segment will not be included in the final track.</li>
+							</ul>
 						<div class="errors">(This will probably only work in Chrome version 3.2+ and recent versions of Firefox)</div><br>
 						
 						
@@ -90,7 +91,7 @@ We're constantly developing and improving The Studio but if you should encounter
 
 						
 					<div id="overdub_player" style="display:none">
-					<h2>The Recording</h2>
+						<h2>The Recording</h2>
 						<p>This is what you just recorded. Remember, ignore the silence (or other noise) which is just what was happening during the click and count-in.</p>
 						<ul id="recordingslist"></ul>
 						<a href='#' id="upload" class="btn btn-default">Upload</a> &nbsp;  &nbsp;
@@ -149,7 +150,8 @@ We're constantly developing and improving The Studio but if you should encounter
 			{% block right-nav %}			
 			<li>				
 				<nav role="navigation">					
-					<div style="text-align: center"><ul>
+					<div style="text-align: center">
+						<ul>
 						<li><a href="/create_account"><img src="static/img/sign-up.png" border="0" width="78" height="23" alt=""></a></li>
 						<li><a href="/login"><img src="static/img/login-link.png" border="0" width="62" height="25" alt=""></a></li>
 						<li><a href="/logout"><img src="static/img/logout-link.png" border="0" width="47" height="39" alt=""></a></li>
@@ -157,7 +159,8 @@ We're constantly developing and improving The Studio but if you should encounter
 						<li><a href="/submit"><img src="static/img/submit-link.png" border="0" width="137" height="26" alt=""></a></li>
 						<li><a href="/oracle"><img src="static/img/magic-ball-link.png" border="0" width="114" height="96" alt=""></a></li>
 						<li><a href="/credits"><img src="static/img/credits-link.png" border="0" width="85" height="21" alt=""></a></li>
-					</ul></div>				
+						</ul>
+					</div>				
 				</nav>			
 			</li>					
 		</ul>	
@@ -174,15 +177,6 @@ We're constantly developing and improving The Studio but if you should encounter
 		</p>
 	</div>
 </div>	
-<audio id='BackgroundTrack' src='/instrumentals/dgacousticlikMP3.mp3'/>
-
-
-   <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
-	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
-													'recorder.js') }}'>
-	</script>	
-	<script type="text/javascript" src='{{ compiled('remix.js') }}'>	
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
 	<div class="container">			
 		<footer role="contentinfo">
@@ -200,9 +194,16 @@ We're constantly developing and improving The Studio but if you should encounter
 				</nav>			
 			</div>		
 		</footer>	
-	</div>				
-		
+	</div>	
 	
+<audio id='BackgroundTrack' src='/instrumentals/dgacousticlikMP3.mp3'/>
+
+   <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
+	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
+							'recorder.js') }}'>
+	</script>	
+	<script type="text/javascript" src='{{ compiled('remix.js') }}'>	
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>			
 	<script type="text/javascript" >
 	jQuery.noConflict();
 	jQuery( document ).ready(function( $ ) {				
