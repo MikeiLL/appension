@@ -658,8 +658,6 @@ class ShareOracleHandler(BaseHandler):
 		question = tornado.escape.url_unescape(question)
 		show_cloud="block"
 		answer_string = tornado.escape.url_unescape(answer_one)+tornado.escape.url_unescape(answer_two)
-		print(111111111)
-		print(answer_string)
 		answer = Couplet(tornado.escape.url_unescape(artist), answer_string)
 		og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 		page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
