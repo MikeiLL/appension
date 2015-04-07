@@ -645,19 +645,22 @@ class OracleHandler(BaseHandler):
 		popular_words = oracle.popular_words(90)
 		random.shuffle(popular_words)
 
-		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
+		self.redirect(og_url)
+		'''("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
 								question=question, answer=answer, popular_words=popular_words[:90],
 								show_cloud=show_cloud, og_description=og_description, 
 								page_title=page_title, meta_description=meta_description,
-								og_url=og_url))
+								og_url=og_url))'''
 					
 @route("/share_oracle/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)")
-class OracleHandler(BaseHandler):
+class ShareOracleHandler(BaseHandler):
 	def get(self, question, answer_string, artist):
 		user_name = self.current_user or 'Glitcher'
 		form = Oracle()
 		question = tornado.escape.url_unescape(question)
 		show_cloud="block"
+		print(111111111)
+		print(tornado.escape.url_unescape(answer_string))
 		answer = Couplet(tornado.escape.url_unescape(artist), tornado.escape.url_unescape(answer_string))
 		og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 		page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
