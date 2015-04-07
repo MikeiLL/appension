@@ -349,6 +349,10 @@ class Submissionform(BaseHandler):
 				track_image_file = self.request.files['track_image'][0]['body']
 			except KeyError:
 				track_image_file = 0
+			if self.request.arguments['url'][0][:8].lower() == 'https://':
+				self.request.arguments['url'][0] = self.request.arguments['url'][0][8:]
+			elif self.request.arguments['url'][0][:7 ].lower() =='http://':
+				self.request.arguments['url'][0] = self.request.arguments['url'][0][7:]
 			database.create_track(body, filename, track_image_file, self.request.arguments, user_name)
 			message = "A new Glitch Studio Track, %s had been submitted by %s."%(filename, user_name)
 			mailer.AlertMessage(message, 'New Glitch Studio Track Submission')
@@ -503,10 +507,9 @@ class AdminRender(BaseHandler):
 			artwork = self.request.files['artwork'][0]['body']
 		except KeyError:
 			artwork = None
-		self.request.arguments['url'][0] = self.request.arguments['url'][0].lower()
-		if self.request.arguments['url'][0][:8] == 'https://':
+		if self.request.arguments['url'][0][:8].lower() == 'https://':
 			self.request.arguments['url'][0] = self.request.arguments['url'][0][8:]
-		elif self.request.arguments['url'][0][:7 ] =='http://':
+		elif self.request.arguments['url'][0][:7 ].lower() =='http://':
 			self.request.arguments['url'][0] = self.request.arguments['url'][0][7:]
 		database.update_track(track_id, self.request.arguments, artwork)
 		self.write(admin_page(user_name, updated=track_id))
@@ -518,7 +521,7 @@ class Submitters(BaseHandler):
 		self.get_current_user()
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		submitters = database.get_track_submitter_info();
+		submitters = database.get_track_submitter_info()
 		self.write(templates.load("submitters.html").generate(
 			compiled=compiled, user_name=user_name, notice="", submitters=submitters,
 			number=1))
@@ -528,7 +531,7 @@ class Submitters(BaseHandler):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		database.update_track_submitter_info(self.request.arguments)
-		submitters = database.get_track_submitter_info();
+		submitters = database.get_track_submitter_info()
 		self.write(templates.load("submitters.html").generate(
 			compiled=compiled, user_name=user_name, notice="Submitter List Updated", submitters=submitters,
 			number=1))
@@ -621,6 +624,12 @@ class OracleHandler(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
 		form = Oracle()
+		question = self.get_query_arguments('question')
+		print(question)
+		if not len(question) == 0:
+			question = question[0]
+			answer = oracle.the_oracle_speaks(question)
+			print(answer)
 		popular_words = oracle.popular_words(90)
 		random.shuffle(popular_words)
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
@@ -628,10 +637,10 @@ class OracleHandler(BaseHandler):
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		og_url="http://www.infiniteglitch.net/oracle"
 		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
-															question="", answer="", popular_words=popular_words[:90],
-															show_cloud="none", og_description=og_description, 
-															page_title=page_title, meta_description=meta_description,
-															og_url=config.server_domain))
+								question="", answer="", popular_words=popular_words[:90],
+								show_cloud="none", og_description=og_description, 
+								page_title=page_title, meta_description=meta_description,
+								og_url=config.server_domain))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
