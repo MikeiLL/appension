@@ -679,7 +679,7 @@ class ShareOracleHandler(BaseHandler):
 class SandBox(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
-		og_description="The world's longest pop song."
+		og_description="The world's longest recorded pop song."
 		page_title="Sandbox Page - We Test Stuff Here"
 		meta_description="A page where we test implementations for Infinite Glitch."
 		og_url="http://www.infiniteglitch.net/sandbox"
@@ -691,9 +691,9 @@ class SandBox(BaseHandler):
 class CreditsHandler(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
-		og_description="The world's longest pop song. (Credits)"
-		page_title="Credits: Infinite Glitch - the world's longest pop song, by Chris Butler."
-		meta_description="The people below are partially responsible for bringing you Infinite Glitch - the world's longest pop song."
+		og_description="The world's longest recorded pop song. (Credits)"
+		page_title="Credits: Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
+		meta_description="The people below are partially responsible for bringing you Infinite Glitch - the world's longest recorded pop song."
 		og_url="http://www.infiniteglitch.net/credits"
 		self.write(templates.load("credits.html").generate(compiled=compiled, user_name=user_name,
 														og_description=og_description, page_title=page_title,
@@ -704,9 +704,9 @@ class TracksByArtist(BaseHandler):
 	def get(self, artist):
 		user_name = self.current_user or 'Glitcher'
 		tracks_by = database.tracks_by(escape.url_unescape(artist))
-		og_description= tracks_by[0].track_details['artist']+" contributions to The world's longest pop song."
-		page_title=tracks_by[0].track_details['artist']+": Infinite Glitch - the world's longest pop song, by Chris Butler."
-		meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest pop song."
+		og_description= tracks_by[0].track_details['artist']+" contributions to The world's longest recorded pop song."
+		page_title=tracks_by[0].track_details['artist']+": Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
+		meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest recorded pop song."
 		og_url="http://www.infiniteglitch.net/view_artist/"+tornado.escape.url_escape(tracks_by[0].track_details['artist'])
 		self.write(templates.load("view_artist.html").generate(compiled=compiled, user_name=user_name, 
 									tracks_by=tracks_by, og_description=og_description, 
@@ -719,7 +719,7 @@ class ChunkHandler(BaseHandler):
 		user_name = self.current_user or 'Glitcher'
 		form = Oracle()
 		og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
-		page_title="Browse Artists: Infinite Glitch - the world's longest pop song, by Chris Butler."
+		page_title="Browse Artists: Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
 		og_url=og_url=config.server_domain+"/choice_chunks"
 		recent_submitters = database.get_recent_tracks(10)
@@ -775,7 +775,7 @@ class ChunkHandler(BaseHandler):
 				
 		ordered_submitters = OrderedDict(sorted(recent_order.items()))
 		og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
-		page_title="Browse Artists: Infinite Glitch - the world's longest pop song, by Chris Butler."
+		page_title="Browse Artists: Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
 		og_url=og_url=config.server_domain+"/choice_chunks"
 		self.write(templates.load("choice_chunks.html").generate(compiled=compiled, user_name=user_name, form=form, 
@@ -825,7 +825,7 @@ class ConfirmAccount(tornado.web.RequestHandler):
 		user_name = database.confirm_user(id, hex_string)[0]
 		if user_name == None:
 			self.write("That link is no longer valid. Please try your procedure again and get a new link.")
-		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		og_description="Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		signup_confirmed = "Sign-up confirmed. Login with email and password."
 		self.write(templates.load("login.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice=signup_confirmed,
@@ -837,7 +837,7 @@ class ConfirmAccount(tornado.web.RequestHandler):
 class CreateAccount(tornado.web.RequestHandler):
 	def get(self):
 		form = CreateUser()
-		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		og_description="Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		self.write(templates.load("create_account.html").generate(compiled=compiled, form=form, user_name="new glitcher", 
 									page_title="Glitch Account Sign-Up", og_url=config.server_domain,
@@ -846,7 +846,7 @@ class CreateAccount(tornado.web.RequestHandler):
 		
 	def post(self):
 		form = CreateUser(self.request.arguments)
-		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		og_description="Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		if form.validate():
 			info = self.request.arguments
@@ -881,7 +881,7 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 class ResetPassword(tornado.web.RequestHandler):
 	def get(self):
 		form = ResetRequestForm()
-		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		og_description="Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		self.write(templates.load("reset_password.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice='', 
 									page_title="Reset Password Request", og_url=config.server_domain,
@@ -892,7 +892,7 @@ class ResetPassword(tornado.web.RequestHandler):
 		form = ResetRequestForm(self.request.arguments)
 		form.__delitem__('password')
 		form.__delitem__('confirm')
-		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		og_description="Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		if form.validate():
 			info = self.request.arguments
@@ -932,7 +932,7 @@ class NewPassword(tornado.web.RequestHandler):
 		if email == None:
 			self.write("That link is no longer valid. Please try your procedure again and get a new link.")
 			return
-		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		og_description="Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		self.write(templates.load("new_password.html").generate(compiled=compiled, form=form, user_name='Glitch Resetter', email=email, notice='',
 								hex_key=hex_string, id=id, next="/", page_title="Create New Password ", og_url=config.server_domain,
@@ -940,7 +940,7 @@ class NewPassword(tornado.web.RequestHandler):
 								og_description=og_description))
 								
 	def post(self, id, hex_string):
-		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		og_description="Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		form=LoginForm(self.request.arguments)
 		id, username, email = database.test_reset_permissions(id, hex_string)
@@ -1017,7 +1017,7 @@ class Login(BaseHandler):
 		errormessage = self.get_argument("error", "")
 		username = self.get_current_user()
 		
-		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		og_description="Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		
 		if self.get_current_user():
@@ -1032,7 +1032,7 @@ class Login(BaseHandler):
 	def post(self):
 		form = LoginForm(self.request.arguments)
 		
-		og_description="Infinite Glitch - the world's longest pop song, by Chris Butler."
+		og_description="Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		
 		if form.validate():
