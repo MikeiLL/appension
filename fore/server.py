@@ -630,9 +630,9 @@ class OracleHandler(BaseHandler):
 			question = question[0]
 			show_cloud="block"
 			answer = oracle.the_oracle_speaks(question)
-			og_description="Asked the glitch oracle: "+question+" and Wow is it smart!"
+			og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
-			meta_description="Asked the glitch oracle: "+question+" and Wow is it smart!"
+			meta_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 			og_url="http://www.infiniteglitch.net/share_oracle/"+tornado.escape.url_escape(question)+"/"+tornado.escape.url_escape(answer.couplet['couplet'][0])+tornado.escape.url_escape("\r\n")+tornado.escape.url_escape(answer.couplet['couplet'][1])+"/"+tornado.escape.url_escape(answer.couplet['artist'])
 		else:
 			question, answer = ("","")
