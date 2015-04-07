@@ -625,7 +625,9 @@ class OracleHandler(BaseHandler):
 	def get(self):
 		user_name = self.current_user or 'Glitcher'
 		form = Oracle()
-		question = self.get_query_arguments('question')
+		question = self.get_query_arguments('question')	
+		popular_words = oracle.popular_words(90)
+		random.shuffle(popular_words)
 		if not len(question) == 0:
 			question = question[0]
 			show_cloud="block"
@@ -633,7 +635,8 @@ class OracleHandler(BaseHandler):
 			og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
 			meta_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
-			og_url="http://www.infiniteglitch.net/share_oracle/"+tornado.escape.url_escape(question)+"/"+tornado.escape.url_escape(answer.couplet['couplet'][0])+tornado.escape.url_escape("\r\n")+tornado.escape.url_escape(answer.couplet['couplet'][1])+"/"+tornado.escape.url_escape(answer.couplet['artist'])
+			og_url="http://localhost/share_oracle/"+tornado.escape.url_escape(question)+"/"+tornado.escape.url_escape(answer.couplet['couplet'][0])+"/"+tornado.escape.url_escape(answer.couplet['couplet'][1])+"/"+tornado.escape.url_escape(answer.couplet['artist'])
+			self.redirect(og_url)
 		else:
 			question, answer = ("","")
 			show_cloud="none"
@@ -641,31 +644,27 @@ class OracleHandler(BaseHandler):
 			page_title="Ask The Glitch Oracle"
 			meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 			og_url="http://www.infiniteglitch.net/oracle"
-			
-		popular_words = oracle.popular_words(90)
-		random.shuffle(popular_words)
-
-		self.redirect(og_url)
-		'''("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
+		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
 								question=question, answer=answer, popular_words=popular_words[:90],
 								show_cloud=show_cloud, og_description=og_description, 
 								page_title=page_title, meta_description=meta_description,
-								og_url=og_url))'''
+								og_url=og_url))
 					
-@route("/share_oracle/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)")
+@route("/share_oracle/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)")
 class ShareOracleHandler(BaseHandler):
-	def get(self, question, answer_string, artist):
+	def get(self, question, answer_one, answer_two, artist):
 		user_name = self.current_user or 'Glitcher'
 		form = Oracle()
 		question = tornado.escape.url_unescape(question)
 		show_cloud="block"
+		answer_string = tornado.escape.url_unescape(answer_one)+tornado.escape.url_unescape(answer_two)
 		print(111111111)
-		print(tornado.escape.url_unescape(answer_string))
-		answer = Couplet(tornado.escape.url_unescape(artist), tornado.escape.url_unescape(answer_string))
+		print(answer_string)
+		answer = Couplet(tornado.escape.url_unescape(artist), answer_string)
 		og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 		page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
 		meta_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
-		og_url="http://www.infiniteglitch.net/share_oracle/"+tornado.escape.url_escape(question)+"/"+tornado.escape.url_escape(answer.couplet['couplet'][0])+tornado.escape.url_escape("\r\n")+tornado.escape.url_escape(answer.couplet['couplet'][1])+"/"+tornado.escape.url_escape(answer.couplet['artist'])
+		og_url="http://www.infiniteglitch.net/share_oracle/"+tornado.escape.url_escape(question)+"/"+tornado.escape.url_escape(answer.couplet['couplet'][0])+"/"+tornado.escape.url_escape(answer.couplet['couplet'][1])+"/"+tornado.escape.url_escape(answer.couplet['artist'])
 		popular_words = oracle.popular_words(90)
 		random.shuffle(popular_words)
 
