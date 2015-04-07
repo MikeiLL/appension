@@ -1,0 +1,163 @@
+{% extends secondary.html %}
+
+{% from tornado.escape import url_escape %}
+
+{% block content %}
+<!-- added 14 march -->
+<link rel="prefetch" href="../../../static/img/oracle-off.png" border="0" width="107" height="104" alt="">
+<link rel="prefetch" href="../../../static/img/oracle-hover.png" border="0" width="107" height="104" alt="">
+<link rel="prefetch" href="../../../static/img/oracle-on.png" border="0" width="107" height="104" alt=""><!-- end -->
+	<div id="glitch-ball-title">
+		<p></p><img class="glitch_title" src="../../../static/img/glitch-ball-title.png" border="0" width="204" height="159" alt=""><p></p>
+			<p class="floatRight"><b><font size="-1"><b>For entertainment purposes only.</b>  <br>This website and its creators are not responsible for any damages incurred by actions taken based 				on playing this game.</font></p>
+		<!-- start ball -->
+		<br style="clear:both;margin-top:.5em"/>
+		<form enctype="multipart/form-data" action="/oracle" method="get" id="oracle">
+		<center>
+				<div>
+				{% if answer == "" %}
+					<center><i>"Questions are a burden to others; answers are a prison for oneself."
+</i><br>
+<p class="intro-copy">The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting <i>smarter</i>.<br><br>
+The Glitch Oracle reaches deep into this accumulated wisdom of human experience and finds the answers to your questions, whatever they may be. Consult The Glitch Oracle anytime you need fast, personal guidance. <br><br>You just know what you need. But it knows what you <i>want</i>. </p></center>
+<center><p><b>Enter your question and then press the Glitch Ball</b></p>
+				{% end %}
+				{% if not answer == "" %}
+					<div class="glitch_answer">{{ answer.couplet['couplet'][0] }}<br/>
+						{% if not answer.couplet['artist'] == "The Glitch Oracle" %}
+						{{ answer.couplet['couplet'][1] }}.<br/>
+						<p>-<a href="/view_artist/{{ url_escape(answer.couplet['artist']) }}">{{ answer.couplet['artist_formatted'] }}</a></p>
+						{% else %}
+						<p>-{{ answer.couplet['artist'] }}</p>
+						<br style="clear:both"/>
+					</div>
+					{% end %}
+				</div>
+				{% end %}
+				<br style="clear:both"/>
+				<div id="oracle_question">
+					{{ form.question(class_="oracle_question_field", value=question) }}
+				</div>
+		
+
+				{% if form.question.errors %}
+				<ul>
+					{% for error in form.question.errors %}<li class="errors">{{ error }}</li>{% end %}</ul>
+				{% end %}
+		
+				<p>{{ answer }}</p>
+		  </form>
+
+		<div id="Table_01">
+			<div id="Oracle-01">
+				<img src="../../../static/img/Oracle_01.png" width="221" height="72" alt="">
+			</div>
+			<div id="Oracle-02">
+				<img src="../../../static/img/Oracle_02.png" width="57" height="104" alt="">
+			</div>
+			<div id="Oracle-03">
+		
+			</div>
+			<div id="Oracle-04">
+				<img src="../../../static/img/Oracle_04.png" width="57" height="104" alt="">
+			</div>
+			<div id="Oracle-05">
+				<img src="../../../static/img/Oracle_05.png" width="221" height="75" alt="">
+			</div><br>
+			
+		</div>
+		
+		</center>
+		<!-- end ball -->
+
+		<br><br>
+		<font size="-1">The idea for The Glitch Oracle" came from Tom Goodkind, who used the original CD as an aural/I Ching/therapy tool.</font>
+	</div>
+	
+	<div id="popular_words" style="display:{{ show_cloud }}">
+		{% for popular_word in popular_words %}
+		  <a href="#" rel="{{ popular_word[1] }}">{{ popular_word[0] }}</a>
+		{% end %}
+	</div>
+
+{% end %}
+{% block footer %}		
+	<div class="container">			
+		<footer role="contentinfo">
+			<div>				
+				<!-- Amended February 28 -->
+				<nav id="menu">
+					<ul class="footer_menu">
+					<li class="footerlist"><a href="/">Home</a> </li>
+					<li class="footerlist"><font size="-1">&nbsp;&copy; 2015 Future Fossil</font></li>
+					<li class="footerlist"><a href="mailto:beezwax@aol.com">Contact</a>	</li>
+					<li class="footerlist"><a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>	</li>
+					<li class="footerlist"><a href="http://www.futurefossilmusic.com/" title="Home for all things Chris Butler">Future Fossil Music</a></li>
+					<div id="fb-root"></div>
+							<script>
+							  window.fbAsyncInit = function() {
+								FB.init({
+								  appId      : '1571033473154183',
+								  xfbml      : true,
+								  version    : 'v2.2'
+								});
+							  };
+
+							  (function(d, s, id){
+								 var js, fjs = d.getElementsByTagName(s)[0];
+								 if (d.getElementById(id)) {return;}
+								 js = d.createElement(s); js.id = id;
+								 js.src = "//connect.facebook.net/en_US/sdk.js";
+								 fjs.parentNode.insertBefore(js, fjs);
+							   }(document, 'script', 'facebook-jssdk'));
+							</script>
+							
+							<script>
+							window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
+							</script>
+								<li class="twitter-like">
+									<a class="twitter-share-button"
+								  href="https://twitter.com/share"
+								  data-url="http://www.infiniteglitch.net/oracle">
+								Tweet
+								</a></li>   
+
+						<li class="fb-like">
+							<div class="fb-share-button" data-href="http://www.infiniteglitch.net/oracle" data-layout="button_count"></div>
+						</li>
+					</ul>			
+			</div>		
+		</footer>	
+	</div>				
+	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
+	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
+		'soundmanager2-nodebug-jsmin.js',		  
+		'berniecode-animator.js',		  
+		'360player.js'		  ) }}'>
+	</script>		
+	<script type="text/javascript">		
+		$('#Oracle-03').click(function () {
+		$('#oracle').submit();}
+		);
+	</script>	
+	<script type="text/javascript" >			
+	$(".title").click(function() {
+		window.location = $(this).find("a").attr("href"); 		  
+		return false;		
+		});		
+	</script>		
+		<script type="text/javascript" src='{{ compiled('jquery.tagcloud.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
+		<script type="text/javascript">
+			$.fn.tagcloud.defaults = {
+			  size: {start: 14, end: 28, unit: 'pt'},
+			  color: {start: '#348', end: '#304'}
+			};
+
+			$(function () {
+			  $('#popular_words a').tagcloud();
+			});
+		</script>
+	{% end %}	
