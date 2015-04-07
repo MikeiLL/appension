@@ -632,7 +632,7 @@ class OracleHandler(BaseHandler):
 			og_description="Asked the glitch oracle: "+question+" and Wow is it smart!"
 			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
 			meta_description="Asked the glitch oracle: "+question+" and Wow is it smart!"
-			og_url="http://www.infiniteglitch.net/oracle?question="+url_escape(question)
+			og_url="http://www.infiniteglitch.net/oracle?question="+tornado.escape.url_escape(question)
 		else:
 			question, answer = ("","")
 			show_cloud="none"
