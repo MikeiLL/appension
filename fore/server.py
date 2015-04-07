@@ -635,7 +635,7 @@ class OracleHandler(BaseHandler):
 			og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
 			meta_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
-			og_url="http://localhost/share_oracle/"+tornado.escape.url_escape(question)+"/"+tornado.escape.url_escape(answer.couplet['couplet'][0])+"/"+tornado.escape.url_escape(answer.couplet['couplet'][1])+"/"+tornado.escape.url_escape(answer.couplet['artist'])
+			og_url="http://www.infiniteglitch.net/share_oracle/"+tornado.escape.url_escape(question)+"/"+tornado.escape.url_escape(answer.couplet['couplet'][0])+"/"+tornado.escape.url_escape(answer.couplet['couplet'][1])+"/"+tornado.escape.url_escape(answer.couplet['artist'])
 			self.redirect(og_url)
 		else:
 			question, answer = ("","")
