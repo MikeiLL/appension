@@ -648,7 +648,7 @@ class OracleHandler(BaseHandler):
 								question=question, answer=answer, popular_words=popular_words[:90],
 								show_cloud=show_cloud, og_description=og_description, 
 								page_title=page_title, meta_description=meta_description,
-								og_url=config.server_domain))
+								og_url=og_url))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
