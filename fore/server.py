@@ -349,6 +349,10 @@ class Submissionform(BaseHandler):
 				track_image_file = self.request.files['track_image'][0]['body']
 			except KeyError:
 				track_image_file = 0
+			if self.request.arguments['url'][0][:8].lower() == 'https://':
+				self.request.arguments['url'][0] = self.request.arguments['url'][0][8:]
+			elif self.request.arguments['url'][0][:7 ].lower() =='http://':
+				self.request.arguments['url'][0] = self.request.arguments['url'][0][7:]
 			database.create_track(body, filename, track_image_file, self.request.arguments, user_name)
 			message = "A new Glitch Studio Track, %s had been submitted by %s."%(filename, user_name)
 			mailer.AlertMessage(message, 'New Glitch Studio Track Submission')
@@ -503,10 +507,9 @@ class AdminRender(BaseHandler):
 			artwork = self.request.files['artwork'][0]['body']
 		except KeyError:
 			artwork = None
-		self.request.arguments['url'][0] = self.request.arguments['url'][0].lower()
-		if self.request.arguments['url'][0][:8] == 'https://':
+		if self.request.arguments['url'][0][:8].lower() == 'https://':
 			self.request.arguments['url'][0] = self.request.arguments['url'][0][8:]
-		elif self.request.arguments['url'][0][:7 ] =='http://':
+		elif self.request.arguments['url'][0][:7 ].lower() =='http://':
 			self.request.arguments['url'][0] = self.request.arguments['url'][0][7:]
 		database.update_track(track_id, self.request.arguments, artwork)
 		self.write(admin_page(user_name, updated=track_id))
