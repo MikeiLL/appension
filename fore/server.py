@@ -627,20 +627,26 @@ class OracleHandler(BaseHandler):
 		question = self.get_query_arguments('question')
 		if not len(question) == 0:
 			question = question[0]
-			print(question)
-			print(type(question))
+			show_cloud="block"
 			answer = oracle.the_oracle_speaks(question)
+			og_description="Asked the glitch oracle: "+question+" and Wow is it smart!"
+			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
+			meta_description="Asked the glitch oracle: "+question+" and Wow is it smart!"
+			og_url="http://www.infiniteglitch.net/oracle?question="+url_escape(question)
 		else:
 			question, answer = ("","")
+			show_cloud="none"
+			og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+			page_title="Ask The Glitch Oracle"
+			meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+			og_url="http://www.infiniteglitch.net/oracle"
+			
 		popular_words = oracle.popular_words(90)
 		random.shuffle(popular_words)
-		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
-		page_title="Ask The Glitch Oracle"
-		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
-		og_url="http://www.infiniteglitch.net/oracle"
+
 		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
 								question=question, answer=answer, popular_words=popular_words[:90],
-								show_cloud="none", og_description=og_description, 
+								show_cloud=show_cloud, og_description=og_description, 
 								page_title=page_title, meta_description=meta_description,
 								og_url=config.server_domain))
 		
@@ -651,8 +657,6 @@ class OracleHandler(BaseHandler):
 		if form.validate():
 			info = self.request.arguments
 			question = info.get("question",[""])[0]
-			print(question)
-			print(type(question))
 			answer = oracle.the_oracle_speaks(question)
 			og_description=""# "Asked the glitch oracle: "+question+" and learned that "+answer.couplet['couplet'][0]+" "+answer.couplet['couplet'][1]
 			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
@@ -660,10 +664,10 @@ class OracleHandler(BaseHandler):
 			popular_words = oracle.popular_words(90)
 			random.shuffle(popular_words)
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
-														question=question, answer=answer, popular_words=popular_words,
-														show_cloud="block", og_description=og_description, 
-														page_title=page_title, meta_description=meta_description,
-														og_url=og_url))
+									question=question, answer=answer, popular_words=popular_words,
+									show_cloud="block", og_description=og_description, 
+									page_title=page_title, meta_description=meta_description,
+									og_url=og_url))
 		else:
 			popular_words = oracle.popular_words(90)
 			random.shuffle(popular_words)
