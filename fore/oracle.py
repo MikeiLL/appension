@@ -51,10 +51,15 @@ class Couplet(object):
 					'couplet': couplet,
 					'artist_formatted': artist_formatted
 					}
-		
+					
+def translate_non_alphanumerics(to_translate, translate_to=u'_'):
+    not_letters_or_digits = u'!"#%\'()*+,-./:;<=>?@[\]^_`{|}~'
+    translate_table = dict((ord(char), translate_to) for char in not_letters_or_digits)
+    return to_translate.translate(translate_table)
+    		
 def get_word_list(question):
 	question = string.lower(question)
-	question = question.translate(string.maketrans("",""), string.punctuation)
+	question = translate_non_alphanumerics(question)
 	return [word for word in question.split() if word not in stop_words]
 		
 def popular_words(wordcount=50):
@@ -112,11 +117,11 @@ def the_oracle_speaks(question):
 	wordlist = get_word_list(question)
 	random.shuffle(wordlist)
 	for word in wordlist:
-		one = compare_to_lyrics(word)
+		one = compare_to_lyrics(unicode(word))
 		if one:
 			return one
 	for word in wordlist:
-		two = compare_to_keywords(word)
+		two = compare_to_keywords(unicode(word))
 		if two:
 			return two
 	return Couplet("The Glitch Oracle", random.choice(vague_responses) + u'\r ')

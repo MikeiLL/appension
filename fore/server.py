@@ -625,11 +625,13 @@ class OracleHandler(BaseHandler):
 		user_name = self.current_user or 'Glitcher'
 		form = Oracle()
 		question = self.get_query_arguments('question')
-		print(question)
 		if not len(question) == 0:
 			question = question[0]
+			print(question)
+			print(type(question))
 			answer = oracle.the_oracle_speaks(question)
-			print(answer)
+		else:
+			question, answer = ("","")
 		popular_words = oracle.popular_words(90)
 		random.shuffle(popular_words)
 		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
@@ -637,7 +639,7 @@ class OracleHandler(BaseHandler):
 		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		og_url="http://www.infiniteglitch.net/oracle"
 		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
-								question="", answer="", popular_words=popular_words[:90],
+								question=question, answer=answer, popular_words=popular_words[:90],
 								show_cloud="none", og_description=og_description, 
 								page_title=page_title, meta_description=meta_description,
 								og_url=config.server_domain))
@@ -649,10 +651,12 @@ class OracleHandler(BaseHandler):
 		if form.validate():
 			info = self.request.arguments
 			question = info.get("question",[""])[0]
+			print(question)
+			print(type(question))
 			answer = oracle.the_oracle_speaks(question)
-			og_description="Asked the glitch oracle: "+question+" and learned that "+answer.couplet['couplet'][0]+" "+answer.couplet['couplet'][1]
+			og_description=""# "Asked the glitch oracle: "+question+" and learned that "+answer.couplet['couplet'][0]+" "+answer.couplet['couplet'][1]
 			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
-			meta_description="Asked the glitch oracle: "+question+" and learned that "+answer.couplet['couplet'][0]+" "+answer.couplet['couplet'][1]
+			meta_description=""# "Asked the glitch oracle: "+question+" and learned that "+answer.couplet['couplet'][0]+" "+answer.couplet['couplet'][1]
 			popular_words = oracle.popular_words(90)
 			random.shuffle(popular_words)
 			self.write(templates.load("oracle.html").generate(compiled=compiled, form=form, user_name=user_name,
