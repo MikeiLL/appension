@@ -633,7 +633,7 @@ class OracleHandler(BaseHandler):
 			og_description="Asked the glitch oracle: "+question+" and Wow is it smart!"
 			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
 			meta_description="Asked the glitch oracle: "+question+" and Wow is it smart!"
-			og_url="http://www.infiniteglitch.net/share_oracle/"+tornado.escape.url_escape(question)+"/"+tornado.escape.url_escape(answer.couplet['couplet'][0])+"\r\n"+tornado.escape.url_escape(answer.couplet['couplet'][1].lstrip())+"/"+tornado.escape.url_escape(answer.couplet['artist'])
+			og_url="http://www.infiniteglitch.net/share_oracle/"+tornado.escape.url_escape(question)+"/"+tornado.escape.url_escape(answer.couplet['couplet'][0])+tornado.escape.url_escape("\r\n")+tornado.escape.url_escape(answer.couplet['couplet'][1])+"/"+tornado.escape.url_escape(answer.couplet['artist'])
 		else:
 			question, answer = ("","")
 			show_cloud="none"
@@ -662,7 +662,7 @@ class OracleHandler(BaseHandler):
 		og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 		page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
 		meta_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
-		og_url="http://www.infiniteglitch.net/share_oracle/"+tornado.escape.url_escape(question)+"/"+tornado.escape.url_escape(answer.couplet['couplet'][0])+"/"+tornado.escape.url_escape(answer.couplet['couplet'][1].lstrip())+"/"+tornado.escape.url_escape(answer.couplet['artist'])
+		og_url="http://www.infiniteglitch.net/share_oracle/"+tornado.escape.url_escape(question)+"/"+tornado.escape.url_escape(answer.couplet['couplet'][0])+tornado.escape.url_escape("\r\n")+tornado.escape.url_escape(answer.couplet['couplet'][1])+"/"+tornado.escape.url_escape(answer.couplet['artist'])
 		popular_words = oracle.popular_words(90)
 		random.shuffle(popular_words)
 
