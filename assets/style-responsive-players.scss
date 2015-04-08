@@ -208,7 +208,7 @@
 		}
 	}//End Media querie 40em
 		
-@media all and (min-width: 65em){
+@media all and (min-width: 60em){
 	
 		.ui360 .sm2-canvas.hi-dpi {
 		/* hi-dpi / "retina" screens */
@@ -247,7 +247,9 @@
 					}
 				}
 		}
-			
+	}
+		
+@media all and (min-width: 70em){	
 		#Devil_Glitch_Player { 
 				background-image: url(/static/img/Devil-Glitch-Player.png);
 				width:506px;
