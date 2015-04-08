@@ -29,12 +29,15 @@ BODY .grid LI.wide A
 
 P.floatRight-studio
 {
-	max-width: 94%;
+	width: 302px;
+	position: absolute;
+	margin-left: 307px;
+	margin-top: -168px;
 	color: #000000;
-	text-align: right;
+	text-align: left;
 	padding-top: 5px;
-	padding-bottom: 5px;
-	display:inline-block;
+	padding-bottom: 7px;
+	border-bottom: 1px solid gray;
 }
 
 
@@ -80,26 +83,27 @@ p.infinite-aside {
 
 
 
-	@media all and (min-width: 40em){
-		p.floatRight
-		{
-			width: 200px;
-			margin-left: 226px;
-			margin-top: -149px;
-		}
-		
-		P.floatRight-studio
-		{
-			width: 436px;
-			position: absolute;
-			margin-left: 277px;
-			margin-top: -121px;
-			color: #000000;
-			text-align: left;
-			padding-top: 5px;
-			padding-bottom: 5px;
-		}
+@media all and (min-width: 40em)
+{
+	P.floatRight
+	{
+		width: 200px;
+		margin-left: 226px;
+		margin-top: -149px;
 	}
+	P.floatRight-studio
+	{
+			width: 302px;
+	position: absolute;
+	margin-left: 307px;
+	margin-top: -168px;
+	color: #000000;
+	text-align: left;
+	padding-top: 5px;
+	padding-bottom: 7px;
+	border-bottom: 1px solid gray;
+	}
+}
 
 	@media all and (min-width: 60em){
 		p.floatRight
