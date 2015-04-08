@@ -1215,12 +1215,19 @@ P.infinite-intro
 
 	@media all and (min-width: 40em) {
 	
+	.left-player {
+		float:left;
+		width:290px;
+		margin-left: 0;
+		margin-bottom: 0;
+	  }
+	
 	  .grid li {
-		float: left;
-		width: 33.333333%;
+		float: none;
+		width: 100%;
 	  }
 	  .grid li.wide {
-		width: 66.666666%;
+		width: 100%;
 		padding: 5px 15px;
 	  }
 	  .secondary-grid li {
@@ -1231,7 +1238,7 @@ P.infinite-intro
 		width: 66.666666%;
 	  }
 	  .main {
-		margin-left:0px;
+		margin-left:290px;
 	  }
 	  #header {
 		padding: 0 5px;
@@ -1239,7 +1246,7 @@ P.infinite-intro
 		}
 	  #trackdetails {
 		display: inline-block;
-		margin: 54px 0 0 25px;
+		margin: -10px 0 0 25px;
 		}
 	.entire_length {
 	    top: 70px;
@@ -1261,6 +1268,7 @@ P.infinite-intro
 	  }
 	  .grid li {
 		width: 20%;
+		float:left
 	  }
 	  
 	  #header {
@@ -1280,6 +1288,9 @@ P.infinite-intro
 	  .main {
 		margin-left:290px;
 	  }
+	  #trackdetails {
+		margin: 54px 0 0 25px;
+		}
 	  .entire_length {
 	    top: 85px;
 	    display:block;

@@ -130,10 +130,15 @@
 		}
 		
 		.ui360 .sm2-canvas.hi-dpi {
-		/* hi-dpi / "retina" screens */
-		 top: -32%;
-		 left: -50%;
+		    left: -50%;
+		    top: -42%;
 		}
+		
+		.ui360-vis .sm2-360btn, .ui360-vis .sm2-360ui.sm2_paused .sm2-360btn, .ui360-vis .sm2-360ui.sm2_playing .sm2-360btn {
+			    margin-left: -23px;
+			    margin-top: -55px;
+			}
+
 	
 		/* Show images at 85% */
 		#Infinite_Chunk_Player { 
@@ -156,6 +161,7 @@
 			padding-left: 253px;
 			padding-top: 3px;
 			}
+		
 		}
 			
 		#Devil_Glitch_Player { 
@@ -209,11 +215,16 @@
 	}//End Media querie 40em
 		
 @media all and (min-width: 60em){
+
+		.ui360-vis .sm2-360btn, .ui360-vis .sm2-360ui.sm2_paused .sm2-360btn, .ui360-vis .sm2-360ui.sm2_playing .sm2-360btn {
+			    margin-left: -23px;
+			    margin-top: -25px;
+			}
 	
 		.ui360 .sm2-canvas.hi-dpi {
 		/* hi-dpi / "retina" screens */
 		 top: -52%;
-		 left: -48%;
+		 left: -50%;
 		}
 		
 		.ui360-vis,
