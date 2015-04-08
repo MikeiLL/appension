@@ -114,6 +114,34 @@ def route(url):
 		routes.append((url, cls))
 		return cls
 	return deco
+	
+class ShowLyrics(BaseHandler):
+	def couplet_count(self, lyrics):
+		total = 0
+		for count in lyrics:
+			total += count.track_lyrics['couplet_count']
+		return total
+			
+	def get(self):
+		lyrics = database.get_all_lyrics()
+		couplet_count = self.couplet_count(lyrics)
+		self.write(templates.load("lyrics.html").generate(compiled=compiled, 
+								user_name=self.current_user or 'Glitcher',
+								lyrics=lyrics,
+								couplet_count=couplet_count))
+								
+@route("/artwork/([0-9]+).jpg")
+class TrackArtwork(tornado.web.RequestHandler):
+	def get(self, id):
+		art = database.get_track_artwork(int(id))
+		# TODO: If the track hasn't been approved yet, return 404 unless the user is an admin.
+		if art is None:
+			self.redirect('../static/img/Default-artwork-200.png')
+		if len(art) is 0:
+			self.redirect('../static/img/Default-artwork-200.png')
+		else:
+			self.set_header("Content-Type","image/jpeg")
+			self.write(str(art))
 
 @route("/")
 class MainHandler(BaseHandler):
@@ -471,149 +499,7 @@ class SequenceHandler(BaseHandler):
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		database.sequence_tracks(self.request.arguments)
 		self.write(admin_page(user_name, notice='Transitions Updated.'))
-
-class ShowLyrics(BaseHandler):
-	def couplet_count(self, lyrics):
-		total = 0
-		for count in lyrics:
-			total += count.track_lyrics['couplet_count']
-		return total
-			
-	def get(self):
-		lyrics = database.get_all_lyrics()
-		couplet_count = self.couplet_count(lyrics)
-		self.write(templates.load("lyrics.html").generate(compiled=compiled, 
-														user_name=self.current_user or 'Glitcher',
-														lyrics=lyrics,
-														couplet_count=couplet_count))
-
-@route("/gmin")
-class AdminRender(BaseHandler):
-	@authenticated
-	def get(self):
-		self.get_current_user()
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(admin_page(user_name))
-
-	def post(self):
-		self.get_current_user()
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		track_id=int(self.request.arguments['id'][0])
-		try:
-			artwork = self.request.files['artwork'][0]['body']
-		except KeyError:
-			artwork = None
-		if self.request.arguments['url'][0][:8].lower() == 'https://':
-			self.request.arguments['url'][0] = self.request.arguments['url'][0][8:]
-		elif self.request.arguments['url'][0][:7 ].lower() =='http://':
-			self.request.arguments['url'][0] = self.request.arguments['url'][0][7:]
-		database.update_track(track_id, self.request.arguments, artwork)
-		self.write(admin_page(user_name, updated=track_id))
-
-@route("/submitters")
-class Submitters(BaseHandler):
-	@authenticated
-	def get(self):
-		self.get_current_user()
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		submitters = database.get_track_submitter_info()
-		self.write(templates.load("submitters.html").generate(
-			compiled=compiled, user_name=user_name, notice="", submitters=submitters,
-			number=1))
 		
-	def post(self):
-		self.get_current_user()
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		database.update_track_submitter_info(self.request.arguments)
-		submitters = database.get_track_submitter_info()
-		self.write(templates.load("submitters.html").generate(
-			compiled=compiled, user_name=user_name, notice="Submitter List Updated", submitters=submitters,
-			number=1))
-
-@route("/manage/([0-9]+)")
-class ManageTransition(BaseHandler):
-	@authenticated
-	def get(self, input):
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("manage_transition.html").generate(
-		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name,
-		next_track=database.get_subsequent_track(int(input))))
-
-@route("/audition/([0-9]+)")
-class AuditionTransition(BaseHandler):
-	@authenticated
-	def get(self, input):
-		# This is a POST endpoint only.
-		return self.redirect("/")
-		
-	def post(self, track_id):
-		self.get_current_user()
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		track1_id=int(self.request.arguments['track_id'][0])
-		track_xfade=int(self.request.arguments['track_xfade'][0])
-		track_otrim=int(self.request.arguments['track_otrim'][0])
-		next_track_itrim=int(self.request.arguments['next_track_itrim'][0])
-		track2_id=int(self.request.arguments['next_track_id'][0])
-		pair_o_tracks = database.get_track_filename(track1_id), database.get_track_filename(track2_id)
-		fn = os.urandom(4).encode("hex")+".mp3" # Give us a nice simple eight-character random hex file name
-		import audition
-		threading.Thread(target=audition.audition, args=(pair_o_tracks,track_xfade, track_otrim, next_track_itrim, fn)).start()
-		self.write(templates.load("audition.html").generate(
-			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
-			next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,
-			track_otrim=track_otrim, next_track_itrim=next_track_itrim, trackfn=fn))
-
-@route("/rebuild_glitch")
-class RenderGlitch(BaseHandler):
-	@authenticated
-	def get(self):
-		self.get_current_user()
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		self.write(templates.load("rebuild_glitch.html").generate(compiled=compiled, user_name=user_name))
-		
-	def post(self):
-		from mixer import rebuild_major_glitch
-		self.get_current_user()
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		threading.Thread(target=rebuild_major_glitch).start()
-		self.write(admin_page(user_name, notice="Major Glitch rebuild has been started in the background. Will complete on its own."))
-
-@route("/confirm_transition")
-class ConfirmTransition(BaseHandler):
-	@authenticated
-	def post(self):
-		self.get_current_user()
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		in_track_data = {}
-		next_track_id = self.request.arguments.pop('next_track_id')[0]
-		in_track_data['itrim'] = self.request.arguments.pop('itrim')
-		out_track_id = self.request.arguments.pop('track_id')[0]
-		database.update_track(out_track_id, self.request.arguments, artwork=None)
-		database.update_track(next_track_id, in_track_data, artwork=None)
-		self.write(admin_page(user_name, notice="Transition Settings Adjusted"))
-
-@route("/artwork/([0-9]+).jpg")
-class TrackArtwork(tornado.web.RequestHandler):
-	def get(self, id):
-		art = database.get_track_artwork(int(id))
-		# TODO: If the track hasn't been approved yet, return 404 unless the user is an admin.
-		if art is None:
-			self.redirect('../static/img/Default-artwork-200.png')
-		if len(art) is 0:
-			self.redirect('../static/img/Default-artwork-200.png')
-		else:
-			self.set_header("Content-Type","image/jpeg")
-			self.write(str(art))
-			
 class Oracle(Form):
 	question = wtforms.TextField('question', validators=[])
 
@@ -637,9 +523,7 @@ class OracleHandler(BaseHandler):
 		else:
 			question, answer = ("","")
 			show_cloud="none"
-			og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 			page_title="Ask The Glitch Oracle"
-			meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 			og_url="http://www.infiniteglitch.net/oracle"
 		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
 								question=question, answer=answer, popular_words=popular_words[:90],
@@ -669,18 +553,6 @@ class ShareOracleHandler(BaseHandler):
 								page_title=page_title, meta_description=meta_description,
 								og_url=og_url))
 		
-	
-@route("/sb")
-class SandBox(BaseHandler):
-	def get(self):
-		user_name = self.current_user or 'Glitcher'
-		og_description="The world's longest recorded pop song."
-		page_title="Sandbox Page - We Test Stuff Here"
-		meta_description="A page where we test implementations for Infinite Glitch."
-		og_url="http://www.infiniteglitch.net/sandbox"
-		self.write(templates.load("sandbox.html").generate(compiled=compiled, user_name=user_name,
-														og_description=og_description, page_title=page_title,
-														meta_description=meta_description,og_url=og_url))
 
 @route("/credits")
 class CreditsHandler(BaseHandler):
@@ -691,8 +563,8 @@ class CreditsHandler(BaseHandler):
 		meta_description="The people below are partially responsible for bringing you Infinite Glitch - the world's longest recorded pop song."
 		og_url="http://www.infiniteglitch.net/credits"
 		self.write(templates.load("credits.html").generate(compiled=compiled, user_name=user_name,
-														og_description=og_description, page_title=page_title,
-														meta_description=meta_description,og_url=og_url))
+								og_description=og_description, page_title=page_title,
+								meta_description=meta_description,og_url=og_url))
 
 @route("/view_artist/([A-Za-z0-9\+\-\.\%]+)")
 class TracksByArtist(BaseHandler):
@@ -951,6 +823,134 @@ class NewPassword(tornado.web.RequestHandler):
 								meta_description=meta_description,
 								og_description=og_description))
 
+
+# Admnisistrative Pages:
+
+@route("/gmin")
+class AdminRender(BaseHandler):
+	@authenticated
+	def get(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		self.write(admin_page(user_name))
+
+	def post(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		track_id=int(self.request.arguments['id'][0])
+		try:
+			artwork = self.request.files['artwork'][0]['body']
+		except KeyError:
+			artwork = None
+		if self.request.arguments['url'][0][:8].lower() == 'https://':
+			self.request.arguments['url'][0] = self.request.arguments['url'][0][8:]
+		elif self.request.arguments['url'][0][:7 ].lower() =='http://':
+			self.request.arguments['url'][0] = self.request.arguments['url'][0][7:]
+		database.update_track(track_id, self.request.arguments, artwork)
+		self.write(admin_page(user_name, updated=track_id))
+
+@route("/submitters")
+class Submitters(BaseHandler):
+	@authenticated
+	def get(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		submitters = database.get_track_submitter_info()
+		self.write(templates.load("submitters.html").generate(
+			compiled=compiled, user_name=user_name, notice="", submitters=submitters,
+			number=1))
+		
+	def post(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		database.update_track_submitter_info(self.request.arguments)
+		submitters = database.get_track_submitter_info()
+		self.write(templates.load("submitters.html").generate(
+			compiled=compiled, user_name=user_name, notice="Submitter List Updated", submitters=submitters,
+			number=1))
+
+@route("/manage/([0-9]+)")
+class ManageTransition(BaseHandler):
+	@authenticated
+	def get(self, input):
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		self.write(templates.load("manage_transition.html").generate(
+		track=database.get_single_track(int(input)), compiled=compiled, user_name=user_name,
+		next_track=database.get_subsequent_track(int(input))))
+
+@route("/audition/([0-9]+)")
+class AuditionTransition(BaseHandler):
+	@authenticated
+	def get(self, input):
+		# This is a POST endpoint only.
+		return self.redirect("/")
+		
+	def post(self, track_id):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		track1_id=int(self.request.arguments['track_id'][0])
+		track_xfade=int(self.request.arguments['track_xfade'][0])
+		track_otrim=int(self.request.arguments['track_otrim'][0])
+		next_track_itrim=int(self.request.arguments['next_track_itrim'][0])
+		track2_id=int(self.request.arguments['next_track_id'][0])
+		pair_o_tracks = database.get_track_filename(track1_id), database.get_track_filename(track2_id)
+		fn = os.urandom(4).encode("hex")+".mp3" # Give us a nice simple eight-character random hex file name
+		import audition
+		threading.Thread(target=audition.audition, args=(pair_o_tracks,track_xfade, track_otrim, next_track_itrim, fn)).start()
+		self.write(templates.load("audition.html").generate(
+			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
+			next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,
+			track_otrim=track_otrim, next_track_itrim=next_track_itrim, trackfn=fn))
+
+@route("/rebuild_glitch")
+class RenderGlitch(BaseHandler):
+	@authenticated
+	def get(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		self.write(templates.load("rebuild_glitch.html").generate(compiled=compiled, user_name=user_name))
+		
+	def post(self):
+		from mixer import rebuild_major_glitch
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		threading.Thread(target=rebuild_major_glitch).start()
+		self.write(admin_page(user_name, notice="Major Glitch rebuild has been started in the background. Will complete on its own."))
+
+@route("/confirm_transition")
+class ConfirmTransition(BaseHandler):
+	@authenticated
+	def post(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		in_track_data = {}
+		next_track_id = self.request.arguments.pop('next_track_id')[0]
+		in_track_data['itrim'] = self.request.arguments.pop('itrim')
+		out_track_id = self.request.arguments.pop('track_id')[0]
+		database.update_track(out_track_id, self.request.arguments, artwork=None)
+		database.update_track(next_track_id, in_track_data, artwork=None)
+		self.write(admin_page(user_name, notice="Transition Settings Adjusted"))
+				
+@route("/sb")
+class SandBox(BaseHandler):
+	def get(self):
+		user_name = self.current_user or 'Glitcher'
+		og_description="The world's longest recorded pop song."
+		page_title="Sandbox Page - We Test Stuff Here"
+		meta_description="A page where we test implementations for Infinite Glitch."
+		og_url="http://www.infiniteglitch.net/sandbox"
+		self.write(templates.load("sandbox.html").generate(compiled=compiled, user_name=user_name,
+								og_description=og_description, page_title=page_title,
+								meta_description=meta_description,og_url=og_url))
 
 class OutreachForm(Form):
 	message = wtforms.TextField('email', validators=[wtforms.validators.DataRequired()])
