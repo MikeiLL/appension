@@ -51,6 +51,12 @@ from combine_tracks import render_track
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
 
+page_title="Infinite Glitch - The World's Longest Recorded Pop Song, by Chris Butler."
+og_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
+meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
+og_url=config.server_domain
+
+
 test = 'test' in sys.argv
 SECONDS_PER_FRAME = lame.SAMPLES_PER_FRAME / 44100.0
 
@@ -245,6 +251,7 @@ class SocketConnection(tornadio2.conn.SocketConnection):
 
 
 def MpegFile(form, field):
+	"""WTForms Validator"""
 	try:
 		filename = field.raw_data[0].filename
 		#if file.size > 10*1024*1024:
@@ -259,6 +266,7 @@ def MpegFile(form, field):
 		raise ValidationError(" We need a valid mp3 file to create a track submission.")
 		
 def ImageFile(form, field):
+	"""WTForms Validator"""
 	try:
 		filename = field.raw_data[0].filename
 		ext = os.path.splitext(filename)[1]
@@ -290,9 +298,7 @@ class Submissionform(BaseHandler):
 	def get(self):
 		form = SubmissionForm(track_source='user_form')
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		page_title="Glitch Track Submission Form."
-		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
-		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+		page_title="Infinite Glitch Track Submission Form."
 
 		self.write(templates.load("submit_track.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
 																meta_description=meta_description, og_url=config.server_domain,
@@ -301,9 +307,7 @@ class Submissionform(BaseHandler):
 	def post(self):
 		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
-		page_title="Glitch Track Submission."
-		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
-		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+		page_title="Glitch Track Submission Confirmation Page."
 		form = SubmissionForm(self.request.arguments)
 		try:
 			form.mp3_file.raw_data = self.request.files['mp3_file']
@@ -367,9 +371,7 @@ class Recorder(BaseHandler):
 	def get(self):
 		form = SubmissionForm()
 		user_name = tornado.escape.xhtml_escape(self.current_user)
-		page_title="Glitch Recording Studio"
-		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
-		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
+		page_title="Infinite Glitch Recording Studio"
 
 		self.write(templates.load("recorder.html").generate(compiled=compiled, user_name=user_name, notice='', page_title=page_title,
 								meta_description=meta_description, og_url=config.server_domain,
@@ -380,12 +382,8 @@ class Recorder(BaseHandler):
 		user_name = self.current_user or 'Glitch Hacker'
 		details = 'You submitted:<br/>';
 		page_title="Glitch Track Submission"
-		og_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
-		meta_description="The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting smarter."
 		form = SubmissionForm(self.request.arguments)
 
-		for f in self.request.arguments:
-			details += "<hr/>" + self.get_argument(f, default=None, strip=False)
 		data = self.get_argument("data", "")
 		if data.startswith("data:audio/mp3;base64,"):
 			data = data[22:] # Trim off the expected prefix
@@ -395,7 +393,6 @@ class Recorder(BaseHandler):
 			pass
 		filename = self.get_argument("fname","new.mp3")
 		username = self.get_argument("username","Unknown/Hacker?")
-		details += "<hr/>" + filename
 
 		# Ensure that the file is stereo. For some reason, manipulating mono files
 		# causes problems, so let's just quickly ffmpeg this thing on arrival. Note
@@ -879,8 +876,7 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 class ResetPassword(tornado.web.RequestHandler):
 	def get(self):
 		form = ResetRequestForm()
-		og_description="Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
-		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
+		og_description="Reset Password : Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		self.write(templates.load("reset_password.html").generate(compiled=compiled, form=form, user_name="new glitcher", notice='', 
 									page_title="Reset Password Request", og_url=config.server_domain,
 									meta_description=meta_description,
@@ -890,7 +886,7 @@ class ResetPassword(tornado.web.RequestHandler):
 		form = ResetRequestForm(self.request.arguments)
 		form.__delitem__('password')
 		form.__delitem__('confirm')
-		og_description="Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
+		og_description="Password Reset : Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="""I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 		if form.validate():
 			info = self.request.arguments
