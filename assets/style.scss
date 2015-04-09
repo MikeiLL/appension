@@ -23,6 +23,15 @@ H2
 	text-shadow: 2px 2px 1px black;
 }
 
+ol.contribution_limitations {
+	list-style-type: lower-alpha;
+	margin-left: 2.5em;
+	list-style-position: inside;
+}
+#contributions li {
+		width: 100%;
+	}
+
 #submit-points LI
 {
 	padding-left: 36px;
@@ -31,6 +40,7 @@ H2
 	background-position: 0px -4px;
 	line-height: 20px;
 	margin: 0px 0 0 -5px;
+	width: 100%;
 }
 table {
 	border-collapse: collapse;
