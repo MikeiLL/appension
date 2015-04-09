@@ -86,10 +86,16 @@ class Lyric(object):
 		couplets = [block for block in re.split(r'(?:\r\n){2,}', lyrics) if block.count('\r\n') == 1]
 		couplet_count = len(couplets)
 		lyrics = self.get_couplets(lyrics)
+                if len(artist.split(',')) > 1:
+                        the_artist = artist.split(',')
+                        artist_exact = artist
+                        artist = ' '.join([the_artist[1], the_artist[0]])
+                else: artist_exact = artist
 		
 		self.track_lyrics = {
 			'id': id,
 			'artist': artist,
+			'artist_exact': artist_exact,
 			'lyrics': lyrics,
 			#TODO ignore lyrics that exceed sts of two (but allow for 1/2 couplets)
 			'couplet_count': couplet_count,
