@@ -39,15 +39,7 @@ HR
 	box-shadow: 0 0 5px teal;
 	margin-top: 20px;
 }
-#submit-points LI
-{
-	padding-left: 36px;
-	background-image: url(/static/img/globe.png);
-	background-repeat: no-repeat;
-	background-position: 0px -4px;
-	line-height: 20px;
-	margin: 0px 0 0 -5px;
-}
+
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
@@ -66,7 +58,26 @@ body {
 	width: 100%;
 	min-height: 470px;
   	background-color: #B06E6C;
-  	
+  
+	ol.contribution_limitations {
+		list-style-type: lower-alpha;
+		margin-left: 2.5em;
+		list-style-position: inside;
+	}
+	#contributions li {
+			width: 100%;
+		}
+
+	#submit-points LI
+	{
+		padding-left: 36px;
+		background-image: url(/static/img/globe.png);
+		background-repeat: no-repeat;
+		background-position: 0px -4px;
+		line-height: 20px;
+		margin: 0px 0 0 -5px;
+		width: 100%;
+	}
   	/** bootstrap buttons**/
 
 .btn-default {

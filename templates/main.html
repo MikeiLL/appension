@@ -107,17 +107,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	
 	{% block right-nav %}
 			<li>
-				<nav role="navigation">
-					<div style="text-align: center"><ul>
-							<li><a href="/create_account"><img src="static/img/sign-up.png" class="nav_image" border="0" alt=""></a></li>
-							<li><a href="/login"><img src="static/img/login-link.png" class="nav_image" border="0" alt=""></a></li>
-							<li><a href="/logout"><img src="static/img/logout-link.png" class="nav_image" border="0" alt=""></a></li>
-							<li><a href="/choice_chunks"><img src="static/img/segment-selection-link.png" class="nav_image" border="0" alt=""></a></li>
-							<li><a href="/submit"><img src="static/img/submit-link.png" class="nav_image" border="0" alt=""></a></li>
-							<li><a href="/oracle"><img src="static/img/magic-ball-link.png" class="nav_image" border="0" alt=""></a></li>
-							<li><a href="/credits"><img src="static/img/credits-link.png" class="nav_image" border="0" alt=""></a></li>
-						</ul></div>	
-				</nav>
+				{% include 'modules/navigation.html' %}	
 			</li>
 			
 		</ul>
@@ -126,64 +116,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	</div>
 		{% block footer %}		
 	<div class="container">			
-		<footer role="contentinfo">
-			<div>				
-				<!-- Amended February 28 -->
-				<nav id="menu">
-					<ul class="footer_menu">
-					<li class="footerlist"><a href="/">Home</a> </li>
-					<li class="footerlist"><font size="-1">&nbsp;&copy; 2015 Future Fossil</font></li>
-					<li class="footerlist"><a href="mailto:beezwax@aol.com">Contact</a>	</li>
-					<li class="footerlist"><a href="http://chrisbutler1.bandcamp.com" target="_newbrowser">Bandcamp</a>	</li>
-					<li class="footerlist"><a href="http://www.futurefossilmusic.com/" title="Home for all things Chris Butler">Future Fossil Music</a></li>
-					<div id="fb-root"></div>
-							<script>
-							  window.fbAsyncInit = function() {
-								FB.init({
-								  appId      : '1571033473154183',
-								  xfbml      : true,
-								  version    : 'v2.2'
-								});
-							  };
-
-							  (function(d, s, id){
-								 var js, fjs = d.getElementsByTagName(s)[0];
-								 if (d.getElementById(id)) {return;}
-								 js = d.createElement(s); js.id = id;
-								 js.src = "//connect.facebook.net/en_US/sdk.js";
-								 fjs.parentNode.insertBefore(js, fjs);
-							   }(document, 'script', 'facebook-jssdk'));
-							</script>
-								
-							<script>
-							window.twttr=(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);t._e=[];t.ready=function(f){t._e.push(f);};return t;}(document,"script","twitter-wjs"));
-							</script>
-								<li class="twitter-like">
-								<a class="twitter-share-button"
-								  href="https://twitter.com/share"
-								  data-url="http://www.infiniteglitch.net">
-								Tweet
-								</a>
-								</li>   
-
-						<li class="fb-like">
-							<div class="fb-share-button" data-href="http://www.infiniteglitch.net" data-layout="button_count"></div>
-						</li>
-					</ul>
-				</nav>			
-			</div>		
-		</footer>	
+		{% include 'modules/footer.html' %}	
 	</div>				
 	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
 	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
 		'soundmanager2-nodebug-jsmin.js',		  
 		'berniecode-animator.js',		  
-		'360player.js'		  ) }}'>
-	</script>		
-	<script type="text/javascript">		
-		$('#Oracle-03').click(function () {
-		$('#oracle').submit();}
-		);
+		'360player.js',
+		'bar-ui.js',
+		'socket.io.js',
+		'sm-configs.js'	  ) }}'>
 	</script>	
 	<script type="text/javascript" >			
 	$(".title").click(function() {
@@ -191,21 +133,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		return false;		
 		});		
 	</script>		
-		<script type="text/javascript" src='{{ compiled('jquery.tagcloud.js') }}'></script>
-		<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>
-		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
-		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
-		<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
-		<script type="text/javascript">
-			$.fn.tagcloud.defaults = {
-			  size: {start: 14, end: 28, unit: 'pt'},
-			  color: {start: '#cde', end: '#f52'}
-			};
 
-			$(function () {
-			  $('#popular_words a').tagcloud();
-			});
-		</script>
+		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
 		
 		<script type="text/javascript">
 			// Hide all but first tab content
