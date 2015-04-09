@@ -167,6 +167,9 @@ class MainHandler(BaseHandler):
 			'user_name':self.current_user or 'Glitcher',
 			'couplet_count': self.couplet_count(lyrics),
 			'lyrics': lyrics,
+			'og_url':og_url,
+			'og_description':og_description,
+			'meta_description':meta_description
 		}
 		if os.path.getmtime(config.template_dir + self.template) > self.mtime:
 			templates.reset()
