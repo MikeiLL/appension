@@ -1,6 +1,6 @@
 """
-Forever.fm Server
-by @psobot, Nov 3 2012
+InfiniteGlitch Server
+by Mike iLL/mZoo and Rosuav, April 8th 2014
 """
 
 import logging
@@ -524,6 +524,8 @@ class OracleHandler(BaseHandler):
 			question, answer = ("","")
 			show_cloud="none"
 			page_title="Ask The Glitch Oracle"
+			og_description="Ask The Glitch Oracle"
+			meta_description="Ask The Glitch Oracle"
 			og_url="http://www.infiniteglitch.net/oracle"
 		self.write(templates.load("oracle.html").generate(compiled=compiled, user_name=user_name, form=form, 
 								question=question, answer=answer, popular_words=popular_words[:90],
@@ -1064,6 +1066,14 @@ class GetInstrumental(BaseHandler):
 	    self.set_header ('Content-Disposition', 'attachment; filename=devilGlitchAcousticInstrumental.mp3')
 	    self.write (ifile.read())
 	    self.finish()
+	    
+class NavModule(tornado.web.UIModule):
+	def render(self):
+		return self.render_string('modules/navigation.html')
+	    
+class FooterModule(tornado.web.UIModule): 
+	def render(self):
+		return self.render_string('modules/footer.html')
 
 if __name__ == "__main__":
 	Daemon()
@@ -1084,6 +1094,8 @@ if __name__ == "__main__":
 		tornadio2.TornadioRouter(SocketConnection).apply_routes(routes),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',
+		ui_modules={'Footer': FooterModule,
+			'GlitchNavigationModule': NavModule,}
 	)
 
 	frame_sender = tornado.ioloop.PeriodicCallback(

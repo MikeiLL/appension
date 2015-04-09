@@ -179,11 +179,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		'soundmanager2-nodebug-jsmin.js',		  
 		'berniecode-animator.js',		  
 		'360player.js'		  ) }}'>
-	</script>		
-	<script type="text/javascript">		
-		$('#Oracle-03').click(function () {
-		$('#oracle').submit();}
-		);
 	</script>	
 	<script type="text/javascript" >			
 	$(".title").click(function() {
@@ -191,11 +186,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		return false;		
 		});		
 	</script>		
-		<script type="text/javascript" src='{{ compiled('jquery.tagcloud.js') }}'></script>
-		<script type="text/javascript" src='{{ compiled('bar-ui.js') }}'></script>
-		<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
+		<script type="text/javascript" src='{{ compiled('jquery.tagcloud.js',
+								'bar-ui.js',
+								'socket.io.js',
+								'sm-configs.js') }}'>
+								</script>
 		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
-		<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
 		<script type="text/javascript">
 			$.fn.tagcloud.defaults = {
 			  size: {start: 14, end: 28, unit: 'pt'},
