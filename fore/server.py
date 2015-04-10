@@ -575,11 +575,16 @@ class CreditsHandler(BaseHandler):
 class TracksByArtist(BaseHandler):
 	def get(self, artist):
 		user_name = self.current_user or 'Glitcher'
-		tracks_by = database.tracks_by(escape.url_unescape(artist))
-		og_description= tracks_by[0].track_details['artist']+" contributions to The world's longest recorded pop song."
-		page_title=tracks_by[0].track_details['artist']+": Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
+		artist = escape.url_unescape(artist)
+		url_artist = artist
+		if artist[:5] == 'pname':
+			artist_truncated = artist[6:]
+			artist = ', '.join([x for x in artist_truncated.split()][::-1])
+		tracks_by = database.tracks_by(artist)
+		og_description= url_artist+" contributions to The world's longest recorded pop song."
+		page_title=url_artist+": Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest recorded pop song."
-		og_url="http://www.infiniteglitch.net/view_artist/"+tornado.escape.url_escape(tracks_by[0].track_details['artist'])
+		og_url="http://www.infiniteglitch.net/view_artist/"+tornado.escape.url_escape(url_artist)
 		self.write(templates.load("view_artist.html").generate(compiled=compiled, user_name=user_name, 
 									tracks_by=tracks_by, og_description=og_description, 
 									page_title=page_title, meta_description=meta_description,
