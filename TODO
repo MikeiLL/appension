@@ -28,6 +28,7 @@
 	Check transition type - set to 'equal_power' DONE
 	Add artist url and display in Story pop-up
 	Automate 'track activated' email and track "notified" status.
+	Put together a database migration ststem
 	
 VERSION TWO WISH LIST:
 
