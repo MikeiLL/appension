@@ -112,7 +112,7 @@
 	</td></tr>
 	{% if track.track_details['url'] %}
 	<tr><td><h2>A Website</h2></td></tr>
-	<tr><td><a href="http://{{ url_escape(track.track_details['url']) }}" target="_blank">{{ track.track_details['url'] }}</a></td></tr>
+	<tr><td><a href="http://{{ track.track_details['url'] }}" target="_blank">{{ track.track_details['url'] }}</a></td></tr>
 	
 	{% end %}
 	
