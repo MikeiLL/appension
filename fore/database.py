@@ -122,26 +122,6 @@ def get_many_mp3(status=1, order_by='length'):
 		return [Track(*row) for row in cur.fetchall()]
 
 _track_queue = multiprocessing.Queue()
-def get_track_to_render():
-	"""Get a track from the database with presumption that it will be played.
-
-	If something has been enqueued with enqueue_track(), that will be the one
-	returned; otherwise, one is picked by magic.
-	"""
-	with _conn, _conn.cursor() as cur:
-		try:
-			track=_track_queue.get(False)
-			log.info("Using enqueued track %s.", track.id)
-		except Queue.Empty:
-			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY played,sequence,id")
-			row=cur.fetchone()
-			if not row: raise ValueError("Database is empty, cannot enqueue track")
-			track=Track(*row)
-			log.info("Automatically picking track %s.", track.id)
-		# Record that a track has been played.
-		# Currently simply increments the counter; may later keep track of how long since played, etc.
-		cur.execute("UPDATE tracks SET played=played+1 WHERE id=%s", (track.id,))
-		return track
 		
 def get_track_to_play():
 	"""Get a track from the database with presumption that it will be played.
