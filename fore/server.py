@@ -581,8 +581,8 @@ class TracksByArtist(BaseHandler):
 			artist_truncated = artist[6:]
 			artist = ', '.join([x for x in artist_truncated.split()][::-1])
 		tracks_by = database.tracks_by(artist)
-		og_description= url_artist+" contributions to The world's longest recorded pop song."
-		page_title=url_artist+": Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
+		og_description= artist+" contributions to The world's longest recorded pop song."
+		page_title=artist+": Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest recorded pop song."
 		og_url="http://www.infiniteglitch.net/view_artist/"+tornado.escape.url_escape(url_artist)
 		self.write(templates.load("view_artist.html").generate(compiled=compiled, user_name=user_name, 
