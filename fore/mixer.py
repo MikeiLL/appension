@@ -9,6 +9,7 @@ import apikeys
 import logging
 import urllib2
 import cPickle
+import base64
 import traceback
 import threading
 import subprocess
@@ -233,7 +234,7 @@ class LocalAudioStream(AudioStream):
 			# data; there's no real guarantee of this, but if you
 			# fiddle in the database, I won't stop you shooting
 			# yourself in the foot.
-			tempanalysis = cPickle.loads(analysis)
+			tempanalysis = cPickle.loads(base64.b64decode(analysis))
 		except (EOFError, TypeError, cPickle.UnpicklingError):
 			# If there's no saved analysis (including if the arg is
 			# omitted; None will raise TypeError), load the file,
@@ -373,7 +374,10 @@ class Mixer(multiprocessing.Process):
 			return self.analyze(*x)
 
 		log.info("Grabbing stream [%r]...", x.id)
-		laf = LocalAudioStream(self.get_stream(x))
+		saved = database.get_analysis(x.id)
+		laf = LocalAudioStream(self.get_stream(x), saved)
+		if not saved:
+			database.save_analysis(x.id, base64.b64encode(cPickle.dumps(laf.analysis,-1)))
 		setattr(laf, "_metadata", x)
 		return self.process(laf)
 
