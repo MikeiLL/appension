@@ -247,7 +247,7 @@ class TimingHandler(tornado.web.RequestHandler):
 @route("/all\.mp3")
 class StreamHandler(tornado.web.RequestHandler):
 	clients = []
-	listeners = []
+	listeners = [] # Not currently used??
 
 	@classmethod
 	def stream_frames(cls):
