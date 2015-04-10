@@ -365,7 +365,7 @@ def get_recent_tracks(number):
 def tracks_by(artist):
     """Return artist, id for tracks, where artist name starts with letter in expression"""
     with _conn, _conn.cursor() as cur:
-        cur.execute("SELECT {cols} FROM tracks WHERE status = 1 AND artist = '{artist}' ORDER BY title LIMIT 20".format(cols=Track.columns, artist=artist))
+        cur.execute("SELECT {cols} FROM tracks WHERE status = 1 AND trim(artist) = '{artist}' ORDER BY title LIMIT 20".format(cols=Track.columns, artist=artist))
         return [Track(*row) for row in cur.fetchall()]
         
 def create_user(username, email, password, hex_key):

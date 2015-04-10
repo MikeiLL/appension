@@ -579,7 +579,12 @@ class TracksByArtist(BaseHandler):
 		url_artist = artist
 		if artist[:5] == 'pname':
 			artist = artist[6:]
-			artist_for_db = ', '.join([x for x in artist.split()][::-1])
+			artist_formatting = artist.split()
+			if len(artist_formatting) > 2:
+				artist_last = ' '.join(artist_formatting[1:])
+				artist_for_db = ', '.join([artist_last, artist_formatting[0]])
+			else: 
+				artist_for_db = artist_formatting[::-1]
 			artist = ' '.join([x for x in artist.split()])
 		tracks_by = database.tracks_by(artist_for_db)
 		og_description= artist+" contributions to The world's longest recorded pop song."
