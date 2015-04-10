@@ -575,12 +575,12 @@ class CreditsHandler(BaseHandler):
 class TracksByArtist(BaseHandler):
 	def get(self, artist):
 		user_name = self.current_user or 'Glitcher'
-		artist = escape.url_unescape(artist)
+		artist = artist_for_db = escape.url_unescape(artist)
 		url_artist = artist
 		if artist[:5] == 'pname':
-			artist_truncated = artist[6:]
-			artist = ', '.join([x for x in artist_truncated.split()][::-1])
-		tracks_by = database.tracks_by(artist)
+			artist = artist[6:]
+			artist_for_db = ', '.join([x for x in artist.split()][::-1])
+		tracks_by = database.tracks_by(artist_for_db)
 		og_description= artist+" contributions to The world's longest recorded pop song."
 		page_title=artist+": Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest recorded pop song."
