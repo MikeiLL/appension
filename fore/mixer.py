@@ -216,12 +216,11 @@ class AudioStream(object):
 class LocalAudioStream(AudioStream):
 	"""
 	Like a non-seekable LocalAudioFile with vastly better memory usage
-	and performance. Takes a file-like object (and its kind, assumed
-	to be MP3) and supports slicing and rendering. Attempting to read
-	from a part of the input file that has already been read will throw
-	an exception.
+	and performance. Takes a file-like object and supports slicing and
+	rendering. Attempting to read from a part of the input file that
+	has already been read will throw an exception.
 	"""
-	def __init__(self, initializer, kind="mp3"):
+	def __init__(self, initializer):
 		AudioStream.__init__(self, initializer)
 
 		start = time.time()
@@ -245,7 +244,7 @@ class LocalAudioStream(AudioStream):
                 try:
                         tempanalysis = AudioAnalysis(str(track_md5))
                 except EchoNestAPIError:
-                        tempanalysis = AudioAnalysis(initializer, kind)
+                        tempanalysis = AudioAnalysis(initializer, "mp3")
 
                 log.info("Fetched analysis in %ss", time.time() - start)
 		self.analysis = tempanalysis
