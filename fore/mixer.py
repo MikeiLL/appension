@@ -8,6 +8,7 @@ import gc
 import apikeys
 import logging
 import urllib2
+import cPickle
 import traceback
 import threading
 import subprocess
@@ -219,34 +220,57 @@ class LocalAudioStream(AudioStream):
 	and performance. Takes a file-like object and supports slicing and
 	rendering. Attempting to read from a part of the input file that
 	has already been read will throw an exception.
+
+	If analysis is provided, it is assumed to be a pickle of an
+	AudioAnalysis, and will be used in preference to querying echonest.
 	"""
-	def __init__(self, initializer):
+	def __init__(self, initializer, analysis=None):
 		AudioStream.__init__(self, initializer)
 
-		start = time.time()
-		if hasattr(initializer, 'seek'):
-			fobj = initializer
-			fobj.seek(0)
-		else:
-			fobj = open(initializer, 'r')
-		#   This looks like a lot of work, but is much more lighter
-		#   on memory than reading the entire file in.
-		md5 = hashlib.md5()
-		while True:
-			data = fobj.read(2 ^ 16)
-			if not data:
-				break
-			md5.update(data)
-		if not hasattr(initializer, 'seek'):
-			fobj.close()
-		track_md5 = md5.hexdigest()
-                log.info("Fetching analysis...")
-                try:
-                        tempanalysis = AudioAnalysis(str(track_md5))
-                except EchoNestAPIError:
-                        tempanalysis = AudioAnalysis(initializer, "mp3")
+		try:
+			# Attempt to load up the existing analysis first.
+			# Assume that a successful unpickling represents correct
+			# data; there's no real guarantee of this, but if you
+			# fiddle in the database, I won't stop you shooting
+			# yourself in the foot.
+			tempanalysis = cPickle.loads(analysis)
+		except (EOFError, TypeError, cPickle.UnpicklingError):
+			# If there's no saved analysis (including if the arg is
+			# omitted; None will raise TypeError), load the file,
+			# and send it off to echonest. We try the MD5 first, as
+			# it means less uploading, and fall back on actually
+			# sending the whole file out. Note that if the pickle is
+			# normally saved correctly, then we might never hit the
+			# MD5 optimization any more, so it might be worth tossing
+			# it out and just uploading any time.
+			start = time.time()
+			if hasattr(initializer, 'seek'):
+				fobj = initializer
+				fobj.seek(0)
+			else:
+				fobj = open(initializer, 'r')
+			#   This looks like a lot of work, but is much more lighter
+			#   on memory than reading the entire file in.
+			md5 = hashlib.md5()
+			while True:
+				data = fobj.read(2 ^ 16)
+				if not data:
+					break
+				md5.update(data)
+			if not hasattr(initializer, 'seek'):
+				fobj.close()
+			track_md5 = md5.hexdigest()
+			log.info("Fetching analysis...")
+			try:
+				tempanalysis = AudioAnalysis(str(track_md5))
+			except EchoNestAPIError:
+				tempanalysis = AudioAnalysis(initializer, "mp3")
+			log.info("Fetched analysis in %ss", time.time() - start)
 
-                log.info("Fetched analysis in %ss", time.time() - start)
+		# By the time we get here, we ought to have a valid tempanalysis.
+		# The very last attempt (passing the original initializer to
+		# AudioAnalysis) will let any exceptions bubble all the way up,
+		# so we don't have to deal with that here.
 		self.analysis = tempanalysis
 		self.analysis.source = weakref.ref(self)
 
