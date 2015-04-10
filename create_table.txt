@@ -19,6 +19,7 @@ create table tracks (id serial primary key,
 		sequence int not null default 0,
 		keywords varchar not null default '',
 		url varchar not null default '',
+		analysis varchar not null default '',
 		userid int not null default 0
 );
 

@@ -480,3 +480,12 @@ def reset_user_password(id, hex_key, password):
         hash = hashlib.sha256(salt+password).hexdigest()
         pwd = salt.encode("hex")+"-"+hash
         cur.execute("update users set password=%s, hex_key='' where id=%s and hex_key=%s", (pwd, id, hex_key))
+
+def get_analysis(id):
+	with _conn, _conn.cursor() as cur:
+		cur.execute("select analysis from tracks where id=%s", (id,))
+		return cur.fetchone()[0]
+
+def save_analysis(id, analysis):
+	with _conn, _conn.cursor() as cur:
+		cur.execute("update tracks set analysis=%s where id=%s", (analysis, id))
