@@ -24,11 +24,11 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 				{% end %}
 				{% if not answer == "" %}
 					<div class="glitch_answer">{{ answer.couplet['couplet'][0] }}<br/>
-						{% if not answer.couplet['artist'] == "The Glitch Oracle" %}
+						{% if not answer.couplet['artist'].name['display_name'] == "The Glitch Oracle" %}
 						{{ answer.couplet['couplet'][1] }}.<br/>
-						<p>-<a href="/view_artist/{{ url_escape(answer.couplet['artist']) }}">{{ answer.couplet['artist_formatted'] }}</a></p>
+						<p>-<a href="/view_artist/{{ url_escape('sposplit '+answer.couplet['artist'].name['name_list'][0]+' fposplit '+answer.couplet['artist'].name['name_list'][0]) }}">{{ answer.couplet['artist'].name['display_name'] }}</a></p>
 						{% else %}
-						<p>-{{ answer.couplet['artist'] }}</p>
+						<p>-{{ answer.couplet['artist'].name['display_name'] }}</p>
 						<br style="clear:both"/>
 					</div>
 					{% end %}

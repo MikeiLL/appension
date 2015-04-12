@@ -40,16 +40,13 @@ vague_responses = ["Hmmm....good question.  Not sure i can answer that one.  Got
 class Couplet(object):
 	
 	def __init__(self, artist, couplet):
+		'''Here artist is an object returned from database, who's name attribute contains
+		display_name and name_list keys.'''
 		couplet = couplet[:1].upper() + couplet[1:]
 		couplet = couplet.splitlines(True)
-		if len(artist.split(',')) > 1:
-			an_artist = artist.split(',')
-			artist_formatted = ' '.join([an_artist[1], an_artist[0]])
-		else: artist_formatted = artist
 		self.couplet = {
 					'artist': artist,
-					'couplet': couplet,
-					'artist_formatted': artist_formatted
+					'couplet': couplet
 					}
 					
 def translate_non_alphanumerics(to_translate, translate_to=u'_'):
@@ -85,12 +82,6 @@ def popular_words(wordcount=50):
 				popular[word] = 1
 	popular_sorted = sorted(popular.iteritems(), key=operator.itemgetter(1), reverse = True)
 	return popular_sorted[:wordcount]
-						
-'''popular_sorted = sorted(popular.iteritems(), key=operator.itemgetter(1), reverse = True)
-y = []
-for pair in range(10):
-	y = y + [popular_sorted[pair][1]]
-	print popular_sorted[pair]'''
 				 	
 def compare_to_lyrics(word):
 	from fore.database import match_lyrics
@@ -131,7 +122,8 @@ def the_oracle_speaks(question):
 		two = compare_to_keywords(unicode(word))
 		if two:
 			return two
-	return Couplet("The Glitch Oracle", random.choice(vague_responses) + u'\r ')
+	from database import Artist
+	return Couplet(Artist("The Glitch Oracle"), random.choice(vague_responses) + u'\r ')
 	 
 	
 		

@@ -103,8 +103,7 @@ class Lyric(object):
 		
 		self.track_lyrics = {
 			'id': id,
-			'artist_display_name': an_artist.name['display_name'],
-			'artist_list': an_artist.name['name_list'],
+			'artist': an_artist.name,
 			'lyrics': lyrics,
 			#TODO ignore lyrics that exceed sts of two (but allow for 1/2 couplets)
 			'couplet_count': couplet_count,
