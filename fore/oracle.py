@@ -132,8 +132,7 @@ def the_oracle_speaks(question):
 		two = compare_to_keywords(unicode(word))
 		if two:
 			return two
-	from database import Artist
-	return Couplet(Artist("The Glitch Oracle"), random.choice(vague_responses).decode('utf-8') + u'\r ')
+	return Couplet({'display_name':"The Glitch Oracle"}, random.choice(vague_responses).decode('utf-8') + u'\r ')
 	 
 	
 		

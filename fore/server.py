@@ -518,7 +518,7 @@ class OracleHandler(BaseHandler):
 			question = question[0]
 			show_cloud="block"
 			answer = oracle.the_oracle_speaks(question)
-			artist = answer.couplet['artist'].name['display_name'].strip()
+			artist = answer.couplet['artist']['display_name'].strip()
 			og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
 			meta_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
