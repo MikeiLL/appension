@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Mike iLL 2015
 
@@ -15,14 +17,17 @@ stop_words = get_stop_words('en')
 if not u'sometimes' in stop_words:
 	stop_words.extend([u'sometimes', u'can', u'will', u'fix', u'just', u'things'])
 	
-vague_responses = ["Hmmm....good question.  Not sure i can answer that one.  Got another?", 
+vague_responses = ["Zvukŭt na edna rŭka rŭkoplyaskane . Pitaĭ me neshto drugo .",
+"الخير كريمة. أتمنى لو أعرف . تسألني شيئا أسهل.",
+"Ń.... Hǎo de wèntí. Bù zhīdào wǒ kěyǐ huídá zhège wèntí. Dédàole lìng yīgè?",
+"Hmmm....good question.  Not sure i can answer that one.  Got another?", 
 "I think you're gonna have to answer that for yourself. Try another question?", 
 "Well, if you don't know, I'm certainly not gonna tell you.  Try another question?", 
 "Can you be more specific?", "Your question is too vague.  Please incude more details.", 
 "How in the world would you think I would know about THAT?? Try again with another question.", 
 "I want to help, but that's kind of beyond me.  Got another question?", 
 "Wow...no one's ever asked that one before!  I have no idea. Is there another question I might be able to help you with?", 
-"there are too many ways to answer your question.  can you give me some more details so I can fine tune my response?", 
+"There are too many ways to answer your question.  Can you give me some more details so I can fine tune my response?", 
 "Is that really so important to you?  Is there something else i can help you with?", 
 "What do you think the answer is?", 
 "I think you should wait and see on that one.  Anything else I can help you with?", 
@@ -35,7 +40,12 @@ vague_responses = ["Hmmm....good question.  Not sure i can answer that one.  Got
 "Br$%$%$ttt7&7&8888ixxx$*(@&*&* you're breaking my psychic circuitry. Please ask something easier.",
 "Great question! But I fear it's beyond my abilities. Please try something else.",
 "I'm seeing a blurry vision of YOU writing a verse about that, friend. What else do you desire knowledge about?",
-"The sound of one hand clapping. Ask me something else."]
+"The sound of one hand clapping. Ask me something else.",
+"我觉得你得回答自己。尝试另一个问题？",
+"Zurag manantai baina. Zorigtoi baikh kheregtei. Nadad ilüü dotno yamar neg yum khel.",
+"Eskize m '! ?! Mwen se yon Oracle , se pa yon pwofèt. Santi yo lib yo eseye ankò , menm si.",
+"Постојат многу начини да се одговори на вашето прашање. Може да ми даде повеќе информации за да можам да фино нагодување на мојот одговор ?",
+"קלערן אויף עס אַ ביסל מער און פּרובירן אַסקינג ווידער אין אַ אַנדערש וועג ."]
 
 class Couplet(object):
 	
@@ -123,7 +133,7 @@ def the_oracle_speaks(question):
 		if two:
 			return two
 	from database import Artist
-	return Couplet(Artist("The Glitch Oracle"), random.choice(vague_responses) + u'\r ')
+	return Couplet(Artist("The Glitch Oracle"), random.choice(vague_responses).decode('utf-8') + u'\r ')
 	 
 	
 		
