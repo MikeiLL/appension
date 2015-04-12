@@ -82,11 +82,11 @@ class Artist(object):
         def __init__(self, artist_from_db):
                 if len(artist_from_db.split(',')) > 1:
                         name_list = artist_from_db.split(',')
-                        display_name = ' '.join([the_artist[1], the_artist[0]])
+                        display_name = ' '.join([name_list[1], name_list[0]])
                 else: 
                         display_name = artist_from_db
                         name_list = ['', artist_from_db]
-                return {
+                self.name =  {
                         'display_name': display_name,
                         'name_list': name_list
                         }
@@ -99,16 +99,12 @@ class Lyric(object):
 		couplets = [block for block in re.split(r'(?:\r\n){2,}', lyrics) if block.count('\r\n') == 1]
 		couplet_count = len(couplets)
 		lyrics = self.get_couplets(lyrics)
-                if len(artist.split(',')) > 1:
-                        the_artist = artist.split(',')
-                        artist_exact = artist
-                        artist = ' '.join([the_artist[1], the_artist[0]])
-                else: artist_exact = artist
+                an_artist = Artist(artist)
 		
 		self.track_lyrics = {
 			'id': id,
-			'artist': artist,
-			'artist_exact': artist_exact,
+			'artist_display_name': an_artist.name['display_name'],
+			'artist_list': an_artist.name['name_list'],
 			'lyrics': lyrics,
 			#TODO ignore lyrics that exceed sts of two (but allow for 1/2 couplets)
 			'couplet_count': couplet_count,
