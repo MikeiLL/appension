@@ -77,6 +77,19 @@ class Submitter(object):
             'lyrics': lyrics,
             'story': story
             }
+            
+class Artist(object):
+        def __init__(self, artist_from_db):
+                if len(artist_from_db.split(',')) > 1:
+                        name_list = artist_from_db.split(',')
+                        display_name = ' '.join([the_artist[1], the_artist[0]])
+                else: 
+                        display_name = artist_from_db
+                        name_list = ['', artist_from_db]
+                return {
+                        'display_name': display_name,
+                        'name_list': name_list
+                        }
 
 class Lyric(object):
 	# Select these from the tracks table to construct a track object.
