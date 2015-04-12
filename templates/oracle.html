@@ -28,7 +28,7 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 						{{ answer.couplet['couplet'][1] }}.<br/>
 						<p>-<a href="/view_artist/{{ url_escape('sposplit '+answer.couplet['artist'].name['name_list'][0]+' fposplit '+answer.couplet['artist'].name['name_list'][0]) }}">{{ answer.couplet['artist'].name['display_name'] }}</a></p>
 						{% else %}
-						<p>-{{ answer.couplet['artist'].name['display_name'] }}</p>
+						<p>-{{ answer.couplet['artist'] }}</p>
 						<br style="clear:both"/>
 					</div>
 					{% end %}

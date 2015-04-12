@@ -518,7 +518,10 @@ class OracleHandler(BaseHandler):
 			question = question[0]
 			show_cloud="block"
 			answer = oracle.the_oracle_speaks(question)
-			artist = answer.couplet['artist']['display_name'].strip()
+			if answer.couplet['artist'].name['name_list'][0] == '':
+				artist = answer.couplet['artist'].name['name_list'][1]
+			else:
+				artist = ' name_part_two '.join(answer.couplet['artist'].name['name_list']).strip()
 			og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 			page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
 			meta_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
@@ -537,7 +540,7 @@ class OracleHandler(BaseHandler):
 								page_title=page_title, meta_description=meta_description,
 								og_url=og_url))
 					
-@route("/share_oracle/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)")
+@route("/share_oracle/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\_\%]*)")
 class ShareOracleHandler(BaseHandler):
 	def get(self, question, answer_one, answer_two, artist):
 		user_name = self.current_user or 'Glitcher'
@@ -545,10 +548,19 @@ class ShareOracleHandler(BaseHandler):
 		question = tornado.escape.url_unescape(question)
 		show_cloud="block"
 		answer_string = tornado.escape.url_unescape(answer_one)+tornado.escape.url_unescape(answer_two)
+		artist = tornado.escape.url_unescape(artist)
 		from database import Artist
-		artist = Artist(tornado.escape.url_unescape(artist))
+		if 'name_part_two' in artist:
+			# recreate artist name as stored in db
+			artist = ', '.join(artist.split(' name_part_two '))
+		artist = Artist(artist)
+		print(1111111111)
+		print(artist.name)
 		answer = Couplet(artist, answer_string)
 		artist = answer.couplet['artist'].name['display_name'].strip()
+		print(answer.couplet['artist'].name['name_list'])
+		print('***************')
+		print(artist)
 		og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 		page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
 		meta_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"

@@ -58,6 +58,7 @@ class Couplet(object):
 					'artist': artist,
 					'couplet': couplet
 					}
+		print(self.couplet)
 					
 def translate_non_alphanumerics(to_translate, translate_to=u'_'):
     not_letters_or_digits = u'!"#%\'()*+,-./:;<=>?@[\]^_`{|}~'
@@ -132,7 +133,8 @@ def the_oracle_speaks(question):
 		two = compare_to_keywords(unicode(word))
 		if two:
 			return two
-	return Couplet({'display_name':"The Glitch Oracle"}, random.choice(vague_responses).decode('utf-8') + u'\r ')
+	from database import Artist
+	return Couplet(Artist(u"The Glitch Oracle"), random.choice(vague_responses).decode('utf-8') + u'\r ')
 	 
 	
 		
