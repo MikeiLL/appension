@@ -1,11 +1,11 @@
 #!/bin/bash
 NOTIFYEMAIL=mike@mzoo.org
-SMSEMAIL=<2016794168@pm.sprint.com>
-SENDEREMAIL=alert@localhost
-SERVER=http://infiniteglitchxxx.net/
-PAUSE=5
+SMSEMAIL=2016794168@pm.sprint.com
+SENDEREMAIL=mikekilmer@infiniteglitch.net
+SERVER=http://infiniteglitch.net/
+PAUSE=60
 FAILED=0
-DEBUG=1
+DEBUG=0
 
 while true 
 do
@@ -36,8 +36,8 @@ then
     fi
     if [ $DEBUG = 0 ]
     then
-        echo "$SERVER went down $(date)" | /usr/bin/mailx -s "$SERVER went down" -r "$SENDEREMAIL" "$SMSEMAIL" 
-        echo "$SERVER went down $(date)" | /usr/bin/mailx -s "$SERVER went down" -r "$SENDEREMAIL" "$NOTIFYEMAIL" 
+        echo "$SERVER went down $(date)" | /usr/bin/mail -s "$SERVER went down" "$SENDEREMAIL" "$SMSEMAIL" " < error.log" 
+        echo "$SERVER went down $(date)" | /usr/bin/mail -s "$SERVER went down" "$SENDEREMAIL" "$NOTIFYEMAIL" " < error.log"
     fi
 
 # If the server is back up and no alert is sent - alert
@@ -50,8 +50,8 @@ then
     fi
     if [ $DEBUG = 0 ]
     then
-        echo "$SERVER is back up $(date)" | /usr/bin/mailx -s "$SERVER is back up again" -r "$SENDEREMAIL" "$SMSEMAIL"
-        echo "$SERVER is back up $(date)" | /usr/bin/mailx -s "$SERVER is back up again" -r "$SENDEREMAIL" "$NOTIFYEMAIL"
+        echo "$SERVER is back up $(date)" | /usr/bin/mail -s "$SERVER is back up again" "$SENDEREMAIL" "$SMSEMAIL" " < error.log"
+        echo "$SERVER is back up $(date)" | /usr/bin/mail -s "$SERVER is back up again" "$SENDEREMAIL" "$NOTIFYEMAIL" " < error.log"
     fi
 fi
 sleep $PAUSE
