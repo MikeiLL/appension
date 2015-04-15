@@ -83,30 +83,31 @@ def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0, mode = '
     t2_otrim = float(otrim)
     t2start = first_viable(track2) + float(itrim)
     t2end = last_viable(track2) - float(otrim)
-
+    '''offset between start and first theoretical beat.'''
+    t2offset = lead_in(track2)
     if xfade == 0:
-        # Play track1 from cursor point until end of track, less otrim.
-        pb1 = pb(track1, 0, t1_length - t1_otrim)
-        # Play track2 from start point for 2 seconds less than (length - t2_otrim)
-        pb2 = pb(track2, t2start, t2_length - t2_otrim - 2)
-        return [pb1, pb2]
+        quick_fade = float(0.01)
+        # Start this many seconds from the end
+        start = track1.analysis.duration - (4 + quick_fade)
+        playback_end = t1end - quick_fade - t2offset
+        playback_duration = playback_end - start - quick_fade
+        mix_duration = t1end - playback_end + quick_fade
+        
     else:
-        '''offset between start and first theoretical beat.'''
-        t2offset = 0 #lead_in(track2)
         avg_duration = avg_end_duration(track1)
-        start = track1.analysis.duration - (10 + (avg_duration * xfade))
+        start = track1.analysis.duration - (6 + (avg_duration * xfade))
         playback_end = t1end - (avg_duration * xfade) - t2offset
         playback_duration = playback_end - start
         mix_duration = t1end - playback_end
-        '''Protect from xfade longer than second track.'''
-        while t2_length - mix_duration <= 0:
-            mix_duration -= .5
-            playback_end += .5
-            playback_duration += .5
-        pb1 = pb(track1, start, playback_duration)
-        pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode=mode) 
-        pb3 = pb(track2, t2start + mix_duration, 10)
-        return [pb1, pb2, pb3]
+    '''Protect from xfade longer than second track.'''
+    while t2_length - mix_duration <= 0:
+        mix_duration -= .5
+        playback_end += .5
+        playback_duration += .5
+    pb1 = pb(track1, start, playback_duration)
+    pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode=mode) 
+    pb3 = pb(track2, t2start + mix_duration, 6)
+    return [pb1, pb2, pb3]
         
 def lead_in(track):
     """

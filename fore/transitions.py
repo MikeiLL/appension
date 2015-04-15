@@ -71,39 +71,37 @@ def managed_transition(track1, track2, state=None):
     t2_otrim = float(track2._metadata.track_details['otrim'])
     t2start = first_viable(track2) + float(track2._metadata.track_details['itrim'])
     t2end = last_viable(track2) - float(track2._metadata.track_details['otrim'])
-
+    '''offset between start and first theoretical beat.'''
+    t2offset = lead_in(track2)
     if xfade == 0:
-        '''Play track1 from cursor point until end of track, less otrim.'''
-        pb1 = pb(track1, state['cursor'], t1_length - t1_otrim)
-        '''Play track2 from start point for 2 seconds less than (length - t2_otrim)'''
-        pb2 = pb(track2, t2start, t2_length - t2_otrim - 2)
-        '''Set cursor to 2 seconds'''
-        state['cursor'] = max(t2start + t2_length - t2_otrim - 2, 0)
-        return [pb1, pb2]
+        quick_fade = float(1)
+        # We want the playback to last until a fraction of a second before
+        # last viable segment, as contained in t2offset
+        playback_end = t1end - quick_fade - t2offset
+        playback_duration = playback_end - state['cursor'] - quick_fade
+        mix_duration = t1end - playback_end + quick_fade
     else:
-        '''offset between start and first theoretical beat.'''
-        t2offset = lead_in(track2)
         avg_duration = avg_end_duration(track1)
         playback_end = t1end - (avg_duration * xfade) - t2offset
         playback_duration = playback_end - state['cursor']
         mix_duration = t1end - playback_end
-        '''Protect from xfade longer than second track.'''
-        while t2_length - mix_duration <= 0:
-            mix_duration -= .5
-            playback_end += .5
-            playback_duration += .5
-            
+    '''Protect from xfade longer than second track.'''
+    while t2_length - mix_duration <= 0:
+        mix_duration -= .5
+        playback_end += .5
+        playback_duration += .5
         
-        pb1 = pb(track1, state['cursor'], playback_duration)
-        pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode='equal_power') #other mode option: 'linear'
+    
+    pb1 = pb(track1, state['cursor'], playback_duration)
+    pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode='equal_power') #other mode option: 'linear'
 
-        equal = mix_duration + playback_duration == t1end - state['cursor']
-        actual = t1end - state['cursor']
-        desired = mix_duration + playback_duration
-        diff = actual - desired
-        
-        state['cursor'] = mix_duration + t2start
-        return [pb1, pb2]
+    equal = mix_duration + playback_duration == t1end - state['cursor']
+    actual = t1end - state['cursor']
+    desired = mix_duration + playback_duration
+    diff = actual - desired
+    
+    state['cursor'] = mix_duration + t2start
+    return [pb1, pb2]
 
 def lead_in(track):
     """
