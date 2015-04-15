@@ -931,10 +931,13 @@ class AuditionTransition(BaseHandler):
 		fn = os.urandom(4).encode("hex")+".mp3" # Give us a nice simple eight-character random hex file name
 		import audition
 		threading.Thread(target=audition.audition, args=(pair_o_tracks,track_xfade, track_otrim, next_track_itrim, fn)).start()
+		f = open('fortunes.txt', 'r')
+		fortunes = [line for line in f if not line[0] == '%']
+		saying = random.choice(fortunes)
 		self.write(templates.load("audition.html").generate(
 			track=database.get_single_track(int(track1_id)), compiled=compiled, user_name=user_name,
 			next_track=database.get_single_track(int(track2_id)), track_xfade=track_xfade,
-			track_otrim=track_otrim, next_track_itrim=next_track_itrim, trackfn=fn))
+			witty_saying=saying,track_otrim=track_otrim, next_track_itrim=next_track_itrim, trackfn=fn))
 
 @route("/rebuild_glitch")
 class RenderGlitch(BaseHandler):
