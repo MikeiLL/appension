@@ -13,16 +13,18 @@
         <span class="errormessage"></span>
 </fieldset>
 <form enctype="multipart/form-data" action="/choice_chunks" method="post">
-<table class="secondary" border='1'>
+<table class="secondary">
 
 {% for track in tracks_by %}
 	<tr><td><h3>{{ track.track_details['artist'] }}</h3></td></tr>
 	<tr><td><h2>Lyrics</h2></td></tr>
 	<tr><td>
+	<div style='max-width:500px;'>
 	<img src="/artwork/{{ track.id }}.jpg" class="track_art" style="float:right">
 		{% if len(track.track_details['lyrics']) > 0 %}
 			{% for line in track.track_details['lyrics'].splitlines() %}
 				{{ line }} <br/>
+				</div>
 			{% end %}</td></tr>
 		{% else %}
 			<p>We still need to get these lyrics. Feel like transcribing?</p>
