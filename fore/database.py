@@ -255,6 +255,8 @@ def update_track(id, info, artwork):
 	"""Update the given track ID based on the info mapping.
 
 	This breaks encapsulation just as create_track() does."""
+	print('****************')
+	log.info(info)
 	with _conn, _conn.cursor() as cur:
 		# Enumerate all updateable fields. If they're not provided, they won't be updated;
 		# any other fields will be ignored. This is basically set intersection on a dict.
@@ -262,8 +264,8 @@ def update_track(id, info, artwork):
 		param = {k:info[k][0] for k in fields if k in info}
 		if not artwork == None:
 		        param['artwork'] = memoryview(artwork)
-		for k,v in param.iteritems():
-		        print("{}: {}".format(k, len(v)))
+		else:
+		    del param['artwork']
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
 		
 def sequence_tracks(sequence_object):
