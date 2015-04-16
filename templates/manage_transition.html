@@ -2,7 +2,7 @@
 
 
 {% block content %}
-<h2>Manage Transition {{ witty_saying }}</h2>
+<h2>Manage Transition</h2>
 <h3>{{ track.track_details['artist'] }} into {{ next_track.track_details['artist'] }}</h3>
 <form enctype="multipart/form-data" action="/audition/{{ track.id }}" method="post">
 <div id="manage_track">
@@ -51,14 +51,5 @@
 			
 
 </div>
-	
-			<div id="loading">
-				<div id="loadingcontent">
-					<p id="loadingspinner">
-						Making Transition...
-					</p>
-				</div>
-			</div>
-
 
 {% end %}
