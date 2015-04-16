@@ -13,7 +13,7 @@
         <span class="errormessage"></span>
 </fieldset>
 <form enctype="multipart/form-data" action="/choice_chunks" method="post">
-<table class="secondary">
+<table class="secondary" border='1'>
 
 {% for track in tracks_by %}
 	<tr><td><h3>{{ track.track_details['artist'] }}</h3></td></tr>
@@ -30,8 +30,9 @@
 	<tr><td><h2>The Story</h2></td></tr>
 	<tr><td>
 	<tr><td>{% if len(track.track_details['story']) > 0 %}
-			{% for line in track.track_details['story'].splitlines() %}
+			<div style='max-width:500px;'>{% for line in track.track_details['story'].splitlines() %}
 				{{ line }} <br/>
+				</div>
 			{% end %}
 		{% else %}
 			<p>Do you know the story behind this track, 'cause we still need it.</p>
