@@ -86,7 +86,7 @@ def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0, mode = '
     '''offset between start and first theoretical beat.'''
     t2offset = lead_in(track2)
     if xfade == 0:
-        quick_fade = float(0.01)
+        quick_fade = float(0.002)
         # Start this many seconds from the end
         start = track1.analysis.duration - (4 + quick_fade)
         playback_end = t1end - quick_fade - t2offset
