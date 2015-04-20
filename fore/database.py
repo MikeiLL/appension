@@ -540,4 +540,17 @@ def tables(confirm=False):
 				coldefs.append("%s %s\n"%(colname,defn))
 		finish()
 
+@cmdline
+def testfiles():
+	"""Test all audio files"""
+	import pyechonest.track
+	for file in get_many_mp3(status=0):
+		if file.track_details['length'] < 700:
+			print("Name: {} Length: {}".format(file.filename, file.track_details['length']))
+			# TODO: Should this be pyechonest.track.track_from_filename?
+			track = track.track_from_filename('audio/'+file.filename, force_upload=True)
+			print(track.id)
+		else:
+			print("BIG ONE - Name: {} Length: {}".format(file.filename, file.track_details['length']))
+
 if __name__ == "__main__": cmdline.main()
