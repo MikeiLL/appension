@@ -429,8 +429,13 @@ def test_reset_permissions(id, hex_key):
         except TypeError:
                 return [None, None]
 
+@cmdline
 def set_user_password(user_or_email, password):
-	"""Change a user's password (administratively) - returns None on success, or error message"""
+	"""Change a user's password (administratively) - returns None on success, or error message
+
+	user_or_email: User name or email address
+	password: New password
+	"""
 	user_or_email = user_or_email.lower()
 	if not isinstance(password, bytes): password=password.encode("utf-8")
 	with _conn, _conn.cursor() as cur:
