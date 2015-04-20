@@ -1,3 +1,7 @@
+"""Database operations for Appension
+
+Executable using 'python -m fore.database' - use --help for usage.
+"""
 import apikeys
 import psycopg2
 import utils
@@ -9,6 +13,7 @@ import re
 import hashlib
 from mutagen.mp3 import MP3
 from time import sleep
+from docstringargs import cmdline
 
 _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
@@ -377,14 +382,20 @@ def tracks_by(artist):
     with _conn, _conn.cursor() as cur:
         cur.execute("SELECT {cols} FROM tracks WHERE status = 1 AND trim(artist) = '{artist}' ORDER BY title LIMIT 20".format(cols=Track.columns, artist=artist))
         return [Track(*row) for row in cur.fetchall()]
-        
-def create_user(username, email, password, hex_key):
-	"""Create a new user, return the newly-created ID"""
+
+@cmdline
+def create_user(username, email, password):
+	"""Create a new user, return the newly-created ID
+
+	username: Name for the new user
+	email: Email address (must be unique)
+	password: Clear-text password
+	"""
 	username = username.lower(); email = email.lower();
 	if not isinstance(password, bytes): password=password.encode("utf-8")
 	print password
 	print email
-	print hex_key
+	hex_key = utils.random_hex()
 	with _conn, _conn.cursor() as cur:
 		salt = os.urandom(16)
 		hash = hashlib.sha256(salt+password).hexdigest()
@@ -396,8 +407,14 @@ def create_user(username, email, password, hex_key):
 		except psycopg2.IntegrityError as e:
 			return "That didn't work too well because: <br/>%s<br/> Maybe you already have an account or \
 					someone else is using the name you requested."%e
-					
+
+@cmdline
 def confirm_user(id, hex_key):
+    """Attempt to confirm a user's email address
+
+    id: Numeric user ID (not user name or email)
+    hex_key: Matching key to the one stored, else the confirmation fails
+    """
     with _conn, _conn.cursor() as cur:
         cur.execute("UPDATE users SET status = 1, hex_key = '' WHERE id = %s AND hex_key = %s RETURNING username, email", (id, hex_key))
         try:
@@ -479,3 +496,73 @@ def get_analysis(id):
 def save_analysis(id, analysis):
 	with _conn, _conn.cursor() as cur:
 		cur.execute("update tracks set analysis=%s where id=%s", (analysis, id))
+
+@cmdline
+def importmp3(filename, submitter="Bulk import", submitteremail="bulk@import.invalid"):
+	"""Bulk-import MP3 files into the appension database
+
+	filename+: MP3 file(s) to import
+	--submitter: Name of submitter
+	--submitteremail: Email address of submitter
+	"""
+	# Build up a form-like dictionary for the info mapping. This is the downside of
+	# the breaching of encapsulation in database.create_track().
+	info = {"SubmitterName": [submitter], "Email": [submitteremail]}
+	for fn in filename:
+		print("Importing %s"%fn)
+		with open(fn, "rb") as f: data = f.read()
+		id = database.create_track(data, os.path.split(fn)[-1], info)
+		print("Saved as track #%d."%id)
+
+@cmdline
+def tables(confirm=False):
+	"""Update tables based on create_table.sql
+
+	--confirm: If omitted, will do a dry run.
+	"""
+	tb = None; cols = set(); coldefs = []
+	with _conn, _conn.cursor() as cur:
+		def finish():
+			if cols: coldefs.extend("drop "+col for col in cols)
+			if tb and coldefs:
+				if is_new: query = "create table "+tb+" ("+", ".join(coldefs)+")"
+				else: query = "alter table "+tb+" add "+", add ".join(coldefs)
+				if confirm: cur.execute(query)
+				else: print(query)
+		for line in open("create_table.sql"):
+			line = line.rstrip()
+			if line == "" or line.startswith("--"): continue
+			# Flush-left lines are table names
+			if line == line.lstrip():
+				finish()
+				tb = line; cols = set(); coldefs = []
+				cur.execute("select column_name from information_schema.columns where table_name=%s", (tb,))
+				cols = {row[0] for row in cur}
+				is_new = not cols
+				continue
+			# Otherwise, it should be a column definition, starting (after whitespace) with the column name.
+			colname, defn = line.strip().split(" ", 1)
+			if colname in cols:
+				# Column already exists. Currently, we assume there's nothing to change.
+				cols.remove(colname)
+			else:
+				# Column doesn't exist. Add it!
+				# Note that we include a newline here so that a comment will be properly terminated.
+				# If you look at the query, it'll have all its commas oddly placed, but that's okay.
+				coldefs.append("%s %s\n"%(colname,defn))
+		finish()
+
+@cmdline
+def testfiles():
+	"""Test all audio files"""
+	import pyechonest.track
+	for file in get_many_mp3(status=0):
+		if file.track_details['length'] < 700:
+			print("Name: {} Length: {}".format(file.filename, file.track_details['length']))
+			# TODO: Should this be pyechonest.track.track_from_filename?
+			track = track.track_from_filename('audio/'+file.filename, force_upload=True)
+			print(track.id)
+		else:
+			print("BIG ONE - Name: {} Length: {}".format(file.filename, file.track_details['length']))
+
+if __name__ == "__main__": print(cmdline.main() or "")
