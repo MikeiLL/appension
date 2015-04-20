@@ -203,13 +203,16 @@ def get_track_artwork(id):
 		row = cur.fetchone()
 		return row and row[0]
 
-def create_track(mp3data, filename, imagefile, info, user_name):
+def create_track(mp3data, filename, info, imagefile=None, user_name=None):
 	"""Save a blob of MP3 data to the specified file and registers it in the database.
 
 	Note that this function breaks encapsulation horribly. The third argument is
 	assumed to be a request object dictionary, with all its quirks. The file is saved
 	to disk as well as being registered with the database. TODO: Clean me up."""
-	log.info(info)
+	if not user_name:
+	    with _conn, _conn.cursor() as cur:
+	        cur.execute("SELECT username FROM users WHERE user_level = 2 LIMIT 1;")
+	        user_name = cur.fetchone()[0] 
 	with _conn, _conn.cursor() as cur:
 		# We have a chicken-and-egg problem here. We can't (AFAIK) get the ID3 data
 		# until we have a file, and we want to name the file based on the track ID.
@@ -515,7 +518,7 @@ def importmp3(filename, submitter="Bulk import", submitteremail="bulk@import.inv
 	for fn in filename:
 		print("Importing %s"%fn)
 		with open(fn, "rb") as f: data = f.read()
-		id = create_track(data, os.path.split(fn)[-1], info)
+		id = create_track(data, os.path.split(fn)[-1], info, )
 		print("Saved as track #%d."%id)
 
 @cmdline
