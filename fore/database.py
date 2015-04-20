@@ -566,4 +566,4 @@ def testfiles():
 		else:
 			print("BIG ONE - Name: {} Length: {}".format(file.filename, file.track_details['length']))
 
-if __name__ == "__main__": cmdline.main()
+if __name__ == "__main__": print(cmdline.main() or "")
