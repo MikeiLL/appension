@@ -113,7 +113,9 @@ def lead_in(track):
     except IndexError:
         log.warning("No beats returned for track by %r.", track._metadata.track_details['artist'])
         return track.analysis.segments[0].start
-    while earliest_beat >= 0 + avg_duration:
-        earliest_beat -= avg_duration
-    offset = earliest_beat
-    return offset
+    # While echonest may return a starting beat part way into the track,
+    # we want to assume that beats continue, at a consistent rate, back
+    # until the beginning of the track. So our idea of "earliest beat"
+    # is actually counting backward by average beat length until we hit
+    # the beginning of the track (at time 0.0 or within one beat thereof).
+    return earliest_beat % avg_duration
