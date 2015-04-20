@@ -502,4 +502,42 @@ def importmp3(filename, submitter="Bulk import", submitteremail="bulk@import.inv
 		id = database.create_track(data, os.path.split(fn)[-1], info)
 		print("Saved as track #%d."%id)
 
+@cmdline
+def tables(confirm=False):
+	"""Update tables based on create_table.sql
+
+	--confirm: If omitted, will do a dry run.
+	"""
+	tb = None; cols = set(); coldefs = []
+	with _conn, _conn.cursor() as cur:
+		def finish():
+			if cols: coldefs.extend("drop "+col for col in cols)
+			if tb and coldefs:
+				if is_new: query = "create table "+tb+" ("+", ".join(coldefs)+")"
+				else: query = "alter table "+tb+" add "+", add ".join(coldefs)
+				if confirm: cur.execute(query)
+				else: print(query)
+		for line in open("create_table.sql"):
+			line = line.rstrip()
+			if line == "" or line.startswith("--"): continue
+			# Flush-left lines are table names
+			if line == line.lstrip():
+				finish()
+				tb = line; cols = set(); coldefs = []
+				cur.execute("select column_name from information_schema.columns where table_name=%s", (tb,))
+				cols = {row[0] for row in cur}
+				is_new = not cols
+				continue
+			# Otherwise, it should be a column definition, starting (after whitespace) with the column name.
+			colname, defn = line.strip().split(" ", 1)
+			if colname in cols:
+				# Column already exists. Currently, we assume there's nothing to change.
+				cols.remove(colname)
+			else:
+				# Column doesn't exist. Add it!
+				# Note that we include a newline here so that a comment will be properly terminated.
+				# If you look at the query, it'll have all its commas oddly placed, but that's okay.
+				coldefs.append("%s %s\n"%(colname,defn))
+		finish()
+
 if __name__ == "__main__": cmdline.main()
