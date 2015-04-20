@@ -408,8 +408,14 @@ def create_user(username, email, password, hex_key):
 		except psycopg2.IntegrityError as e:
 			return "That didn't work too well because: <br/>%s<br/> Maybe you already have an account or \
 					someone else is using the name you requested."%e
-					
+
+@cmdline
 def confirm_user(id, hex_key):
+    """Attempt to confirm a user's email address
+
+    id: Numeric user ID (not user name or email)
+    hex_key: Matching key to the one stored, else the confirmation fails
+    """
     with _conn, _conn.cursor() as cur:
         cur.execute("UPDATE users SET status = 1, hex_key = '' WHERE id = %s AND hex_key = %s RETURNING username, email", (id, hex_key))
         try:
