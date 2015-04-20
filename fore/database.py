@@ -505,12 +505,12 @@ def importmp3(filename, submitter="Bulk import", submitteremail="bulk@import.inv
 	--submitteremail: Email address of submitter
 	"""
 	# Build up a form-like dictionary for the info mapping. This is the downside of
-	# the breaching of encapsulation in database.create_track().
+	# the breaching of encapsulation in create_track().
 	info = {"SubmitterName": [submitter], "Email": [submitteremail]}
 	for fn in filename:
 		print("Importing %s"%fn)
 		with open(fn, "rb") as f: data = f.read()
-		id = database.create_track(data, os.path.split(fn)[-1], info)
+		id = create_track(data, os.path.split(fn)[-1], info)
 		print("Saved as track #%d."%id)
 
 @cmdline
