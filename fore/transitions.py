@@ -78,7 +78,7 @@ def managed_transition(track1, track2, state=None):
     t2offset = lead_in(track2)
     if xfade == 0:
         # Ensure that we always crossfade at least a little bit
-        fade = 1.0
+        fade = 0.01
     else:
         # The crossfade is defined based on the tempo at the end
         # of the song, and we fade across X tatums/segments.
