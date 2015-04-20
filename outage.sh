@@ -52,7 +52,7 @@ then
         then
         	kill -9 $PID
         	echo "$SERVER went down $(date)" | /usr/bin/mail -s "$SERVER went down" "$SENDEREMAIL" "$SMSEMAIL" 
-        	echo "$SERVER went down $(date)" | /usr/bin/mail -s "$SERVER went down" "$SENDEREMAIL" "$NOTIFYEMAIL"
+        	(echo "$SERVER went down $(date)"; tail -n 100 error.log) | /usr/bin/mail -s "$SERVER went down" "$SENDEREMAIL" "$NOTIFYEMAIL"
         	python -m fore.server
         else
         	echo "No Python Process Running Locally"
