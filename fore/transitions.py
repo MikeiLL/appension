@@ -61,7 +61,10 @@ def managed_transition(track1, track2, state=None):
         loudness = track.analysis.loudness
         track.gain = db_2_volume(loudness)
 
-    xfade = float(track1._metadata.track_details['xfade'])
+    # NOTE: All values are floating-point seconds, save xfade which is a number
+    # of tatums/segments (assumed to be at average length), and itrim/otrim which
+    # are buggy.
+    xfade = int(track1._metadata.track_details['xfade'])
     t1start = first_viable(track1) + float(track1._metadata.track_details['itrim'])
     t1end = last_viable(track1) - float(track1._metadata.track_details['otrim'])
     t1_itrim = float(track2._metadata.track_details['itrim'])
@@ -71,27 +74,26 @@ def managed_transition(track1, track2, state=None):
     t2_otrim = float(track2._metadata.track_details['otrim'])
     t2start = first_viable(track2) + float(track2._metadata.track_details['itrim'])
     t2end = last_viable(track2) - float(track2._metadata.track_details['otrim'])
-    '''offset between start and first theoretical beat.'''
+    # offset between start and first theoretical beat.
     t2offset = lead_in(track2)
     if xfade == 0:
-        quick_fade = float(1)
-        # We want the playback to last until a fraction of a second before
-        # last viable segment, as contained in t2offset
-        playback_end = t1end - quick_fade - t2offset
-        playback_duration = playback_end - state['cursor'] - quick_fade
-        mix_duration = t1end - playback_end + quick_fade
+        # Ensure that we always crossfade at least a little bit
+        fade = 1.0
     else:
+        # The crossfade is defined based on the tempo at the end
+        # of the song, and we fade across X tatums/segments.
         avg_duration = avg_end_duration(track1)
-        playback_end = t1end - (avg_duration * xfade) - t2offset
-        playback_duration = playback_end - state['cursor']
-        mix_duration = t1end - playback_end
-    '''Protect from xfade longer than second track.'''
+        fade = avg_duration * xfade
+    playback_end = t1end - fade - t2offset
+    playback_duration = playback_end - state['cursor']
+    mix_duration = t1end - playback_end
+
+    # Protect from xfade longer than second track.
     while t2_length - mix_duration <= 0:
         mix_duration -= .5
         playback_end += .5
         playback_duration += .5
-        
-    
+
     pb1 = pb(track1, state['cursor'], playback_duration)
     pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode='equal_power') #other mode option: 'linear'
 
