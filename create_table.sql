@@ -41,4 +41,3 @@ outreach
 	message varchar not null default ''
 	created timestamptz not null default now()
 	processed int not null default 0
-	dummy int not null default 1234
