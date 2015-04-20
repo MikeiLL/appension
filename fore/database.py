@@ -382,9 +382,16 @@ def tracks_by(artist):
     with _conn, _conn.cursor() as cur:
         cur.execute("SELECT {cols} FROM tracks WHERE status = 1 AND trim(artist) = '{artist}' ORDER BY title LIMIT 20".format(cols=Track.columns, artist=artist))
         return [Track(*row) for row in cur.fetchall()]
-        
+
+@cmdline
 def create_user(username, email, password, hex_key):
-	"""Create a new user, return the newly-created ID"""
+	"""Create a new user, return the newly-created ID
+
+	username: Name for the new user
+	email: Email address (must be unique)
+	password: Clear-text password
+	hex_key: Confirmation key to verify email address
+	"""
 	username = username.lower(); email = email.lower();
 	if not isinstance(password, bytes): password=password.encode("utf-8")
 	print password
