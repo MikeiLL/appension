@@ -1,3 +1,7 @@
+"""Database operations for Appension
+
+Executable using 'python -m fore.database' - use --help for usage.
+"""
 import apikeys
 import psycopg2
 import utils
@@ -9,6 +13,7 @@ import re
 import hashlib
 from mutagen.mp3 import MP3
 from time import sleep
+from docstringargs import cmdline
 
 _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
@@ -479,3 +484,22 @@ def get_analysis(id):
 def save_analysis(id, analysis):
 	with _conn, _conn.cursor() as cur:
 		cur.execute("update tracks set analysis=%s where id=%s", (analysis, id))
+
+@cmdline
+def importmp3(filename, submitter="Bulk import", submitteremail="bulk@import.invalid"):
+	"""Bulk-import MP3 files into the appension database
+
+	filename+: MP3 file(s) to import
+	--submitter: Name of submitter
+	--submitteremail: Email address of submitter
+	"""
+	# Build up a form-like dictionary for the info mapping. This is the downside of
+	# the breaching of encapsulation in database.create_track().
+	info = {"SubmitterName": [submitter], "Email": [submitteremail]}
+	for fn in filename:
+		print("Importing %s"%fn)
+		with open(fn, "rb") as f: data = f.read()
+		id = database.create_track(data, os.path.split(fn)[-1], info)
+		print("Saved as track #%d."%id)
+
+if __name__ == "__main__": cmdline.main()

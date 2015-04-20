@@ -39,3 +39,4 @@ wadllib==1.3.2
 wsgiref==0.1.2
 wtforms-tornado
 WTForms
+docstringargs
