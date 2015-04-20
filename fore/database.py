@@ -270,7 +270,10 @@ def update_track(id, info, artwork):
 		if not artwork == None:
 		        param['artwork'] = memoryview(artwork)
 		else:
-		    del param['artwork']
+		    try:
+		        del param['artwork']
+		    except KeyError: 
+		        pass
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
 		
 def sequence_tracks(sequence_object):
