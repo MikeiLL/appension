@@ -256,7 +256,7 @@ def reset_played():
     with _conn, _conn.cursor() as cur:
         cur.execute("UPDATE tracks SET played = 0")
 
-def update_track(id, info, artwork):
+def update_track(id, info, artwork=None):
 	"""Update the given track ID based on the info mapping.
 
 	This breaks encapsulation just as create_track() does."""
@@ -265,15 +265,11 @@ def update_track(id, info, artwork):
 	with _conn, _conn.cursor() as cur:
 		# Enumerate all updateable fields. If they're not provided, they won't be updated;
 		# any other fields will be ignored. This is basically set intersection on a dict.
-		fields = ("artist", "status", "lyrics", "story", "xfade", "otrim", "itrim", "keywords", "artwork", "url")
+		fields = ("artist", "status", "lyrics", "story", "xfade", "otrim", "itrim", "keywords", "url")
 		param = {k:info[k][0] for k in fields if k in info}
-		if not artwork == None:
-		        param['artwork'] = memoryview(artwork)
-		else:
-		    try:
-		        del param['artwork']
-		    except KeyError: 
-		        pass
+		# Artwork comes as a form fill-out, so it's passed in as a third parameter rather than
+		# being picked up by the generic field handler above.
+		if artwork is not None: param['artwork'] = memoryview(artwork)
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
 		
 def sequence_tracks(sequence_object):
