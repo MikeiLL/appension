@@ -747,10 +747,9 @@ class CreateAccount(tornado.web.RequestHandler):
 			info = self.request.arguments
 			submitter_email = info.get("email",[""])[0]
 			submitter_name = info.get("user_name",[""])[0]
-			hex_key = random_hex()
 			details = 'Account request submitted for %s. <br/>'%(submitter_email);
 			new_user = database.create_user(submitter_name, submitter_email,\
-										self.get_argument('password'), hex_key)
+										self.get_argument('password'))
 			log.warning("New User looks like %r", new_user)
 			details += 'Please check your email to confirm.<br/>'
 			admin_message = "New account created for %s at %s."%(submitter_name, submitter_email)

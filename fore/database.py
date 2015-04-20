@@ -384,19 +384,18 @@ def tracks_by(artist):
         return [Track(*row) for row in cur.fetchall()]
 
 @cmdline
-def create_user(username, email, password, hex_key):
+def create_user(username, email, password):
 	"""Create a new user, return the newly-created ID
 
 	username: Name for the new user
 	email: Email address (must be unique)
 	password: Clear-text password
-	hex_key: Confirmation key to verify email address
 	"""
 	username = username.lower(); email = email.lower();
 	if not isinstance(password, bytes): password=password.encode("utf-8")
 	print password
 	print email
-	print hex_key
+	hex_key = utils.random_hex()
 	with _conn, _conn.cursor() as cur:
 		salt = os.urandom(16)
 		hash = hashlib.sha256(salt+password).hexdigest()
