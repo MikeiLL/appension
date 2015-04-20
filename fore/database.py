@@ -522,10 +522,11 @@ def tables(confirm=False):
 	tb = None; cols = set(); coldefs = []
 	with _conn, _conn.cursor() as cur:
 		def finish():
-			if cols: coldefs.extend("drop "+col for col in cols)
-			if tb and coldefs:
+			if tb and (coldefs or cols):
 				if is_new: query = "create table "+tb+" ("+", ".join(coldefs)+")"
-				else: query = "alter table "+tb+" add "+", add ".join(coldefs)
+				else:
+					parts = ["add "+c for c in coldefs] + ["drop "+c for c in cols]
+					query = "alter table "+tb+" "+", ".join(parts)
 				if confirm: cur.execute(query)
 				else: print(query)
 		for line in open("create_table.sql"):
@@ -550,6 +551,7 @@ def tables(confirm=False):
 				# If you look at the query, it'll have all its commas oddly placed, but that's okay.
 				coldefs.append("%s %s\n"%(colname,defn))
 		finish()
+	if not confirm: print("Add --confirm to actually make the changes.")
 
 @cmdline
 def testfiles():
