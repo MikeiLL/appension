@@ -73,9 +73,11 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0, otrim1=0
         # of the song, and we fade across X tatums/segments.
         avg_duration = avg_end_duration(track1)
         fade = avg_duration * xfade
-    if audition_hack: state['cursor'] -= fade
+    if audition_hack: pb_start -= fade
     playback_end = t1end - fade - t2offset
     playback_duration = playback_end - state['cursor']
+    log.info("***************")
+    log.info("playback duration: %r, playback_end: %r ", playback_duration, playback_end)
     mix_duration = t1end - playback_end
 
     if maxlen is not None:
