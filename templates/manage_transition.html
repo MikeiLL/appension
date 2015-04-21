@@ -6,7 +6,7 @@
 <h3>{{ track.track_details['artist'] }} into {{ next_track.track_details['artist'] }}</h3>
 <form enctype="multipart/form-data" action="/audition/{{ track.id }}" method="post">
 <div id="manage_track">
-
+<!-- Start player -->
 <div class="sm2-bar-ui compact">
 
  <div class="bd sm2-main-controls">
@@ -68,8 +68,8 @@
  </div>
 
 </div>
-
-<!--	<img src="/artwork/{{ track.id }}.jpg" class="track_art"> -->
+<!-- End player -->
+<div style="float:right"> 	<img src="/artwork/{{ track.id }}.jpg" class="track_art"> </div>
 	</div>
 	<div class="details">
 	 <p>{{ track.track_details['artist'] }} ({{ track.track_details['title'] }} id: {{ track.id }})</p>
@@ -91,6 +91,7 @@
 	{% if track.id == next_track.id %}
 		<p class="status_alert">NO SUBSEQUENT TRACK IN SEQUENCE</p>
 	{% end %}
+	<!-- Start player -->
 <div class="sm2-bar-ui compact">
 
  <div class="bd sm2-main-controls">
@@ -152,7 +153,8 @@
  </div>
 
 </div>
-		<!-- <img src="/artwork/{{ next_track.id }}.jpg" class="track_art"> -->
+<!-- End player -->
+		<div style="float:right"> <img src="/artwork/{{ next_track.id }}.jpg" class="track_art"> </div>
 	</div>
 	<div class="details">
 	<p>{{ next_track.track_details['artist'] }} ({{ next_track.track_details['title'] }} id: {{ next_track.id }})</p>
