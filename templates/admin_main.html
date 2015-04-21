@@ -53,13 +53,10 @@
 			<script type="text/javascript" src='{{ compiled(
 			  'spin.min.js',
 			  'soundmanager2-nodebug-jsmin.js',
-			  'berniecode-animator.js',
-			  '360player-admin.js',
 		      'bar-ui.js',
-			  'demo.js'
+			  'demo.js',
+			  'socket.io.js'
 			  ) }}'></script>
-			<script type="text/javascript" src='{{ compiled('socket.io.js') }}'></script>
-			<script type="text/javascript" src='{{ compiled('sm-configs.js') }}'></script>
 			<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
 			<script type="text/javascript">
 				$('.confirmation').on('click', function () {
