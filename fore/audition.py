@@ -20,6 +20,7 @@ from action import render, audition_render
 from Queue import Queue
 import os
 import time
+from .transitions import managed_transition_helper
 
 log = logging.getLogger(__name__)
 
@@ -64,62 +65,16 @@ def avg_end_duration(track):
     except IndexError:
         return sum([b.duration for b in track.analysis.segments[-8:]]) / 8
 
-def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0, mode = 'equal_power'): 
-    """Return three renderable Echonest objects. 
-
-    (other mode option is 'linear')
-    """
-    for track in [track1, track2]:
-        loudness = track.analysis.loudness
-        track.gain = db_2_volume(loudness)
-
-    xfade = float(xfade)
-    t1start = first_viable(track1) + float(itrim)
-    t1end = last_viable(track1) - float(otrim)
-    t1_itrim = float(itrim)
-    t1_otrim = float(otrim)
-    t1_length = float(track1.analysis.duration)
-    t2_length = float(track2.analysis.duration)
-    t2_otrim = float(otrim)
-    t2start = first_viable(track2) + float(itrim)
-    t2end = last_viable(track2) - float(otrim)
-    '''offset between start and first theoretical beat.'''
-    t2offset = lead_in(track2)
-    if xfade == 0:
-        quick_fade = float(0.002)
-        # Start this many seconds from the end
-        start = track1.analysis.duration - (4 + quick_fade)
-        playback_end = t1end - quick_fade - t2offset
-        playback_duration = playback_end - start - quick_fade
-        mix_duration = t1end - playback_end + quick_fade
-        
-    else:
-        avg_duration = avg_end_duration(track1)
-        start = track1.analysis.duration - (6 + (avg_duration * xfade))
-        playback_end = t1end - (avg_duration * xfade) - t2offset
-        playback_duration = playback_end - start
-        mix_duration = t1end - playback_end
-    '''Protect from xfade longer than second track.'''
-    while t2_length - mix_duration <= 0:
-        mix_duration -= .5
-        playback_end += .5
-        playback_duration += .5
-    pb1 = pb(track1, start, playback_duration)
-    pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode=mode) 
-    pb3 = pb(track2, t2start + mix_duration, 6)
-    return [pb1, pb2, pb3]
-        
-def lead_in(track):
-    """
-    Return the time between start of track and first beat.
-    """
-    try:
-        avg_duration = sum([b.duration for b in track.analysis.beats[:8]]) / 8
-        earliest_beat = track.analysis.beats[0].start
-    except IndexError:
-        log.warning("No beats returned for track.")
-        earliest_beat = track.analysis.segments[0].start
-    while earliest_beat >= 0 + avg_duration:
-        earliest_beat -= avg_duration
-    offset = earliest_beat
-    return offset
+def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0):
+	state = {"cursor": track1.analysis.duration - 6.0}
+	ret = managed_transition_helper(track1, track2, state,
+		xfade=int(xfade),
+		otrim1=float(otrim),
+		itrim2=float(itrim),
+		maxlen=float(track2.analysis.duration),
+		audition_hack=True,
+	)
+	ret.append(pb(track2, state['cursor'], 6))
+	print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	print(ret)
+	return ret

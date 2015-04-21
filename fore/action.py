@@ -183,7 +183,7 @@ class Playback(object):
 					yield self.track[i:min(end, i + chunk_size)].data
 
 	def __repr__(self):
-		return "<Playback %r>" % self.track
+		return "<Playback %r S%f L%f>" % (self.track, self.start, self.duration)
 
 	def __str__(self):
 		try:
@@ -270,7 +270,7 @@ class Crossfade(object):
 	def __init__(self, tracks, starts, duration, mode='equal_power'):
 		self.t1, self.t2 = tracks
 		self.s1, self.s2 = starts
-		self.e1, self.e2 = [s + duration for s in starts]
+		self.e1, self.e2 = (s + duration for s in starts)
 		self.duration = duration
 		self.mode = mode
 
@@ -302,7 +302,7 @@ class Crossfade(object):
 							 self.samples, i).astype(numpy.int16))
 
 	def __repr__(self):
-		return "<Crossfade %r and %r>" % (self.t1, self.t2)
+		return "<Crossfade %fs of %r S%f into %r S%f>" % (self.duration, self.t1, self.s1, self.t2, self.s2)
 
 	def __str__(self):
 		args = (self.s1, self.s2 + self.duration, self.duration,

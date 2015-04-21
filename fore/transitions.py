@@ -39,43 +39,32 @@ def avg_end_duration(track):
     except IndexError:
         return sum([b.duration for b in track.analysis.segments[-8:]]) / 8
 
-def managed_transition(track1, track2, state=None):
-    """ Manage the transition from track1 to track2
-    
-    If this is part of a chain of transitions (to track3, track4, ...),
-    pass a state dictionary, which should start out empty. Continue to
-    pass the same dictionary, and it will be updated to maintain state.
+def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0, otrim1=0, itrim2=0, maxlen=None, mode='equal_power', audition_hack=False): 
+    """Manage the transition from one track to another
+
+    Most of the parameters should be provided by keyword (in Py3, there'd be * after state).
+    state: State mapping - cursor position etc is maintained here
+    xfade: Number of tatums/segments to crossfade over
+    itrim1: Initial trim of first track - ignored unless starting fresh
+    otrim1: Trim end of first track
+    itrim2: Trim beginning of second track
+    maxlen: If set, mix duration will be capped to this (protect against over-long transition)
+    mode: Either equal_power or linear
+    audition_hack: If set, cursor position will be reduced by the fade length. Yep, it's a hack.
     """
-    if state is None:
-        # No state object passed, so no state retention;
-        # we'll be discarding this when we're done.
-        state = {}
-    if "cursor" not in state:
-        # Initialize new state mapping to save us having to use .get() everywhere
-        state["cursor"] = state["track"] = 0
-    if state["track"] != track1._metadata.id:
-        # We're not chaining tracks, so wipe out the cursor.
-        state["cursor"] = 0
-    state["track"] = track2._metadata.id
-    for track in [track1, track2]:
+    if "cursor" not in state: state["cursor"] = 0
+    for track in (track1, track2):
         loudness = track.analysis.loudness
         track.gain = db_2_volume(loudness)
-
     # NOTE: All values are floating-point seconds, save xfade which is a number
     # of tatums/segments (assumed to be at average length), and itrim/otrim which
     # are buggy.
-    xfade = int(track1._metadata.track_details['xfade'])
-    t1start = first_viable(track1) + float(track1._metadata.track_details['itrim'])
-    t1end = last_viable(track1) - float(track1._metadata.track_details['otrim'])
-    t1_itrim = float(track2._metadata.track_details['itrim'])
-    t1_otrim = float(track1._metadata.track_details['otrim'])
-    t1_length = float(track1._metadata.track_details['length'])
-    t2_length = float(track2._metadata.track_details['length'])
-    t2_otrim = float(track2._metadata.track_details['otrim'])
-    t2start = first_viable(track2) + float(track2._metadata.track_details['itrim'])
-    t2end = last_viable(track2) - float(track2._metadata.track_details['otrim'])
+    t1start = first_viable(track1) + itrim1
+    t1end = last_viable(track1) - otrim1
+    t2start = first_viable(track2) + itrim2
     # offset between start and first theoretical beat.
     t2offset = lead_in(track2)
+
     if xfade == 0:
         # Ensure that we always crossfade at least a little bit
         fade = 0.01
@@ -84,26 +73,41 @@ def managed_transition(track1, track2, state=None):
         # of the song, and we fade across X tatums/segments.
         avg_duration = avg_end_duration(track1)
         fade = avg_duration * xfade
+    if audition_hack: state['cursor'] -= fade
     playback_end = t1end - fade - t2offset
     playback_duration = playback_end - state['cursor']
     mix_duration = t1end - playback_end
 
-    # Protect from xfade longer than second track.
-    while t2_length - mix_duration <= 0:
-        mix_duration -= .5
-        playback_end += .5
-        playback_duration += .5
-
+    if maxlen is not None:
+        # Protect from xfade longer than second track.
+        while mix_duration > maxlen:
+            # Chop half a second at a time (not sure why, but let's maintain it for now)
+            mix_duration -= .5
+            playback_end += .5
+            playback_duration += .5
     pb1 = pb(track1, state['cursor'], playback_duration)
-    pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode='equal_power') #other mode option: 'linear'
-
-    equal = mix_duration + playback_duration == t1end - state['cursor']
-    actual = t1end - state['cursor']
-    desired = mix_duration + playback_duration
-    diff = actual - desired
-    
+    pb2 = cf((track1, track2), (playback_end - .01, t2start), mix_duration, mode=mode)
     state['cursor'] = mix_duration + t2start
     return [pb1, pb2]
+
+def managed_transition(track1, track2, state):
+    """ Manage the transition from track1 to track2
+    
+    If this is part of a chain of transitions (to track3, track4, ...),
+    pass a state dictionary, which should start out empty. Continue to
+    pass the same dictionary, and it will be updated to maintain state.
+    """
+    if state.get("track") != track1._metadata.id:
+        # We're not chaining tracks, so wipe out the cursor.
+        state["cursor"] = 0
+    state["track"] = track2._metadata.id
+    return managed_transition_helper(track1, track2, state,
+        xfade=int(track1._metadata.track_details['xfade']),
+        itrim1=float(track1._metadata.track_details['itrim']),
+        otrim1=float(track1._metadata.track_details['otrim']),
+        itrim2=float(track2._metadata.track_details['itrim']),
+        maxlen=float(track2._metadata.track_details['length']),
+    )
 
 def lead_in(track):
     """
