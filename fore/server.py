@@ -923,8 +923,8 @@ class AuditionTransition(BaseHandler):
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		track1_id=int(self.request.arguments['track_id'][0])
 		track_xfade=int(self.request.arguments['track_xfade'][0])
-		track_otrim=int(self.request.arguments['track_otrim'][0])
-		next_track_itrim=int(self.request.arguments['next_track_itrim'][0])
+		track_otrim=float(self.request.arguments['track_otrim'][0])
+		next_track_itrim=float(self.request.arguments['next_track_itrim'][0])
 		track2_id=int(self.request.arguments['next_track_id'][0])
 		pair_o_tracks = database.get_track_filename(track1_id), database.get_track_filename(track2_id)
 		fn = os.urandom(4).encode("hex")+".mp3" # Give us a nice simple eight-character random hex file name
