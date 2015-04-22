@@ -39,14 +39,14 @@ def avg_end_duration(track):
     except IndexError:
         return sum([b.duration for b in track.analysis.segments[-8:]]) / 8
 
-def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0, otrim1=0, itrim2=0, maxlen=None, mode='equal_power', audition_hack=False): 
+def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0.0, otrim1=0.0, itrim2=0.0, maxlen=None, mode='equal_power', audition_hack=False): 
     """Manage the transition from one track to another
 
     Most of the parameters should be provided by keyword (in Py3, there'd be * after state).
     state: State mapping - cursor position etc is maintained here
     xfade: Number of tatums/segments to crossfade over
     itrim1: Initial trim of first track - ignored unless starting fresh
-    otrim1: Trim end of first track
+    otrim1: Trim end of first track - all these are floating-point seconds
     itrim2: Trim beginning of second track
     maxlen: If set, mix duration will be capped to this (protect against over-long transition)
     mode: Either equal_power or linear
@@ -57,8 +57,7 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0, otrim1=0
         loudness = track.analysis.loudness
         track.gain = db_2_volume(loudness)
     # NOTE: All values are floating-point seconds, save xfade which is a number
-    # of tatums/segments (assumed to be at average length), and itrim/otrim which
-    # are buggy.
+    # of tatums/segments (assumed to be at average length).
     t1start = first_viable(track1) + itrim1
     t1end = last_viable(track1) - otrim1
     t2start = first_viable(track2) + itrim2
