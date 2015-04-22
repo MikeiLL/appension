@@ -66,7 +66,7 @@ def avg_end_duration(track):
         return sum([b.duration for b in track.analysis.segments[-8:]]) / 8
 
 def managed_transition(track1, track2, xfade=0, otrim=0.0, itrim=0.0):
-	state = {"cursor": track1.analysis.duration - 6.0}
+	state = {"cursor": track1.analysis.duration - 6.0 - float(otrim)}
 	ret = managed_transition_helper(track1, track2, state,
 		xfade=int(xfade),
 		otrim1=float(otrim),
