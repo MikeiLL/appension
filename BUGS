@@ -1,2 +1,0 @@
-The itrim and otrim values are stored as integers, and are sometimes treated as non-integers.
-Are they meant to be milliseconds? seconds? beats? Need to sort something out and be consistent.
