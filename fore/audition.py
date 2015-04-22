@@ -26,7 +26,7 @@ log = logging.getLogger(__name__)
 
 LOUDNESS_THRESH = -8
 
-def audition(files, xfade=0, otrim=0, itrim=0, dest="transition.mp3"):
+def audition(files, xfade=0, otrim=0.0, itrim=0.0, dest="transition.mp3"):
     filenames = ['audio/' + filename.encode("UTF-8") for filename in files]
     tracks = [LocalAudioStream(file) for file in filenames]
     transition = managed_transition(tracks[0], tracks[1], xfade=xfade, otrim=otrim, itrim=itrim)
@@ -65,7 +65,7 @@ def avg_end_duration(track):
     except IndexError:
         return sum([b.duration for b in track.analysis.segments[-8:]]) / 8
 
-def managed_transition(track1, track2, xfade = 0, otrim = 0, itrim = 0):
+def managed_transition(track1, track2, xfade=0, otrim=0.0, itrim=0.0):
 	state = {"cursor": track1.analysis.duration - 6.0}
 	ret = managed_transition_helper(track1, track2, state,
 		xfade=int(xfade),

@@ -31,12 +31,12 @@ def combine_tracks(track1, track2, remove=0):
     return left_right_merge(track1, track2)
     
 	
-def format_track(track, itrim=0, otrim=0, fadeout=5):
+def format_track(track, itrim=0.0, otrim=0.0, fadeout=5):
     playback = pb(track, itrim, track.analysis.duration - otrim)
     fade = fo(track, track.analysis.duration - otrim, fadeout)
     return [playback, fade]
     
-def render_track(file1, file2, itrim=0, fadeout=5, remove=0):
+def render_track(file1, file2, itrim=0.0, fadeout=5, remove=0):
     filename = file1
     track2 = audio.LocalAudioFile('instrumentals/'+file2)
     track1 = audio.LocalAudioFile('acapella/'+file1)
