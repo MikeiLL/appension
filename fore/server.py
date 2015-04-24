@@ -635,40 +635,40 @@ class ChunkHandler(BaseHandler):
 									artist_tracks="", recent_submitters=ordered_submitters, letter = '', og_description=og_description, 
 									page_title=page_title, meta_description=meta_description,
 									og_url=og_url))
+									
+	def alphabetize_ignore_the(self, list_of_names):
+		'''Return alphabetized list of names, ignoring the word "The" in alphabetization.'''
+		
+		ordered_object = {}
+		#TODO abstract me, please and stop wetting
+		for item in list_of_names:
+			if string.lower(item[0][:4]) == 'the ':
+				ordered_object[item[0][4:].upper()] = ('', item[0])
+			elif len(item[0].split(',')) > 1:
+				# if item contains a comma, split into Last, First
+				the_item = item[0].split(',')
+				the_item[1] = the_item[1].lstrip()
+				# Add a random number so duplicate names don't break this
+				# seems like a bit of a hack. This whole approach is probably
+				# less ideal than a really well composed database query.
+				# Random names shouldn't be necessary as other two conditions
+				# return unique values from the db.
+				ordered_object[the_item[0].upper()+str(random.random())] = the_item
+			else:
+				ordered_object[item[0].upper()] = ('', item[0])
+		return OrderedDict(sorted(ordered_object.items()))
 		
 	def post(self):
 		form = Oracle(self.request.arguments)
 		user_name = self.current_user or 'Glitcher'
 		letter = self.request.arguments['letters'][0]
+		
 		artist_tracks = database.browse_tracks(letter)
-		artists_order = {}
-		#TODO abstract me, please and stop wetting
-		for artist in artist_tracks:
-			if string.lower(artist[0][:4]) == 'the ':
-				artists_order[artist[0][4:].upper()] = ('', artist[0])
-			elif len(artist[0].split(',')) > 1:
-				# if artist contains a comma, split into Last, First
-				the_artist = artist[0].split(',')
-				the_artist[1] = the_artist[1].lstrip()
-				artists_order[the_artist[0].upper()] = the_artist
-			else:
-				artists_order[artist[0].upper()] = ('', artist[0])
-		ordered_artists = OrderedDict(sorted(artists_order.items()))
+		ordered_artists = self.alphabetize_ignore_the(artist_tracks)
 		
 		recent_submitters = database.get_recent_tracks(10)
-		recent_order = {}
-		for submitter in recent_submitters:
-			if string.lower(submitter[0][:4]) == 'the ':
-				recent_order[submitter[0][4:].upper()] = ('', submitter[0])
-			elif len(submitter[0].split(',')) > 1:
-				# if artist contains a comma, split into Last, First
-				the_submitter = submitter[0].split(',')
-				the_submitter[1] = the_submitter[1].lstrip()
-				recent_order[the_submitter[0].upper()] = the_submitter
-			else:
-				recent_order[submitter[0].upper()] = ('', submitter[0])
-				
-		ordered_submitters = OrderedDict(sorted(recent_order.items()))
+		ordered_submitters = self.alphabetize_ignore_the(recent_submitters)
+		
 		og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
 		page_title="Browse Artists: Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 		meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
