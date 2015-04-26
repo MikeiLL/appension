@@ -94,7 +94,7 @@
 
 .ui360 .sm2-canvas {
  position:absolute;
- height: 65px;
+ /*height: 65px;*/
  left:-9px;
  top:-7px;
 }
