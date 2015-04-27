@@ -22,7 +22,7 @@ void request_fail(object q)
 {
 	remove_call_out(request_fail);
 	werror("DOWN "+ctime(time()));
-	Process.create_process(({"sudo","systemctl","start","appension"}))->wait();
+	Process.create_process(({"sudo","systemctl","start","glitch.service"}))->wait();
 	if (!lastfailed) mail(SERVER+" went down",SERVER+" went down "+ctime(time()),1);
 	lastfailed=0;
 }
