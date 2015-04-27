@@ -361,7 +361,7 @@ class Submissionform(BaseHandler):
 					for f in self.request.arguments:
 						details += "<hr/>" + self.get_argument(f, default=None, strip=False)
 					#self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
-					database.create_track(body, filename, track_image_file, self.request.arguments, user_name)
+					database.create_track(body, filename, self.request.arguments, track_image_file, user_name)
 					message = "A new file, %s had been submitted by %s."%(filename, user_name)
 					mailer.AlertMessage(message, 'New Track Submission')
 					self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
@@ -389,7 +389,7 @@ class Submissionform(BaseHandler):
 				self.request.arguments['url'][0] = self.request.arguments['url'][0][8:]
 			elif self.request.arguments['url'][0][:7 ].lower() =='http://':
 				self.request.arguments['url'][0] = self.request.arguments['url'][0][7:]
-			database.create_track(body, filename, track_image_file, self.request.arguments, user_name)
+			database.create_track(body, filename, self.request.arguments, track_image_file, user_name)
 			message = "A new Glitch Studio Track, %s had been submitted by %s."%(filename, user_name)
 			mailer.AlertMessage(message, 'New Glitch Studio Track Submission')
 			self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
