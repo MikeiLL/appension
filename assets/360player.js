@@ -532,6 +532,8 @@ function ThreeSixtyPlayer() {
         fps: 0
       };
 
+	  //Mike iLL hack to disable mousepointer
+      thisSound._360data.oCover.style.cursor = 'default';
       // "Metadata" (annotations)
       if (typeof self.Metadata !== 'undefined' && self.getElementsByClassName('metadata','div',thisSound._360data.oUI360).length) {
         thisSound._360data.metadata = new self.Metadata(thisSound,self);
@@ -1110,6 +1112,7 @@ function ThreeSixtyPlayer() {
           // add a handler for the button
           oCanvas = oLinks[i].parentNode.getElementsByTagName('canvas')[0];
         }
+        
         // enable hi-DPI / retina features?
         if (hiDPIScale > 1) {
           self.addClass(oCanvas, 'hi-dpi');
@@ -1426,6 +1429,8 @@ window.ThreeSixtyPlayer = ThreeSixtyPlayer; // constructor
 }(window));
 
 threeSixtyPlayer = new ThreeSixtyPlayer();
+//Mike iLL hack to disable restart track
+threeSixtyPlayer.mmh = function(){return null};
 
 // hook into SM2 init
 soundManager.onready(threeSixtyPlayer.init);
