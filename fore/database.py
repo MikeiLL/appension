@@ -13,7 +13,13 @@ import re
 import hashlib
 from mutagen.mp3 import MP3
 from time import sleep
-from docstringargs import cmdline
+import clize
+from sigtools.modifiers import kwoargs
+
+commands = []
+def cmdline(f):
+	commands.append(f)
+	return f
 
 _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
@@ -390,7 +396,9 @@ def create_user(username, email, password):
 	"""Create a new user, return the newly-created ID
 
 	username: Name for the new user
+
 	email: Email address (must be unique)
+
 	password: Clear-text password
 	"""
 	username = username.lower(); email = email.lower();
@@ -415,6 +423,7 @@ def confirm_user(id, hex_key):
     """Attempt to confirm a user's email address
 
     id: Numeric user ID (not user name or email)
+
     hex_key: Matching key to the one stored, else the confirmation fails
     """
     with _conn, _conn.cursor() as cur:
@@ -437,6 +446,7 @@ def set_user_password(user_or_email, password):
 	"""Change a user's password (administratively) - returns None on success, or error message
 
 	user_or_email: User name or email address
+
 	password: New password
 	"""
 	user_or_email = user_or_email.lower()
@@ -505,12 +515,16 @@ def save_analysis(id, analysis):
 		cur.execute("update tracks set analysis=%s where id=%s", (analysis, id))
 
 @cmdline
-def importmp3(filename, submitter="Bulk import", submitteremail="bulk@import.invalid"):
+@kwoargs("submitter","submitteremail")
+# In Python 3, *filename would go first, and the others would be keyword-only args without the decorator.
+def importmp3(submitter="Bulk import", submitteremail="bulk@import.invalid", *filename):
 	"""Bulk-import MP3 files into the appension database
 
-	filename+: MP3 file(s) to import
-	--submitter: Name of submitter
-	--submitteremail: Email address of submitter
+	filename: MP3 file(s) to import
+
+	submitter: Name of submitter
+
+	submitteremail: Email address of submitter
 	"""
 	# Build up a form-like dictionary for the info mapping. This is the downside of
 	# the breaching of encapsulation in create_track().
@@ -522,10 +536,11 @@ def importmp3(filename, submitter="Bulk import", submitteremail="bulk@import.inv
 		print("Saved as track #%d."%id)
 
 @cmdline
+@kwoargs("confirm")
 def tables(confirm=False):
 	"""Update tables based on create_table.sql
 
-	--confirm: If omitted, will do a dry run.
+	confirm: If omitted, will do a dry run.
 	"""
 	tb = None; cols = set(); coldefs = []
 	with _conn, _conn.cursor() as cur:
@@ -574,4 +589,4 @@ def testfiles():
 		else:
 			print("BIG ONE - Name: {} Length: {}".format(file.filename, file.track_details['length']))
 
-if __name__ == "__main__": print(cmdline.main() or "")
+if __name__ == "__main__": clize.run(*commands)
