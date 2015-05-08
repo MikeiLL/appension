@@ -41,3 +41,4 @@ wtforms-tornado
 WTForms
 clize
 funcsigs
+sigtools
