@@ -896,32 +896,31 @@ P.infinite-intro
 		z-index: -9999;
 	}
 		.popup .popup-body {
-		background: white;
+		/*background: white;
 		background: -moz-linear-gradient(top, #FFFFFF 0%, #F7F7F7 100%);
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #f7f7f7));
 		background: -webkit-linear-gradient(top, #FFFFFF 0%, #F7F7F7 100%);
 		background: -o-linear-gradient(top, #FFFFFF 0%, #F7F7F7 100%);
 		background: -ms-linear-gradient(top, #FFFFFF 0%, #F7F7F7 100%);
 		background: linear-gradient(to bottom, #FFFFFF 0%, #F7F7F7 100%);
-		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f7f7f7', GradientType=0);
-		opacity: 0;
-		min-height: 150px;
-		width: 90%;
-		margin-left: -25%;
-		padding: 0px;
-		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f7f7f7', GradientType=0);		-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 		-webkit-transition: opacity .2s ease-out;
 		-moz-transition: opacity .2s ease-out;
 		-ms-transition: opacity .2s ease-out;
 		-o-transition: opacity .2s ease-out;
-		transition: opacity 0.2s ease-out;
+		transition: opacity 0.2s ease-out;*/
+		opacity: 0;
+		min-height: 150px;
+		width: 300px;
+		margin-left: -40%;
+		padding: 0px;
+
 		position: relative;
 		-moz-box-shadow: 1px 2px 3px 1px rgb(185, 185, 185);
 		-webkit-box-shadow: 1px 2px 3px 1px rgb(185, 185, 185);
 		box-shadow: 0 0 7px 2px #343030;
 		text-align: left;
 		border: 1px solid #E9E9E9;
-		/*+border-radius: 12px 0px 0px 12px;*/
 		-moz-border-radius: 12px 0px 0px 12px;
 		-webkit-border-radius: 12px 0px 0px 12px;
 		-khtml-border-radius: 12px 0px 0px 12px;
@@ -1041,7 +1040,7 @@ P.infinite-intro
 			background-position: center center;   	
 			}
 	}
-	
+		
 	@media all and (min-width:40em) {
 	
 		#header {
@@ -1153,6 +1152,10 @@ P.infinite-intro
 			-webkit-box-shadow: black;
 			box-shadow: black;
 		}
+		.popup .popup-body {
+			width: 450px;
+			margin-left: -25%;
+			}
 		
 	}
 	/************Start Percent Grid Media**************/
@@ -1236,7 +1239,11 @@ P.infinite-intro
 			box-shadow: black;
 		}
 		.grid li > nav {
-		margin-left: 0;
+			margin-left: 0;
+		}
+		.popup .popup-body {
+			width: 650px;
+			margin-left: -25%;
 		}
 	}	
 
