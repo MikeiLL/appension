@@ -351,17 +351,22 @@ class Submissionform(BaseHandler):
 			
 		if self.request.arguments['track_source'] == ['user_form']:
 			if form.validate():
+					log.warning('Form validated')
 					fileinfo = self.request.files['mp3_file'][0]
 					try:
 						track_image_file = self.request.files['track_image'][0]['body']
 					except KeyError:
+						log.warning('We got a KeyError')
 						track_image_file = 0
 					body = fileinfo['body']
 					filename = fileinfo['filename']
+					log.warning('File name %r', filename)
 					for f in self.request.arguments:
 						details += "<hr/>" + self.get_argument(f, default=None, strip=False)
+						log.warning('We got argument: %r', f)
 					#self.request.files['mp3_file'] is an instance of tornado.httputil.HTTPFile
 					database.create_track(body, filename, self.request.arguments, track_image_file, user_name)
+					log.warning('Have we created a track?')
 					message = "A new file, %s had been submitted by %s."%(filename, user_name)
 					mailer.AlertMessage(message, 'New Track Submission')
 					self.write(templates.load("confirm_submission.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
