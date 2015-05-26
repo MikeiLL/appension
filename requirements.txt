@@ -23,8 +23,10 @@ pyOpenSSL
 pyScss
 pycparser
 pycrypto
+pyechonest
 pyserial
 pytz
+remix
 requests
 simplejson
 six
