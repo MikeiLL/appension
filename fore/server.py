@@ -321,7 +321,7 @@ class SubmissionForm(Form):
 	comments = wtforms.TextAreaField('comments', validators=[])
 	track_source = wtforms.HiddenField('track_source', validators=[])
 	track_image = wtforms.FileField(u'track_image', validators=[ImageFile])
-	url = wtforms.TextField(u'url', validators=[wtforms.validators.url()])
+	url = wtforms.TextField(u'url', validators=[wtforms.validators.url(message=u"Invalid URL. If you don't have one, please just put http://www.google.com.")])
 
 @route("/submit")
 class Submissionform(BaseHandler):

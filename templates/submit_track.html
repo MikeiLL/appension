@@ -4,7 +4,7 @@
 <p></p>
 <img width="212" border="0" height="38" alt="" src="static/img/submit-title.png">
 <p></p>
-<form enctype="multipart/form-data" action="/submit" method="post">
+<form enctype="multipart/form-data" action="/submit" method="post" id="track_submit">
 
 <table class="secondary">
 
@@ -43,5 +43,53 @@ Also consider format like Costello, Elvis and the Attractions</p></td></tr>
 <tr><td colspan="2" align="right"><input type="submit" value="upload" /></td></tr>
 </table>
 </form>
+	<!-- Spinner - visible only until the file exists -->
+	<div id="loading" style"display:none;">
+		<div id="loadingcontent">
+			<p id="loadingspinner">
+				<br/>
+				Uploading file...<br/><br/>
+			</p>
+		</div>
+	</div>
 {% end %}
+{% block footer %}		
+	<div class="container">			
+		{% include 'modules/footer.html' %}	
+	</div>				
+	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>				
+		
+		<script type="text/javascript" src='{{ compiled('spin.min.js',		  
+		'soundmanager2-nodebug-jsmin.js',		  
+		'berniecode-animator.js',		  
+		'360player.js',
+		'bar-ui.js',
+		'socket.io.js',
+		'sm-configs.js'	  ) }}'>
+		</script>	
+	<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
+
+	
+<script type="text/javascript">
+	$("#track_submit").submit(function() {
+			jQuery("#loading").fadeIn();
+			var opts = {
+				lines: 12, // The number of lines to draw
+				length: 7, // The length of each line
+				width: 4, // The line thickness
+				radius: 10, // The radius of the inner circle
+				color: '#000', // #rgb or #rrggbb
+				speed: 1, // Rounds per second
+				trail: 60, // Afterglow percentage
+				shadow: false, // Whether to render a shadow
+				hwaccel: false // Whether to use hardware acceleration
+			};
+			var target = document.getElementById('loading');
+			var spinner = new Spinner(opts).spin(target);
+			document.getElementById("loading").style.display = "block";
+		});
+</script>
+
+
+	{% end %}	
 
