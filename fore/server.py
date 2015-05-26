@@ -1104,6 +1104,12 @@ class FooterModule(tornado.web.UIModule):
 		return self.render_string('modules/footer.html')
 
 if __name__ == "__main__":
+	# When the server's running normally, maintain a local log file in addition to
+	# logging to stderr.
+	f = logging.FileHandler("debug.log")
+	f.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s:%(message)s'))
+	logging.getLogger("").addHandler(f)
+
 	Daemon()
 
 	log.info("Starting %s...", config.app_name)
