@@ -41,7 +41,6 @@ from echonest.remix.audio import AudioAnalysis
 
 from pyechonest.util import EchoNestAPIError
 import pyechonest.util
-import weakref
 import numpy
 from echonest.remix.support.ffmpeg import ffmpeg
 
@@ -273,7 +272,6 @@ class LocalAudioStream(AudioStream):
 		# AudioAnalysis) will let any exceptions bubble all the way up,
 		# so we don't have to deal with that here.
 		self.analysis = tempanalysis
-		self.analysis.source = weakref.ref(self)
 
 		class data(object):
 			"""
