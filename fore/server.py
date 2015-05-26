@@ -321,7 +321,7 @@ class SubmissionForm(Form):
 	comments = wtforms.TextAreaField('comments', validators=[])
 	track_source = wtforms.HiddenField('track_source', validators=[])
 	track_image = wtforms.FileField(u'track_image', validators=[ImageFile])
-	url = wtforms.TextField(u'url', validators=[wtforms.validators.url(message=u"Invalid URL. If you don't have one, please just put http://www.google.com.")])
+	url = wtforms.TextField(u'url', validators=[wtforms.validators.Optional(), wtforms.validators.url(message=u"Invalid URL. If you don't have one, please just put http://www.google.com.")])
 
 @route("/submit")
 class Submissionform(BaseHandler):
@@ -342,6 +342,9 @@ class Submissionform(BaseHandler):
 		details = 'You submitted:<br/>';
 		page_title="Glitch Track Submission Confirmation Page."
 		form = SubmissionForm(self.request.arguments)
+		f = open('fortunes.txt', 'r')
+		fortunes = [line for line in f if not line[0] == '%']
+		saying = random.choice(fortunes)
 		try:
 			form.mp3_file.raw_data = self.request.files['mp3_file']
 		except KeyError: 
@@ -373,7 +376,7 @@ class Submissionform(BaseHandler):
 				log.info("Failed Form Submission.")
 				self.write(templates.load("submit_track.html").generate(compiled=compiled, form=form, user_name=user_name, page_title=page_title,
 												meta_description=meta_description, og_url=config.server_domain,
-												og_description=og_description))
+												witty_saying=saying, og_description=og_description))
 
 		else:
 			#Do this if track is already in browser memory from Glitch Studio
