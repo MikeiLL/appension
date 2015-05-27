@@ -466,7 +466,6 @@ class DeleteTrack(BaseHandler):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		input = int(input) # TODO: If intification fails, send back a tidy error message, rather than just quietly deleting nothing
-		log.info("Yo we got input: %r from %s", input, user_name)
 		database.delete_track(input)
 		self.write(admin_page(user_name, deleted=input))
 
