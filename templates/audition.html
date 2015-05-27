@@ -123,8 +123,11 @@
 				setTimeout(probe, 1000, url);
 				return;
 			}
-			document.getElementById("loading").style.display = "none";
-			document.getElementById("player").style.display = "block";
+			console.log('got it');
+			setTimeout(function() {
+				document.getElementById("loading").style.display = "none";
+				document.getElementById("player").style.display = "block";
+				}, 5000 );
 		};
 		xhr.send();
 	}
