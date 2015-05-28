@@ -67,9 +67,6 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0.0, otrim1
     if xfade == 0:
         # Ensure that we always crossfade at least a little bit
         fade = 0.0001
-        print(111111111)
-        print(t1end)
-        print(t1end - fade)
     else:
         # The crossfade is defined based on the tempo at the end
         # of the song, and we fade across X tatums/segments.
