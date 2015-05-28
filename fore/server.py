@@ -22,6 +22,7 @@ import uuid
 import string
 import base64
 import random
+import socket
 import wtforms
 import datetime
 import requests
@@ -1141,7 +1142,20 @@ if __name__ == "__main__":
 	)
 	frame_sender.start()
 
-	application.listen(config.http_port)
+	tries = 0
+	while True:
+		try:
+			tries += 1
+			application.listen(config.http_port)
+		except socket.error as e:
+			if e.errno != 98: raise
+			# If we get "address already in use", wait a bit and
+			# then try again.
+			if tries >= 10: raise # Try for a minute and a half, then give up.
+			log.warning("Address already in use, retrying...")
+			time.sleep(10)
+		else:
+			break
 	try:
 		if config.use_sudo_uid_gid:
 			# Attempt to drop privs to the user that invoked sudo, if
