@@ -14,6 +14,7 @@ import traceback
 import threading
 import subprocess
 import multiprocessing
+import weakref
 
 from lame import Lame
 from timer import Timer
@@ -272,6 +273,8 @@ class LocalAudioStream(AudioStream):
 		# AudioAnalysis) will let any exceptions bubble all the way up,
 		# so we don't have to deal with that here.
 		self.analysis = tempanalysis
+		# let's try adding this back in
+		self.analysis.source = weakref.ref(self)
 
 		class data(object):
 			"""
