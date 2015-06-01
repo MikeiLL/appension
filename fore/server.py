@@ -478,7 +478,7 @@ class EditTrack(BaseHandler):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		track = database.get_single_track(int(input))
-		if track.track_details['url'] and not track.track_details['url'] in config.server_domain[12:]:
+		if track.track_details['url'] and not track.track_details['url'] in config.server_domain[11:]:
 			track_url = 'http://'+track.track_details['url']	
 			try:
 				resp = requests.head(track_url)
