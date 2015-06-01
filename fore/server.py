@@ -36,6 +36,7 @@ import tornado.template
 import tornadio2.server
 import multiprocessing
 from tornado import escape
+from urlparse import urlparse
 from collections import OrderedDict
 
 from daemon import Daemon
@@ -477,17 +478,16 @@ class EditTrack(BaseHandler):
 		if self._user_perms<2: return self.redirect("/")
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		track = database.get_single_track(int(input))
-		if track.track_details['url']:
-			track_url = 'http://'+track.track_details['url']
-			if not track_url == config.server_domain:
-				try:
-					resp = requests.head(track_url)
-					if resp.status_code == 200:
-						check_url = 'Valid'
-					else:
-						check_url = 'Invalid'
-				except requests.exceptions.ConnectionError:
+		if track.track_details['url'] and not track.track_details['url'] in config.server_domain[12:]:
+			track_url = 'http://'+track.track_details['url']	
+			try:
+				resp = requests.head(track_url)
+				if resp.status_code == 200:
+					check_url = 'Valid'
+				else:
 					check_url = 'Invalid'
+			except requests.exceptions.ConnectionError:
+				check_url = 'Invalid'
 		else:
 			check_url = ''
 		self.write(templates.load("track_edit.html").generate(
