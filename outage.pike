@@ -14,7 +14,7 @@ int lastfailed=0;
 void mail(string subj,string body,int|void include_log)
 {
 	Process.run(({"/usr/bin/mail","-s",subj,SENDEREMAIL,SMSEMAIL}),(["stdin":body]));
-	if (include_log) body+="\n"+((Stdio.read_file("error.log")||"")/"\n")[<100..]*"\n"+"\n"; //Add the last hundred-ish lines of log
+	if (include_log) body+="\n"+((Stdio.read_file("debug.log")||"")/"\n")[<100..]*"\n"+"\n"; //Add the last hundred-ish lines of log
 	Process.run(({"/usr/bin/mail","-s",subj,SENDEREMAIL,NOTIFYEMAIL}),(["stdin":body]));
 }
 
