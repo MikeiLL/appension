@@ -80,9 +80,9 @@ class NonCachingStaticFileHandler(tornado.web.StaticFileHandler):
 
 
 routes = [("/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"})]
-for dir in ("audio", "instrumentals", "static"):
+for dir in ("instrumentals", "static"):
 	routes.append(("/%s/(.*)"%dir, tornado.web.StaticFileHandler, {"path": dir+"/"}))
-for dir in ("audition_audio", "transition_audio"):
+for dir in ("audio", "audition_audio", "transition_audio"):
 	routes.append(("/%s/(.*)"%dir, NonCachingStaticFileHandler, {"path": dir+"/"}))
 
 def authenticated(func):
