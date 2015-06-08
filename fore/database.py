@@ -555,8 +555,13 @@ def transfer_track_details(from_id=0, to_id=0):
 				print(line)
 		else:
 			query = """UPDATE tracks SET 
-					lyrics = (SELECT lyrics FROM tracks WHERE track_id = {from_id})
-					WHERE track_id = {to_id}""".format(from_id=from_id, to_id=to_id)
+					lyrics = (SELECT lyrics FROM tracks WHERE id = {from_id}),
+					artist = (SELECT artist FROM tracks WHERE id = {from_id}),
+					story = (SELECT story FROM tracks WHERE id = {from_id}),
+					url = (SELECT url FROM tracks WHERE id = {from_id}),
+					sequence = (SELECT sequence FROM tracks WHERE id = {from_id}),
+					status = (SELECT status FROM tracks WHERE id = {from_id})
+					WHERE id = {to_id} RETURNING id, artist;""".format(from_id=from_id, to_id=to_id)
 			cur.execute(query)
 			for line in cur.fetchall:
 				print(line)
