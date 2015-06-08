@@ -6,6 +6,7 @@ by Mike iLL/mZoo and Rosuav, April 8th 2014
 import logging
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO,format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
+access_log = logging.getLogger("tornado.access")
 import config
 from . import apikeys # ImportError? Check apikeys_sample.py for instructions.
 import mailer
@@ -31,7 +32,9 @@ import threading
 import traceback
 import subprocess
 import tornado.web
+import tornado.log
 import tornado.ioloop
+import tornado.options
 import tornado.template
 import tornadio2.server
 import multiprocessing
@@ -1115,6 +1118,11 @@ if __name__ == "__main__":
 	f = logging.FileHandler("debug.log")
 	f.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s:%(message)s'))
 	logging.getLogger("").addHandler(f)
+	args = sys.argv
+	args.append("--log_file_prefix=glitchAccess.log")
+	access_log = logging.getLogger("tornado.access")
+	tornado.log.enable_pretty_logging(options=None, logger=access_log)
+	tornado.options.parse_command_line(args)
 
 	Daemon()
 
