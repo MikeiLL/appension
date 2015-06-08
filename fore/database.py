@@ -536,7 +536,6 @@ def importmp3(submitter="Bulk import", submitteremail="bulk@import.invalid", *fi
 		print("Saved as track #%d."%id)
 
 @cmdline
-@kwoargs("from_id","to_id")
 def transfer_track_details(from_id=0, to_id=0):
 	"""Transfer details of track from one track to another
 
@@ -546,7 +545,7 @@ def transfer_track_details(from_id=0, to_id=0):
 	"""
 	with _conn, _conn.cursor() as cur:
 		if not from_id:
-			print("Add track ids to transfer details. Here are some likely candidates:")
+			print("Add two track ids to transfer details. Here are some likely candidates:")
 			query = """SELECT artist, id, filename FROM tracks ou
 					WHERE (SELECT count(artist) FROM tracks inr
 					WHERE inr.artist = ou.artist) > 1;"""
@@ -561,10 +560,10 @@ def transfer_track_details(from_id=0, to_id=0):
 					url = (SELECT url FROM tracks WHERE id = {from_id}),
 					sequence = (SELECT sequence FROM tracks WHERE id = {from_id}),
 					status = (SELECT status FROM tracks WHERE id = {from_id})
-					WHERE id = {to_id} RETURNING id, artist;""".format(from_id=from_id, to_id=to_id)
+					WHERE id = {to_id} RETURNING id, artist, filename;""".format(from_id=from_id, to_id=to_id)
 			cur.execute(query)
-			for line in cur.fetchall:
-				print(line)
+			for line in cur.fetchall():
+				print(line, "Has been updated")
 
 @cmdline
 @kwoargs("confirm")
