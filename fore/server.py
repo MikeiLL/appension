@@ -73,7 +73,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
 	def get_current_user(self):
 		username, self._user_perms = database.get_user_info(int(self.get_secure_cookie("userid") or 0))
-		log.warning("WE HAVE A USERID %r and username: %r", self.get_secure_cookie("userid"), username)
+		log.info("UserID: %r and username: %r", self.get_secure_cookie("userid"), username)
 		if self._user_perms: return username # If perms==0, the user has been banned, and should be treated as not-logged-in.
 
 class NonCachingStaticFileHandler(tornado.web.StaticFileHandler):
@@ -163,6 +163,8 @@ class MainHandler(BaseHandler):
 		import database
 		lyrics = database.get_all_lyrics()
 		complete_length = datetime.timedelta(seconds=int(database.get_complete_length()))
+		self.from_where = self.request.headers.get('Referer')
+		access_log.info("Referred by %r", self.from_where)
 
 		kwargs = {
 			'compiled': compiled,
@@ -759,7 +761,6 @@ class CreateAccount(tornado.web.RequestHandler):
 			details = 'Account request submitted for %s. <br/>'%(submitter_email);
 			new_user = database.create_user(submitter_name, submitter_email,\
 										self.get_argument('password'))
-			log.warning("New User looks like %r", new_user)
 			details += 'Please check your email to confirm.<br/>'
 			admin_message = "New account created for %s at %s."%(submitter_name, submitter_email)
 			mailer.AlertMessage(admin_message, 'New Account Created')

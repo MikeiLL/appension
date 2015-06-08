@@ -75,8 +75,6 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0.0, otrim1
     if audition_hack: state['cursor'] -= fade
     playback_end = t1end - fade - t2offset
     playback_duration = playback_end - state['cursor']
-    log.info("***************")
-    log.info("playback duration: %r, playback_end: %r ", playback_duration, playback_end)
     mix_duration = t1end - playback_end
 
     if maxlen is not None:

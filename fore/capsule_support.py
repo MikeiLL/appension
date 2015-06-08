@@ -330,11 +330,9 @@ def hard_transition(track1, track2):
 	segs1 = track1.analysis.segments
 	segs2 = track2.analysis.segments
 	start_end1 = [first_viable(track1), last_viable(track1)]
-	log.info("Track1 first: %r, last: %r", first_viable(track1), last_viable(track1))
 	dur1 = viable_duration(track1, start_end1)
 	start2 = first_viable(track2) + 1
 	tr2_seg1_dur = segs2[start2].end - segs2[start2].start
-	log.info("Track2 duration: %r", tr2_seg1_dur)
 	pb1 = Playback(track1, segs1[1].start, dur1)
 	pb2 = Playback(track2, segs2[start2].start, tr2_seg1_dur)
 	return [pb1, pb2]
