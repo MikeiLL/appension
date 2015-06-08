@@ -163,8 +163,10 @@ class MainHandler(BaseHandler):
 		import database
 		lyrics = database.get_all_lyrics()
 		complete_length = datetime.timedelta(seconds=int(database.get_complete_length()))
-		self.from_where = self.request.headers.get('Referer')
-		access_log.info("Referred by %r", self.from_where)
+		from_where = self.request.headers.get('Referer')
+		print(111111111)
+		access_log.info(self.request)
+		access_log.info("Referred by %r", from_where)
 
 		kwargs = {
 			'compiled': compiled,
