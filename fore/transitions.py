@@ -60,13 +60,13 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0.0, otrim1
     # of tatums/segments (assumed to be at average length).
     t1start = first_viable(track1) + itrim1
     t1end = last_viable(track1) - otrim1
-    t2start = first_viable(track2) + itrim2
+    t2start = 0#first_viable(track2) + itrim2
     # offset between start and first theoretical beat.
     t2offset = lead_in(track2)
-
     if xfade == 0:
         # Ensure that we always crossfade at least a little bit
         fade = 0.0001
+        log.info("xfade is zero")
     else:
         # The crossfade is defined based on the tempo at the end
         # of the song, and we fade across X tatums/segments.
@@ -76,6 +76,7 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0.0, otrim1
     playback_end = t1end - fade - t2offset
     playback_duration = playback_end - state['cursor']
     mix_duration = t1end - playback_end
+    log.info(mix_duration)
 
     if maxlen is not None:
         # Protect from xfade longer than second track.
