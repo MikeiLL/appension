@@ -6,7 +6,6 @@ by Mike iLL/mZoo and Rosuav, April 8th 2014
 import logging
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO,format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
-access_log = logging.getLogger("tornado.access")
 import config
 from . import apikeys # ImportError? Check apikeys_sample.py for instructions.
 import mailer
@@ -163,8 +162,6 @@ class MainHandler(BaseHandler):
 		complete_length = datetime.timedelta(seconds=int(database.get_complete_length()))
 		from_where = self.request.headers.get('Referer')
 		print(111111111)
-		access_log.info(self.request)
-		access_log.info("Referred by %r", from_where)
 
 		kwargs = {
 			'compiled': compiled,
@@ -1113,17 +1110,26 @@ class FooterModule(tornado.web.UIModule):
 	def render(self):
 		return self.render_string('modules/footer.html')
 
+def common_log(request):
+	"""Log a request using Apache's common log format.
+
+	Provide an open file-like object 'access_log' in settings.
+	"""
+	request.settings['access_log'].write('%s - %s [%s] "%s %s %s" %d %s "%s" "%s"\n' % (
+		request.request.remote_ip, "-", # Not currently showing the user name, but we could add it here if we wanted to
+		time.strftime('%d/%b/%Y:%H:%M:%S %z'),
+		request.request.method, request.request.path, request.request.version, # Header line eg "GET /whatever HTTP/1.0"
+		request.get_status(), "-", # Hmm, can't seem to get size easily :(
+		request.request.headers.get("Referer", "-"),
+		request.request.headers.get("User-Agent", "-"),
+	))
+
 if __name__ == "__main__":
 	# When the server's running normally, maintain a local log file in addition to
 	# logging to stderr.
 	f = logging.FileHandler("debug.log")
 	f.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s:%(message)s'))
 	logging.getLogger("").addHandler(f)
-	args = sys.argv
-	args.append("--log_file_prefix=glitchAccess.log")
-	access_log = logging.getLogger("tornado.access")
-	tornado.log.enable_pretty_logging(options=None, logger=access_log)
-	tornado.options.parse_command_line(args)
 
 	Daemon()
 
@@ -1143,6 +1149,8 @@ if __name__ == "__main__":
 		tornadio2.TornadioRouter(SocketConnection).apply_routes(routes),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',
+		log_function=common_log,
+		access_log=open("access.log", "a"),
 		ui_modules={'Footer': FooterModule,
 			'GlitchNavigationModule': NavModule,}
 	)
