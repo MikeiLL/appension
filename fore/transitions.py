@@ -70,6 +70,8 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0.0, otrim1
     if xfade == 0:
         # Ensure that we always crossfade at least a little bit
         fade = 0.0001
+        # Don't allow difference between track start and first beat to prevent hard transition.
+        t2offset = 0
     else:
         # The crossfade is defined based on the tempo at the end
         # of the song, and we fade across X tatums/segments.
