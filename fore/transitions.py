@@ -52,7 +52,11 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0.0, otrim1
     mode: Either equal_power or linear
     audition_hack: If set, cursor position will be reduced by the fade length. Yep, it's a hack.
     """
-    if "cursor" not in state: state["cursor"] = 0
+    if "cursor" not in state: 
+        state["cursor"] = 0
+        log.info("Cursor NOT IN STATE.")
+    else:
+        log.info(state)
     for track in (track1, track2):
         loudness = track.analysis.loudness
         track.gain = db_2_volume(loudness)
@@ -60,7 +64,7 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0.0, otrim1
     # of tatums/segments (assumed to be at average length).
     t1start = first_viable(track1) + itrim1
     t1end = last_viable(track1) - otrim1
-    t2start = 0#first_viable(track2) + itrim2
+    t2start = first_viable(track2) + itrim2
     # offset between start and first theoretical beat.
     t2offset = lead_in(track2)
     if xfade == 0:
@@ -73,6 +77,7 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0.0, otrim1
         avg_duration = avg_end_duration(track1)
         fade = avg_duration * xfade
     if audition_hack: 
+        log.info(state['cursor'])
         state['cursor'] -= fade
         log.info("Audition hack")
         log.info(state['cursor'])
@@ -120,7 +125,7 @@ def lead_in(track):
         avg_duration = sum([b.duration for b in track.analysis.beats[:8]]) / 8
         earliest_beat = track.analysis.beats[0].start
     except IndexError:
-        log.warning("No beats returned for track by %r.", track._metadata.track_details['artist'])
+        log.warning("No beats returned for track by %r.", track.analysis.metadata['artist'])
         return track.analysis.segments[0].start
     # While echonest may return a starting beat part way into the track,
     # we want to assume that beats continue, at a consistent rate, back
