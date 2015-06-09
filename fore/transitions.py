@@ -70,17 +70,16 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0.0, otrim1
     if xfade == 0:
         # Ensure that we always crossfade at least a little bit
         fade = 0.0001
-        log.info("xfade is zero")
     else:
         # The crossfade is defined based on the tempo at the end
         # of the song, and we fade across X tatums/segments.
         avg_duration = avg_end_duration(track1)
         fade = avg_duration * xfade
     if audition_hack: 
-        log.info(state['cursor'])
+        log.debug(state['cursor'])
         state['cursor'] -= fade
-        log.info("Audition hack")
-        log.info(state['cursor'])
+        log.debug("Audition hack")
+        log.debug(state['cursor'])
     playback_end = t1end - fade - t2offset
     playback_duration = playback_end - state['cursor']
     mix_duration = t1end - playback_end
