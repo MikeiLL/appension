@@ -1,3 +1,10 @@
+"""
+bufferedqueue.py
+
+Subclass Queue.Queue and run as Daemon buffer to handle chunks of mp3 stream.
+
+By PSobot.
+"""
 import Queue
 import multiprocessing
 import threading
