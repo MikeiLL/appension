@@ -20,13 +20,16 @@ from action import render, audition_render
 from Queue import Queue
 import os
 import time
-from .transitions import managed_transition_helper
+from transitions import managed_transition_helper
 
 log = logging.getLogger(__name__)
 
 LOUDNESS_THRESH = -8
 
 def audition(files, xfade=0, otrim=0.0, itrim=0.0, dest="transition.mp3"):
+    """
+    Render transition audition files and delete them after a week.
+    """
     filenames = ['audio/' + filename.encode("UTF-8") for filename in files]
     tracks = [LocalAudioStream(file) for file in filenames]
     transition = managed_transition(tracks[0], tracks[1], xfade=xfade, otrim=otrim, itrim=itrim)
