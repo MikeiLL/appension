@@ -23,9 +23,9 @@ import database
 from echonest.remix.audio import AudioData
 
 from capsule_support import resample_features, \
-	timbre_whiten, terminate, \
-	FADE_OUT, is_valid, LOUDNESS_THRESH
-	
+	timbre_whiten, LOUDNESS_THRESH
+	# removed: terminate, FADE_OUT, is_valid which we don't seem to be using.
+
 from transitions import managed_transition
 
 log = logging.getLogger(__name__)
