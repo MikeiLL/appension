@@ -1,3 +1,10 @@
+"""
+assetcompiler.py
+
+By PSobot
+
+Creates the instance of compiled coffeescript and scss assets used to generate template pages in server.py.
+"""
 import os
 import coffeescript
 import scss as pyScss
