@@ -20,7 +20,7 @@ from action import render, audition_render
 from Queue import Queue
 import os
 import time
-from transitions import managed_transition_helper
+from .transitions import managed_transition_helper
 
 log = logging.getLogger(__name__)
 
