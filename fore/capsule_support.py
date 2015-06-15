@@ -11,7 +11,6 @@ import numpy as np
 from copy import deepcopy
 from action import Crossfade, Playback, Crossmatch, Fadein, Fadeout, humanize_time
 from utils import rows, flatten
-from append_support import abridge, trim_silence
 
 log = logging.getLogger(__name__)
 
