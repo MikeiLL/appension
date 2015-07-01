@@ -1,0 +1,64 @@
+{% extends admin_main.html %}
+
+{% block content %}
+<center>
+
+{% if notice %}
+	<h2> {{ notice }} </h2>
+{% end %}
+<h2>Active Members</h2>
+<table border="1" cellpadding="3">
+
+<tr><td>Member Name</td><td> Email</td><td>id</td><td>status</td></tr>
+{% for member in active_members %}
+	<tr>
+		<td>
+			<input type="hidden" name="user_email" size="15" value="{{ member.email }}">
+			<input type="hidden" name="user_id" size="15" value="{{ member.userid }}">
+			{{ member.username }}
+		</td>
+		<td>	
+			<a href="mailto:{{ member.email }}">{{ member.email }}</a>
+		</td>
+		<td>
+			{{ member.userid }}
+		</td>
+		<td>
+			{{ member.status }}
+		</td>
+	</tr>
+
+{% end %}
+
+</table>
+<br/><hr/><br/>
+<h2>Inctive Members</h2>
+<table border="1" cellpadding="3">
+
+<tr><td>Member Name</td><td> Email</td><td>id</td><td>status</td></tr>
+{% for member in inactive_members %}
+	<tr>
+		<td>
+			<input type="hidden" name="user_email" size="15" value="{{ member.email }}">
+			<input type="hidden" name="user_id" size="15" value="{{ member.userid }}">
+			{{ member.username }}
+		</td>
+		<td>	
+			<a href="mailto:{{ member.email }}">{{ member.email }}</a>
+		</td>
+		<td>
+			{{ member.userid }}
+		</td>
+		<td>
+			{{ member.status }}
+		</td>
+	</tr>
+
+{% end %}
+
+</table>
+</center>
+</script>
+{% end %}
+
+

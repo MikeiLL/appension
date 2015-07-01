@@ -906,6 +906,21 @@ class Submitters(BaseHandler):
 		self.write(templates.load("submitters.html").generate(
 			compiled=compiled, user_name=user_name, notice="Submitter List Updated", submitters=submitters,
 			number=1))
+			
+
+@route("/members")
+class Submitters(BaseHandler):
+	@authenticated
+	def get(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
+		user_name = tornado.escape.xhtml_escape(self.current_user)
+		members = database.get_member_info()
+		active_members = [member for member in members if member.status == 1]
+		inactive_members = [member for member in members if not member.status == 1]
+		self.write(templates.load("members.html").generate(
+			compiled=compiled, user_name=user_name, notice="", active_members=active_members,
+			inactive_members=inactive_members))
 
 @route("/manage/([0-9]+)")
 class ManageTransition(BaseHandler):
