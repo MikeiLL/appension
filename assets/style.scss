@@ -303,7 +303,19 @@ background: url(/static/img/tile2.jpg) black;
 	.errors {
 		color: #8A0C40;
 		}
-		
+		#pdf
+{
+	position: absolute;
+	z-index: 120;
+	margin: 20px 0 0 235px;
+	border: 1px solid transparent;
+	/*+border-radius: 17px;*/
+	-moz-border-radius: 17px;
+	-webkit-border-radius: 17px;
+	-khtml-border-radius: 17px;
+	border-radius: 17px;
+}
+
 	.left-player {
 		width: 291px;
 		float: none;
