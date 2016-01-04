@@ -39,6 +39,9 @@ def format_track(track, itrim=0.0, otrim=0.0, fadeout=5):
 def render_track(file1, file2, itrim=0.0, fadeout=5, remove=0):
     filename = file1
     track2 = audio.LocalAudioFile('instrumentals/'+file2)
+    print('###########')
+    print('acapella/'+file1)
+    print('###########')
     track1 = audio.LocalAudioFile('acapella/'+file1)
     otrim = max(track1.analysis.duration, track2.analysis.duration) - min(track1.analysis.duration, track2.analysis.duration)
     together = combine_tracks(track1, track2, remove=remove)
