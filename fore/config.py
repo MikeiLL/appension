@@ -5,7 +5,7 @@ server_domain = "http://www.infiniteglitch.net"
 
 lag_limit = 88200        #   samples - how much we can lag by before dropping frames.
 restart_timeout = 3      #   seconds between polls to restart.txt
-http_port = 80
+http_port = 8888
 mini_http_port = 8193
 uid = 1000 # User ID and group ID to drop privileges to
 gid = 1000 # Set both to 0 to not drop privileges, eg if the server is started without privs
