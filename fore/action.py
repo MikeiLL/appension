@@ -8,7 +8,6 @@ Created by Tristan Jehan and Jason Sundram.
 import numpy
 from numpy import zeros, multiply, float32, mean, copy
 
-from echonest.remix.audio import assemble
 from cAction import limit, crossfade, fadein, fadeout, fade
 from itertools import izip
 import logging
@@ -72,15 +71,6 @@ def left_right_merge(f1, f2):
 	f1.data = stereo
 	f1.analysis = tr_analysis
 	return f1
-
-def render(actions, filename, verbose=True):
-	"""Calls render on each action in actions, concatenates the results,
-	renders an audio file, and returns a path to the file"""
-	log.warning("render() may be broken, may not even be used.")
-	pieces = [a.render() for a in actions]
-	# TODO: allow numChannels and sampleRate to vary.
-	out = assemble(pieces, numChannels=2, sampleRate=44100, verbose=verbose)
-	return out, out.encode(filename)
 
 def audition_render(actions, filename):
 	"""Calls render on each action in actions, concatenates the results,
