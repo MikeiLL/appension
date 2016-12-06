@@ -17,7 +17,7 @@ import echonest.remix.audio as audio
 import logging
 from action import Playback_static as pb
 from action import Fadeout_static as fo
-from action import render, audition_render, remove_channel, left_right_merge
+from action import audition_render, remove_channel, left_right_merge
 
 log = logging.getLogger(__name__)
 

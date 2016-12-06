@@ -16,7 +16,7 @@ import echonest.remix.audio as audio
 import logging
 from action import Crossfade as cf
 from action import Playback as pb
-from action import render, audition_render
+from action import audition_render
 from Queue import Queue
 import os
 import time
