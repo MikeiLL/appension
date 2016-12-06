@@ -1217,7 +1217,7 @@ if __name__ == "__main__":
 		# the mixer. Seems to help, although it does delay startup by
 		# several seconds (one round-trip to the echonest server). See
 		# comments in apikeys_sample.py for more detailed explanation.
-		from echonest.remix.audio import AudioAnalysis
+		from amen.echo_nest_converter import AudioAnalysis
 		AudioAnalysis(apikeys.prime_the_pump)
 	mixer.start()
 	try:
