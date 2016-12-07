@@ -18,6 +18,8 @@ import weakref
 from .lame import Lame
 from .timer import Timer
 from . import database
+try: basestring
+except NameError: basestring = (str, bytes)
 
 from audiodata import AudioData
 

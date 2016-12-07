@@ -16,6 +16,7 @@ from mutagen.mp3 import MP3
 from time import sleep
 import clize
 from sigtools.modifiers import kwoargs
+import binascii
 
 commands = []
 def cmdline(f):
@@ -421,7 +422,7 @@ def create_user(username, email, password):
 	with _conn, _conn.cursor() as cur:
 		salt = os.urandom(16)
 		hash = hashlib.sha256(salt+password).hexdigest()
-		pwd = salt.encode("hex")+"-"+hash
+		pwd = binascii.hexlify(salt).decode("ascii")+"-"+hash
 		try:
 			cur.execute("INSERT INTO users (username, email, password, hex_key) VALUES (%s, %s, %s, %s) RETURNING id, hex_key", \
 											(username, email, pwd, hex_key))
