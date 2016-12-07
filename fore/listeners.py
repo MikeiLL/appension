@@ -14,7 +14,7 @@ class Listeners(list):
 		self.__name = name
 		self.__packet = None
 		self.__first_send = None
-		self.__count = 0L
+		self.__count = 0
 		self.__drift_limit = config.drift_limit
 		self.__semaphore = semaphore
 		list.__init__(self)

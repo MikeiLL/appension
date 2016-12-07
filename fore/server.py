@@ -6,18 +6,18 @@ by Mike iLL/mZoo and Rosuav, April 8th 2014
 import logging
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO,format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
-import config
+from . import config
 from . import apikeys # ImportError? Check apikeys_sample.py for instructions.
-import mailer
-import oracle
+from . import mailer
+from . import oracle
+from . import lame
+from . import info
 
 import os
 import sys
 import json
-import lame
 import copy
 import time
-import info
 import uuid
 import string
 import base64
@@ -191,8 +191,8 @@ class MainHandler(BaseHandler):
 class InfoHandler(tornado.web.RequestHandler):
 	actions = []
 	started = None
-	samples = 0L
-	duration = 0.
+	samples = 0
+	duration = 0.0
 
 	@classmethod
 	def add(self, data):
