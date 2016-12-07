@@ -22,3 +22,4 @@ remix.egg-info
 /remix/*
 /cache/*
 *.log
+env
