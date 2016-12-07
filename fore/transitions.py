@@ -9,8 +9,8 @@ Create transitions between tracks. Used by Mixer and Audition.
 Created by Mike iLL/mZoo with Rosuav oversight and input
 """
 import logging
-from action import Crossfade as cf
-from action import Playback as pb
+from .action import Crossfade as cf
+from .action import Playback as pb
 
 log = logging.getLogger(__name__)
 

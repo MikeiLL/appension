@@ -5,10 +5,9 @@ Again by Mike iLL and Rosuav for Infinite Glitch
 """
 import os
 import gc
-import apikeys
+from . import apikeys
 import logging
-import urllib2
-import cPickle
+import pickle
 import base64
 import traceback
 import threading
@@ -16,17 +15,17 @@ import subprocess
 import multiprocessing
 import weakref
 
-from lame import Lame
-from timer import Timer
-import database
+from .lame import Lame
+from .timer import Timer
+from . import database
 
 from audiodata import AudioData
 
-from capsule_support import resample_features, \
+from .capsule_support import resample_features, \
 	timbre_whiten, LOUDNESS_THRESH
 	# removed: terminate, FADE_OUT, is_valid which we don't seem to be using.
 
-from transitions import managed_transition
+from .transitions import managed_transition
 
 log = logging.getLogger(__name__)
 
@@ -40,10 +39,11 @@ import hashlib
 import time
 from amen.echo_nest_converter import AudioAnalysis
 
-from pyechonest.util import EchoNestAPIError
-import pyechonest.util
+# from pyechonest.util import EchoNestAPIError
+class EchoNestAPIError(Exception): pass
+# import pyechonest.util
 import numpy
-from echonest.remix.support.ffmpeg import ffmpeg
+# from echonest.remix.support.ffmpeg import ffmpeg
 
 # Probe the system and find which name is available
 ffmpeg_command = None
@@ -144,8 +144,8 @@ class AudioStream(object):
 	"""
 
 	def __init__(self, fobj):
-	        log.info("Audio Stream Init")
-	        print("Audio Stream Init")
+		log.info("Audio Stream Init")
+		print("Audio Stream Init")
 		self.sampleRate = 44100
 		self.numChannels = 2
 		self.fobj = fobj
@@ -234,8 +234,8 @@ class LocalAudioStream(AudioStream):
 			# data; there's no real guarantee of this, but if you
 			# fiddle in the database, I won't stop you shooting
 			# yourself in the foot.
-			tempanalysis = cPickle.loads(base64.b64decode(analysis))
-		except (EOFError, TypeError, cPickle.UnpicklingError):
+			tempanalysis = pickle.loads(base64.b64decode(analysis))
+		except (EOFError, TypeError, pickle.UnpicklingError):
 			# If there's no saved analysis (including if the arg is
 			# omitted; None will raise TypeError), load the file,
 			# and send it off to echonest. We try the MD5 first, as
@@ -378,7 +378,7 @@ class Mixer(multiprocessing.Process):
 		saved = database.get_analysis(x.id)
 		laf = LocalAudioStream(self.get_stream(x), saved)
 		if not saved:
-			database.save_analysis(x.id, base64.b64encode(cPickle.dumps(laf.analysis,-1)))
+			database.save_analysis(x.id, base64.b64encode(pickle.dumps(laf.analysis,-1)))
 		setattr(laf, "_metadata", x)
 		return self.process(laf)
 

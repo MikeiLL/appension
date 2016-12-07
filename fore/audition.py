@@ -10,14 +10,13 @@ Track1 and Track2 in sequential series.
 Created by Mike iLL with mentorship of Rosuav.
 """
 from __future__ import print_function
-import echonest.remix.audio as audio
-from mixer import LocalAudioStream
-import echonest.remix.audio as audio
+from .mixer import LocalAudioStream
 import logging
-from action import Crossfade as cf
-from action import Playback as pb
-from action import audition_render
-from Queue import Queue
+from .action import Crossfade as cf
+from .action import Playback as pb
+from .action import audition_render
+try: from Queue import Queue
+except ImportError: from queue import Queue
 import os
 import time
 from .transitions import managed_transition_helper

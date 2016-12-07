@@ -1,7 +1,8 @@
 import sys
 import time
-import Queue
-import config
+try: import Queue as queue # Py2
+except ImportError: import queue # Py3
+from . import config
 import logging
 
 LAG_LIMIT = config.lag_limit
@@ -53,7 +54,7 @@ class Listeners(list):
 				# )
 				while (float(self.__count) * 1152.0 / 44100.0) < uptime:
 					self.__broadcast()
-		except Queue.Empty:
+		except queue.Empty:
 			if self.__packet and not self.__starving:
 				self.__starving = True
 				log.critical("Dropping frames! Queue %r is starving!", self.__name)

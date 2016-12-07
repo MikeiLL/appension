@@ -9,8 +9,8 @@ Created by Tristan Jehan and Jason Sundram.
 import logging
 import numpy as np
 from copy import deepcopy
-from action import Crossfade, Playback, Crossmatch, Fadein, Fadeout, humanize_time
-from utils import rows, flatten
+from .action import Crossfade, Playback, Crossmatch, Fadein, Fadeout, humanize_time
+from .utils import rows, flatten
 log = logging.getLogger(__name__)
 
 # constants for now

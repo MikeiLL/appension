@@ -5,7 +5,8 @@ import numpy
 import logging
 import tempfile
 import subprocess
-import cStringIO
+try: import cStringIO
+except ImportError: import io as cStringIO
 
 log = logging.getLogger(__name__)
 

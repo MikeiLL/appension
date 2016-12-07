@@ -13,11 +13,12 @@ track2 = LocalAudioFile('instrumentals/dgacousticlikMP3.mp3')
 ct.render_track('Mike_iLL_a_capella.mp3', 'dgacousticlikMP3.mp3', itrim=8.5)
 """
 from __future__ import print_function
-import echonest.remix.audio as audio
+try: import echonest.remix.audio as audio
+except ImportError: pass # If not available, render_track will fail
 import logging
-from action import Playback_static as pb
-from action import Fadeout_static as fo
-from action import audition_render, remove_channel, left_right_merge
+from .action import Playback_static as pb
+from .action import Fadeout_static as fo
+from .action import audition_render, remove_channel, left_right_merge
 
 log = logging.getLogger(__name__)
 
@@ -29,8 +30,8 @@ def combine_tracks(track1, track2, remove=0):
     if remove == 'right':
         track2 = remove_channel(track2, remove="right")
     return left_right_merge(track1, track2)
-    
-	
+
+
 def format_track(track, itrim=0.0, otrim=0.0, fadeout=5):
     playback = pb(track, itrim, track.analysis.duration - otrim)
     fade = fo(track, track.analysis.duration - otrim, fadeout)

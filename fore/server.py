@@ -37,19 +37,18 @@ import tornado.options
 import tornado.template
 import multiprocessing
 from tornado import escape
-from urlparse import urlparse
+from urllib.parse import urlparse
 from collections import OrderedDict
-
-from daemon import Daemon
-from oracle import Couplet
-from listeners import Listeners
 from wtforms_tornado import Form
-from assetcompiler import compiled
 from wtforms import ValidationError
-from sockethandler import SocketHandler
-from utils import daemonize, random_hex
-from bufferedqueue import BufferedReadQueue
-from combine_tracks import render_track
+
+from .daemon import Daemon
+from .oracle import Couplet
+from .listeners import Listeners
+from .assetcompiler import compiled
+from .utils import daemonize, random_hex
+from .bufferedqueue import BufferedReadQueue
+from .combine_tracks import render_track
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
@@ -156,7 +155,7 @@ class MainHandler(BaseHandler):
 		return total
 		
 	def __gen(self):
-		import database
+		from . import database
 		lyrics = database.get_all_lyrics()
 		complete_length = datetime.timedelta(seconds=int(database.get_complete_length()))
 		from_where = self.request.headers.get('Referer')
@@ -550,7 +549,7 @@ class ShareOracleHandler(BaseHandler):
 		show_cloud="block"
 		answer_string = tornado.escape.url_unescape(answer_one)+tornado.escape.url_unescape(answer_two)
 		artist = tornado.escape.url_unescape(artist)
-		from database import Artist
+		from .database import Artist
 		if 'name_part_two' in artist:
 			# recreate artist name as stored in db
 			artist = ', '.join(artist.split(' name_part_two '))
@@ -1200,9 +1199,8 @@ if __name__ == "__main__":
 	# initialization work will be done at this point, before the mixer starts.
 	# This slows startup slightly, but prevents the 1-2s delay on loading up
 	# something like echonest.
-	import database
-	import audition
-	from mixer import Mixer
+	from . import database, audition
+	from .mixer import Mixer
 	mixer = Mixer(v2_queue.raw,info_queue)
 	if hasattr(apikeys, 'prime_the_pump'): 
 		# HACK: Prime the analysis pump to enable stall-free loading in
