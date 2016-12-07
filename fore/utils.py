@@ -75,5 +75,5 @@ def daemonize(target, *args):
 	t.start()
 	
 def random_hex():
-	return binascii.b2a_hex(os.urandom(8))
+	return binascii.b2a_hex(os.urandom(8)).decode("ascii")
 	

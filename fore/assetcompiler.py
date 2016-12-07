@@ -10,7 +10,7 @@ import coffeescript
 import scss as pyScss
 import logging
 import traceback
-from timer import Timer
+from .timer import Timer
 
 log = logging.getLogger(__name__)
 

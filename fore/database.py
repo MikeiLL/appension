@@ -2,11 +2,12 @@
 
 Executable using 'python -m fore.database' - use --help for usage.
 """
-import apikeys
+from . import apikeys
 import psycopg2
-import utils
+from . import utils
 import logging
-import Queue
+try: import Queue as queue
+except ImportError: import queue
 import multiprocessing
 import os
 import re
@@ -15,6 +16,7 @@ from mutagen.mp3 import MP3
 from time import sleep
 import clize
 from sigtools.modifiers import kwoargs
+import binascii
 
 commands = []
 def cmdline(f):
@@ -39,11 +41,11 @@ class Track(object):
 				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords, url):
 		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
 											length, status, story, comments, xfade, itrim, otrim)
-                if len(artist.split(',')) > 1:
-                        the_artist = artist.split(',')
-                        artist_exact = artist
-                        artist = ' '.join([the_artist[1], the_artist[0]])
-                else: artist_exact = artist
+		if len(artist.split(',')) > 1:
+			the_artist = artist.split(',')
+			artist_exact = artist
+			artist = ' '.join([the_artist[1], the_artist[0]])
+		else: artist_exact = artist
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
@@ -118,8 +120,8 @@ class Lyric(object):
 		couplets = [block for block in re.split(r'(?:\r\n){2,}', lyrics) if block.count('\r\n') == 1]
 		couplet_count = len(couplets)
 		lyrics = self.get_couplets(lyrics)
-                an_artist = Artist(artist)
-		
+		an_artist = Artist(artist)
+
 		self.track_lyrics = {
 			'id': id,
 			'artist': an_artist,
@@ -160,7 +162,7 @@ def get_track_to_play():
 		try:
 			track=_track_queue.get(False)
 			log.info("Using enqueued track %s.", track.id)
-		except Queue.Empty:
+		except queue.Empty:
 			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY played,random()")
 			row=cur.fetchone()
 			if not row: raise ValueError("Database is empty, cannot enqueue track")
@@ -182,7 +184,7 @@ def get_single_track(track_id):
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE id=%s", (track_id,))
 		return Track(*cur.fetchone())
-                
+
 def get_complete_length():
 	"""Get the sum of length of all active tracks."""
 	with _conn, _conn.cursor() as cur:
@@ -196,17 +198,17 @@ def get_all_lyrics():
 		return [Lyric(*row) for row in cur.fetchall()]
 		
 def match_lyrics(word):
-    with _conn, _conn.cursor() as cur:
+	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE lyrics ILIKE %s", ('%'+word+'%',))
 		return [Lyric(*row) for row in cur.fetchall()]
 		
 def match_keywords(word):
-    with _conn, _conn.cursor() as cur:
+	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE keywords ILIKE %s", ('%'+word+'%',))
 		return [Lyric(*row) for row in cur.fetchall()]
 		
 def random_lyrics():
-    with _conn, _conn.cursor() as cur:
+	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE lyrics != '' ORDER BY random() limit 1")
 		return [Lyric(*row) for row in cur.fetchall()]
 
@@ -247,7 +249,7 @@ def create_track(mp3data, filename, info, imagefile=None, user_name=None):
 		else:
 		        pic=next((k for k in track if k.startswith("APIC:")), None)
 		        pic = pic and track[pic].data
-                        
+
 		# Note: These need to fold absent and blank both to the given string.
 		try: artist = u', '.join(track['TPE1'].text)
 		except KeyError: artist = info.get("artist",[""])[0] or u'(unknown artist)'
@@ -290,10 +292,10 @@ def update_track(id, info, artwork=None):
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
 		
 def sequence_tracks(sequence_object):
-    for id, sequence in sequence_object.iteritems():
-        seq = sequence_object.get(id,'')[0]
-    	with _conn, _conn.cursor() as cur:
-		cur.execute("UPDATE tracks SET sequence = "+str(seq)+", played = 0 WHERE id="+str(id))
+	for id, sequence in sequence_object.iteritems():
+		seq = sequence_object.get(id,'')[0]
+		with _conn, _conn.cursor() as cur:
+			cur.execute("UPDATE tracks SET sequence = "+str(seq)+", played = 0 WHERE id="+str(id))
 	
 def get_track_submitter_info():
     with _conn, _conn.cursor() as cur:
@@ -309,7 +311,7 @@ def get_track_submitter_info():
                 on a.id=b.userid GROUP by a.username, a.email, a.id, b.artist, b.id'''
         cur.execute(query)
         return [Submitter(*row) for row in cur.fetchall()]
-			
+
 def update_track_submitter_info(submitter_object):
     '''We may not need track id, but it may prove useful at some point.'''
     for track_grouping in zip(submitter_object['track_id'],submitter_object['user_id'],submitter_object['username'],submitter_object['email']):
@@ -342,10 +344,9 @@ def add_dummy_users():
         
 
 def create_outreach_message(message):
-    with _conn, _conn.cursor() as cur:
-        cur.execute("INSERT INTO outreach (message) VALUES (%s) RETURNING id, message", \
-											(message,))
-	return [row for row in cur.fetchone()]
+	with _conn, _conn.cursor() as cur:
+		cur.execute("INSERT INTO outreach (message) VALUES (%s) RETURNING id, message", (message,))
+		return [row for row in cur.fetchone()]
 											
 def update_outreach_message(message, id=1):
     if retrieve_outreach_message()[0] == '':
@@ -354,8 +355,8 @@ def update_outreach_message(message, id=1):
     data = (message,)
     with _conn, _conn.cursor() as cur:
         cur.execute(query, data)
-	return [row for row in cur.fetchone()]
-											
+        return [row for row in cur.fetchone()]
+
 def retrieve_outreach_message():
     with _conn, _conn.cursor() as cur:
         cur.execute("SELECT id, message FROM outreach ORDER BY id LIMIT 1")
@@ -363,7 +364,7 @@ def retrieve_outreach_message():
             return [row for row in cur.fetchone()]
         except TypeError: 
             return ['', '']
-		
+
 def get_subsequent_track(track_id):
     """Return Track Object for next track in sequence."""
     with _conn, _conn.cursor() as cur:
@@ -417,13 +418,11 @@ def create_user(username, email, password):
 	"""
 	username = username.lower(); email = email.lower();
 	if not isinstance(password, bytes): password=password.encode("utf-8")
-	print password
-	print email
 	hex_key = utils.random_hex()
 	with _conn, _conn.cursor() as cur:
 		salt = os.urandom(16)
 		hash = hashlib.sha256(salt+password).hexdigest()
-		pwd = salt.encode("hex")+"-"+hash
+		pwd = binascii.hexlify(salt).decode("ascii")+"-"+hash
 		try:
 			cur.execute("INSERT INTO users (username, email, password, hex_key) VALUES (%s, %s, %s, %s) RETURNING id, hex_key", \
 											(username, email, pwd, hex_key))
@@ -506,7 +505,7 @@ def get_user_info(id):
 		return row or (None, 0)
 
 def hex_user_password(email, hex_key):
-        """Return username and id that matches email."""
+	"""Return username and id that matches email."""
 	with _conn, _conn.cursor() as cur:
 		cur.execute("UPDATE users set hex_key = %s WHERE email=%s RETURNING username, id", (hex_key, email))
 		row = cur.fetchone()

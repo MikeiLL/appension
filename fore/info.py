@@ -11,7 +11,7 @@ def generate(iq, first_frame, handler):
 	first_frame.acquire()
 	stime = time.time()
 	log.info("Info generator got first frame! Start time: %2.2f", stime)
-	samples = 0L
+	samples = 0
 	while True:
 		try:
 			action = iq.get()

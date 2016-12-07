@@ -8,12 +8,15 @@ Created by Tristan Jehan and Jason Sundram.
 import numpy
 from numpy import zeros, multiply, float32, mean, copy
 
-from cAction import limit, crossfade, fadein, fadeout, fade
-from itertools import izip
+try: from cAction import limit, crossfade, fadein, fadeout, fade
+except ImportError: pass # Stuff will fail
+try: from itertools import izip as zip # Py2
+except ImportError: pass # Py3
 import logging
-from lame import Lame
+from .lame import Lame
 
-import dirac
+try: import dirac
+except ImportError: pass # More stuff will fail
 
 log = logging.getLogger(__name__)
 
@@ -415,7 +418,7 @@ class Crossmatch(Blend):
 		#   In case the for loop never runs due to too few elements.
 		e = int(rates[-1][0] + signal_start)
 
-		for i, ((s1, r1), (s2, r2)) in enumerate(izip(rates, rates[1:])):
+		for i, ((s1, r1), (s2, r2)) in enumerate(zip(rates, rates[1:])):
 			s = int(s1 + signal_start)
 			e = int(s2 + signal_start)
 			yield self.g(t[s:e].data, gain, r1)
@@ -431,7 +434,7 @@ class Crossmatch(Blend):
 				buf = None
 			if len(chunk) > c:
 				steps = range(0, len(chunk), c)
-				for s, e in izip(steps, steps[1:]):
+				for s, e in zip(steps, steps[1:]):
 					yield chunk[s:e]
 				buf = chunk[e:]
 			elif len(chunk) < c:
@@ -455,7 +458,7 @@ class Crossmatch(Blend):
 		stretch1, stretch2 = self.__limited(self.t1, self.l1, chunk_size),\
 							 self.__limited(self.t2, self.l2, chunk_size)
 		total = 0
-		for i, (a, b) in enumerate(izip(stretch1, stretch2)):
+		for i, (a, b) in enumerate(zip(stretch1, stretch2)):
 			o = min(len(a), len(b))
 			total += o
 			yield crossfade(a[:o], b[:o], '', self.samples, i * chunk_size)\
@@ -500,6 +503,6 @@ def display_actions(actions):
 	total = 0
 	print
 	for a in actions:
-		print "%s\t  %s" % (humanize_time(total), unicode(a))
+		print("%s\t  %s" % (humanize_time(total), unicode(a)))
 		total += a.duration
-	print
+	print()

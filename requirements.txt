@@ -26,14 +26,12 @@ pycrypto
 pyechonest
 pyserial
 pytz
-remix
 requests
 simplejson
 six
 stop-words
 tornado
 wadllib
-wsgiref
 wtforms-tornado
 WTForms
 clize

@@ -1,4 +1,5 @@
-from Queue import Queue
+try: from Queue import Queue # Py2
+except ImportError: from queue import Queue # Py3
 import subprocess
 import threading
 import traceback
@@ -299,11 +300,11 @@ if __name__ == "__main__":
 						 dtype=numpy.int16).reshape((-1, 2))
 
 	s = time.time()
-	print "Encoding test.wav to testout.mp3..."
+	print("Encoding test.wav to testout.mp3...")
 	encoder = Lame(ofile=open('testout.mp3', 'w'))
 	encoder.safety_buffer = 30
 	encoder.start()
 	encoder.add_pcm(a)
 	encoder.finish()
 	s = time.time() - s
-	print "Took %2.2fs" % s
+	print("Took %2.2fs" % s)

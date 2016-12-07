@@ -2,6 +2,7 @@ echo-nest-remix-examples/*
 static/single-audio-files/
 audio/
 *.mp3
+!instrumentals/dgacousticlikMP3.mp3
 *.en
 *.wav
 *.pyc
@@ -21,3 +22,4 @@ remix.egg-info
 /remix/*
 /cache/*
 *.log
+env

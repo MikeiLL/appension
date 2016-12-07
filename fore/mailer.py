@@ -1,7 +1,7 @@
 # Import smtplib for the actual sending function
 import smtplib
 from email.mime.text import MIMEText
-import apikeys
+from . import apikeys
 
 def AlertMessage(message, subject='Glitch System Message', me=apikeys.system_email, you=apikeys.admin_email):
 	msg = MIMEText(message)

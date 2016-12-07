@@ -1,8 +1,9 @@
+from __future__ import print_function
 import os
 import subprocess
 import sys
 import inspect
-import config as config
+from . import config
 
 
 def get_calling_module():
@@ -28,9 +29,9 @@ class Daemon():
 
 	def start(self):
 		if os.path.exists('forever.pid'):
-			print '%s is already running!' % config.app_name
+			print('%s is already running!' % config.app_name)
 			exit(1)
-		print ("Starting %s..." % config.app_name),
+		print("Starting %s..." % config.app_name, end=" ")
 		devnull = open(os.devnull, 'w')
 		if not self.module:
 			args = ['nohup', 'python', self.file]
@@ -45,16 +46,16 @@ class Daemon():
 			  stdout=devnull,
 			  stderr=devnull
 			).pid
-		print "done. (PID: %s)" % pid
+		print("done. (PID: %s)" % pid)
 		open(self.pidfile, 'w').write(str(pid))
 
 	def stop(self):
 		if not os.path.exists(self.pidfile):
-			print '%s is not running!' % config.app_name
+			print('%s is not running!' % config.app_name)
 		else:
-			print ("Stopping %s..." % config.app_name),
+			print("Stopping %s..." % config.app_name, end=" ")
 			subprocess.Popen(['kill', '-2', open(self.pidfile).read()])
-			print "done."
+			print("done.")
 			if os.path.exists(self.pidfile):
 				os.remove(self.pidfile)
 

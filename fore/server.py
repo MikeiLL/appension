@@ -6,18 +6,18 @@ by Mike iLL/mZoo and Rosuav, April 8th 2014
 import logging
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO,format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
-import config
+from . import config
 from . import apikeys # ImportError? Check apikeys_sample.py for instructions.
-import mailer
-import oracle
+from . import mailer
+from . import oracle
+from . import lame
+from . import info
 
 import os
 import sys
 import json
-import lame
 import copy
 import time
-import info
 import uuid
 import string
 import base64
@@ -35,22 +35,20 @@ import tornado.log
 import tornado.ioloop
 import tornado.options
 import tornado.template
-import tornadio2.server
 import multiprocessing
 from tornado import escape
-from urlparse import urlparse
+from urllib.parse import urlparse
 from collections import OrderedDict
-
-from daemon import Daemon
-from oracle import Couplet
-from listeners import Listeners
 from wtforms_tornado import Form
-from assetcompiler import compiled
 from wtforms import ValidationError
-from sockethandler import SocketHandler
-from utils import daemonize, random_hex
-from bufferedqueue import BufferedReadQueue
-from combine_tracks import render_track
+
+from .daemon import Daemon
+from .oracle import Couplet
+from .listeners import Listeners
+from .assetcompiler import compiled
+from .utils import daemonize, random_hex
+from .bufferedqueue import BufferedReadQueue
+from .combine_tracks import render_track
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
@@ -157,7 +155,7 @@ class MainHandler(BaseHandler):
 		return total
 		
 	def __gen(self):
-		import database
+		from . import database
 		lyrics = database.get_all_lyrics()
 		complete_length = datetime.timedelta(seconds=int(database.get_complete_length()))
 		from_where = self.request.headers.get('Referer')
@@ -191,8 +189,8 @@ class MainHandler(BaseHandler):
 class InfoHandler(tornado.web.RequestHandler):
 	actions = []
 	started = None
-	samples = 0L
-	duration = 0.
+	samples = 0
+	duration = 0.0
 
 	@classmethod
 	def add(self, data):
@@ -278,12 +276,6 @@ class StreamHandler(tornado.web.RequestHandler):
 		if self in self.clients:
 			self.clients.remove(self)
 			log.info("Removed client at %s", self.request.remote_ip)
-
-class SocketConnection(tornadio2.conn.SocketConnection):
-	__endpoints__ = {
-		"/info.websocket": SocketHandler,   #TODO: Rename
-	}
-
 
 def MpegFile(form, field):
 	"""WTForms Validator"""
@@ -557,7 +549,7 @@ class ShareOracleHandler(BaseHandler):
 		show_cloud="block"
 		answer_string = tornado.escape.url_unescape(answer_one)+tornado.escape.url_unescape(answer_two)
 		artist = tornado.escape.url_unescape(artist)
-		from database import Artist
+		from .database import Artist
 		if 'name_part_two' in artist:
 			# recreate artist name as stored in db
 			artist = ', '.join(artist.split(' name_part_two '))
@@ -1161,7 +1153,6 @@ if __name__ == "__main__":
 	tornado.ioloop.PeriodicCallback(InfoHandler.clean, 5 * 1000).start()
 
 	application = tornado.web.Application(
-		tornadio2.TornadioRouter(SocketConnection).apply_routes(routes),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',
 		log_function=common_log,
@@ -1208,9 +1199,8 @@ if __name__ == "__main__":
 	# initialization work will be done at this point, before the mixer starts.
 	# This slows startup slightly, but prevents the 1-2s delay on loading up
 	# something like echonest.
-	import database
-	import audition
-	from mixer import Mixer
+	from . import database, audition
+	from .mixer import Mixer
 	mixer = Mixer(v2_queue.raw,info_queue)
 	if hasattr(apikeys, 'prime_the_pump'): 
 		# HACK: Prime the analysis pump to enable stall-free loading in
