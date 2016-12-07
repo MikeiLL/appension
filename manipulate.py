@@ -5,7 +5,9 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO,format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 import fore.action as action
 
-from echonest.remix.audio import AudioData, AudioAnalysis
+from audiodata import AudioData
+from amen.echo_nest_converter import AudioAnalysis
+
 class LocalAudioFile(AudioData):
     """
     Cut down from echonest.remix.audio.LocalAudioFile

@@ -20,7 +20,7 @@ from lame import Lame
 from timer import Timer
 import database
 
-from echonest.remix.audio import AudioData
+from audiodata import AudioData
 
 from capsule_support import resample_features, \
 	timbre_whiten, LOUDNESS_THRESH
