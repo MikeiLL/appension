@@ -47,7 +47,7 @@ import numpy
 
 # Probe the system and find which name is available
 ffmpeg_command = None
-for command in ("avconv", "ffmpeg", "en-ffmpeg"):
+for command in ("ffmpeg", "avconv", "en-ffmpeg"):
 	try:
 		subprocess.Popen([command],stdout=subprocess.PIPE,stderr=subprocess.STDOUT).wait()
 		ffmpeg_command = command
