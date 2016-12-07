@@ -35,7 +35,6 @@ import tornado.log
 import tornado.ioloop
 import tornado.options
 import tornado.template
-import tornadio2.server
 import multiprocessing
 from tornado import escape
 from urlparse import urlparse
@@ -278,12 +277,6 @@ class StreamHandler(tornado.web.RequestHandler):
 		if self in self.clients:
 			self.clients.remove(self)
 			log.info("Removed client at %s", self.request.remote_ip)
-
-class SocketConnection(tornadio2.conn.SocketConnection):
-	__endpoints__ = {
-		"/info.websocket": SocketHandler,   #TODO: Rename
-	}
-
 
 def MpegFile(form, field):
 	"""WTForms Validator"""
@@ -1161,7 +1154,6 @@ if __name__ == "__main__":
 	tornado.ioloop.PeriodicCallback(InfoHandler.clean, 5 * 1000).start()
 
 	application = tornado.web.Application(
-		tornadio2.TornadioRouter(SocketConnection).apply_routes(routes),
 		cookie_secret=apikeys.cookie_monster,
 		login_url='/login',
 		log_function=common_log,
