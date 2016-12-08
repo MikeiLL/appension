@@ -251,7 +251,7 @@ class LocalAudioStream(AudioStream):
 				fobj = initializer
 				fobj.seek(0)
 			else:
-				fobj = open(initializer, 'r')
+				fobj = open(initializer, 'rb')
 			#   This looks like a lot of work, but is much more lighter
 			#   on memory than reading the entire file in.
 			md5 = hashlib.md5()
