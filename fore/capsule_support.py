@@ -11,6 +11,7 @@ import numpy as np
 from copy import deepcopy
 from .action import Crossfade, Playback, Crossmatch, Fadein, Fadeout, humanize_time
 from .utils import rows, flatten
+import pandas.tslib
 log = logging.getLogger(__name__)
 
 # constants for now
@@ -112,8 +113,9 @@ def get_mean_offset(segments, markers):
 	offsets = []
 	try:
 		for marker in markers:
-			while segments[index].start < marker.start + FUSION_INTERVAL:
-				offset = abs(marker.start - segments[index].start)
+			ms = marker.start.total_seconds()
+			while segments[index].start.total_seconds() < ms + FUSION_INTERVAL:
+				offset = abs(ms - segments[index].start.total_seconds())
 				if offset < FUSION_INTERVAL:
 					offsets.append(offset)
 				index += 1
@@ -139,21 +141,21 @@ def resample_features(data, rate='tatums', feature='timbre'):
 		return ret
 
 	# Find the optimal attack offset
-	meanOffset = get_mean_offset(segments, markers)
+	meanOffset = pandas.tslib.Timedelta(get_mean_offset(segments, markers), "s")
 	tmp_markers = deepcopy(markers)
+	START = pandas.tslib.Timedelta(0)
 
 	# Apply the offset
 	for m in tmp_markers:
 		m.start -= meanOffset
-		if m.start < 0:
-			m.start = 0
+		if m.start < START:
+			m.start = START
 
 	# Allocate output matrix, give it alias mat for convenience.
 	mat = ret['matrix'] = np.zeros((len(tmp_markers) - 1, 12), dtype=np.float32)
 
 	# Find the index of the segment that corresponds to the first marker
-	f = lambda x: tmp_markers[0].start < x.start + x.duration
-	index = (i for i, x in enumerate(segments) if f(x)).next()
+	index = next(i for i, x in enumerate(segments) if tmp_markers[0].start < x.start + x.duration)
 
 	# Do the resampling
 	try:
