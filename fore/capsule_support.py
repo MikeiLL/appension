@@ -93,7 +93,9 @@ def get_central(analysis, member='segments'):
 		2) the index of the first retained member.
 	"""
 	def central(s):
-		return analysis.end_of_fade_in <= s.start and (s.start + s.duration) < analysis.start_of_fade_out
+		# CJA 20161208: Fade doesn't exist as its own 'thing'. For now, we pretend there's none.
+		# return analysis.end_of_fade_in <= s.start and (s.start + s.duration) < analysis.start_of_fade_out
+		return True
 
 	members = getattr(analysis, member)  # this is nicer than data.__dict__[member]
 	ret = list(filter(central, members[:]))
