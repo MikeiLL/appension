@@ -96,7 +96,7 @@ def get_central(analysis, member='segments'):
 		return analysis.end_of_fade_in <= s.start and (s.start + s.duration) < analysis.start_of_fade_out
 
 	members = getattr(analysis, member)  # this is nicer than data.__dict__[member]
-	ret = filter(central, members[:])
+	ret = list(filter(central, members[:]))
 	index = members.index(ret[0]) if ret else 0
 
 	return ret, index

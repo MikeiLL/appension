@@ -26,20 +26,12 @@ def cmdline(f):
 _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
 
-# Enable Unicode return values for all database queries
-# This would be the default in Python 3, but in Python 2, we
-# need to enable these two extensions.
-# http://initd.org/psycopg/docs/usage.html#unicode-handling
-import psycopg2.extensions
-psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
-psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
-
 class Track(object):
 	# Select these from the tracks table to construct a track object.
 	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords,url"
 	def __init__(self, id, filename, artist, title, length, status, 
 				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords, url):
-		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title, \
+		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title,
 											length, status, story, comments, xfade, itrim, otrim)
 		if len(artist.split(',')) > 1:
 			the_artist = artist.split(',')
