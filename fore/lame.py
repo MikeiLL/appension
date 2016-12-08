@@ -88,7 +88,7 @@ class Lame(threading.Thread):
 	block = False           #   Regardless of real-time, should we block
 							#   for as long as the audio we've encoded lasts?
 
-	stream_chunk_size = samplerate / 8
+	stream_chunk_size = samplerate // 8
 	data = None
 
 	def __init__(self, callback=None, ofile=None, oqueue=None, syncqueue=None):
@@ -168,6 +168,7 @@ class Lame(threading.Thread):
 					try:
 						tmp = 0
 						for chunk in data.render(self.stream_chunk_size):
+							if not chunk: continue # hacky hack
 							try:
 								samples = len(chunk)
 								self.buffered += samples

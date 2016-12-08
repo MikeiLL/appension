@@ -126,9 +126,8 @@ class FFMPEGStreamHandler(threading.Thread):
 	def read(self, samples=-1):
 		if samples > 0:
 			samples *= 2
-		arr = numpy.fromfile(self.p.stdout,
-							   dtype=numpy.int16,
-							   count=samples)
+		return [] # hacky hack
+		arr = numpy.fromfile(self.p.stdout, dtype=numpy.int16, count=samples)
 		if samples < 0 or len(arr) < samples:
 			self.finish()
 		arr = numpy.reshape(arr, (-1, 2))
@@ -374,7 +373,8 @@ class Mixer(multiprocessing.Process):
 			log.info("no beats returned for this track.")
 			track.resampled = {"rate":'beats', "matrix": []}
 
-		track.gain = self.__db_2_volume(track.analysis.loudness)
+		# hacky hack
+		# track.gain = self.__db_2_volume(track.analysis.loudness)
 		log.info("Done processing [%r].", track._metadata.id)
 		return track
 

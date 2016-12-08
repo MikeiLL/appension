@@ -166,7 +166,7 @@ class Playback(object):
 				end = int((self.start + self.duration) * 44100)
 			else:
 				start, end = self.start, self.end
-			for i in xrange(start, end, chunk_size):
+			for i in range(start, end, chunk_size):
 				if gain is not None:
 					yield limit(multiply(
 							self.track[i:min(end, i + chunk_size)].data,
@@ -196,7 +196,7 @@ class Fadeout(Playback):
 		else:
 			start = int(self.start * 44100)
 			end = int((self.start + self.duration) * 44100)
-			for i in xrange(start, end, chunk_size):
+			for i in range(start, end, chunk_size):
 				e = min(end, i + chunk_size)
 				yield (fade(self.track[i:e].data, gain,
 							1.0 - (float(i - start) / (end - start)),
@@ -222,7 +222,7 @@ class Fadein(Playback):
 		else:
 			start = int(self.start * 44100)
 			end = int((self.start + self.duration) * 44100)
-			for i in xrange(start, end, chunk_size):
+			for i in range(start, end, chunk_size):
 				e = min(end, i + chunk_size)
 				yield (fade(self.track[i:e].data, gain,
 							(float(i - start) / (end - start)),
@@ -285,12 +285,13 @@ class Crossfade(object):
 		s1 = int(self.s1 * 44100)
 		s2 = int(self.s2 * 44100)
 		end = int(self.duration * 44100)
-		for i in xrange(0, end, chunk_size):
+		for i in range(0, end, chunk_size):
 			e = min(end, i + chunk_size)
 			# Note that this may bomb if there isn't enough of t2 to do the xfade.
 			# Since xfade is set administratively, this is simply a matter of "be
 			# smart". If you break stuff, it's your problem.
-			yield (crossfade(self.t1[s1+i:s1+e].data,
+			if False: # hacky hack
+				yield (crossfade(self.t1[s1+i:s1+e].data,
 							 self.t2[s2+i:s2+e].data, self.mode,
 							 self.samples, i).astype(numpy.int16))
 
@@ -385,7 +386,7 @@ class Crossmatch(Blend):
 				rates = []
 				o = 0
 				signal_start = int(l[0][0] * 44100)
-				for i in xrange(len(l)):
+				for i in range(len(l)):
 					rate = (int(l[i][0] * 44100) - signal_start,
 							self.durations[i] / l[i][1])
 					rates.append(rate)
@@ -410,7 +411,7 @@ class Crossmatch(Blend):
 		gain = getattr(t, 'gain', None)
 		signal_start = int(l[0][0] * t.sampleRate)
 		rates = []
-		for i in xrange(len(l)):
+		for i in range(len(l)):
 			rate = (int(l[i][0] * t.sampleRate) - signal_start,
 					self.durations[i] / l[i][1])
 			rates.append(rate)

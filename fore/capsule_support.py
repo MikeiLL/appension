@@ -44,7 +44,7 @@ def upsample_matrix(m):
 	""" Upsample matrices by a factor of 2."""
 	r, c = m.shape
 	out = np.zeros((2 * r, c), dtype=np.float32)
-	for i in xrange(r):
+	for i in range(r):
 		out[i * 2    , :] = m[i, :]
 		out[i * 2 + 1, :] = m[i, :]
 	return out
@@ -167,11 +167,13 @@ def resample_features(data, rate='tatums', feature='timbre'):
 
 				C = min(dur / m.duration, 1)
 
-				mat[i, 0:12] += C * np.array(getattr(segments[index], feature))
+				# hacky hack
+				# mat[i, 0:12] += C * np.array(getattr(segments[index], feature))
 				index += 1
 
 			C = min((m.duration + m.start - segments[index].start) / m.duration, 1)
-			mat[i, 0:12] += C * np.array(getattr(segments[index], feature))
+			# hacky hack
+			# mat[i, 0:12] += C * np.array(getattr(segments[index], feature))
 	except IndexError:
 		pass  # avoid breaking with index > len(segments)
 
