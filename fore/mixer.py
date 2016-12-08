@@ -34,15 +34,14 @@ log = logging.getLogger(__name__)
 import sys
 test = 'test' in sys.argv
 
+import amen.echo_nest_converter
+
 ##########################################
 ## Code lifted from psobot's pyechonest ##
 ##########################################
 import hashlib
 import time
-from amen.echo_nest_converter import AudioAnalysis
 
-# from pyechonest.util import EchoNestAPIError
-class EchoNestAPIError(Exception): pass
 # import pyechonest.util
 import numpy
 # from echonest.remix.support.ffmpeg import ffmpeg
@@ -225,10 +224,10 @@ class LocalAudioStream(AudioStream):
 	has already been read will throw an exception.
 
 	If analysis is provided, it is assumed to be a pickle of an
-	AudioAnalysis, and will be used in preference to querying echonest.
+	AudioAnalysis, and will be used in preference to querying amen.
 	"""
-	def __init__(self, initializer, analysis=None):
-		AudioStream.__init__(self, initializer)
+	def __init__(self, filename, analysis=None):
+		AudioStream.__init__(self, filename)
 
 		try:
 			# Attempt to load up the existing analysis first.
@@ -238,37 +237,12 @@ class LocalAudioStream(AudioStream):
 			# yourself in the foot.
 			tempanalysis = pickle.loads(base64.b64decode(analysis))
 		except (EOFError, TypeError, pickle.UnpicklingError):
-			# If there's no saved analysis (including if the arg is
-			# omitted; None will raise TypeError), load the file,
-			# and send it off to echonest. We try the MD5 first, as
-			# it means less uploading, and fall back on actually
-			# sending the whole file out. Note that if the pickle is
-			# normally saved correctly, then we might never hit the
-			# MD5 optimization any more, so it might be worth tossing
-			# it out and just uploading any time.
 			start = time.time()
-			if hasattr(initializer, 'seek'):
-				fobj = initializer
-				fobj.seek(0)
-			else:
-				fobj = open(initializer, 'rb')
-			#   This looks like a lot of work, but is much more lighter
-			#   on memory than reading the entire file in.
-			md5 = hashlib.md5()
-			while True:
-				data = fobj.read(2 ^ 16)
-				if not data:
-					break
-				md5.update(data)
-			if not hasattr(initializer, 'seek'):
-				fobj.close()
-			track_md5 = md5.hexdigest()
-			log.info("Fetching analysis...")
-			try:
-				tempanalysis = AudioAnalysis(str(track_md5))
-			except EchoNestAPIError:
-				tempanalysis = AudioAnalysis(initializer, "mp3")
-			log.info("Fetched analysis in %ss", time.time() - start)
+			log.info("Loading audio...")
+			audio = amen.audio.Audio(filename)
+			log.info("Analyzing...")
+			tempanalysis = amen.echo_nest_converter.AudioAnalysis(audio)
+			log.info("Analyzed in %ss", time.time() - start)
 
 		# By the time we get here, we ought to have a valid tempanalysis.
 		# The very last attempt (passing the original initializer to
@@ -276,7 +250,8 @@ class LocalAudioStream(AudioStream):
 		# so we don't have to deal with that here.
 		self.analysis = tempanalysis
 		# let's try adding this back in
-		self.analysis.source = weakref.ref(self)
+		# on second thoughts, let's not
+		# self.analysis.source = weakref.ref(self)
 
 		class data(object):
 			"""
@@ -380,7 +355,7 @@ class Mixer(multiprocessing.Process):
 		saved = database.get_analysis(x.id)
 		laf = LocalAudioStream(self.get_stream(x), saved)
 		if not saved:
-			database.save_analysis(x.id, base64.b64encode(pickle.dumps(laf.analysis,-1)))
+			database.save_analysis(x.id, base64.b64encode(pickle.dumps(laf.analysis,-1)).decode("ascii"))
 		setattr(laf, "_metadata", x)
 		return self.process(laf)
 
@@ -388,8 +363,9 @@ class Mixer(multiprocessing.Process):
 		self.tracks.append(self.analyze(track))
 
 	def process(self, track):
-		if not hasattr(track.analysis.pyechonest_track, "title"):
-			setattr(track.analysis.pyechonest_track, "title", track._metadata.track_details['title'])
+		# hacky hack
+		#if not hasattr(track.analysis.pyechonest_track, "title"):
+		#	setattr(track.analysis.pyechonest_track, "title", track._metadata.track_details['title'])
 		log.info("Resampling features [%r]...", track._metadata.id)
 		if len(track.analysis.beats):
 			track.resampled = resample_features(track, rate='beats')
