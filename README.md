@@ -1,42 +1,31 @@
-=======
+=========
 appension
 =========
 
-Echonest player for devil glitch extension
+Web player for devil glitch extension
  - Infinite glitch - the longest pop song ever
 
-This is a collection of scripts for exploring ways to dynamically append segments of a VERY LONG song.
+A few years ago Chris Butler decided to extend The Devil Glitch into infinity. Dozens of artists began writing and recording verses to contribute and re-assembling the gigantic track became rather resource-intensive.
 
-Currently, append.py rather loosely appends the tracks together, based on the echonest Capsule library.
+We looked for an internet Music Player with a gapless playback feature, but found none. Chris' friend Henry Lowengard suggested with do something with the Echonest API and it's python companions, PyEchoNest and Remix. I didn't know Python, but was interested in learning and we decided to forge ahead in this direction.
 
-The kernels.py echonest script demonsrates the adding the defer=true keyword to LocalAudioFile, 
-for which the actual audio is not loaded until actually used.
+Found my way to Peter Sobot's [Forever.fm](https://github.com/psobot/foreverfm) codebase (or a version of it), forked it and started reading and tinkering. Before long I realized I was way out of my depth and dug up a mentor named [Chris Angelico](https://github.com/Rosuav) with whos help Infinite Glitch was born.
 
-Currently exploring methods of lazy-loading, divide and conquer, threading, streaming etc 
-so that the large amounts of data can be handled.
+Echonest API has been migrated to a new API that doesn't expose the Track Analysis attributes so we need to replace it. 
 
-Some details about getting echonest remix running on your server 
-can be found at: 
+## Minimum Viable Product Requirements ##
 
-http://www.mzoo.org/getting-the-python-echonest-remix-package-running/
-http://echonest.github.io/remix/python.html
+ * Work with Audio Streams (as opposed to complete files)
+ * Insert streaming tracks into output stream randomly
+ * Write streams out to a single track
+  * Administrate track sequence
+  * Return time points and lengths of &ldquo;beats&rdquo; for use in transitions
+  * Administrate start and end points at which each transitions to the next
 
-basically you add to your .bash_profile:
-# Adding EchoNest Key to environment
-export ECHO_NEST_API_KEY="the_key_they_sent_you"
+This would probably give us something that _works_, but lacks certain current functionality.
 
-=======
-# Welcome to Echo Nest Remix
+## Additional Current Features ##
 
-Echo Nest Remix is **the Internet Synthesizer.** 
-Make amazing things from music, automatically.  Turn any music or video into Python, Flash, or Javascript code.  
-
-Want more cowbell? [Remix can do it.](http://www.morecowbell.dj/ "")  
-Want to make it swing? [Remix can do it.](http://swingify.cloudapp.net/ "")  
-Want to turn any track into drum & bass? [Remix can do it.](http://the.wubmachine.com/ "")  
-Want to make new music videos out of old ones? [Remix can do it.](http://www.youtube.com/watch?v=_bW7AkhgQpc/ "")  
-
-## Getting Started
-We've made a shiny new page for getting Remix installed: <http://echonest.github.com/remix/> - if you have any problems, let us know!
-
--![alt text](http://i.imgur.com/WWLYo.gif "Frustrated cat can't believe this is the 12th time he's clicked on an auto-linked README.md URL")
+ * Crossfade between tracks
+ * Combine tracks --- required for the Recording Studio
+ * Normalize and Limit track volumes
