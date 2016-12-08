@@ -19,17 +19,19 @@ LOUDNESS_THRESH = -8
 def last_viable(track):
     """Return end time of last audible segment"""
     for seg in reversed(track.analysis.segments):
-        if seg.loudness_max > -60:
+        # hacky hack
+        # if seg.loudness_max > -60:
             #time of last audible piece of track
-            return seg.start + seg.duration
-			
+            return (seg.start + seg.duration).total_seconds()
+
 def first_viable(track):
     """Return start time of first audible segment"""
     for seg in track.analysis.segments:
-        if seg.loudness_max > -60:
+        # hacky hack
+        # if seg.loudness_max > -60:
             #time of first audible segment of track
-            return seg.start
-	
+            return seg.start.total_seconds()
+
 def db_2_volume(loudness):
 		return (1.0 - LOUDNESS_THRESH * (LOUDNESS_THRESH - loudness) / 100.0)
 		
@@ -57,9 +59,10 @@ def managed_transition_helper(track1, track2, state, xfade=0, itrim1=0.0, otrim1
         log.info("Cursor NOT IN STATE.")
     else:
         log.info(state)
-    for track in (track1, track2):
-        loudness = track.analysis.loudness
-        track.gain = db_2_volume(loudness)
+    # hacky hack
+    #for track in (track1, track2):
+    #    loudness = track.analysis.loudness
+    #    track.gain = db_2_volume(loudness)
     # NOTE: All values are floating-point seconds, save xfade which is a number
     # of tatums/segments (assumed to be at average length).
     t1start = first_viable(track1) + itrim1
@@ -123,8 +126,8 @@ def lead_in(track):
     Return the time between start of track and first beat.
     """
     try:
-        avg_duration = sum([b.duration for b in track.analysis.beats[:8]]) / 8
-        earliest_beat = track.analysis.beats[0].start
+        avg_duration = sum([b.duration.total_seconds() for b in track.analysis.beats[:8]]) / 8
+        earliest_beat = track.analysis.beats[0].start.total_seconds()
     except IndexError:
         log.warning("No beats returned for track by %r.", track.analysis.metadata['artist'])
         return track.analysis.segments[0].start

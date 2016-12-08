@@ -1103,7 +1103,7 @@ class GetInstrumental(BaseHandler):
 	def get(self):
 	    print('i download file: /instrumentals/dgacousticlikMP3.mp3')
 
-	    ifile  = open("instrumentals/dgacousticlikMP3.mp3", "r")
+	    ifile  = open("instrumentals/dgacousticlikMP3.mp3", "rb")
 	    self.set_header ('Content-Type', 'audio/mpeg')
 	    self.set_header ('Content-Disposition', 'attachment; filename=devilGlitchAcousticInstrumental.mp3')
 	    self.write (ifile.read())
