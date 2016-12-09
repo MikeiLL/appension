@@ -16,11 +16,11 @@ Echonest API has been migrated to a new API that doesn't expose the Track Analys
 ## Minimum Viable Product Requirements ##
 
  * Work with Audio Streams (as opposed to complete files)
- * Insert streaming tracks into output stream randomly
+ * Insert streaming tracks --- gap-lessly --- into output stream randomly
  * Write streams out to a single track
-  * Administrate track sequence
-  * Return time points and lengths of &ldquo;beats&rdquo; for use in transitions
-  * Administrate start and end points at which each transitions to the next
+ ### Admin ###
+  * Sequence of tracks for Single Rendered File
+  * Trim start time either in milliseconds or &ldquo;beats&rdquo; for use in transitions
 
 This would probably give us something that _works_, but lacks certain current functionality.
 
