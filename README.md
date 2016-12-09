@@ -29,3 +29,17 @@ This would probably give us something that _works_, but lacks certain current fu
  * Crossfade between tracks
  * Combine tracks --- required for the Recording Studio
  * Normalize and Limit track volumes
+ 
+ ## What can [Amen](https://github.com/algorithmic-music-exploration/amen) do? ##
+ 
+ The Amen echo_nest_converter AudioAnalysis object contains a reference to the original file as well as list of analysis data:
+ 
+  * sections
+  * bars
+  * beats
+  * tatums
+  * segments
+  
+It looks like `sections`, `tatums` and `segments` may not yet be implemented. As far as I can tell the amen.synthesize function is what renders an final audio file, but as we're dealing with streams we may need to handle differently. Possibly RealAudioStream from Forever.fm will work, or maybe some variation on a Threading object.
+
+For combining the two elements in the Recording Studio, the [PyDub](https://github.com/jiaaro/pydub) might be perfect.
