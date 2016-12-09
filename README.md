@@ -42,4 +42,4 @@ This would probably give us something that _works_, but lacks certain current fu
   
 It looks like `sections`, `tatums` and `segments` may not yet be implemented. As far as I can tell the amen.synthesize function is what renders an final audio file, but as we're dealing with streams we may need to handle differently. Possibly RealAudioStream from Forever.fm will work, or maybe some variation on a Threading object.
 
-For combining the two elements in the Recording Studio, the [PyDub](https://github.com/jiaaro/pydub) might be perfect.
+For combining the two elements in the Recording Studio, the [PyDub](https://github.com/jiaaro/pydub) might be perfect. It [doesn't support streaming](https://github.com/jiaaro/pydub/issues/124) so not sure if we could use it to crossfade streaming PMC or any other type of audio data very easily.
