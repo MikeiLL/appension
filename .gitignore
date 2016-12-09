@@ -10,7 +10,7 @@ audio/
 audio_full
 *.pkl
 *~
-fore/apikeys.py
+apikeys.py
 build/
 dist/
 js/
