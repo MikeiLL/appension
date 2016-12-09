@@ -21,7 +21,7 @@
         ) }}' rel='stylesheet' type='text/css' />
 
 	</head>
-	{% end %}
+	{% endblock %}
 <body>
 <div id="pagewrap">
     	<div id="header">
@@ -30,7 +30,7 @@
 		<div class="user">
 				<p>Hello {{ user_name }}!</p>
 		</div>
-		{% end %}
+		{% endblock %}
 		<center>
 		<a href="/gmin" style="display:block;">
 		<div id="title-admin">
@@ -40,7 +40,7 @@
 	</div>
 	<br style="clear:both">
 	<div id="central">
-		{% block content %}<p>totally empty page</p>{% end %}
+		{% block content %}<p>totally empty page</p>{% endblock %}
 	</div>	
 	<br style="clear:both"/>
 	<div class="footer">
@@ -65,7 +65,7 @@
 				});
 			</script>
 					
-		{% end %}
+		{% endblock %}
 	</div>
 
 </body>
