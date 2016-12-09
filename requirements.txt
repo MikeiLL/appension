@@ -37,3 +37,4 @@ WTForms
 clize
 funcsigs
 sigtools
+flask

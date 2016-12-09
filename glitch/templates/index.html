@@ -1,5 +1,5 @@
 
-  {% extends main.html %}{% block sidebar %}
+  {% extends "main.html" %}{% block sidebar %}
 
   <div id="player">
     <div id="sm2-container"></div>
@@ -31,10 +31,10 @@
       </div>
     </div><br/>
 
-    <div class="popup-overlay"></div>{% end %}
+    <div class="popup-overlay"></div>{% endfor %}
 
   
-  </div>{% end %}{% block content %}
+  </div>{% endblock %}{% block content %}
 
   <dl class="accordion">
     <dt class="accordion__title">Welcome</dt><!-- Details 2nd April -->
@@ -446,11 +446,11 @@ For example, neither the Library of Congress (where American copyrights are regi
       {{ section.track_lyrics['artist'].name['display_name'] }}:</p>
 
       <p>{% for line in section.track_lyrics['lyrics'] %} {{ line }}<br/>
-      {% end %}</p>{% end %}
+      {% endfor %}</p>{% endfor %}
     </dd>
   </dl>
 
-{% end %}
+{% endblock %}
 </body>
 </html>
 
