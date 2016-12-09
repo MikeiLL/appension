@@ -2,6 +2,8 @@ from flask import Flask, render_template, g, Markup, request, redirect, url_for,
 import os
 import time
 import datetime
+import threading
+import subprocess
 from . import config
 
 app = Flask(__name__)
@@ -40,6 +42,22 @@ def home():
 		og_description=og_description,
 		meta_description=meta_description
 	)
+
+@app.route("/all.mp3")
+def moosic():
+	# TODO: Use proper non-blocking reads and writes here
+	# Also TODO: Use a single ffmpeg process rather than one per client (dumb model to get us started)
+	ffmpeg = subprocess.Popen(["ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-"],
+		stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+	def push_stdin():
+		data = open("Alice.raw", "rb").read()
+		while True:
+			ffmpeg.stdin.write(data)
+	threading.Thread(target=push_stdin).start()
+	def gen_output():
+		while not ffmpeg.stdout.closed:
+			yield ffmpeg.stdout.read1(4096)
+	return Response(gen_output(), mimetype="audio/mpeg")
 
 def run():
 	if not os.path.isdir("glitch/static/assets"):
