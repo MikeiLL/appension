@@ -50,6 +50,9 @@ def moosic():
 	ffmpeg = subprocess.Popen(["ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-"],
 		stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 	def push_stdin():
+		# TODO: Read individual files, convert to raw, process them
+		# in any way we like, and send them down the wire. There, the
+		# whole project is contained in one little TODO.
 		data = open("Alice.raw", "rb").read()
 		while True:
 			ffmpeg.stdin.write(data)
