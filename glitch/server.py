@@ -48,7 +48,7 @@ def moosic():
 	# TODO: Use proper non-blocking reads and writes here
 	# Also TODO: Use a single ffmpeg process rather than one per client (dumb model to get us started)
 	ffmpeg = subprocess.Popen(["ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-"],
-		stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+		stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
 	def push_stdin():
 		# TODO: Read individual files, convert to raw, process them
 		# in any way we like, and send them down the wire. There, the
