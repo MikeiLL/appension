@@ -1,6 +1,7 @@
 from flask import Flask, render_template, g, Markup, request, redirect, url_for, Response
 import os
 import time
+import logging
 import datetime
 import threading
 import subprocess
@@ -53,9 +54,16 @@ def moosic():
 		# TODO: Read individual files, convert to raw, process them
 		# in any way we like, and send them down the wire. There, the
 		# whole project is contained in one little TODO.
-		data = open("Alice.raw", "rb").read()
-		while True:
-			ffmpeg.stdin.write(data)
+		try:
+			while True:
+				track = database.get_track_to_play()
+				data = subprocess.run(["ffmpeg", "-i", "audio/"+track.filename, "-ac", "2", "-f", "s16le", "-"],
+					stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+					check=True)
+				logging.info("Sending %d bytes of data for %s", len(data.stdout), track.filename)
+				ffmpeg.stdin.write(data.stdout)
+		finally:
+			ffmpeg.stdin.close()
 	threading.Thread(target=push_stdin).start()
 	def gen_output():
 		while not ffmpeg.stdout.closed:
