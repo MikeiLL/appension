@@ -10,7 +10,7 @@ audio/
 audio_full
 *.pkl
 *~
-fore/apikeys.py
+apikeys.py
 build/
 dist/
 js/
@@ -18,7 +18,8 @@ remix/
 uploads/*
 remix.egg-info
 *.so
-/static/assets/*.*
+static/assets
+glitch/static/assets
 /remix/*
 /cache/*
 *.log
