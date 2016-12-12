@@ -56,6 +56,12 @@ def moosic():
 	# Also TODO: Use a single ffmpeg process rather than one per client (dumb model to get us started)
 	ffmpeg = subprocess.Popen(["ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-"],
 		stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+	def render(fn, start, length):
+		data = subprocess.run(["ffmpeg", "-i", "audio/"+fn, "-ac", "2", "-f", "s16le", "-"],
+			stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+			check=True)
+		logging.info("Sending %d bytes of data for %s", len(data.stdout), fn)
+		ffmpeg.stdin.write(data.stdout)
 	def push_stdin():
 		# TODO: Read individual files, convert to raw, process them
 		# in any way we like, and send them down the wire. There, the
@@ -96,11 +102,7 @@ def moosic():
 				# 3) Fade across (t1_length-t1_end) seconds - this nicely rounds out the last track
 				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) seconds
 				skip = t2_start + t1_length - t1_end
-				data = subprocess.run(["ffmpeg", "-i", "audio/"+track.filename, "-ac", "2", "-f", "s16le", "-"],
-					stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-					check=True)
-				logging.info("Sending %d bytes of data for %s", len(data.stdout), track.filename)
-				ffmpeg.stdin.write(data.stdout)
+				render(track.filename, 0.0, None)
 		finally:
 			ffmpeg.stdin.close()
 	threading.Thread(target=push_stdin).start()
