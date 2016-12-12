@@ -1,4 +1,5 @@
 from flask import Flask, render_template, g, Markup, request, redirect, url_for, Response
+import amen.audio
 import os
 import time
 import logging
@@ -11,6 +12,11 @@ app = Flask(__name__)
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
+
+# To determine the "effective length" of the last beat, we
+# average the last N beats prior to it. Higher numbers give
+# smoother results but may have issues with a close-out rall.
+LAST_BEAT_AVG = 10
 
 page_title = "Infinite Glitch - The World's Longest Recorded Pop Song, by Chris Butler."
 og_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
@@ -55,8 +61,11 @@ def moosic():
 		# in any way we like, and send them down the wire. There, the
 		# whole project is contained in one little TODO.
 		try:
+			nexttrack = database.get_track_to_play()
+			t2 = amen.audio.Audio("audio/" + nexttrack.filename)
 			while True:
-				track = database.get_track_to_play()
+				track = nexttrack; t1 = t2
+				nexttrack = database.get_track_to_play()
 				# Combine this into the next track.
 				# 1) Analyze using amen
 				#    t1 = amen.audio.Audio(track.filename)
@@ -74,6 +83,16 @@ def moosic():
 				# the fade-out duration of t2. Note that they depend on each
 				# other, so they can't just be stored as-is (although the
 				# beat positions and durations can).
+
+				t1b = t1.timings['beats']
+				beat = sum(b.duration.total_seconds() for b in t1b[-1-LAST_BEAT_AVG:-1]) / LAST_BEAT_AVG
+				t1_end = t1b[-1].time.total_seconds() + beat
+				t1_length = t1.duration
+				t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+				t2_start = t2.timings['beats'][0].time.total_seconds()
+				# 1) Render t1 up to (t1_end-t2_start)
+				# 2) Fade across t2_start seconds - this will get us to the downbeat
+				# 3) Fade across (t1_length-t1_end) seconds - this nicely rounds out the last track
 				data = subprocess.run(["ffmpeg", "-i", "audio/"+track.filename, "-ac", "2", "-f", "s16le", "-"],
 					stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
 					check=True)
