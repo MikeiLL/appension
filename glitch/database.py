@@ -7,7 +7,6 @@ import psycopg2
 from fore import utils
 import logging
 import queue
-import multiprocessing
 import os
 import re
 import hashlib
@@ -139,7 +138,7 @@ def get_many_mp3(status=1, order_by='length'):
 		cur.execute(query, (status,))
 		return [Track(*row) for row in cur.fetchall()]
 
-_track_queue = multiprocessing.Queue()
+_track_queue = queue.Queue()
 		
 def get_track_to_play():
 	"""Get a track from the database with presumption that it will be played.
