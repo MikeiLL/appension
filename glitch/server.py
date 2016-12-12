@@ -63,6 +63,7 @@ def moosic():
 		try:
 			nexttrack = database.get_track_to_play()
 			t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+			skip = 0.0
 			while True:
 				track = nexttrack; t1 = t2
 				nexttrack = database.get_track_to_play()
@@ -90,9 +91,11 @@ def moosic():
 				t1_length = t1.duration
 				t2 = amen.audio.Audio("audio/" + nexttrack.filename)
 				t2_start = t2.timings['beats'][0].time.total_seconds()
-				# 1) Render t1 up to (t1_end-t2_start)
+				# 1) Render t1 from skip up to (t1_end-t2_start)
 				# 2) Fade across t2_start seconds - this will get us to the downbeat
 				# 3) Fade across (t1_length-t1_end) seconds - this nicely rounds out the last track
+				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) seconds
+				skip = t2_start + t1_length - t1_end
 				data = subprocess.run(["ffmpeg", "-i", "audio/"+track.filename, "-ac", "2", "-f", "s16le", "-"],
 					stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
 					check=True)
