@@ -9,10 +9,8 @@ import logging
 import queue
 import os
 import re
-import hashlib
 from mutagen.mp3 import MP3
 import clize
-import binascii
 
 commands = []
 def cmdline(f):
@@ -411,9 +409,7 @@ def create_user(username, email, password):
 	if not isinstance(password, bytes): password=password.encode("utf-8")
 	hex_key = utils.random_hex()
 	with _conn, _conn.cursor() as cur:
-		salt = os.urandom(16)
-		hash = hashlib.sha256(salt+password).hexdigest()
-		pwd = binascii.hexlify(salt).decode("ascii")+"-"+hash
+		pwd = utils.hash_password(password)
 		try:
 			cur.execute("INSERT INTO users (username, email, password, hex_key) VALUES (%s, %s, %s, %s) RETURNING id, hex_key", \
 											(username, email, pwd, hex_key))
@@ -456,9 +452,7 @@ def set_user_password(user_or_email, password):
 	user_or_email = user_or_email.lower()
 	if not isinstance(password, bytes): password=password.encode("utf-8")
 	with _conn, _conn.cursor() as cur:
-		salt = os.urandom(16)
-		hash = hashlib.sha256(salt+password).hexdigest()
-		pwd = salt.encode("hex")+"-"+hash
+		pwd = utils.hash_password(password)
 		cur.execute("SELECT id FROM users WHERE username=%s OR email=%s AND status=1", (user_or_email, user_or_email))
 		rows=cur.fetchall()
 		if len(rows)!=1: return "There is already an account for that email."
@@ -481,9 +475,7 @@ def verify_user(user_or_email, password):
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id,password FROM users WHERE username=%s OR email=%s AND status=1", (user_or_email, user_or_email))
 		for id, pwd in cur:
-			if "-" not in pwd: continue
-			salt, hash = pwd.split("-", 1)
-			if hashlib.sha256(salt.decode("hex")+password).hexdigest()==hash:
+			if utils.check_password(pwd, password):
 				# Successful match.
 				return id
 	# If we fall through without finding anything that matches, return None.
@@ -504,9 +496,7 @@ def hex_user_password(email, hex_key):
 
 def reset_user_password(id, hex_key, password):
     with _conn, _conn.cursor() as cur:
-        salt = os.urandom(16)
-        hash = hashlib.sha256(salt+password).hexdigest()
-        pwd = salt.encode("hex")+"-"+hash
+        pwd = utils.hash_password(password)
         cur.execute("update users set password=%s, hex_key='' where id=%s and hex_key=%s", (pwd, id, hex_key))
 
 def get_analysis(id):

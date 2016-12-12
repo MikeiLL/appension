@@ -9,6 +9,7 @@ Expanded Chris Angelico 2014 with additional utilities.
 """
 import threading, os
 import binascii
+import hashlib
 
 def flatten(l):
 	""" Converts a list of tuples to a flat list.
@@ -76,3 +77,12 @@ def daemonize(target, *args):
 def random_hex():
 	return binascii.b2a_hex(os.urandom(8)).decode("ascii")
 
+def hash_password(password):	
+	salt = os.urandom(16)
+	hash = hashlib.sha256(salt + password).hexdigest()
+	return binascii.hexlify(salt).decode("ascii") + "-" + hash
+
+def check_password(pwd, password):
+	if "-" not in pwd: return False
+	salt, hash = pwd.split("-", 1)
+	return hashlib.sha256(salt.decode("hex")+password).hexdigest() == hash
