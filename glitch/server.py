@@ -1,5 +1,6 @@
 from flask import Flask, render_template, g, Markup, request, redirect, url_for, Response
 import amen.audio
+import pydub
 import os
 import time
 import logging
@@ -71,9 +72,10 @@ def moosic():
 		try:
 			nexttrack = database.get_track_to_play()
 			t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+			dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
 			skip = 0.0
 			while True:
-				track = nexttrack; t1 = t2
+				track = nexttrack; t1 = t2; dub1 = dub2
 				nexttrack = database.get_track_to_play()
 				# Combine this into the next track.
 				# 1) Analyze using amen
@@ -105,6 +107,16 @@ def moosic():
 				# 3) Fade across (t1_length-t1_end) seconds - this nicely rounds out the last track
 				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) seconds
 				skip = t2_start + t1_length - t1_end
+				# Dumb fade mode. Doesn't actually fade, just overlays.
+				dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
+				fadeout1 = dub1[int((t1_end - t2_start) * 1000) : int(t1_end * 1000)]
+				fadein1 = dub2[:int(t2_start * 1000)]
+				fade1 = fadeout1.overlay(fadein1)
+				fadeout2 = dub1[int(t1_end * 1000):]
+				fadein2 = dub2[int(t2_start * 1000) : int(skip * 1000)]
+				fade2 = fadeout2.overlay(fadein2)
+				ffmpeg.stdin.write(fade1.raw_data)
+				ffmpeg.stdin.write(fade2.raw_data)
 		finally:
 			ffmpeg.stdin.close()
 	threading.Thread(target=push_stdin).start()
