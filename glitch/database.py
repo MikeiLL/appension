@@ -146,6 +146,9 @@ def get_track_to_play():
 
 	If something has been enqueued with enqueue_track(), that will be the one
 	returned; otherwise, one is picked by magic.
+
+	TODO: Prefer tracks that haven't been played *recently*. Currently, any
+	track added after the system's been up for a while will be played to death.
 	"""
 	with _conn, _conn.cursor() as cur:
 		try:
