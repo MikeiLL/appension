@@ -1,10 +1,8 @@
-{% extends secondary.html %}
+{% extends "secondary.html" %}
 
 {% block sidebar %}
-		{% end %}
+		{% endblock %}
 {% block content %}
-{% import string %}
-{% from tornado.escape import url_escape %}
 <p></p>
 
 <img width="165" border="0" height="62" alt="" src="/static/img/segment-selection-title.png">
@@ -16,37 +14,37 @@ If they have used their own lyrics, these will be displayed with the player, alo
 <fieldset>
         <span class="errormessage"></span>
 </fieldset>
-<form enctype="multipart/form-data" action="/choice_chunks" method="post">
+<form>
 <table class="secondary">
 
 <tr><td>Browse Artists: <select name="letters">
-						{% for selected_letter in string.uppercase[:26] %}
-							<option value="{{ selected_letter }}" {% if letter == selected_letter %} SELECTED {% end %}>{{ selected_letter }}</option>
-						{% end %}
+						{% for selected_letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+							<option value="{{ selected_letter }}" {% if letter == selected_letter %} SELECTED {% endif %}>{{ selected_letter }}</option>
+						{% endfor %}
 					</select></tr>
 <tr><td><p class="infinite-aside">We'll show up to 20 at a time so may return more than just letter searched.</p></td></tr>
 <tr><td align="right"><input type="submit" value="Browse" /></td></tr>
 {% if not artist_tracks == "" %}
 	{% for key, track in artist_tracks.items() %}
 		{% if track[0] == '' %}
-		<tr><td><a href="/view_artist/{{ url_escape(track[1]) }}">{{ track[1] }}</a></td></tr>
+		<tr><td><a href="{{ url_for("tracks_by_artist", artist=track[1]) }}">{{ track[1] }}</a></td></tr>
 		{% else %}
-		<tr><td><a href="/view_artist/{{ url_escape('sposplit '+track[0]+' fposplit '+track[1]) }}">{{ track[1] }} {{ track[0] }}</a></td></tr>
-		{% end %}
-	{% end %}
-{% end %}
+		<tr><td><a href="{{ url_for("tracks_by_artist", artist='sposplit '+track[0]+' fposplit '+track[1]) }}">{{ track[1] }} {{ track[0] }}</a></td></tr>
+		{% endif %}
+	{% endfor %}
+{% endif %}
 
 <tr><td><h2>Recent Submissions From:</h2></td></tr>
 {% if not recent_submitters == "" %}
 	{% for key, track in recent_submitters.items() %}
 		{% if track[0] == '' %}
-		<tr><td><a href="/view_artist/{{ url_escape(track[1]) }}">{{ track[1] }}</a></td></tr>
+		<tr><td><a href="{{ url_for("tracks_by_artist", artist=track[1]) }}">{{ track[1] }}</a></td></tr>
 		{% else %}
-		<tr><td><a href="/view_artist/{{ url_escape('sposplit '+track[0]+' fposplit '+track[1]) }}">{{ track[1] }} {{ track[0] }}</a></td></tr>
-		{% end %}
-	{% end %}
-{% end %}
+		<tr><td><a href="{{ url_for("tracks_by_artist", artist='sposplit '+track[0]+' fposplit '+track[1]) }}">{{ track[1] }} {{ track[0] }}</a></td></tr>
+		{% endif %}
+	{% endfor %}
+{% endif %}
 </table>
 </form>
-{% end %}
+{% endblock %}
 

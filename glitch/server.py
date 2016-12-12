@@ -189,6 +189,23 @@ def tracks_by_artist(artist):
 				page_title=page_title, meta_description=meta_description, og_url=og_url)
 
 
+@app.route("/choice_chunks")
+def choice_chunks():
+	og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
+	page_title="Browse Artists: Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
+	meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
+	og_url=config.server_domain+"/choice_chunks"
+	letter = request.args.get("letters", "")
+	if letter:
+		artist_tracks = database.browse_tracks(letter)
+		ordered_artists = utils.alphabetize_ignore_the(artist_tracks)
+	else:
+		ordered_artists = ""
+	recent_submitters = database.get_recent_tracks(10)
+	ordered_submitters = utils.alphabetize_ignore_the(recent_submitters)
+	return render_template("choice_chunks.html", recent_submitters=ordered_submitters, artist_tracks=ordered_artists, letter=letter,
+				og_description=og_description, page_title=page_title, meta_description=meta_description, og_url=og_url)
+
 def run():
 	if not os.path.isdir("glitch/static/assets"):
 		os.mkdir("glitch/static/assets")

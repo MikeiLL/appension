@@ -683,7 +683,8 @@ class ChunkHandler(BaseHandler):
 									artist_tracks=ordered_artists, letter=letter, og_description=og_description, 
 									page_title=page_title, meta_description=meta_description,
 									og_url=og_url))
-		
+
+# From here all UNMIGRATED
 def UserInDatabase(form, field):
 	response = database.check_db_for_user(field.raw_data[0])
 	if response == "There is already an account for that email.":
