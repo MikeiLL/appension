@@ -4,7 +4,7 @@ Executable using 'python -m glitch.database' - use --help for usage.
 """
 from . import apikeys
 import psycopg2
-from fore import utils
+from . import utils
 import logging
 import queue
 import os
