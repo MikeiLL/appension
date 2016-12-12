@@ -105,9 +105,9 @@ def moosic():
 				t1_end = (t1b[-1].time.value + beat_ns) // 1000000
 				t1_length = int(t1.duration * 1000)
 				t2 = amen.audio.Audio("audio/" + nexttrack.filename)
-				t2_start = t2.timings['beats'][0].time.value // 1000000
+				t2_start = t2.timings['beats'][1].time.value // 1000000
 				# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
-				bulk = dub2[skip : t1_end - t2_start]
+				bulk = dub1[skip : t1_end - t2_start]
 				render(bulk, track.filename)
 				# 2) Fade across t2_start ms - this will get us to the downbeat
 				# 3) Fade across (t1_length-t1_end) ms - this nicely rounds out the last track
