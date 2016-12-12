@@ -57,22 +57,19 @@ def moosic():
 	# Also TODO: Use a single ffmpeg process rather than one per client (dumb model to get us started)
 	ffmpeg = subprocess.Popen(["ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-"],
 		stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-	def render(fn, start, end):
-		data = subprocess.run(["ffmpeg", "-i", "audio/"+fn,
-				"-ss", str(start), "-t", str(end-start),
-				"-ac", "2", "-f", "s16le", "-"],
-			stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-			check=True)
-		logging.info("Sending %d bytes of data for %s [%s->%s]", len(data.stdout), fn, start, end)
-		ffmpeg.stdin.write(data.stdout)
+	def render(seg, fn):
+		logging.info("Sending %d bytes of data for %s", len(seg.raw_data), fn)
+		ffmpeg.stdin.write(seg.raw_data)
 	def push_stdin():
-		# TODO: Read individual files, convert to raw, process them
-		# in any way we like, and send them down the wire. There, the
-		# whole project is contained in one little TODO.
 		try:
 			nexttrack = database.get_track_to_play()
-			t2 = amen.audio.Audio("audio/" + nexttrack.filename)
 			dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
+			# NOTE: Calling amen with a filename invokes a second load from disk,
+			# duplicating work done above. However, it will come straight from the
+			# disk cache, so the only real duplication is the decode-from-MP3; and
+			# timing tests show that this is a measurable but not overly costly
+			# addition on top of the time to do the actual analysis. KISS.
+			t2 = amen.audio.Audio("audio/" + nexttrack.filename)
 			skip = 0.0
 			while True:
 				track = nexttrack; t1 = t2; dub1 = dub2
@@ -95,28 +92,34 @@ def moosic():
 				# other, so they can't just be stored as-is (although the
 				# beat positions and durations can).
 
+				# Note on units:
+				# The Timedelta that we find in timings['beats'] can provide us
+				# with float total_seconds(), or with a .value in nanoseconds.
+				# We later on will prefer milliseconds, though, so we rescale.
+				# In this code, all variables store ms unless otherwise stated.
 				t1b = t1.timings['beats']
-				beat = sum(b.duration.total_seconds() for b in t1b[-1-LAST_BEAT_AVG:-1]) / LAST_BEAT_AVG
-				t1_end = t1b[-1].time.total_seconds() + beat
-				t1_length = t1.duration
+				beat_ns = sum(b.duration.value for b in t1b[-1-LAST_BEAT_AVG : -1]) // LAST_BEAT_AVG
+				t1_end = (t1b[-1].time.value + beat_ns) // 1000000
+				t1_length = int(t1.duration * 1000)
 				t2 = amen.audio.Audio("audio/" + nexttrack.filename)
-				t2_start = t2.timings['beats'][0].time.total_seconds()
+				t2_start = t2.timings['beats'][1].time.value // 1000000
 				# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
-				render(track.filename, skip, t1_end - t2_start)
-				# 2) Fade across t2_start seconds - this will get us to the downbeat
-				# 3) Fade across (t1_length-t1_end) seconds - this nicely rounds out the last track
-				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) seconds
+				bulk = dub1[skip : t1_end - t2_start]
+				render(bulk, track.filename)
+				# 2) Fade across t2_start ms - this will get us to the downbeat
+				# 3) Fade across (t1_length-t1_end) ms - this nicely rounds out the last track
+				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) ms
 				skip = t2_start + t1_length - t1_end
 				# Dumb fade mode. Doesn't actually fade, just overlays.
 				dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
-				fadeout1 = dub1[int((t1_end - t2_start) * 1000) : int(t1_end * 1000)]
-				fadein1 = dub2[:int(t2_start * 1000)]
+				fadeout1 = dub1[t1_end - t2_start : t1_end]
+				fadein1 = dub2[:t2_start]
 				fade1 = fadeout1.overlay(fadein1)
-				fadeout2 = dub1[int(t1_end * 1000):]
-				fadein2 = dub2[int(t2_start * 1000) : int(skip * 1000)]
+				fadeout2 = dub1[t1_end:]
+				fadein2 = dub2[t2_start:skip]
 				fade2 = fadeout2.overlay(fadein2)
-				ffmpeg.stdin.write(fade1.raw_data)
-				ffmpeg.stdin.write(fade2.raw_data)
+				render(fade1, "xfade 1")
+				render(fade2, "xfade 2")
 		finally:
 			ffmpeg.stdin.close()
 	threading.Thread(target=push_stdin).start()
