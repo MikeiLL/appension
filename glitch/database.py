@@ -277,7 +277,7 @@ def update_track(id, info, artwork=None):
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
 		
 def sequence_tracks(sequence_object):
-	for id, sequence in sequence_object.iteritems():
+	for id, sequence in sequence_object.items():
 		seq = sequence_object.get(id,'')[0]
 		with _conn, _conn.cursor() as cur:
 			cur.execute("UPDATE tracks SET sequence = "+str(seq)+", played = 0 WHERE id="+str(id))

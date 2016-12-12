@@ -27,7 +27,7 @@ If they have used their own lyrics, these will be displayed with the player, alo
 <tr><td><p class="infinite-aside">We'll show up to 20 at a time so may return more than just letter searched.</p></td></tr>
 <tr><td align="right"><input type="submit" value="Browse" /></td></tr>
 {% if not artist_tracks == "" %}
-	{% for key, track in artist_tracks.iteritems() %}
+	{% for key, track in artist_tracks.items() %}
 		{% if track[0] == '' %}
 		<tr><td><a href="/view_artist/{{ url_escape(track[1]) }}">{{ track[1] }}</a></td></tr>
 		{% else %}
@@ -38,7 +38,7 @@ If they have used their own lyrics, these will be displayed with the player, alo
 
 <tr><td><h2>Recent Submissions From:</h2></td></tr>
 {% if not recent_submitters == "" %}
-	{% for key, track in recent_submitters.iteritems() %}
+	{% for key, track in recent_submitters.items() %}
 		{% if track[0] == '' %}
 		<tr><td><a href="/view_artist/{{ url_escape(track[1]) }}">{{ track[1] }}</a></td></tr>
 		{% else %}
