@@ -57,22 +57,22 @@ def moosic():
 	# Also TODO: Use a single ffmpeg process rather than one per client (dumb model to get us started)
 	ffmpeg = subprocess.Popen(["ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-"],
 		stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-	def render(fn, start, end):
-		data = subprocess.run(["ffmpeg", "-i", "audio/"+fn,
-				"-ss", str(start), "-t", str(end-start),
-				"-ac", "2", "-f", "s16le", "-"],
-			stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-			check=True)
-		logging.info("Sending %d bytes of data for %s [%s->%s]", len(data.stdout), fn, start, end)
-		ffmpeg.stdin.write(data.stdout)
+	def render(seg, fn):
+		logging.info("Sending %d bytes of data for %s", len(seg.raw_data), fn)
+		ffmpeg.stdin.write(seg.raw_data)
 	def push_stdin():
 		# TODO: Read individual files, convert to raw, process them
 		# in any way we like, and send them down the wire. There, the
 		# whole project is contained in one little TODO.
 		try:
 			nexttrack = database.get_track_to_play()
-			t2 = amen.audio.Audio("audio/" + nexttrack.filename)
 			dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
+			# NOTE: Calling amen with a filename invokes a second load from disk,
+			# duplicating work done above. However, it will come straight from the
+			# disk cache, so the only real duplication is the decode-from-MP3; and
+			# timing tests show that this is a measurable but not overly costly
+			# addition on top of the time to do the actual analysis. KISS.
+			t2 = amen.audio.Audio("audio/" + nexttrack.filename)
 			skip = 0.0
 			while True:
 				track = nexttrack; t1 = t2; dub1 = dub2
@@ -102,7 +102,8 @@ def moosic():
 				t2 = amen.audio.Audio("audio/" + nexttrack.filename)
 				t2_start = t2.timings['beats'][0].time.total_seconds()
 				# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
-				render(track.filename, skip, t1_end - t2_start)
+				bulk = dub2[int(skip * 1000) : int((t1_end - t2_start) * 1000)]
+				render(bulk, track.filename)
 				# 2) Fade across t2_start seconds - this will get us to the downbeat
 				# 3) Fade across (t1_length-t1_end) seconds - this nicely rounds out the last track
 				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) seconds
@@ -115,8 +116,8 @@ def moosic():
 				fadeout2 = dub1[int(t1_end * 1000):]
 				fadein2 = dub2[int(t2_start * 1000) : int(skip * 1000)]
 				fade2 = fadeout2.overlay(fadein2)
-				ffmpeg.stdin.write(fade1.raw_data)
-				ffmpeg.stdin.write(fade2.raw_data)
+				render(fade1, "xfade 1")
+				render(fade2, "xfade 2")
 		finally:
 			ffmpeg.stdin.close()
 	threading.Thread(target=push_stdin).start()
