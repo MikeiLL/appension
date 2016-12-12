@@ -25,7 +25,7 @@ meta_description = """I don't remember if he said it or if I said it or if the c
 
 # Import some stuff from the old package
 import fore.assetcompiler
-from fore import database
+from . import database
 app.jinja_env.globals["compiled"] = fore.assetcompiler.compiled
 
 def couplet_count(lyrics):
