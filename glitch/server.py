@@ -61,9 +61,6 @@ def moosic():
 		logging.info("Sending %d bytes of data for %s", len(seg.raw_data), fn)
 		ffmpeg.stdin.write(seg.raw_data)
 	def push_stdin():
-		# TODO: Read individual files, convert to raw, process them
-		# in any way we like, and send them down the wire. There, the
-		# whole project is contained in one little TODO.
 		try:
 			nexttrack = database.get_track_to_play()
 			dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
