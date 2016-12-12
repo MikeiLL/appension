@@ -38,3 +38,4 @@ clize
 funcsigs
 sigtools
 flask
+pydub

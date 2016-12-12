@@ -1,4 +1,6 @@
 from flask import Flask, render_template, g, Markup, request, redirect, url_for, Response
+import amen.audio
+import pydub
 import os
 import time
 import logging
@@ -11,6 +13,11 @@ app = Flask(__name__)
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
+
+# To determine the "effective length" of the last beat, we
+# average the last N beats prior to it. Higher numbers give
+# smoother results but may have issues with a close-out rall.
+LAST_BEAT_AVG = 10
 
 page_title = "Infinite Glitch - The World's Longest Recorded Pop Song, by Chris Butler."
 og_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
@@ -50,18 +57,66 @@ def moosic():
 	# Also TODO: Use a single ffmpeg process rather than one per client (dumb model to get us started)
 	ffmpeg = subprocess.Popen(["ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-"],
 		stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+	def render(fn, start, end):
+		data = subprocess.run(["ffmpeg", "-i", "audio/"+fn,
+				"-ss", str(start), "-t", str(end-start),
+				"-ac", "2", "-f", "s16le", "-"],
+			stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+			check=True)
+		logging.info("Sending %d bytes of data for %s [%s->%s]", len(data.stdout), fn, start, end)
+		ffmpeg.stdin.write(data.stdout)
 	def push_stdin():
 		# TODO: Read individual files, convert to raw, process them
 		# in any way we like, and send them down the wire. There, the
 		# whole project is contained in one little TODO.
 		try:
+			nexttrack = database.get_track_to_play()
+			t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+			dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
+			skip = 0.0
 			while True:
-				track = database.get_track_to_play()
-				data = subprocess.run(["ffmpeg", "-i", "audio/"+track.filename, "-ac", "2", "-f", "s16le", "-"],
-					stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-					check=True)
-				logging.info("Sending %d bytes of data for %s", len(data.stdout), track.filename)
-				ffmpeg.stdin.write(data.stdout)
+				track = nexttrack; t1 = t2; dub1 = dub2
+				nexttrack = database.get_track_to_play()
+				# Combine this into the next track.
+				# 1) Analyze using amen
+				#    t1 = amen.audio.Audio(track.filename)
+				# 2) Locate the end of the effective last beat
+				#    t1.timings['beats'][-10:-1][*].duration -> avg
+				#    t1_end = t1.timings['beats'][-1].time + avg_duration
+				# 3) Locate the first beat of the next track
+				#    t2 = amen.audio.Audio(nexttrack.filename)
+				#    t2_start = t2.timings['beats'][0].time
+				# 4) Count back from the end of the last beat
+				#    t1_end - t2_start
+				# 5) Cross-fade from that point to t1_end to t2_start
+				# Possibly do the cross-fade in two sections, as the times
+				# won't be the same. They're the fade-in duration of t1 and
+				# the fade-out duration of t2. Note that they depend on each
+				# other, so they can't just be stored as-is (although the
+				# beat positions and durations can).
+
+				t1b = t1.timings['beats']
+				beat = sum(b.duration.total_seconds() for b in t1b[-1-LAST_BEAT_AVG:-1]) / LAST_BEAT_AVG
+				t1_end = t1b[-1].time.total_seconds() + beat
+				t1_length = t1.duration
+				t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+				t2_start = t2.timings['beats'][0].time.total_seconds()
+				# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
+				render(track.filename, skip, t1_end - t2_start)
+				# 2) Fade across t2_start seconds - this will get us to the downbeat
+				# 3) Fade across (t1_length-t1_end) seconds - this nicely rounds out the last track
+				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) seconds
+				skip = t2_start + t1_length - t1_end
+				# Dumb fade mode. Doesn't actually fade, just overlays.
+				dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
+				fadeout1 = dub1[int((t1_end - t2_start) * 1000) : int(t1_end * 1000)]
+				fadein1 = dub2[:int(t2_start * 1000)]
+				fade1 = fadeout1.overlay(fadein1)
+				fadeout2 = dub1[int(t1_end * 1000):]
+				fadein2 = dub2[int(t2_start * 1000) : int(skip * 1000)]
+				fade2 = fadeout2.overlay(fadein2)
+				ffmpeg.stdin.write(fade1.raw_data)
+				ffmpeg.stdin.write(fade2.raw_data)
 		finally:
 			ffmpeg.stdin.close()
 	threading.Thread(target=push_stdin).start()
