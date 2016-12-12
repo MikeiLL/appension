@@ -278,6 +278,7 @@ class StreamHandler(tornado.web.RequestHandler):
 			self.clients.remove(self)
 			log.info("Removed client at %s", self.request.remote_ip)
 
+# WTForms all UNMIGRATED
 def MpegFile(form, field):
 	"""WTForms Validator"""
 	try:
@@ -320,6 +321,7 @@ class SubmissionForm(Form):
 	track_image = wtforms.FileField(u'track_image', validators=[ImageFile])
 	url = wtforms.TextField(u'url', validators=[wtforms.validators.Optional(), wtforms.validators.url(message=u"Invalid URL. If you don't have one, please just put http://www.google.com.")])
 
+# UNMIGRATED
 @route("/submit")
 class Submissionform(BaseHandler):
 	@authenticated
@@ -398,6 +400,7 @@ class Submissionform(BaseHandler):
 											meta_description=meta_description, og_url=config.server_domain,
 											og_description=og_description))
 
+# UNMIGRATED
 @route("/recorder")
 class Recorder(BaseHandler):
 	@authenticated
@@ -575,6 +578,7 @@ class ShareOracleHandler(BaseHandler):
 								page_title=page_title, meta_description=meta_description,
 								og_url=og_url))
 		
+# End UNMIGRATED
 
 @route("/credits")
 class CreditsHandler(BaseHandler):

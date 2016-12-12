@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, Response, send_from_directory, jsonify
+from flask_login import LoginManager, current_user
 import amen.audio
 import pydub
 import os
@@ -8,8 +9,17 @@ import datetime
 import threading
 import subprocess
 from . import config
+from . import utils
 
 app = Flask(__name__)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login_get" # will currently fail
+
+@login_manager.user_loader
+def load_user(id):
+    return session.query(User).get(int(id))
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
@@ -42,8 +52,6 @@ def home():
 		open=True, # Can have this check for server load if we ever care
 		endpoint="/all.mp3",
 		complete_length=complete_length,
-		# user_name=self.current_user or 'Glitcher', # TODO
-		user_name='Glitcher', # or this
 		couplet_count=couplet_count(lyrics),
 		lyrics=lyrics,
 		og_url=config.server_domain,
@@ -152,6 +160,16 @@ def track_artwork(id):
 @app.route("/timing.json")
 def timing():
 	return jsonify({"time": time.time() * 1000})
+
+@app.route("/credits")
+def credits():
+	og_description="The world's longest recorded pop song. (Credits)"
+	page_title="Credits: Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
+	meta_description="The people below are partially responsible for bringing you Infinite Glitch - the world's longest recorded pop song."
+	og_url="http://www.infiniteglitch.net/credits"
+	return render_template("credits.html",
+				og_description=og_description, page_title=page_title,
+				meta_description=meta_description,og_url=og_url)
 
 def run():
 	if not os.path.isdir("glitch/static/assets"):
