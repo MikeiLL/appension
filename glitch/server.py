@@ -57,6 +57,23 @@ def moosic():
 		try:
 			while True:
 				track = database.get_track_to_play()
+				# Combine this into the next track.
+				# 1) Analyze using amen
+				#    t1 = amen.audio.Audio(track.filename)
+				# 2) Locate the end of the effective last beat
+				#    t1.timings['beats'][-10:-1][*].duration -> avg
+				#    t1_end = t1.timings['beats'][-1].time + avg_duration
+				# 3) Locate the first beat of the next track
+				#    t2 = amen.audio.Audio(nexttrack.filename)
+				#    t2_start = t2.timings['beats'][0].time
+				# 4) Count back from the end of the last beat
+				#    t1_end - t2_start
+				# 5) Cross-fade from that point to t1_end to t2_start
+				# Possibly do the cross-fade in two sections, as the times
+				# won't be the same. They're the fade-in duration of t1 and
+				# the fade-out duration of t2. Note that they depend on each
+				# other, so they can't just be stored as-is (although the
+				# beat positions and durations can).
 				data = subprocess.run(["ffmpeg", "-i", "audio/"+track.filename, "-ac", "2", "-f", "s16le", "-"],
 					stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
 					check=True)
