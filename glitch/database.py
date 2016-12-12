@@ -31,7 +31,8 @@ class Track(object):
 			the_artist = artist.split(',')
 			artist_exact = artist
 			artist = ' '.join([the_artist[1], the_artist[0]])
-		else: artist_exact = artist
+		else:
+			artist_exact = artist
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
@@ -75,8 +76,8 @@ class Submitter(object):
             'filename': filename,
             'lyrics': lyrics,
             'story': story
-            }
-            
+        }
+
 class Member(object):
     def __init__(self,username,email,userid,status):
         
@@ -86,17 +87,17 @@ class Member(object):
         self.status = status
             
 class Artist(object):
-        def __init__(self, artist_from_db):
-                if len(artist_from_db.split(',')) > 1:
-                        name_list = artist_from_db.split(',')
-                        display_name = ' '.join([name_list[1], name_list[0]])
-                else: 
-                        display_name = artist_from_db
-                        name_list = ['', artist_from_db]
-                self.name =  {
-                        'display_name': display_name,
-                        'name_list': name_list
-                        }
+	def __init__(self, artist_from_db):
+		if len(artist_from_db.split(',')) > 1:
+			name_list = artist_from_db.split(',')
+			display_name = ' '.join([name_list[1], name_list[0]])
+		else:
+			display_name = artist_from_db
+			name_list = ['', artist_from_db]
+		self.name = {
+			'display_name': display_name,
+			'name_list': name_list
+		}
 
 class Lyric(object):
 	# Select these from the tracks table to construct a track object.
@@ -119,11 +120,6 @@ class Lyric(object):
 		
 	def get_couplets(self, lyrics):
 		return lyrics.splitlines(True)
-		
-def get_mp3(some_specifier):
-	with _conn, _conn.cursor():
-		# TODO: Fetch an MP3 and return its raw data
-		pass
 
 def get_many_mp3(status=1, order_by='length'):
 	"""Get a list of many (possibly all) the tracks in the database.
@@ -302,7 +298,7 @@ def get_track_submitter_info():
         return [Submitter(*row) for row in cur.fetchall()]
 
 def update_track_submitter_info(submitter_object):
-    '''We may not need track id, but it may prove useful at some point.'''
+    # We may not need track id, but it may prove useful at some point.
     for track_grouping in zip(submitter_object['track_id'],submitter_object['user_id'],submitter_object['username'],submitter_object['email']):
         userid = track_grouping[1]
         name = track_grouping[2]
@@ -337,8 +333,8 @@ def create_outreach_message(message):
 		cur.execute("INSERT INTO outreach (message) VALUES (%s) RETURNING id, message", (message,))
 		return [row for row in cur.fetchone()]
 											
-def update_outreach_message(message, id=1):
-    if retrieve_outreach_message()[0] == '':
+def update_outreach_message(message):
+    if retrieve_outreach_message() == '':
         return create_outreach_message(message)
     query = "UPDATE outreach SET message = (message) WHERE id = 1 RETURNING id, message"
     data = (message,)
@@ -347,12 +343,17 @@ def update_outreach_message(message, id=1):
         return [row for row in cur.fetchone()]
 
 def retrieve_outreach_message():
-    with _conn, _conn.cursor() as cur:
-        cur.execute("SELECT id, message FROM outreach ORDER BY id LIMIT 1")
-        try:
-            return [row for row in cur.fetchone()]
-        except TypeError: 
-            return ['', '']
+	# NOTE: API has changed compared to fore.database.retrieve_outreach_message
+	# Instead of returning a list, this returns a single string. Remove this
+	# comment when all usage has been migrated.
+	# If this is supposed to return the most recent, it should possibly be using
+	# ORDER BY ID DESC.
+	with _conn, _conn.cursor() as cur:
+		cur.execute("SELECT id, message FROM outreach ORDER BY id LIMIT 1")
+		try:
+			return cur.fetchone()[0]
+		except TypeError: 
+			return ''
 
 def get_subsequent_track(track_id):
     """Return Track Object for next track in sequence."""
