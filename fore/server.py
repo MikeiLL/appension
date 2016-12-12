@@ -185,6 +185,7 @@ class MainHandler(BaseHandler):
 	def get(self):
 		self.finish(self.__gen())
 
+# UNMIGRATED
 @route("/all\.json")
 class InfoHandler(tornado.web.RequestHandler):
 	actions = []

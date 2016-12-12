@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, Markup, request, redirect, url_for, Response, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, Response, send_from_directory, jsonify
 import amen.audio
 import pydub
 import os
@@ -141,13 +141,17 @@ def moosic():
 			yield ffmpeg.stdout.read1(4096)
 	return Response(gen_output(), mimetype="audio/mpeg")
 
-@app.route("/artwork/<id:int>.jpg")
+@app.route("/artwork/<int:id>.jpg")
 def track_artwork(id):
 	art = database.get_track_artwork(int(id))
 	# TODO: If the track hasn't been approved yet, return 404 unless the user is an admin.
 	if not art:
 		return redirect('../static/img/Default-artwork-200.png')
 	return bytes(art)
+
+@app.route("/timing.json")
+def timing():
+	return jsonify({"time": time.time() * 1000})
 
 def run():
 	if not os.path.isdir("glitch/static/assets"):
