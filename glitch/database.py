@@ -476,9 +476,8 @@ def verify_user(user_or_email, password):
 		cur.execute("SELECT id,password FROM users WHERE username=%s OR email=%s AND status=1", (user_or_email, user_or_email))
 		for id, pwd in cur:
 			if utils.check_password(pwd, password):
-				# Successful match.
 				return id
-	# If we fall through without finding anything that matches, return None.
+	return None
 
 def get_user_info(id):
 	"""Return the user name and permissions level for a given UID, or (None,0) if not logged in"""
