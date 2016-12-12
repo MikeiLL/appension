@@ -95,26 +95,31 @@ def moosic():
 				# other, so they can't just be stored as-is (although the
 				# beat positions and durations can).
 
+				# Note on units:
+				# The Timedelta that we find in timings['beats'] can provide us
+				# with float total_seconds(), or with a .value in nanoseconds.
+				# We later on will prefer milliseconds, though, so we rescale.
+				# In this code, all variables store ms unless otherwise stated.
 				t1b = t1.timings['beats']
-				beat = sum(b.duration.total_seconds() for b in t1b[-1-LAST_BEAT_AVG:-1]) / LAST_BEAT_AVG
-				t1_end = t1b[-1].time.total_seconds() + beat
-				t1_length = t1.duration
+				beat_ns = sum(b.duration.value for b in t1b[-1-LAST_BEAT_AVG : -1]) // LAST_BEAT_AVG
+				t1_end = (t1b[-1].time.value + beat_ns) // 1000000
+				t1_length = int(t1.duration * 1000)
 				t2 = amen.audio.Audio("audio/" + nexttrack.filename)
-				t2_start = t2.timings['beats'][0].time.total_seconds()
+				t2_start = t2.timings['beats'][0].time.value // 1000000
 				# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
-				bulk = dub2[int(skip * 1000) : int((t1_end - t2_start) * 1000)]
+				bulk = dub2[skip : t1_end - t2_start]
 				render(bulk, track.filename)
-				# 2) Fade across t2_start seconds - this will get us to the downbeat
-				# 3) Fade across (t1_length-t1_end) seconds - this nicely rounds out the last track
-				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) seconds
+				# 2) Fade across t2_start ms - this will get us to the downbeat
+				# 3) Fade across (t1_length-t1_end) ms - this nicely rounds out the last track
+				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) ms
 				skip = t2_start + t1_length - t1_end
 				# Dumb fade mode. Doesn't actually fade, just overlays.
 				dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
-				fadeout1 = dub1[int((t1_end - t2_start) * 1000) : int(t1_end * 1000)]
-				fadein1 = dub2[:int(t2_start * 1000)]
+				fadeout1 = dub1[t1_end - t2_start : t1_end]
+				fadein1 = dub2[:t2_start]
 				fade1 = fadeout1.overlay(fadein1)
-				fadeout2 = dub1[int(t1_end * 1000):]
-				fadein2 = dub2[int(t2_start * 1000) : int(skip * 1000)]
+				fadeout2 = dub1[t1_end:]
+				fadein2 = dub2[t2_start:skip]
 				fade2 = fadeout2.overlay(fadein2)
 				render(fade1, "xfade 1")
 				render(fade2, "xfade 2")
