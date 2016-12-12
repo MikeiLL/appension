@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, Markup, request, redirect, url_for, Response
+from flask import Flask, render_template, g, Markup, request, redirect, url_for, Response, send_from_directory
 import amen.audio
 import pydub
 import os
@@ -50,6 +50,19 @@ def home():
 		og_description=og_description,
 		meta_description=meta_description
 	)
+
+def _make_route(dir):
+	# Use a closure to early-bind the 'dir'
+	def non_caching_statics(path):
+		response = send_from_directory("../"+dir, path)
+		response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+		response.headers['Pragma'] = 'no-cache'
+		return response
+	app.add_url_rule('/'+dir+'/<path:path>', 'non_caching_'+dir, non_caching_statics)
+for _dir in ("audio", "audition_audio", "transition_audio"):
+	# audition_audio and transition_audio aren't currently used, but
+	# will be part of the admin panel that we haven't yet ported.
+	_make_route(_dir)
 
 @app.route("/all.mp3")
 def moosic():
