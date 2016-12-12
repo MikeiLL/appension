@@ -1,9 +1,9 @@
 {% extends secondary.html %}
 {% block content %}
 		<div id="username" style="display:none">{{ current_user.user_name or 'Glitcher' }}</div>		
-				  <img src="static/img/studio-title.png" border="0" width="266" height="195" alt=""><br/>
+				  <img src="/static/img/studio-title.png" border="0" width="266" height="195" alt=""><br/>
 				  <p class="floatRight-studio">
-<img src="static/img/warning-stamp.png" border="0" width="117" height="100" alt="" hspace="92"><br>
+<img src="/static/img/warning-stamp.png" border="0" width="117" height="100" alt="" hspace="92"><br>
 		<font size="-1"><b>Sometimes you can fix something by being a pioneer,<br>
 The Cavy is a noble creature;</b><br><br>
 
@@ -57,7 +57,7 @@ We're constantly developing and improving The Studio but if you should encounter
 				
 				<div id="submission_form" style="display:none">
 					<p></p>
-					<img width="212" border="0" height="38" alt="" src="static/img/submit-title.png">
+					<img width="212" border="0" height="38" alt="" src="/static/img/submit-title.png">
 					<p></p>
 					<form enctype="multipart/form-data" action="/submit" method="post" id="submit_track">
 

@@ -1,7 +1,6 @@
-{% extends secondary.html %}
-{% from tornado.escape import url_escape %}
+{% extends "secondary.html" %}
 {% block sidebar %}
-		{% end %}
+		{% endblock %}
 {% block content %}
 <p></p>
 <h2>
@@ -23,20 +22,20 @@
 		{% if len(track.track_details['lyrics']) > 0 %}
 			{% for line in track.track_details['lyrics'].splitlines() %}
 				{{ line }} <br/>
-			{% end %}</td></tr>
+			{% endfor %}</td></tr>
 		{% else %}
 			<p>We still need to get these lyrics. Feel like transcribing?</p>
-		{% end %}
+		{% endif %}
 	<tr><td><h2>The Story</h2></td></tr>
 	<tr><td>
 	<tr><td>{% if len(track.track_details['story']) > 0 %}
 			<div style='max-width:500px;'>{% for line in track.track_details['story'].splitlines() %}
 				{{ line }} <br/>
 				</div>
-			{% end %}
+			{% endfor %}
 		{% else %}
 			<p>Do you know the story behind this track, 'cause we still need it.</p>
-		{% end %}</td></tr>
+		{% endif %}</td></tr>
 	<tr><td>
 
 	<!-- Start Infinite Chunk Player -->
@@ -115,11 +114,11 @@
 	<tr><td><h2>A Website</h2></td></tr>
 	<tr><td><a href="http://{{ track.track_details['url'] }}" target="_blank">{{ track.track_details['url'] }}</a></td></tr>
 	
-	{% end %}
+	{% endif %}
 	
 	<tr><td><hr/></td></tr>
-{% end %}
+{% endfor %}
 </table>
 </form>
-{% end %}
+{% endblock %}
 

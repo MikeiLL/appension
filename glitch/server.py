@@ -171,6 +171,24 @@ def credits():
 				og_description=og_description, page_title=page_title,
 				meta_description=meta_description,og_url=og_url)
 
+@app.route("/view_artist/<artist>")
+def tracks_by_artist(artist):
+	# TODO: Clean up the whole sposplit/fposplit stuff, maybe by slash-separating
+	artist_for_db = url_artist = artist
+	if artist[:8] == 'sposplit':
+		artist = artist[9:]
+		artist_formatting = artist.split('fposplit',1)
+		artist_for_db = ', '.join([part.strip() for part in artist_formatting])
+		artist = ' '.join([part.strip() for part in artist_formatting[::-1]])
+	tracks_by = database.tracks_by(artist_for_db)
+	og_description= artist+" contributions to The world's longest recorded pop song."
+	page_title=artist+": Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
+	meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest recorded pop song."
+	og_url = url_for("tracks_by_artist", artist=url_artist)
+	return render_template("view_artist.html", tracks_by=tracks_by, og_description=og_description, 
+				page_title=page_title, meta_description=meta_description, og_url=og_url)
+
+
 def run():
 	if not os.path.isdir("glitch/static/assets"):
 		os.mkdir("glitch/static/assets")
