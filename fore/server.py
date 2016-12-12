@@ -80,7 +80,7 @@ class NonCachingStaticFileHandler(tornado.web.StaticFileHandler):
 
 
 routes = [("/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"})]
-for dir in ("instrumentals", "static"):
+for dir in ["static"]:
 	routes.append(("/%s/(.*)"%dir, tornado.web.StaticFileHandler, {"path": dir+"/"}))
 for dir in ("audio", "audition_audio", "transition_audio"):
 	routes.append(("/%s/(.*)"%dir, NonCachingStaticFileHandler, {"path": dir+"/"}))
@@ -1101,9 +1101,9 @@ class Logout(BaseHandler):
 #TODO Abstract me to accept other tracks
 class GetInstrumental(BaseHandler):    
 	def get(self):
-	    print('i download file: /instrumentals/dgacousticlikMP3.mp3')
+	    print('i download file: /static/instrumentals/dgacousticlikMP3.mp3')
 
-	    ifile  = open("instrumentals/dgacousticlikMP3.mp3", "rb")
+	    ifile  = open("static/instrumentals/dgacousticlikMP3.mp3", "rb")
 	    self.set_header ('Content-Type', 'audio/mpeg')
 	    self.set_header ('Content-Disposition', 'attachment; filename=devilGlitchAcousticInstrumental.mp3')
 	    self.write (ifile.read())
