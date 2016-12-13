@@ -774,7 +774,9 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 										page_title="Glitch Account Sign-Up", og_url=config.server_domain,
 										meta_description=meta_description,
 										og_description=og_description))
-										
+
+# From here all UNMIGRATED
+
 @route("/reset_password")
 class ResetPassword(tornado.web.RequestHandler):
 	def get(self):
@@ -856,7 +858,6 @@ class NewPassword(tornado.web.RequestHandler):
 
 
 # Administrative Pages:
-# From here all UNMIGRATED
 
 @route("/gmin")
 class AdminRender(BaseHandler):

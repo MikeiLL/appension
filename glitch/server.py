@@ -218,6 +218,27 @@ def login_post():
 	if user: login_user(user)
 	return redirect("/")
 
+@app.route("/create_account")
+def create_account_get():
+	return render_template("create_account.html", page_title="Glitch Account Sign-Up")
+
+@app.route("/create_account", methods=["POST"])
+def create_account_post():
+	if request.form["password"] != request.form["password2"]:
+		return redirect("/create_account")
+	info = database.create_user(request.form["username"], request.form["email"], request.form["password"])
+	if isinstance(info, str):
+		# There's an error.
+		return render_template("create_account.html", page_title="Glitch Account Sign-Up", error=info)
+	# TODO: Send the email
+	# mailer.AlertMessage(admin_message, 'New Account Created')
+	confirmation_url = request.base_url + "confirm/%s/%s" % info
+	user_message = """Either you or someone else just created an account at InfiniteGlitch.net.
+
+To confirm for %s at %s, please visit %s""" % (request.form["username"], request.form["email"], confirmation_url)
+	# mailer.AlertMessage(user_message, 'Infinite Glitch Account', you=submitter_email)
+	return render_template("account_confirmation.html")
+
 def run():
 	if not os.path.isdir("glitch/static/assets"):
 		os.mkdir("glitch/static/assets")

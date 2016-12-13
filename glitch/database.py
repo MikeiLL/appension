@@ -436,7 +436,7 @@ def create_user(username, email, password):
 											(username, email, pwd, hex_key))
 			return cur.fetchone()
 		except psycopg2.IntegrityError as e:
-			return "That didn't work too well because: <br/>%s<br/> Maybe you already have an account or \
+			return "That didn't work too well because: %s Maybe you already have an account or \
 					someone else is using the name you requested."%e
 
 @cmdline
