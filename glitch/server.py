@@ -1,4 +1,5 @@
-from flask import Flask, render_template, g, Markup, request, redirect, url_for, Response
+from flask import Flask, render_template, request, redirect, url_for, Response, send_from_directory, jsonify
+from flask_login import LoginManager, current_user
 import amen.audio
 import pydub
 import os
@@ -8,8 +9,17 @@ import datetime
 import threading
 import subprocess
 from . import config
+from . import utils
 
 app = Flask(__name__)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login_get" # will currently fail
+
+@login_manager.user_loader
+def load_user(id):
+    return session.query(User).get(int(id))
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
@@ -25,7 +35,7 @@ meta_description = """I don't remember if he said it or if I said it or if the c
 
 # Import some stuff from the old package
 import fore.assetcompiler
-from fore import database
+from . import database
 app.jinja_env.globals["compiled"] = fore.assetcompiler.compiled
 
 def couplet_count(lyrics):
@@ -42,14 +52,25 @@ def home():
 		open=True, # Can have this check for server load if we ever care
 		endpoint="/all.mp3",
 		complete_length=complete_length,
-		# user_name=self.current_user or 'Glitcher', # TODO
-		user_name='Glitcher', # or this
 		couplet_count=couplet_count(lyrics),
 		lyrics=lyrics,
 		og_url=config.server_domain,
 		og_description=og_description,
 		meta_description=meta_description
 	)
+
+def _make_route(dir):
+	# Use a closure to early-bind the 'dir'
+	def non_caching_statics(path):
+		response = send_from_directory("../"+dir, path)
+		response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+		response.headers['Pragma'] = 'no-cache'
+		return response
+	app.add_url_rule('/'+dir+'/<path:path>', 'non_caching_'+dir, non_caching_statics)
+for _dir in ("audio", "audition_audio", "transition_audio"):
+	# audition_audio and transition_audio aren't currently used, but
+	# will be part of the admin panel that we haven't yet ported.
+	_make_route(_dir)
 
 @app.route("/all.mp3")
 def moosic():
@@ -127,6 +148,63 @@ def moosic():
 		while not ffmpeg.stdout.closed:
 			yield ffmpeg.stdout.read1(4096)
 	return Response(gen_output(), mimetype="audio/mpeg")
+
+@app.route("/artwork/<int:id>.jpg")
+def track_artwork(id):
+	art = database.get_track_artwork(int(id))
+	# TODO: If the track hasn't been approved yet, return 404 unless the user is an admin.
+	if not art:
+		return redirect('../static/img/Default-artwork-200.png')
+	return bytes(art)
+
+@app.route("/timing.json")
+def timing():
+	return jsonify({"time": time.time() * 1000})
+
+@app.route("/credits")
+def credits():
+	og_description="The world's longest recorded pop song. (Credits)"
+	page_title="Credits: Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
+	meta_description="The people below are partially responsible for bringing you Infinite Glitch - the world's longest recorded pop song."
+	og_url="http://www.infiniteglitch.net/credits"
+	return render_template("credits.html",
+				og_description=og_description, page_title=page_title,
+				meta_description=meta_description,og_url=og_url)
+
+@app.route("/view_artist/<artist>")
+def tracks_by_artist(artist):
+	# TODO: Clean up the whole sposplit/fposplit stuff, maybe by slash-separating
+	artist_for_db = url_artist = artist
+	if artist[:8] == 'sposplit':
+		artist = artist[9:]
+		artist_formatting = artist.split('fposplit',1)
+		artist_for_db = ', '.join([part.strip() for part in artist_formatting])
+		artist = ' '.join([part.strip() for part in artist_formatting[::-1]])
+	tracks_by = database.tracks_by(artist_for_db)
+	og_description= artist+" contributions to The world's longest recorded pop song."
+	page_title=artist+": Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
+	meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest recorded pop song."
+	og_url = url_for("tracks_by_artist", artist=url_artist)
+	return render_template("view_artist.html", tracks_by=tracks_by, og_description=og_description, 
+				page_title=page_title, meta_description=meta_description, og_url=og_url)
+
+
+@app.route("/choice_chunks")
+def choice_chunks():
+	og_description= "You can select any individual chunk of The Infinite Glitch to listen to."
+	page_title="Browse Artists: Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
+	meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
+	og_url=config.server_domain+"/choice_chunks"
+	letter = request.args.get("letters", "")
+	if letter:
+		artist_tracks = database.browse_tracks(letter)
+		ordered_artists = utils.alphabetize_ignore_the(artist_tracks)
+	else:
+		ordered_artists = ""
+	recent_submitters = database.get_recent_tracks(10)
+	ordered_submitters = utils.alphabetize_ignore_the(recent_submitters)
+	return render_template("choice_chunks.html", recent_submitters=ordered_submitters, artist_tracks=ordered_artists, letter=letter,
+				og_description=og_description, page_title=page_title, meta_description=meta_description, og_url=og_url)
 
 def run():
 	if not os.path.isdir("glitch/static/assets"):

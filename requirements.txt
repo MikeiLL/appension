@@ -39,3 +39,4 @@ funcsigs
 sigtools
 flask
 pydub
+flask-login

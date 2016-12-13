@@ -9,7 +9,7 @@ Functions to combine 'Basic' and 'Overdub' tracks from 'Glitch Recording Studio'
 Created by Mike iLL with mentorship of Rosuav.
 
 track1 = LocalAudioFile('acapella/Mike_iLL_a_capella.mp3')
-track2 = LocalAudioFile('instrumentals/dgacousticlikMP3.mp3')
+track2 = LocalAudioFile('static/instrumentals/dgacousticlikMP3.mp3')
 ct.render_track('Mike_iLL_a_capella.mp3', 'dgacousticlikMP3.mp3', itrim=8.5)
 """
 from __future__ import print_function
@@ -39,7 +39,7 @@ def format_track(track, itrim=0.0, otrim=0.0, fadeout=5):
     
 def render_track(file1, file2, itrim=0.0, fadeout=5, remove=0):
     filename = file1
-    track2 = audio.LocalAudioFile('instrumentals/'+file2)
+    track2 = audio.LocalAudioFile('static/instrumentals/'+file2)
     print('###########')
     print('acapella/'+file1)
     print('###########')

@@ -28,7 +28,7 @@
 		
 		{% block user %}
 		<div class="user">
-				<p>Hello {{ user_name }}!</p>
+				<p>Hello {{ current_user.user_name or 'Glitcher' }}!</p>
 		</div>
 		{% endblock %}
 		<center>

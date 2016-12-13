@@ -91,7 +91,7 @@ def popular_words(wordcount=50):
 				popular[word] += 1
 			else:
 				popular[word] = 1
-	popular_sorted = sorted(popular.iteritems(), key=operator.itemgetter(1), reverse = True)
+	popular_sorted = sorted(popular.items(), key=operator.itemgetter(1), reverse = True)
 	return popular_sorted[:wordcount]
 				 	
 def compare_to_lyrics(word):

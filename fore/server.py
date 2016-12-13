@@ -80,7 +80,7 @@ class NonCachingStaticFileHandler(tornado.web.StaticFileHandler):
 
 
 routes = [("/(favicon\.ico)", tornado.web.StaticFileHandler, {"path": "static/img/"})]
-for dir in ("instrumentals", "static"):
+for dir in ["static"]:
 	routes.append(("/%s/(.*)"%dir, tornado.web.StaticFileHandler, {"path": dir+"/"}))
 for dir in ("audio", "audition_audio", "transition_audio"):
 	routes.append(("/%s/(.*)"%dir, NonCachingStaticFileHandler, {"path": dir+"/"}))
@@ -185,6 +185,7 @@ class MainHandler(BaseHandler):
 	def get(self):
 		self.finish(self.__gen())
 
+# UNMIGRATED
 @route("/all\.json")
 class InfoHandler(tornado.web.RequestHandler):
 	actions = []
@@ -277,6 +278,7 @@ class StreamHandler(tornado.web.RequestHandler):
 			self.clients.remove(self)
 			log.info("Removed client at %s", self.request.remote_ip)
 
+# WTForms all UNMIGRATED
 def MpegFile(form, field):
 	"""WTForms Validator"""
 	try:
@@ -319,6 +321,7 @@ class SubmissionForm(Form):
 	track_image = wtforms.FileField(u'track_image', validators=[ImageFile])
 	url = wtforms.TextField(u'url', validators=[wtforms.validators.Optional(), wtforms.validators.url(message=u"Invalid URL. If you don't have one, please just put http://www.google.com.")])
 
+# UNMIGRATED
 @route("/submit")
 class Submissionform(BaseHandler):
 	@authenticated
@@ -397,6 +400,7 @@ class Submissionform(BaseHandler):
 											meta_description=meta_description, og_url=config.server_domain,
 											og_description=og_description))
 
+# UNMIGRATED
 @route("/recorder")
 class Recorder(BaseHandler):
 	@authenticated
@@ -574,6 +578,7 @@ class ShareOracleHandler(BaseHandler):
 								page_title=page_title, meta_description=meta_description,
 								og_url=og_url))
 		
+# End UNMIGRATED
 
 @route("/credits")
 class CreditsHandler(BaseHandler):
@@ -678,7 +683,8 @@ class ChunkHandler(BaseHandler):
 									artist_tracks=ordered_artists, letter=letter, og_description=og_description, 
 									page_title=page_title, meta_description=meta_description,
 									og_url=og_url))
-		
+
+# From here all UNMIGRATED
 def UserInDatabase(form, field):
 	response = database.check_db_for_user(field.raw_data[0])
 	if response == "There is already an account for that email.":
@@ -1101,9 +1107,9 @@ class Logout(BaseHandler):
 #TODO Abstract me to accept other tracks
 class GetInstrumental(BaseHandler):    
 	def get(self):
-	    print('i download file: /instrumentals/dgacousticlikMP3.mp3')
+	    print('i download file: /static/instrumentals/dgacousticlikMP3.mp3')
 
-	    ifile  = open("instrumentals/dgacousticlikMP3.mp3", "rb")
+	    ifile  = open("static/instrumentals/dgacousticlikMP3.mp3", "rb")
 	    self.set_header ('Content-Type', 'audio/mpeg')
 	    self.set_header ('Content-Disposition', 'attachment; filename=devilGlitchAcousticInstrumental.mp3')
 	    self.write (ifile.read())

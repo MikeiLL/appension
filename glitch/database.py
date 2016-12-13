@@ -1,22 +1,16 @@
 """Database operations for Appension
 
-Executable using 'python -m fore.database' - use --help for usage.
+Executable using 'python -m glitch.database' - use --help for usage.
 """
 from . import apikeys
 import psycopg2
 from . import utils
 import logging
-try: import Queue as queue
-except ImportError: import queue
-import multiprocessing
+import queue
 import os
 import re
-import hashlib
 from mutagen.mp3 import MP3
-from time import sleep
 import clize
-from sigtools.modifiers import kwoargs
-import binascii
 
 commands = []
 def cmdline(f):
@@ -37,7 +31,8 @@ class Track(object):
 			the_artist = artist.split(',')
 			artist_exact = artist
 			artist = ' '.join([the_artist[1], the_artist[0]])
-		else: artist_exact = artist
+		else:
+			artist_exact = artist
 		self.id = id
 		self.filename = filename
 		# Add some stubby metadata (in an attribute that desperately
@@ -81,8 +76,8 @@ class Submitter(object):
             'filename': filename,
             'lyrics': lyrics,
             'story': story
-            }
-            
+        }
+
 class Member(object):
     def __init__(self,username,email,userid,status):
         
@@ -92,17 +87,17 @@ class Member(object):
         self.status = status
             
 class Artist(object):
-        def __init__(self, artist_from_db):
-                if len(artist_from_db.split(',')) > 1:
-                        name_list = artist_from_db.split(',')
-                        display_name = ' '.join([name_list[1], name_list[0]])
-                else: 
-                        display_name = artist_from_db
-                        name_list = ['', artist_from_db]
-                self.name =  {
-                        'display_name': display_name,
-                        'name_list': name_list
-                        }
+	def __init__(self, artist_from_db):
+		if len(artist_from_db.split(',')) > 1:
+			name_list = artist_from_db.split(',')
+			display_name = ' '.join([name_list[1], name_list[0]])
+		else:
+			display_name = artist_from_db
+			name_list = ['', artist_from_db]
+		self.name = {
+			'display_name': display_name,
+			'name_list': name_list
+		}
 
 class Lyric(object):
 	# Select these from the tracks table to construct a track object.
@@ -125,11 +120,6 @@ class Lyric(object):
 		
 	def get_couplets(self, lyrics):
 		return lyrics.splitlines(True)
-		
-def get_mp3(some_specifier):
-	with _conn, _conn.cursor():
-		# TODO: Fetch an MP3 and return its raw data
-		pass
 
 def get_many_mp3(status=1, order_by='length'):
 	"""Get a list of many (possibly all) the tracks in the database.
@@ -142,13 +132,16 @@ def get_many_mp3(status=1, order_by='length'):
 		cur.execute(query, (status,))
 		return [Track(*row) for row in cur.fetchall()]
 
-_track_queue = multiprocessing.Queue()
+_track_queue = queue.Queue()
 		
 def get_track_to_play():
 	"""Get a track from the database with presumption that it will be played.
 
 	If something has been enqueued with enqueue_track(), that will be the one
 	returned; otherwise, one is picked by magic.
+
+	TODO: Prefer tracks that haven't been played *recently*. Currently, any
+	track added after the system's been up for a while will be played to death.
 	"""
 	with _conn, _conn.cursor() as cur:
 		try:
@@ -305,7 +298,7 @@ def get_track_submitter_info():
         return [Submitter(*row) for row in cur.fetchall()]
 
 def update_track_submitter_info(submitter_object):
-    '''We may not need track id, but it may prove useful at some point.'''
+    # We may not need track id, but it may prove useful at some point.
     for track_grouping in zip(submitter_object['track_id'],submitter_object['user_id'],submitter_object['username'],submitter_object['email']):
         userid = track_grouping[1]
         name = track_grouping[2]
@@ -340,8 +333,8 @@ def create_outreach_message(message):
 		cur.execute("INSERT INTO outreach (message) VALUES (%s) RETURNING id, message", (message,))
 		return [row for row in cur.fetchone()]
 											
-def update_outreach_message(message, id=1):
-    if retrieve_outreach_message()[0] == '':
+def update_outreach_message(message):
+    if retrieve_outreach_message() == '':
         return create_outreach_message(message)
     query = "UPDATE outreach SET message = (message) WHERE id = 1 RETURNING id, message"
     data = (message,)
@@ -350,12 +343,17 @@ def update_outreach_message(message, id=1):
         return [row for row in cur.fetchone()]
 
 def retrieve_outreach_message():
-    with _conn, _conn.cursor() as cur:
-        cur.execute("SELECT id, message FROM outreach ORDER BY id LIMIT 1")
-        try:
-            return [row for row in cur.fetchone()]
-        except TypeError: 
-            return ['', '']
+	# NOTE: API has changed compared to fore.database.retrieve_outreach_message
+	# Instead of returning a list, this returns a single string. Remove this
+	# comment when all usage has been migrated.
+	# If this is supposed to return the most recent, it should possibly be using
+	# ORDER BY ID DESC.
+	with _conn, _conn.cursor() as cur:
+		cur.execute("SELECT id, message FROM outreach ORDER BY id LIMIT 1")
+		try:
+			return cur.fetchone()[0]
+		except TypeError: 
+			return ''
 
 def get_subsequent_track(track_id):
     """Return Track Object for next track in sequence."""
@@ -379,12 +377,14 @@ def get_track_filename(track_id):
         for row in cur: return row[0]
 
 def browse_tracks(letter):
-    """Return artist, id for tracks, where artist name starts with letter in expression or higher, limit 20."""
-    query = "SELECT DISTINCT artist FROM tracks WHERE status = 1 AND (case when artist ilike 'The %' then substr(upper(artist), 5, 100) else upper(artist) end) >= '{letter}' ORDER BY artist LIMIT 20".format(cols=Track.columns, letter=letter)
-    with _conn, _conn.cursor() as cur:
-        cur.execute(query)
-        return [row for row in cur.fetchall()]
-        
+	"""Return artist, id for tracks, where artist name starts with letter in expression or higher, limit 20."""
+	query = """SELECT DISTINCT artist FROM tracks WHERE status = 1 AND
+		(case when artist ilike 'The %' then substr(upper(artist), 5, 100) else upper(artist) end) >= '{letter}'
+		ORDER BY artist LIMIT 20""".format(cols=Track.columns, letter=letter)
+	with _conn, _conn.cursor() as cur:
+		cur.execute(query)
+		return [row for row in cur.fetchall()]
+
 def get_recent_tracks(number):
         """Retrieve [number] number of most recently activated tracks"""
         query = "SELECT DISTINCT artist, submitted FROM tracks WHERE status = 1 ORDER BY submitted DESC LIMIT {number}".format(cols=Track.columns, number=number)
@@ -412,9 +412,7 @@ def create_user(username, email, password):
 	if not isinstance(password, bytes): password=password.encode("utf-8")
 	hex_key = utils.random_hex()
 	with _conn, _conn.cursor() as cur:
-		salt = os.urandom(16)
-		hash = hashlib.sha256(salt+password).hexdigest()
-		pwd = binascii.hexlify(salt).decode("ascii")+"-"+hash
+		pwd = utils.hash_password(password)
 		try:
 			cur.execute("INSERT INTO users (username, email, password, hex_key) VALUES (%s, %s, %s, %s) RETURNING id, hex_key", \
 											(username, email, pwd, hex_key))
@@ -457,9 +455,7 @@ def set_user_password(user_or_email, password):
 	user_or_email = user_or_email.lower()
 	if not isinstance(password, bytes): password=password.encode("utf-8")
 	with _conn, _conn.cursor() as cur:
-		salt = os.urandom(16)
-		hash = hashlib.sha256(salt+password).hexdigest()
-		pwd = salt.encode("hex")+"-"+hash
+		pwd = utils.hash_password(password)
 		cur.execute("SELECT id FROM users WHERE username=%s OR email=%s AND status=1", (user_or_email, user_or_email))
 		rows=cur.fetchall()
 		if len(rows)!=1: return "There is already an account for that email."
@@ -482,12 +478,9 @@ def verify_user(user_or_email, password):
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id,password FROM users WHERE username=%s OR email=%s AND status=1", (user_or_email, user_or_email))
 		for id, pwd in cur:
-			if "-" not in pwd: continue
-			salt, hash = pwd.split("-", 1)
-			if hashlib.sha256(salt.decode("hex")+password).hexdigest()==hash:
-				# Successful match.
+			if utils.check_password(pwd, password):
 				return id
-	# If we fall through without finding anything that matches, return None.
+	return None
 
 def get_user_info(id):
 	"""Return the user name and permissions level for a given UID, or (None,0) if not logged in"""
@@ -505,9 +498,7 @@ def hex_user_password(email, hex_key):
 
 def reset_user_password(id, hex_key, password):
     with _conn, _conn.cursor() as cur:
-        salt = os.urandom(16)
-        hash = hashlib.sha256(salt+password).hexdigest()
-        pwd = salt.encode("hex")+"-"+hash
+        pwd = utils.hash_password(password)
         cur.execute("update users set password=%s, hex_key='' where id=%s and hex_key=%s", (pwd, id, hex_key))
 
 def get_analysis(id):
@@ -520,9 +511,7 @@ def save_analysis(id, analysis):
 		cur.execute("update tracks set analysis=%s where id=%s", (analysis, id))
 
 @cmdline
-@kwoargs("submitter","submitteremail")
-# In Python 3, *filename would go first, and the others would be keyword-only args without the decorator.
-def importmp3(submitter="Bulk import", submitteremail="bulk@import.invalid", *filename):
+def importmp3(*filename, submitter="Bulk import", submitteremail="bulk@import.invalid"):
 	"""Bulk-import MP3 files into the appension database
 
 	filename: MP3 file(s) to import
@@ -571,8 +560,7 @@ def transfer_track_details(from_id=0, to_id=0):
 				print(line, "Has been updated")
 
 @cmdline
-@kwoargs("confirm")
-def tables(confirm=False):
+def tables(*, confirm=False):
 	"""Update tables based on create_table.sql
 
 	confirm: If omitted, will do a dry run.

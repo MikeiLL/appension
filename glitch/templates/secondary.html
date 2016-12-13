@@ -38,15 +38,15 @@
 
   <link href='{{ compiled('style-responsive-players.scss') }}' rel='stylesheet' type='text/css' />
   </head>	
-  {% end %}
+  {% endblock %}
   <body>	
 	<header id="secondary_header" role="banner">
 	<br style="clear:both">
   	{% block user %}		
   		<div class="user">				
-  			<p>Hello {{ user_name }}!</p>		
+  			<p>Hello {{ current_user.user_name or 'Glitcher' }}!</p>
   		</div>		
-  	{% end %}		
+  	{% endblock %}		
   		<a href="/" style="display:block;">		
 		<div id="title-admin">				
 		</div></a>	
@@ -60,7 +60,7 @@
 					<div class="secondary-two">			
 						 {% block content %}
 							<p>totally empty page</p>
-						 {% end %}		
+						 {% endblock %}		
 					</div>		
 					<div style="clear:both;"></div>	
 				</li>			
@@ -70,13 +70,13 @@
 				</li>					
 			</ul>	
 		</section>		
-		{% end %}	
+		{% endblock %}	
 	</div>	
 		{% block footer %}		
 	<div class="container">			
 		{% include 'modules/footer.html' %}	
 	</div>							
-	{% end %}
+	{% endblock %}
 		<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
 	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
 		'soundmanager2-nodebug-jsmin.js',		  
@@ -85,7 +85,7 @@
 	</script>		
 		{% block load_scripts %}
 		
-		{% end %}	
+		{% endblock %}	
 </div>
 	</body>
 		</html>
