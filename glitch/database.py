@@ -307,12 +307,6 @@ def update_track_submitter_info(submitter_object):
         with _conn, _conn.cursor() as cur:
             cur.execute("UPDATE users SET username = '"+str(name)+"', email = '"+str(email)+"' WHERE id = "+str(userid))
 
-def get_member_info():
-    with _conn, _conn.cursor() as cur:
-        query = '''SELECT username, email, id, status FROM users'''
-        cur.execute(query)
-        return [Member(*row) for row in cur.fetchall()]
-            
 def add_dummy_users():
     start_default_email_number = 0
     with _conn, _conn.cursor() as cur:
