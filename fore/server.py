@@ -684,7 +684,6 @@ class ChunkHandler(BaseHandler):
 									page_title=page_title, meta_description=meta_description,
 									og_url=og_url))
 
-# From here all UNMIGRATED
 def UserInDatabase(form, field):
 	response = database.check_db_for_user(field.raw_data[0])
 	if response == "There is already an account for that email.":
@@ -775,7 +774,9 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 										page_title="Glitch Account Sign-Up", og_url=config.server_domain,
 										meta_description=meta_description,
 										og_description=og_description))
-										
+
+# From here all UNMIGRATED
+
 @route("/reset_password")
 class ResetPassword(tornado.web.RequestHandler):
 	def get(self):
@@ -856,7 +857,7 @@ class NewPassword(tornado.web.RequestHandler):
 								og_description=og_description))
 
 
-# Admnisistrative Pages:
+# Administrative Pages:
 
 @route("/gmin")
 class AdminRender(BaseHandler):
@@ -905,21 +906,6 @@ class Submitters(BaseHandler):
 			compiled=compiled, user_name=user_name, notice="Submitter List Updated", submitters=submitters,
 			number=1))
 			
-
-@route("/members")
-class Submitters(BaseHandler):
-	@authenticated
-	def get(self):
-		self.get_current_user()
-		if self._user_perms<2: return self.redirect("/")
-		user_name = tornado.escape.xhtml_escape(self.current_user)
-		members = database.get_member_info()
-		active_members = [member for member in members if member.status == 1]
-		inactive_members = [member for member in members if not member.status == 1]
-		self.write(templates.load("members.html").generate(
-			compiled=compiled, user_name=user_name, notice="", active_members=active_members,
-			inactive_members=inactive_members))
-
 @route("/manage/([0-9]+)")
 class ManageTransition(BaseHandler):
 	@authenticated

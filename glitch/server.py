@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, Response, send_from_directory, jsonify
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager, current_user, login_user
 import amen.audio
 import pydub
 import os
@@ -9,17 +9,19 @@ import datetime
 import threading
 import subprocess
 from . import config
+from . import database
 from . import utils
 
 app = Flask(__name__)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "login_get" # will currently fail
+login_manager.login_view = "login_get"
+app.config["SECRET_KEY"] = os.urandom(12)
 
 @login_manager.user_loader
 def load_user(id):
-    return session.query(User).get(int(id))
+	return database.User.from_id(int(id))
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
@@ -205,6 +207,37 @@ def choice_chunks():
 	ordered_submitters = utils.alphabetize_ignore_the(recent_submitters)
 	return render_template("choice_chunks.html", recent_submitters=ordered_submitters, artist_tracks=ordered_artists, letter=letter,
 				og_description=og_description, page_title=page_title, meta_description=meta_description, og_url=og_url)
+
+@app.route("/login")
+def login_get():
+	return render_template("login.html")
+
+@app.route("/login", methods=["POST"])
+def login_post():
+	user = database.User.from_credentials(request.form["email"], request.form["password"])
+	if user: login_user(user)
+	return redirect("/")
+
+@app.route("/create_account")
+def create_account_get():
+	return render_template("create_account.html", page_title="Glitch Account Sign-Up")
+
+@app.route("/create_account", methods=["POST"])
+def create_account_post():
+	if request.form["password"] != request.form["password2"]:
+		return redirect("/create_account")
+	info = database.create_user(request.form["username"], request.form["email"], request.form["password"])
+	if isinstance(info, str):
+		# There's an error.
+		return render_template("create_account.html", page_title="Glitch Account Sign-Up", error=info)
+	# TODO: Send the email
+	# mailer.AlertMessage(admin_message, 'New Account Created')
+	confirmation_url = request.base_url + "confirm/%s/%s" % info
+	user_message = """Either you or someone else just created an account at InfiniteGlitch.net.
+
+To confirm for %s at %s, please visit %s""" % (request.form["username"], request.form["email"], confirmation_url)
+	# mailer.AlertMessage(user_message, 'Infinite Glitch Account', you=submitter_email)
+	return render_template("account_confirmation.html")
 
 def run():
 	if not os.path.isdir("glitch/static/assets"):

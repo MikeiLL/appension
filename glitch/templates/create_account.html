@@ -1,4 +1,4 @@
-{% extends secondary.html %}
+{% extends "secondary.html" %}
 
 {% block content %}
 <p></p>
@@ -7,45 +7,26 @@
 
 <p></p>
 <form enctype="multipart/form-data" action="/create_account" method="post">
+{{ error }}
 <table class="secondary">
-<tr><td width="200px">Your Name:</td><td> {{ form.user_name }}</td></tr>
-	{% if form.user_name.errors %}
-		<tr><td colspan=2> 
-        <ul class="errors">{% for error in form.user_name.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
-		</td></tr>
-    {% end %}
-<tr><td>Email: </td><td>{{ form.email }}</td></tr>
-	{% if form.email.errors %}
-		<tr><td colspan=2> 
-        <ul class="errors">{% for error in form.email.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
-		</td></tr>
-    {% end %}
-<tr><td>Password: </td><td>{{ form.password }} </td></tr>
+<tr><td width="200px"><label for=username>Your Name:</label></td><td><input name=username></td></tr>
+<tr><td><label for=email>Email:</label></td><td><input name=email></td></tr>
+<tr><td><label for=password>Password:</label></td><td><input type=password name=password></td></tr>
 <tr><td colspan="2"><p>(At least eight characters, please.
 Ideally, use <a href="http://xkcd.com/936/">four common words</a> for your password.)</p></td></tr>
-<tr><td>Password again: </td><td>{{ form.confirm }}</td></tr>
-	{% if form.password.errors %}
-		<tr><td colspan=2> 
-        <ul class="errors">{% for error in form.password.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
-		</td></tr>
-    {% end %}
+<tr><td><label for=password2>Password again:</label></td><td><input type=password name=password2></td></tr>
 <tr><td colspan="2">
 
 <p>Legal stuff. You own your contribution, period - but by submitting it, you are allowing me to use it in this project in perpetuity. If you want to register it with the Library of Congress or any other performance right organization in your country, that is your business. There is a chance that some other media (TV, radio, etc.) might do a news piece on this project and use some of what you've submitted. </p>
 
-<p>If this happens, I will do my best to get you a cue sheet so if there is any dough generated, you get it. To that end, you must include some info about yourself, personal web page URL &amp;/or contact info with your submission or it can't be used. You also grant me the right to use this info in the project, but I will not give or sell your info to any third party, so don't get all nutzparanoid about this. Also, you warrant that your submission does not violate the rights of any third party.</p>
+<p>If this happens, I will do my best to get you a cue sheet so if there is any dough generated, you get it. To that end, you must include some info about yourself, personal web page URL and/or contact info with your submission or it can't be used. You also grant me the right to use this info in the project, but I will not give or sell your info to any third party, so don't get all nutzparanoid about this. Also, you warrant that your submission does not violate the rights of any third party.</p>
 
 
-{{ form.accept_checkbox }} I agree with the legal stuff
-
-	{% if form.accept_checkbox.errors %}
-        <ul class="errors">{% for error in form.accept_checkbox.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
-    {% end %}
-	
+<input type=checkbox name=agree>I agree with the legal stuff
 	</td></tr>
 <tr><td colspan="2" align="right"><input type="submit" value="Create Account" /></td></tr>
 </table>
 </form>
 
-{% end %}
+{% endblock %}
 

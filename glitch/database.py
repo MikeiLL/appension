@@ -2,6 +2,7 @@
 
 Executable using 'python -m glitch.database' - use --help for usage.
 """
+from flask_login import UserMixin
 from . import apikeys
 import psycopg2
 from . import utils
@@ -78,14 +79,37 @@ class Submitter(object):
             'story': story
         }
 
-class Member(object):
-    def __init__(self,username,email,userid,status):
-        
-        self.userid = userid
-        self.username = username
-        self.email = email
-        self.status = status
-            
+DUMMY_PASSWORD = "5fe87280b1cabccf6b973934ca03ee4e-cf43009757937c46f198b6ad831a0420c78e9b074141b372742cf62755d1866e"
+class User(UserMixin):
+	def __init__(self, id, username, email, status):
+		self.id = id
+		self.username = username
+		self.email = email
+		self.status = status
+
+	@classmethod
+	def from_id(cls, id, password=None):
+		with _conn, _conn.cursor() as cur:
+			cur.execute("select id, username, email, status from users where id=%s", (id,))
+			data = cur.fetchone()
+		if not data: return None
+		return cls(*data)
+
+	@classmethod
+	def from_credentials(cls, login, password):
+		print("From credentials:", login, password)
+		with _conn, _conn.cursor() as cur:
+			cur.execute("select id, username, email, status, password from users where email=%s or username=%s", (login, login))
+			data = cur.fetchone()
+		if not utils.check_password(data[-1] if data else DUMMY_PASSWORD, password):
+			# Passwords do not match. Pretend the user doesn't exist.
+			# Note that even if the user _really_ doesn't exist, we still
+			# do a password verification. This helps protect against
+			# timing-based attacks.
+			return None
+		if not data: return None # In the unlikely event that the dummy password matches, still deny.
+		return cls(*data[:-1])
+
 class Artist(object):
 	def __init__(self, artist_from_db):
 		if len(artist_from_db.split(',')) > 1:
@@ -204,16 +228,16 @@ def get_track_artwork(id):
 		row = cur.fetchone()
 		return row and row[0]
 
-def create_track(mp3data, filename, info, imagefile=None, user_name=None):
+def create_track(mp3data, filename, info, imagefile=None, username=None):
 	"""Save a blob of MP3 data to the specified file and registers it in the database.
 
 	Note that this function breaks encapsulation horribly. The third argument is
 	assumed to be a request object dictionary, with all its quirks. The file is saved
 	to disk as well as being registered with the database. TODO: Clean me up."""
-	if not user_name:
+	if not username:
 	    with _conn, _conn.cursor() as cur:
 	        cur.execute("SELECT username FROM users WHERE user_level = 2 LIMIT 1;")
-	        user_name = cur.fetchone()[0] 
+	        username = cur.fetchone()[0] 
 	with _conn, _conn.cursor() as cur:
 		# We have a chicken-and-egg problem here. We can't (AFAIK) get the ID3 data
 		# until we have a file, and we want to name the file based on the track ID.
@@ -223,7 +247,7 @@ def create_track(mp3data, filename, info, imagefile=None, user_name=None):
 			VALUES ((
 			select id from users where username = %s
 			), %s, %s, %s, %s) RETURNING id""",
-			(user_name, info.get("lyrics",[""])[0], info.get("story",[""])[0], info.get("comments",[""])[0],
+			(username, info.get("lyrics",[""])[0], info.get("story",[""])[0], info.get("comments",[""])[0],
 			info.get("url",[""])[0]))
 		id = cur.fetchone()[0]
 		filename = "audio/%d %s"%(id, filename)
@@ -307,12 +331,6 @@ def update_track_submitter_info(submitter_object):
         with _conn, _conn.cursor() as cur:
             cur.execute("UPDATE users SET username = '"+str(name)+"', email = '"+str(email)+"' WHERE id = "+str(userid))
 
-def get_member_info():
-    with _conn, _conn.cursor() as cur:
-        query = '''SELECT username, email, id, status FROM users'''
-        cur.execute(query)
-        return [Member(*row) for row in cur.fetchall()]
-            
 def add_dummy_users():
     start_default_email_number = 0
     with _conn, _conn.cursor() as cur:
@@ -418,7 +436,7 @@ def create_user(username, email, password):
 											(username, email, pwd, hex_key))
 			return cur.fetchone()
 		except psycopg2.IntegrityError as e:
-			return "That didn't work too well because: <br/>%s<br/> Maybe you already have an account or \
+			return "That didn't work too well because: %s Maybe you already have an account or \
 					someone else is using the name you requested."%e
 
 @cmdline
