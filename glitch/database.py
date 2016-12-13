@@ -228,16 +228,16 @@ def get_track_artwork(id):
 		row = cur.fetchone()
 		return row and row[0]
 
-def create_track(mp3data, filename, info, imagefile=None, user_name=None):
+def create_track(mp3data, filename, info, imagefile=None, username=None):
 	"""Save a blob of MP3 data to the specified file and registers it in the database.
 
 	Note that this function breaks encapsulation horribly. The third argument is
 	assumed to be a request object dictionary, with all its quirks. The file is saved
 	to disk as well as being registered with the database. TODO: Clean me up."""
-	if not user_name:
+	if not username:
 	    with _conn, _conn.cursor() as cur:
 	        cur.execute("SELECT username FROM users WHERE user_level = 2 LIMIT 1;")
-	        user_name = cur.fetchone()[0] 
+	        username = cur.fetchone()[0] 
 	with _conn, _conn.cursor() as cur:
 		# We have a chicken-and-egg problem here. We can't (AFAIK) get the ID3 data
 		# until we have a file, and we want to name the file based on the track ID.
@@ -247,7 +247,7 @@ def create_track(mp3data, filename, info, imagefile=None, user_name=None):
 			VALUES ((
 			select id from users where username = %s
 			), %s, %s, %s, %s) RETURNING id""",
-			(user_name, info.get("lyrics",[""])[0], info.get("story",[""])[0], info.get("comments",[""])[0],
+			(username, info.get("lyrics",[""])[0], info.get("story",[""])[0], info.get("comments",[""])[0],
 			info.get("url",[""])[0]))
 		id = cur.fetchone()[0]
 		filename = "audio/%d %s"%(id, filename)
