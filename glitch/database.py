@@ -2,6 +2,7 @@
 
 Executable using 'python -m glitch.database' - use --help for usage.
 """
+from flask_login import UserMixin
 from . import apikeys
 import psycopg2
 from . import utils
@@ -78,14 +79,37 @@ class Submitter(object):
             'story': story
         }
 
-class Member(object):
-    def __init__(self,username,email,userid,status):
-        
-        self.userid = userid
-        self.username = username
-        self.email = email
-        self.status = status
-            
+DUMMY_PASSWORD = "5fe87280b1cabccf6b973934ca03ee4e-cf43009757937c46f198b6ad831a0420c78e9b074141b372742cf62755d1866e"
+class User(UserMixin):
+	def __init__(self, id, username, email, status):
+		self.id = id
+		self.username = username
+		self.email = email
+		self.status = status
+
+	@classmethod
+	def from_id(cls, id, password=None):
+		with _conn, _conn.cursor() as cur:
+			cur.execute("select id, username, email, status from users where id=%s", (id,))
+			data = cur.fetchone()
+		if not data: return None
+		return cls(*data)
+
+	@classmethod
+	def from_credentials(cls, login, password):
+		print("From credentials:", login, password)
+		with _conn, _conn.cursor() as cur:
+			cur.execute("select id, username, email, status, password from users where email=%s or username=%s", (login, login))
+			data = cur.fetchone()
+		if not utils.check_password(data[-1] if data else DUMMY_PASSWORD, password):
+			# Passwords do not match. Pretend the user doesn't exist.
+			# Note that even if the user _really_ doesn't exist, we still
+			# do a password verification. This helps protect against
+			# timing-based attacks.
+			return None
+		if not data: return None # In the unlikely event that the dummy password matches, still deny.
+		return cls(*data[:-1])
+
 class Artist(object):
 	def __init__(self, artist_from_db):
 		if len(artist_from_db.split(',')) > 1:

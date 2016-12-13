@@ -1,7 +1,7 @@
-{% extends secondary.html %}
+{% extends "secondary.html" %}
 
 {% block sidebar %}
-		{% end %}
+		{% endblock %}
 {% block content %}
 <h1>
 <img width="99" border="0" height="42" alt="" src="/static/img/log-in-title.png">
@@ -9,21 +9,13 @@
 <fieldset>
         <span class="errormessage"></span>
 </fieldset>
-<form enctype="multipart/form-data" action="/login" method="post">
+<form method="post">
 <table class="secondary">
 {% if notice %}
 	<h4> {{ notice }} </h4>
-{% end %}
-<tr><td width="200px">Email: </td><td>{{ form.email }}</td></tr>
-{% if form.email.errors %}
-<tr><td colspan=2> 
-<ul class="errors">{% for error in form.email.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
-{% end %}
-<tr><td>Password: </td><td>{{ form.password }} </td></tr>
-{% if form.password.errors %}
-<tr><td colspan=2> 
-<ul class="errors">{% for error in form.password.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
-{% end %}
+{% endif %}
+<tr><td width="200px"><label for=email>Email:</label></td><td><input name=email></td></tr>
+<tr><td><label for=password>Password:</label></td><td><input type=password name=password></td></tr>
 <tr><td colspan="2" align="right">
 <input type="hidden" name="next" value="{{ next }}" />
 <input type="submit" value="Login" /></td></tr>
@@ -31,5 +23,5 @@
 <tr><td colspan="2" align="right"><a href="/reset_password">forgot password?</a></td></tr>
 </table>
 </form>
-{% end %}
+{% endblock %}
 

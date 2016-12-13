@@ -84,9 +84,11 @@ def hash_password(password):
 	return binascii.hexlify(salt).decode("ascii") + "-" + hash
 
 def check_password(pwd, password):
-	if "-" not in pwd: return False
-	salt, hash = pwd.split("-", 1)
-	return hashlib.sha256(salt.decode("hex")+password).hexdigest() == hash
+	if isinstance(pwd, str): pwd = pwd.encode("ascii")
+	if isinstance(password, str): password = password.encode("ascii")
+	if b"-" not in pwd: return False
+	salt, hash = pwd.split(b"-", 1)
+	return hashlib.sha256(binascii.unhexlify(salt)+password).hexdigest().encode("ascii") == hash
 
 def alphabetize_ignore_the(list_of_names):
 	"""Return alphabetized list of names, ignoring the word "The" in alphabetization.
