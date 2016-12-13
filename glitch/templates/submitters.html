@@ -8,7 +8,7 @@
 
 {% if notice %}
 	<h2> {{ notice }} </h2>
-{% end %}
+{% endif %}
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
 <tr><td>Submitter Name</td><td>Submitter Email</td><td>Artist</td><td>Lyrics</td><td>Story</td></tr>
 {% for submitter in submitters %}
@@ -22,24 +22,24 @@
 			<span class="errors">Empty.</span>
 		{% else %}
 			Yes.
-		{% end %}
+		{% endif %}
 	</td>
 	
 	<td>{% if not submitter.submitted['story'] %}
 			 <span class="errors">Empty.</span>
 		{% else %}
 			Yes.
-		{% end %}
+		{% endif %}
 	</td>
 	</tr>
 
-{% end %}
+{% endfor %}
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
 
 </table>
 </form>
 </center>
 </script>
-{% end %}
+{% endblock %}
 
 

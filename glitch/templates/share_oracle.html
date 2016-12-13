@@ -21,7 +21,7 @@
 <p class="intro-copy">The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting <i>smarter</i>.<br><br>
 The Glitch Oracle reaches deep into this accumulated wisdom of human experience and finds the answers to your questions, whatever they may be. Consult The Glitch Oracle anytime you need fast, personal guidance. <br><br>You just know what you need. But it knows what you <i>want</i>. </p></center>
 <center><p><b>Enter your question and then press the Glitch Ball</b></p>
-				{% end %}
+				{% endif %}
 				{% if not answer == "" %}
 					<div class="glitch_answer">{{ answer.couplet['couplet'][0] }}<br/>
 						{% if not answer.couplet['artist'].name['display_name'] == "The Glitch Oracle" %}
@@ -30,14 +30,14 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 								<p>-<a href="/view_artist/{{ url_escape(answer.couplet['artist'].name['name_list'][1]) }}">{{ answer.couplet['artist'].name['display_name'] }}</a></p>
 							{% else %}
 								<p>-<a href="/view_artist/{{ url_escape('sposplit '+answer.couplet['artist'].name['name_list'][0]+' fposplit '+answer.couplet['artist'].name['name_list'][1]) }}">{{ answer.couplet['artist'].name['display_name'] }}</a></p>
-							{% end %}
+							{% endif %}
 						{% else %}
 						<p>-{{ answer.couplet['artist'].name['display_name'] }}</p>
 						<br style="clear:both"/>
 					</div>
-					{% end %}
+					{% endif %}
 				</div>
-				{% end %}
+				{% endif %}
 				<br style="clear:both"/>
 				<div id="oracle_question">
 					{{ form.question(class_="oracle_question_field", value=question) }}
@@ -47,7 +47,7 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 				{% if form.question.errors %}
 				<ul>
 					{% for error in form.question.errors %}<li class="errors">{{ error }}</li>{% end %}</ul>
-				{% end %}
+				{% endif %}
 		
 				<p>{{ answer }}</p>
 		  </form>
@@ -81,10 +81,10 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 	<div id="popular_words" style="display:{{ show_cloud }}">
 		{% for popular_word in popular_words %}
 		  <a href="#" rel="{{ popular_word[1] }}">{{ popular_word[0] }}</a>
-		{% end %}
+		{% endfor %}
 	</div>
 
-	{% end %}
+	{% endblock %}
 	{% block rightnav %}		
 	<div class="container">			
 		<nav role="navigation">					
@@ -99,7 +99,7 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 	</ul></div>				
 	</nav>		
 	</div>							
-	{% end %}
+	{% endblock %}
 	
 	{% block load_scripts %}
 		<script type="text/javascript">		

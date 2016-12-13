@@ -68,15 +68,15 @@ We're constantly developing and improving The Studio but if you should encounter
 					<tr><td>Track Title: </td><td>{{ form.track_title }} </td></tr>
 						{% if form.artist.errors %}
 							<tr><td colspan=2> 
-						<ul class="errors">{% for error in form.artist.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
+						<ul class="errors">{% for error in form.artist.errors %}<li class="error_notice">{{ error }}</li>{% endfor %}</ul>
 							</td></tr>
-					    {% end %}
+					    {% endif %}
 					<tr><td colspan="2">Thumbnail Image (up to 500kb): {{ form.track_image }}</td></tr>
 					{% if form.track_image.errors %}
 							<tr><td colspan=2> 
-						<ul class="errors">{% for error in form.track_image.errors %}<li class="error_notice">{{ error }}</li>{% end %}</ul>
+						<ul class="errors">{% for error in form.track_image.errors %}<li class="error_notice">{{ error }}</li>{% endfor %}</ul>
 							</td></tr>
-					    {% end %}
+					    {% endif %}
 					<tr><td colspan="2">Story behind the track:<br/> {{ form.story(rows=10,cols=60) }}</td></tr>
 					<tr><td colspan="2">Lyrics: (in couplet form if possible - two lines, space and so on)<br/>{{ form.lyrics(rows=10,cols=60,placeholder="Sometimes you can fix...                               Elaborate on bla bla bla...") }}</textarea></td></tr>
 					<tr><td colspan="2">Comments: <br/>{{ form.comments(rows=10,cols=60) }}</td></tr>
@@ -98,7 +98,7 @@ We're constantly developing and improving The Studio but if you should encounter
 	</div>
 </div>	
 					  
-	{% end %} <!--End Content Block -->
+	{% endblock %} <!--End Content Block -->
 	{% block load_scripts %}
 <audio id='BackgroundTrack' src='/static/instrumentals/dgacousticlikMP3.mp3'/>
 
@@ -243,4 +243,4 @@ We're constantly developing and improving The Studio but if you should encounter
 			  };
 
 		  </script>	
-		  {% end %}
+		  {% endblock %}

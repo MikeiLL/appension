@@ -104,9 +104,9 @@
 			<em><font color="blue">Link checks good.</font></em>
 	{% elif check_url == 'Invalid' %}
 			<em><font color="red">Link appears to be broken.</font></em>
-	{% end %}
+	{% endif %}
 	</td></tr>
 	<tr><td colspan="6" align="right"><input type="submit" value="Update"></td></tr>
 </table>
 </form>
-{% end %}
+{% endblock %}

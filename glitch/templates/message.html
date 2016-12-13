@@ -8,7 +8,7 @@
 
 {% if notice %}
 	<h2> {{ notice }} </h2>
-{% end %}
+{% endif %}
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
 <tr><td>Submit Message Below</td></tr>
 	<tr><td><textarea rows=10 cols=80 name="message">{{ message }}</textarea></td>
@@ -18,6 +18,6 @@
 </table>
 </form>
 </center>
-{% end %}
+{% endblock %}
 
 
