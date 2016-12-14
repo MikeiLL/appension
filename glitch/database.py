@@ -228,12 +228,21 @@ def get_track_artwork(id):
 		row = cur.fetchone()
 		return row and row[0]
 
-def create_track(mp3data, filename, info, imagefile=None, username=None):
+def create_track(mp3data, filename, info, image=None, username=None):
 	"""Save a blob of MP3 data to the specified file and registers it in the database.
 
-	Note that this function breaks encapsulation horribly. The third argument is
-	assumed to be a request object dictionary, with all its quirks. The file is saved
-	to disk as well as being registered with the database. TODO: Clean me up."""
+	mp3data: Bytestring of MP3 file contents
+
+	filename: Pre-sanitized file name
+
+	info: Mapping with additional info
+
+	image: Artwork; if not specified, will look in the ID3 data
+
+	username: User who submitted this track - if not specified, picks a random admin
+	"""
+	if not mp3data.startswith(b"ID3") and not mp3data.startswith(b"\xFF\xFB"):
+		raise ValueError("Not MP3 data")
 	if not username:
 	    with _conn, _conn.cursor() as cur:
 	        cur.execute("SELECT username FROM users WHERE user_level = 2 LIMIT 1;")
@@ -247,23 +256,23 @@ def create_track(mp3data, filename, info, imagefile=None, username=None):
 			VALUES ((
 			select id from users where username = %s
 			), %s, %s, %s, %s) RETURNING id""",
-			(username, info.get("lyrics",[""])[0], info.get("story",[""])[0], info.get("comments",[""])[0],
-			info.get("url",[""])[0]))
+			(username, info.get("lyrics",""), info.get("story",""), info.get("comments",""),
+			info.get("url","")))
 		id = cur.fetchone()[0]
 		filename = "audio/%d %s"%(id, filename)
 		with open(filename, "wb") as f: f.write(mp3data)
 		track = MP3(filename)
-		if imagefile:
-		        pic = imagefile
+		if image:
+		        pic = image
 		else:
 		        pic=next((k for k in track if k.startswith("APIC:")), None)
 		        pic = pic and track[pic].data
 
 		# Note: These need to fold absent and blank both to the given string.
 		try: artist = u', '.join(track['TPE1'].text)
-		except KeyError: artist = info.get("artist",[""])[0] or u'(unknown artist)'
+		except KeyError: artist = info.get("artist","") or u'(unknown artist)'
 		try: title = u', '.join(track['TIT2'].text)
-		except KeyError: title = info.get("track_title",[""])[0] or u'(unknown title)'
+		except KeyError: title = info.get("track_title","") or u'(unknown title)'
 		cur.execute("UPDATE tracks SET artist=%s, title=%s, filename=%s, artwork=%s, length=%s WHERE id=%s",
 			(artist,
 			title,
