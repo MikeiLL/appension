@@ -25,7 +25,6 @@ login_manager.login_view = "login_get"
 app.config["SECRET_KEY"] = os.urandom(12)
 ALLOWED_EXTENSIONS = set(['mp3', 'png', 'jpg', 'jpeg', 'gif'])
 
-app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @login_manager.user_loader
