@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, Response, send_from_directory, jsonify
-from flask_login import LoginManager, current_user, login_user
+from flask import Flask, render_template, request, redirect, url_for, Response, send_from_directory, jsonify, flash
+from flask_login import LoginManager, current_user, login_user, login_required
 from werkzeug.utils import secure_filename
 import amen.audio
 import pydub
@@ -25,7 +25,6 @@ login_manager.login_view = "login_get"
 app.config["SECRET_KEY"] = os.urandom(12)
 ALLOWED_EXTENSIONS = set(['mp3', 'png', 'jpg', 'jpeg', 'gif'])
 
-app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @login_manager.user_loader
@@ -249,6 +248,7 @@ To confirm for %s at %s, please visit %s""" % (request.form["username"], request
 	return render_template("account_confirmation.html")
 	
 @app.route("/submit")
+@login_required
 def submit_track_get():
 	f = open('fortunes.txt', 'r')
 	fortunes = [line for line in f if not line[0] == '%']
@@ -256,26 +256,27 @@ def submit_track_get():
 	return render_template("submit_track.html", page_title="Infinite Glitch Track Submission Form.", witty_saying=saying)
 
 @app.route("/submit", methods=["POST"])
+@login_required
 def submit_track_post():
 	# check if the post request has the file part
-	if 'file' not in request.files:
-		flash('No file part')
+	if 'mp3_file' not in request.files:
+		flash('No audio file uploaded')
 		return redirect(request.url)
-	uploaded_files = flask.request.files.getlist("file[]")
-	print(uploaded_files)
-	for file in uploaded_files:
-		# if user does not select file, browser also
-		# submit a empty part without filename
-		if file.filename == '':
-			if file.filename[-3] == 'mp3':
-				pass
-			else:
-				flash('No MP3 Submitted')
-				return redirect(request.url)
-		if file and allowed_file(file.filename):
-			filename = secure_filename(file.filename)
-			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-	return 'files uploaded'
+	file = request.files["mp3_file"]
+	# if user does not select file, browser also
+	# submit a empty part without filename
+	if not file.filename:
+		flash('No audio file uploaded')
+		return redirect(request.url)
+	if not file.filename.endswith('.mp3') or file.mimetype != "audio/mp3":
+		# TODO: Support more files
+		# TODO: Test file content, not just extension
+		flash('Only .mp3 files currently accepted')
+		return redirect(request.url)
+	image = None # TODO
+	id = database.create_track(file.read(), secure_filename(file.filename), request.form, image, current_user.username)
+	# TODO: Send email to admins requesting curation (with the track ID)
+	return render_template("confirm_submission.html")
 
 def run():
 	if not os.path.isdir("glitch/static/assets"):
