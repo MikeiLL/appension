@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, Response, send_from_directory, jsonify, flash
 from flask_login import LoginManager, current_user, login_user, login_required
 from werkzeug.utils import secure_filename
-import amen.audio
-import pydub
 import os
 import time
 import logging
@@ -33,11 +31,6 @@ def load_user(id):
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
-
-# To determine the "effective length" of the last beat, we
-# average the last N beats prior to it. Higher numbers give
-# smoother results but may have issues with a close-out rall.
-LAST_BEAT_AVG = 10
 
 page_title = "Infinite Glitch - The World's Longest Recorded Pop Song, by Chris Butler."
 og_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	

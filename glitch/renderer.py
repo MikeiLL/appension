@@ -1,32 +1,29 @@
 from aiohttp import web
+import amen.audio
+import pydub
 import asyncio
 import subprocess
 from . import database
 
+# To determine the "effective length" of the last beat, we
+# average the last N beats prior to it. Higher numbers give
+# smoother results but may have issues with a close-out rall.
+LAST_BEAT_AVG = 10
+
 app = web.Application()
 
 async def moosic(req):
-	print("req", type(req))
-	resp = web.StreamResponse()
-	resp.content_type = "text/plain" # "audio/mpeg"
-	await resp.prepare(req)
-	find = await asyncio.create_subprocess_exec("find", "/video", "-name", "*.mp3", stdout=asyncio.subprocess.PIPE)
-	while find.returncode is None:
-		resp.write(await find.stdout.read(10))
-	print("Done.")
-	await resp.write_eof()
-	return resp
-
-async def moosic(req):
+	print("/all.mp3 requested")
 	# TODO: Use a single ffmpeg process rather than one per client (dumb model to get us started)
 	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-",
 		stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
 	resp = web.StreamResponse()
 	resp.content_type = "audio/mpeg"
 	await resp.prepare(req)
-	def render(seg, fn):
+	async def render(seg, fn):
 		print("Sending %d bytes of data for %s" % (len(seg.raw_data), fn))
 		ffmpeg.stdin.write(seg.raw_data)
+		await ffmpeg.stdin.drain()
 	async def push_stdin():
 		try:
 			# TODO: Have proper async database calls (if we can do it without
@@ -74,7 +71,7 @@ async def moosic(req):
 				t2_start = t2.timings['beats'][1].time.value // 1000000
 				# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
 				bulk = dub1[skip : t1_end - t2_start]
-				render(bulk, track.filename)
+				await render(bulk, track.filename)
 				# 2) Fade across t2_start ms - this will get us to the downbeat
 				# 3) Fade across (t1_length-t1_end) ms - this nicely rounds out the last track
 				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) ms
@@ -87,13 +84,25 @@ async def moosic(req):
 				fadeout2 = dub1[t1_end:]
 				fadein2 = dub2[t2_start:skip]
 				fade2 = fadeout2.overlay(fadein2)
-				render(fade1, "xfade 1")
-				render(fade2, "xfade 2")
+				await render(fade1, "xfade 1")
+				await render(fade2, "xfade 2")
 		finally:
 			ffmpeg.stdin.close()
-	asyncio.get_event_loop().call_soon(push_stdin()) # NOT WORKING
-	while True:
-		resp.write(await ffmpeg.stdout.read(4096))
+	asyncio.ensure_future(push_stdin())
+	totdata = 0
+	print("Waiting for data from ffmpeg...")
+	while ffmpeg.returncode is None:
+		data = await ffmpeg.stdout.read(4096)
+		if not data: break
+		totdata += len(data)
+		print("Received %d bytes [%d]" % (totdata, len(data)), end="\33[K")
+		resp.write(data)
+		await resp.drain()
+		print(", sent", end="\r")
+	if ffmpeg.returncode is None:
+		ffmpeg.terminate()
+	await ffmpeg.wait()
+	return resp
 
 app.router.add_get("/all.mp3", moosic)
 
