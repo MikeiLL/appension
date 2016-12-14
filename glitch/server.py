@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, Response, send_from_directory, jsonify
 from flask_login import LoginManager, current_user, login_user
+from werkzeug.utils import secure_filename
 import amen.audio
 import pydub
 import os
 import time
 import logging
 import datetime
+import random
 import threading
 import subprocess
 from . import config
@@ -14,10 +16,17 @@ from . import utils
 
 app = Flask(__name__)
 
+
+UPLOAD_FOLDER = 'uploads'
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login_get"
 app.config["SECRET_KEY"] = os.urandom(12)
+ALLOWED_EXTENSIONS = set(['mp3', 'png', 'jpg', 'jpeg', 'gif'])
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @login_manager.user_loader
 def load_user(id):
@@ -238,6 +247,35 @@ def create_account_post():
 To confirm for %s at %s, please visit %s""" % (request.form["username"], request.form["email"], confirmation_url)
 	# mailer.AlertMessage(user_message, 'Infinite Glitch Account', you=submitter_email)
 	return render_template("account_confirmation.html")
+	
+@app.route("/submit")
+def submit_track_get():
+	f = open('fortunes.txt', 'r')
+	fortunes = [line for line in f if not line[0] == '%']
+	saying = random.choice(fortunes)
+	return render_template("submit_track.html", page_title="Infinite Glitch Track Submission Form.", witty_saying=saying)
+
+@app.route("/submit", methods=["POST"])
+def submit_track_post():
+	# check if the post request has the file part
+	if 'file' not in request.files:
+		flash('No file part')
+		return redirect(request.url)
+	uploaded_files = flask.request.files.getlist("file[]")
+	print(uploaded_files)
+	for file in uploaded_files:
+		# if user does not select file, browser also
+		# submit a empty part without filename
+		if file.filename == '':
+			if file.filename[-3] == 'mp3':
+				pass
+			else:
+				flash('No MP3 Submitted')
+				return redirect(request.url)
+		if file and allowed_file(file.filename):
+			filename = secure_filename(file.filename)
+			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+	return 'files uploaded'
 
 def run():
 	if not os.path.isdir("glitch/static/assets"):

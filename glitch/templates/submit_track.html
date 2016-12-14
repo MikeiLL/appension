@@ -1,4 +1,4 @@
-{% extends secondary.html %}
+{% extends "secondary.html" %}
 
 {% block content %}
 <p></p>
@@ -8,36 +8,17 @@
 
 <table class="secondary">
 
-<tr><td>Artist Name: </td><td>{{ form.artist }} (used if missing from mp3 data)</td></tr>
-{% if form.artist.errors %}
-		<tr><td> 
-        <ul class="errors">{% for error in form.artist.errors %}<li class="error_notice">{{ error }}</li>{% endfor %}</ul>
-		</td></tr>
-    {% endif %}
+<tr><td><label for=artist>Artist Name:</label> </td><td><input name=artist> (used if missing from mp3 data)</td></tr>
 <tr><td colspan="2"><p class="infinite-aside">For proper names like Marvin Gaye and Janice Joplin, please enter as: Last, First.
 Also consider format like Costello, Elvis and the Attractions</p></td></tr>
-<tr><td>Track Title: </td><td>{{ form.track_title }} (used if missing from mp3 data)</td></tr>
-<tr><td colspan="2">MP3 File: {{ form.mp3_file }}</td></tr>
-	{% if form.mp3_file.errors %}
-		<tr><td colspan=2> 
-        <ul class="errors">{% for error in form.mp3_file.errors %}<li class="error_notice">{{ error }}</li>{% endfor %}</ul>
-		</td></tr>
-    {% endif %}
-<tr><td colspan="2">Artist Image (up to 500kb) - will be displayed at 200 x 200 px: {{ form.track_image }}</td></tr>
-{% if form.track_image.errors %}
-		<tr><td colspan=2> 
-        <ul class="errors">{% for error in form.track_image.errors %}<li class="error_notice">{{ error }}</li>{% endfor %}</ul>
-		</td></tr>
-    {% endif %}
-<tr><td colspan="2">Story behind the track:<br/> {{ form.story(rows=10,cols=60) }}</td></tr>
-<tr><td colspan="2">Lyrics:  (in couplet form if possible - two lines, space and so on)<br/>{{ form.lyrics(rows=10,cols=60,placeholder="Sometimes you can fix...                               Elaborate on bla bla bla...") }}</textarea></td></tr>
-<tr><td colspan="2">Comments: <br/>{{ form.comments(rows=10,cols=60) }}</td></tr>
-<tr><td colspan="2">Web Site: <br/>{{ form.url(placeholder="http://") }}</td></tr>
-{% if form.url.errors %}
-		<tr><td colspan=2> 
-        <ul class="errors">{% for error in form.url.errors %}<li class="error_notice">{{ error }}</li>{% endfor %}</ul>
-		</td></tr>
-    {% endif %}
+<tr><td><label for=track_title>Track Title:</label> </td><td><input name=track_title> (used if missing from mp3 data)</td></tr>
+<tr><td colspan="2"><label for="mp3_file" >MP3 File:</label> <input type=file name="mp3_file"></td></tr>
+<tr><td colspan="2"><label for="artist_image" >Artist Image</label> (up to 500kb) - will be displayed at 200 x 200 px: <input type=file name='track_image'</td></tr>
+<tr><td colspan="2"><label for=story>Story behind the track:</label><br/> (in couplet form if possible - two lines, space and so on)<br/><textarea name=lyrics rows=10 cols=60 placeholder="Sometimes you can fix...                               Elaborate on bla bla bla..."></textarea></td></tr>
+<tr><td colspan="2"><label for=comments>Comments: <br/><textarea name=story rows=10 cols=60></textarea></td></tr>
+<tr><td colspan="2"><label for=lyrics>Lyrics:</label>  (in couplet form if possible - two lines, space and so on)<br/><textarea name=lyrics rows=10 cols=60 placeholder="Sometimes you can fix...                               Elaborate on bla bla bla..."></textarea></td></tr>
+<tr><td colspan="2"><label for=comments>Comments: <br/><textarea name=comments rows=10 cols=60></textarea></td></tr>
+<tr><td colspan="2"><label for=url>Web Site:</label> <br/><input type=url name=mp3_file placeholder="http://"></td></tr>
 <input name="track_source" type="hidden" value="user_form" />
 
 <tr><td colspan="2" align="right"><input type="submit" value="upload" /></td></tr>
