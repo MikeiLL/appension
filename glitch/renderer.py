@@ -1,5 +1,7 @@
 from aiohttp import web
 import asyncio
+import subprocess
+from . import database
 
 app = web.Application()
 
@@ -15,15 +17,20 @@ async def moosic(req):
 	await resp.write_eof()
 	return resp
 
-def oldmoosic():
+async def moosic(req):
 	# TODO: Use a single ffmpeg process rather than one per client (dumb model to get us started)
-	ffmpeg = subprocess.Popen(["ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-"],
+	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-",
 		stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+	resp = web.StreamResponse()
+	resp.content_type = "audio/mpeg"
+	await resp.prepare(req)
 	def render(seg, fn):
-		logging.info("Sending %d bytes of data for %s", len(seg.raw_data), fn)
+		print("Sending %d bytes of data for %s" % (len(seg.raw_data), fn))
 		ffmpeg.stdin.write(seg.raw_data)
-	def push_stdin():
+	async def push_stdin():
 		try:
+			# TODO: Have proper async database calls (if we can do it without
+			# massively breaking encapsulation)
 			nexttrack = database.get_track_to_play()
 			dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
 			# NOTE: Calling amen with a filename invokes a second load from disk,
@@ -84,11 +91,9 @@ def oldmoosic():
 				render(fade2, "xfade 2")
 		finally:
 			ffmpeg.stdin.close()
-	threading.Thread(target=push_stdin).start()
-	def gen_output():
-		while not ffmpeg.stdout.closed:
-			yield ffmpeg.stdout.read1(4096)
-	return Response(gen_output(), mimetype="audio/mpeg")
+	asyncio.get_event_loop().call_soon(push_stdin()) # NOT WORKING
+	while True:
+		resp.write(await ffmpeg.stdout.read(4096))
 
 app.router.add_get("/all.mp3", moosic)
 
