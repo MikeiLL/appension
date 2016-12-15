@@ -6,7 +6,7 @@
 	
 	<title>{{ page_title }}</title>
 
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
   
 	<meta property="og:title" content="{{ page_title }}" />
 	<meta property="og:type" content="song" />
@@ -17,76 +17,76 @@
 	
 	<meta name="description" content="{{ meta_description }}">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">		
-  <link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">		
+	<link rel="shortcut icon" type="image/png" href="/static/img/favicon.png" />
 
-  <link rel="image_src" type="image/png" href="/static/img/icon.png" />
+	<link rel="image_src" type="image/png" href="/static/img/icon.png" />
 
-  <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
 
-  <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
+	<link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' />
 
-  <link href='{{ compiled('style-extra.scss') }}' rel='stylesheet' type='text/css' />
-  
-  <link href='{{ compiled(
-  	'bar-ui.css',
+	<link href='{{ compiled('style-extra.scss') }}' rel='stylesheet' type='text/css' />
+
+	<link href='{{ compiled(
+	'bar-ui.css',
 	'sprites.css',
 	'flashblock.css',
 	'360player.css',
-	'360player-visualization.css'
-  ) }}' rel='stylesheet' type='text/css' />
+	'360player-visualization.css',
+	) }}' rel='stylesheet' type='text/css' />
 
-  <link href='{{ compiled('style-responsive-players.scss') }}' rel='stylesheet' type='text/css' />
+	<link href='{{ compiled('style-responsive-players.scss') }}' rel='stylesheet' type='text/css' />
   </head>	
   {% endblock %}
-  <body>	
-	<header id="secondary_header" role="banner">
-	<br style="clear:both">
-  	{% block user %}		
-  		<div class="user">				
-  			<p>Hello {{ current_user.username or 'Glitcher' }}!</p>
-  		</div>		
-  	{% endblock %}		
-  		<a href="/" style="display:block;">		
-		<div id="title-admin">				
-		</div></a>	
-  	</header>	
-  	<br style="clear:both"/>  
-  	<!--Pattern HTML-->	
-  	<div class="secondary">
-		 <section id="pattern" class="pattern">  	
-			<ul class="grid">
-				<li class="wide">		
-					<div class="secondary-two">			
-						 {% block content %}
-							<p>totally empty page</p>
-						 {% endblock %}		
-					</div>		
-					<div style="clear:both;"></div>	
-				</li>			
-				{% block rightnav %}			
-				<li>				
-					{% include 'modules/navigation.html' %}		
-				</li>					
-			</ul>	
-		</section>		
+	<body>	
+		<header id="secondary_header" role="banner">
+			<br style="clear:both">
+			{% block user %}		
+			<div class="user">				
+				<p>Hello {{ current_user.username or 'Glitcher' }}!</p>
+			</div>		
+			{% endblock %}		
+			<a href="/" style="display:block;"><div id="title-admin"></div></a>	
+		</header>	
+		<br style="clear:both"/>  
+		<!--Pattern HTML-->	
+		<div class="secondary">
+			<div id=messages></div>
+			<section id="pattern" class="pattern">  	
+				<ul class="grid">
+					<li class="wide">		
+						<div class="secondary-two">			
+							 {% block content %}
+								<p>totally empty page</p>
+							 {% endblock %}		
+						</div>		
+						<div style="clear:both;"></div>	
+					</li>			
+					{% block rightnav %}			
+					<li>				
+						{% include 'modules/navigation.html' %}		
+					</li>					
+				</ul>	
+			</section>		
 		{% endblock %}	
-	</div>	
+		</div>	
 		{% block footer %}		
-	<div class="container">			
-		{% include 'modules/footer.html' %}	
-	</div>							
-	{% endblock %}
+		<div class="container">			
+			{% include 'modules/footer.html' %}	
+		</div>							
+		{% endblock %}
 		<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
-	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
+		<script type="text/javascript" src='{{ compiled('spin.min.js',		  
 		'soundmanager2-nodebug-jsmin.js',		  
 		'bar-ui.js', 
-		'socket.io.js'	  ) }}'>
-	</script>		
+		'socket.io.js',
+		'validate.js'	  ) }}'>
+		</script>		
 		{% block load_scripts %}
-		
+
 		{% endblock %}	
-</div>
+		</div>
 	</body>
-		</html>
+</html>
 
