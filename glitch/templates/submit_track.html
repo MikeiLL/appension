@@ -4,7 +4,7 @@
 <p></p>
 <img width="212" border="0" height="38" alt="" src="/static/img/submit-title.png">
 <p></p>
-<form enctype="multipart/form-data" action="/submit" method="post" id="track_submit">
+<form name=submittrack enctype="multipart/form-data" action="/submit" method="post" id="track_submit">
 
 <table class="secondary">
 
@@ -72,6 +72,11 @@ Also consider format like Costello, Elvis and the Attractions</p></td></tr>
 			var spinner = new Spinner(opts).spin(target);
 			document.getElementById("loading").style.display = "block";
 		});
+	var validator = new FormValidator('submittrack', [{
+		name: 'mp3_file',
+		rules: 'required|is_file_type[mp3]'
+	}], glitchErrorMessages
+	);
 </script>
 
 
