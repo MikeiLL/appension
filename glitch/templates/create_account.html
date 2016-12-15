@@ -6,7 +6,7 @@
 <img width="125" border="0" height="35" alt="" src="/static/img/sign-up-title.png">
 
 <p></p>
-<form name=create enctype="multipart/form-data" action="/create_account" method="post">
+<form name=createaccount enctype="multipart/form-data" action="/create_account" method="post">
 {{ error }}
 <table class="secondary">
 <tr><td width="200px"><label for=username>Your Name:</label></td><td><input name=username></td></tr>
@@ -32,7 +32,7 @@ Ideally, use <a href="http://xkcd.com/936/">four common words</a> for your passw
 
 {% block load_scripts %}
 <script type="text/javascript">		
-	var validator = new FormValidator('create', [{
+	var validator = new FormValidator('createaccount', [{
 		name: 'password',
 		rules: 'required|min_length[8]'
 	}, {
@@ -42,10 +42,11 @@ Ideally, use <a href="http://xkcd.com/936/">four common words</a> for your passw
 	}, {
 		name: 'email',
 		rules: 'valid_email'
-	}], function(errors) {
-		if (errors.length > 0) {
-			// Show the errors
-		}
-	});
+	}, {
+		name: 'agree',
+		display: 'I agree with the legal stuff',
+		rules: 'required'
+	}], glitchErrorMessages
+	);
 </script>
 {% endblock %}	

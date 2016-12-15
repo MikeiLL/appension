@@ -52,11 +52,11 @@
 		<br style="clear:both"/>  
 		<!--Pattern HTML-->	
 		<div class="secondary">
-			<div id=messages></div>
 			<section id="pattern" class="pattern">  	
 				<ul class="grid">
 					<li class="wide">		
-						<div class="secondary-two">			
+						<div class="secondary-two">	
+						<div id=messages></div>		
 							 {% block content %}
 								<p>totally empty page</p>
 							 {% endblock %}		
@@ -81,6 +81,7 @@
 		'soundmanager2-nodebug-jsmin.js',		  
 		'bar-ui.js', 
 		'socket.io.js',
+		'error-messages.js',
 		'validate.js'	  ) }}'>
 		</script>		
 		{% block load_scripts %}
