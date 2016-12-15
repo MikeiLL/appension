@@ -13,14 +13,13 @@ LAST_BEAT_AVG = 10
 
 app = web.Application()
 
-async def moosic(req):
-	logging.debug("/all.mp3 requested")
-	# TODO: Use a single ffmpeg process rather than one per client (dumb model to get us started)
+songs = []
+position = 0
+
+async def ffmpeg():
+	logging.debug("renderer started")
 	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-",
 		stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-	resp = web.StreamResponse()
-	resp.content_type = "audio/mpeg"
-	await resp.prepare(req)
 	async def render(seg, fn):
 		logging.info("Sending %d bytes of data for %s" % (len(seg.raw_data), fn))
 		ffmpeg.stdin.write(seg.raw_data)
@@ -86,27 +85,51 @@ async def moosic(req):
 				fadein2 = dub2[t2_start:skip]
 				fade2 = fadeout2.overlay(fadein2)
 				await render(fade1, "xfade 1")
+				await asyncio.sleep(30) # Rate-limit things and let stuff catch up
 				await render(fade2, "xfade 2")
 		finally:
 			ffmpeg.stdin.close()
 	asyncio.ensure_future(push_stdin())
 	totdata = 0
 	logging.debug("Waiting for data from ffmpeg...")
+	songs.append(b"")
 	while ffmpeg.returncode is None:
 		data = await ffmpeg.stdout.read(4096)
 		if not data: break
 		totdata += len(data)
-		logging.debug("Received %d bytes [%d]", totdata, len(data))
-		resp.write(data)
-		await resp.drain()
+		# logging.debug("Received %d bytes [%d]", totdata, len(data))
+		if data.startswith(b"\xFF\xFB") and len(songs[-1]) > 1048576:
+			songs.append(b"")
+			if len(songs) > 32:
+				songs.pop(0)
+				global position
+				position += 1
+		songs[-1] += data
 	if ffmpeg.returncode is None:
 		ffmpeg.terminate()
-	await ffmpeg.wait()
-	return resp
+
+async def moosic(req):
+	logging.debug("/all.mp3 requested")
+	resp = web.StreamResponse()
+	resp.content_type = "audio/mpeg"
+	await resp.prepare(req)
+	pos = position
+	while True:
+		if pos - position >= len(songs):
+			# Not enough content. This should only happen
+			# on startup, so we just queue ourselves a bit.
+			await asyncio.sleep(1)
+			continue
+		logging.debug("songs %d, pos %d, position %d", len(songs), pos, position)
+		resp.write(songs[pos - position])
+		await resp.drain()
+		pos += 1
+	return resp # in case we ever break
 
 app.router.add_get("/all.mp3", moosic)
 
 def run(port=8889):
+	asyncio.ensure_future(ffmpeg())
 	web.run_app(app, port=port)
 
 if __name__ == '__main__':
