@@ -194,7 +194,10 @@ def submit_track_post():
 	# TODO: Send email to admins requesting curation (with the track ID)
 	return render_template("confirm_submission.html")
 
-def run():
+def run(port=config.http_port):
 	if not os.path.isdir("glitch/static/assets"):
 		os.mkdir("glitch/static/assets")
-	app.run(host="0.0.0.0", port=config.http_port)
+	app.run(host="0.0.0.0", port=port)
+
+if __name__ == '__main__':
+	run()

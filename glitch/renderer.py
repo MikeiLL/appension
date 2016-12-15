@@ -106,5 +106,8 @@ async def moosic(req):
 
 app.router.add_get("/all.mp3", moosic)
 
+def run(port=8889):
+	web.run_app(app, port=port)
+
 if __name__ == '__main__':
-	web.run_app(app, port=8889)
+	run()
