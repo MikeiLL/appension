@@ -24,3 +24,6 @@ glitch/static/assets
 /cache/*
 *.log
 env
+bin
+lib
+pyenv.cfg
