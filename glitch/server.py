@@ -247,6 +247,17 @@ To confirm for %s at %s, please visit %s""" % (request.form["username"], request
 	# mailer.AlertMessage(user_message, 'Infinite Glitch Account', you=submitter_email)
 	return render_template("account_confirmation.html")
 	
+@app.route("/reset_password")
+def reset_password_get():
+	return render_template("reset_password.html", page_title="Reset Glitch Account Password")
+
+@app.route("/reset_password", methods=["POST"])
+def reset_password_post():
+	if not request.form["email"]:
+		return redirect("/reset_password")
+	notice = "Password reset link sent. Please check your email."
+	return render_template("account_confirmation.html", notice=notice)
+	
 @app.route("/submit")
 @login_required
 def submit_track_get():
