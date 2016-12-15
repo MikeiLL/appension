@@ -18,7 +18,7 @@ app = Flask(__name__)
 
 
 UPLOAD_FOLDER = 'uploads'
-
+app.config['LOGIN_DISABLED'] = True
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login_get"
@@ -289,7 +289,9 @@ def submit_track_post():
 	# TODO: Send email to admins requesting curation (with the track ID)
 	return render_template("confirm_submission.html")
 
-def run():
+def run(dev=0):
 	if not os.path.isdir("glitch/static/assets"):
 		os.mkdir("glitch/static/assets")
+	if dev == 1:
+		app.config['LOGIN_DISABLED'] = True
 	app.run(host="0.0.0.0", port=config.http_port)
