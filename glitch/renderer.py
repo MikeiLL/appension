@@ -2,6 +2,7 @@ from aiohttp import web
 import amen.audio
 import pydub
 import asyncio
+import logging
 import subprocess
 from . import database
 
@@ -13,7 +14,7 @@ LAST_BEAT_AVG = 10
 app = web.Application()
 
 async def moosic(req):
-	print("/all.mp3 requested")
+	logging.debug("/all.mp3 requested")
 	# TODO: Use a single ffmpeg process rather than one per client (dumb model to get us started)
 	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-",
 		stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
@@ -21,7 +22,7 @@ async def moosic(req):
 	resp.content_type = "audio/mpeg"
 	await resp.prepare(req)
 	async def render(seg, fn):
-		print("Sending %d bytes of data for %s" % (len(seg.raw_data), fn))
+		logging.info("Sending %d bytes of data for %s" % (len(seg.raw_data), fn))
 		ffmpeg.stdin.write(seg.raw_data)
 		await ffmpeg.stdin.drain()
 	async def push_stdin():
@@ -90,15 +91,14 @@ async def moosic(req):
 			ffmpeg.stdin.close()
 	asyncio.ensure_future(push_stdin())
 	totdata = 0
-	print("Waiting for data from ffmpeg...")
+	logging.debug("Waiting for data from ffmpeg...")
 	while ffmpeg.returncode is None:
 		data = await ffmpeg.stdout.read(4096)
 		if not data: break
 		totdata += len(data)
-		print("Received %d bytes [%d]" % (totdata, len(data)), end="\33[K")
+		logging.debug("Received %d bytes [%d]", totdata, len(data))
 		resp.write(data)
 		await resp.drain()
-		print(", sent", end="\r")
 	if ffmpeg.returncode is None:
 		ffmpeg.terminate()
 	await ffmpeg.wait()
