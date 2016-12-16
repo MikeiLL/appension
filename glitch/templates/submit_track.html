@@ -49,13 +49,23 @@ Also consider format like Costello, Elvis and the Attractions</p></td></tr>
 		'360player.js',
 		'bar-ui.js',
 		'socket.io.js',
-		'sm-configs.js'	  ) }}'>
+		'sm-configs.js',
+		'error-messages.js',
+		'validate.js'	  ) }}'>
 		</script>	
 	<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
 
 	
 <script type="text/javascript">
-	$("#track_submit").submit(function() {
+	
+	var validator = new FormValidator('submittrack', [{
+		name: 'mp3_file',
+		rules: 'required|callback_spinner'
+	}], glitchErrorMessages
+	);
+	
+	validator.registerCallback('spinner', function(value) {
+		if (validator._hooks.is_file_type(validator.fields.mp3_file, 'mp3') === true) {
 			jQuery("#loading").fadeIn();
 			var opts = {
 				lines: 12, // The number of lines to draw
@@ -71,12 +81,11 @@ Also consider format like Costello, Elvis and the Attractions</p></td></tr>
 			var target = document.getElementById('loading');
 			var spinner = new Spinner(opts).spin(target);
 			document.getElementById("loading").style.display = "block";
-		});
-	var validator = new FormValidator('submittrack', [{
-		name: 'mp3_file',
-		rules: 'required|is_file_type[mp3]'
-	}], glitchErrorMessages
-	);
+			return true;
+		}
+		return false;
+	});
+	
 </script>
 
 
