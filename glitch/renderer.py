@@ -1,6 +1,7 @@
 from aiohttp import web
 import amen.audio
 import pydub
+import time
 import asyncio
 import logging
 import subprocess
@@ -20,10 +21,18 @@ async def ffmpeg():
 	logging.debug("renderer started")
 	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-",
 		stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+	# The rate-limiting sleep will wait until the clock catches up to this point.
+	# We start it "ten seconds ago" so we get a bit of buffer to start off.
+	rendered_until = time.time() - 10
 	async def render(seg, fn):
-		logging.info("Sending %d bytes of data for %s" % (len(seg.raw_data), fn))
+		logging.info("Sending %d bytes of data for %s secs of %s" % (len(seg.raw_data), seg.duration_seconds, fn))
 		ffmpeg.stdin.write(seg.raw_data)
 		await ffmpeg.stdin.drain()
+		nonlocal rendered_until; rendered_until += seg.duration_seconds
+		delay = rendered_until - time.time()
+		if delay > 0:
+			logging.debug("And sleeping for %ds until %s", delay, rendered_until)
+			await asyncio.sleep(delay)
 	async def push_stdin():
 		try:
 			# TODO: Have proper async database calls (if we can do it without
@@ -85,7 +94,6 @@ async def ffmpeg():
 				fadein2 = dub2[t2_start:skip]
 				fade2 = fadeout2.overlay(fadein2)
 				await render(fade1, "xfade 1")
-				await asyncio.sleep(30) # Rate-limit things and let stuff catch up
 				await render(fade2, "xfade 2")
 		finally:
 			ffmpeg.stdin.close()
