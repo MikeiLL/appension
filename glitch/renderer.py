@@ -122,6 +122,11 @@ async def moosic(req):
 			# on startup, so we just queue ourselves a bit.
 			await asyncio.sleep(1)
 			continue
+		if pos < position:
+			# The client is so far behind that we've dropped
+			# the chunk that would have been next. There's
+			# really not much we can do; disconnect.
+			break
 		logging.debug("songs %d, pos %d, position %d", len(songs), pos, position)
 		resp.write(songs[pos - position])
 		await resp.drain()
