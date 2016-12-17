@@ -300,13 +300,14 @@ def recorder_get():
 @app.route("/recorder", methods=["POST"])
 @login_required
 def recorder_post():
-	#print(request.files.lists)
-	#print(request.files.keys)
-	#print(request.files.values)
-	file = request.files["mp3_file"]
-	print(file)
-	print(111111)
-	print(current_user.username if current_user.username else 'glitch hacker')
+	print(request.files.lists())
+	# <generator object MultiDict.lists at 0x114c71a98>
+	print(request.files.keys())
+	# <dict_keyiterator object at 0x114c57278>
+	print(request.files.values())
+	# <generator object MultiDict.values at 0x114c71a98>
+	print(current_user if current_user else 'glitch hacker')
+	# <flask_login.mixins.AnonymousUserMixin object at 0x111216e80>
 	return render_template("recorder.html")
 
 def run(dev=0):
