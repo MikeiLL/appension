@@ -92,19 +92,21 @@ async def ffmpeg():
 	asyncio.ensure_future(push_stdin())
 	totdata = 0
 	logging.debug("Waiting for data from ffmpeg...")
-	songs.append(b"")
+	chunk = b""
 	while ffmpeg.returncode is None:
 		data = await ffmpeg.stdout.read(4096)
 		if not data: break
 		totdata += len(data)
+		chunk += data
 		# logging.debug("Received %d bytes [%d]", totdata, len(data))
-		if data.startswith(b"\xFF\xFB") and len(songs[-1]) > 1048576:
-			songs.append(b"")
+		if data.startswith(b"\xFF\xFB") and len(chunk) > 1024*1024:
+			global position
+			songs.append(chunk)
+			logging.debug("Adding another song section [%d, %d bytes]", len(songs) + position, len(chunk))
+			chunk = b""
 			if len(songs) > 32:
 				songs.pop(0)
-				global position
 				position += 1
-		songs[-1] += data
 	if ffmpeg.returncode is None:
 		ffmpeg.terminate()
 
