@@ -4,23 +4,13 @@
 <p></p>
 <img width="212" border="0" height="38" alt="" src="/static/img/submit-title.png">
 <p></p>
-<form enctype="multipart/form-data" action="/submit" method="post" id="track_submit">
+<form name=submittrack enctype="multipart/form-data" action="/submit" method="post" id="track_submit">
 
 <table class="secondary">
 
-<tr><td><label for=artist>Artist Name:</label> </td><td><input name=artist> (used if missing from mp3 data)</td></tr>
-<tr><td colspan="2"><p class="infinite-aside">For proper names like Marvin Gaye and Janice Joplin, please enter as: Last, First.
-Also consider format like Costello, Elvis and the Attractions</p></td></tr>
-<tr><td><label for=track_title>Track Title:</label> </td><td><input name=track_title> (used if missing from mp3 data)</td></tr>
-<tr><td colspan="2"><label for="mp3_file" >MP3 File:</label> <input type=file name="mp3_file"></td></tr>
-<tr><td colspan="2"><label for="artist_image" >Artist Image</label> (up to 500kb) - will be displayed at 200 x 200 px: <input type=file name='track_image'</td></tr>
-<tr><td colspan="2"><label for=story>Story behind the track:</label><br/> (in couplet form if possible - two lines, space and so on)<br/><textarea name=lyrics rows=10 cols=60 placeholder="Sometimes you can fix...                               Elaborate on bla bla bla..."></textarea></td></tr>
-<tr><td colspan="2"><label for=comments>Comments: <br/><textarea name=story rows=10 cols=60></textarea></td></tr>
-<tr><td colspan="2"><label for=lyrics>Lyrics:</label>  (in couplet form if possible - two lines, space and so on)<br/><textarea name=lyrics rows=10 cols=60 placeholder="Sometimes you can fix...                               Elaborate on bla bla bla..."></textarea></td></tr>
-<tr><td colspan="2"><label for=comments>Comments: <br/><textarea name=comments rows=10 cols=60></textarea></td></tr>
-<tr><td colspan="2"><label for=url>Web Site:</label> <br/><input type=url name=url placeholder="http://"></td></tr>
-<input name="track_source" type="hidden" value="user_form" />
+{% include 'modules/track_submission_form.html' %}
 
+<input name="track_source" type="hidden" value="user_form" />
 <tr><td colspan="2" align="right"><input type="submit" value="upload" /></td></tr>
 </table>
 </form>
@@ -49,13 +39,23 @@ Also consider format like Costello, Elvis and the Attractions</p></td></tr>
 		'360player.js',
 		'bar-ui.js',
 		'socket.io.js',
-		'sm-configs.js'	  ) }}'>
+		'sm-configs.js',
+		'error-messages.js',
+		'validate.js'	  ) }}'>
 		</script>	
 	<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
 
 	
 <script type="text/javascript">
-	$("#track_submit").submit(function() {
+	
+	var validator = new FormValidator('submittrack', [{
+		name: 'mp3_file',
+		rules: 'required|callback_spinner'
+	}], glitchErrorMessages
+	);
+	
+	validator.registerCallback('spinner', function(value) {
+		if (validator._hooks.is_file_type(validator.fields.mp3_file, 'mp3') === true) {
 			jQuery("#loading").fadeIn();
 			var opts = {
 				lines: 12, // The number of lines to draw
@@ -71,7 +71,11 @@ Also consider format like Costello, Elvis and the Attractions</p></td></tr>
 			var target = document.getElementById('loading');
 			var spinner = new Spinner(opts).spin(target);
 			document.getElementById("loading").style.display = "block";
-		});
+			return true;
+		}
+		return false;
+	});
+	
 </script>
 
 

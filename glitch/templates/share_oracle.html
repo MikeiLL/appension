@@ -1,4 +1,4 @@
-{% extends secondary.html %}
+{% extends "secondary.html" %}
 
 {% from tornado.escape import url_escape %}
 
@@ -119,4 +119,4 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 			  $('#popular_words a').tagcloud();
 			});
 		</script>
-	{% end %}	
+	{% endblock %}	

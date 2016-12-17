@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 
 UPLOAD_FOLDER = 'uploads'
-
+app.config['LOGIN_DISABLED'] = True
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login_get"
@@ -163,13 +163,27 @@ To confirm for %s at %s, please visit %s""" % (request.form["username"], request
 	# mailer.AlertMessage(user_message, 'Infinite Glitch Account', you=submitter_email)
 	return render_template("account_confirmation.html")
 	
+@app.route("/reset_password")
+def reset_password_get():
+	return render_template("reset_password.html", page_title="Reset Glitch Account Password")
+
+@app.route("/reset_password", methods=["POST"])
+def reset_password_post():
+	if not request.form["email"]:
+		return redirect("/reset_password")
+	notice = "Password reset link sent. Please check your email."
+	return render_template("account_confirmation.html", notice=notice)
+
 @app.route("/submit")
 @login_required
 def submit_track_get():
+	'''
+	The following two forms are for user to submit a track.
+	'''
 	f = open('fortunes.txt', 'r')
 	fortunes = [line for line in f if not line[0] == '%']
 	saying = random.choice(fortunes)
-	return render_template("submit_track.html", page_title="Infinite Glitch Track Submission Form.", witty_saying=saying)
+	return render_template("submit_track.html", page_title="Infinite Glitch Track Submission Form", witty_saying=saying)
 
 @app.route("/submit", methods=["POST"])
 @login_required
@@ -193,10 +207,29 @@ def submit_track_post():
 	id = database.create_track(file.read(), secure_filename(file.filename), request.form, image, current_user.username)
 	# TODO: Send email to admins requesting curation (with the track ID)
 	return render_template("confirm_submission.html")
+	
+@app.route("/recorder")
+@login_required
+def recorder_get():
+	return render_template("recorder.html", page_title="Infinite Glitch Recording Studio")
 
-def run(port=config.http_port):
+@app.route("/recorder", methods=["POST"])
+@login_required
+def recorder_post():
+	#print(request.files.lists)
+	#print(request.files.keys)
+	#print(request.files.values)
+	file = request.files["mp3_file"]
+	print(file)
+	print(111111)
+	print(current_user.username if current_user.username else 'glitch hacker')
+	return render_template("recorder.html")
+
+def run(port=config.http_port, disable_logins=False):
 	if not os.path.isdir("glitch/static/assets"):
 		os.mkdir("glitch/static/assets")
+	if disable_logins:
+		app.config['LOGIN_DISABLED'] = True
 	app.run(host="0.0.0.0", port=port)
 
 if __name__ == '__main__':

@@ -8,6 +8,7 @@ parser.add_argument("server", help="Server to invoke", choices=["main", "rendere
 parser.add_argument("-l", "--log", help="Logging level", type=lambda x: x.upper(),
 	choices=logging._nameToLevel, # NAUGHTY
 	default="INFO")
+parser.add_argument("--dev", help="Dev mode (no logins)", action='store_true')
 arguments = parser.parse_args()
 log = logging.getLogger(__name__)
 logging.basicConfig(level=getattr(logging, arguments.log), format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
@@ -17,4 +18,4 @@ if arguments.server == "renderer":
 	renderer.run() # doesn't return
 else:
 	from . import server
-	server.run() # doesn't return
+	server.run(disable_logins=arguments.dev) # doesn't return
