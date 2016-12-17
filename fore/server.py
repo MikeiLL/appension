@@ -776,7 +776,7 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 										og_description=og_description))
 
 # From here all UNMIGRATED
-
+# This is stubbed out...
 @route("/reset_password")
 class ResetPassword(tornado.web.RequestHandler):
 	def get(self):

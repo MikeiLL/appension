@@ -60,29 +60,11 @@ We're constantly developing and improving The Studio but if you should encounter
 					<img width="212" border="0" height="38" alt="" src="/static/img/submit-title.png">
 					<p></p>
 					<form enctype="multipart/form-data" action="/submit" method="post" id="submit_track">
-
 					<table class="secondary">
-					<tr><td>Artist Name: </td><td>{{ form.artist(placeholder="Last, First or Band Name") }} </td></tr>
-					<tr><td colspan="2"><p class="infinite-aside">For proper names like Marvin Gaye and Janice Joplin, please enter as: Last, First.
-					Also consider format like Costello, Elvis and the Attractions</p></td></tr>
-					<tr><td>Track Title: </td><td>{{ form.track_title }} </td></tr>
-						{% if form.artist.errors %}
-							<tr><td colspan=2> 
-						<ul class="errors">{% for error in form.artist.errors %}<li class="error_notice">{{ error }}</li>{% endfor %}</ul>
-							</td></tr>
-					    {% endif %}
-					<tr><td colspan="2">Thumbnail Image (up to 500kb): {{ form.track_image }}</td></tr>
-					{% if form.track_image.errors %}
-							<tr><td colspan=2> 
-						<ul class="errors">{% for error in form.track_image.errors %}<li class="error_notice">{{ error }}</li>{% endfor %}</ul>
-							</td></tr>
-					    {% endif %}
-					<tr><td colspan="2">Story behind the track:<br/> {{ form.story(rows=10,cols=60) }}</td></tr>
-					<tr><td colspan="2">Lyrics: (in couplet form if possible - two lines, space and so on)<br/>{{ form.lyrics(rows=10,cols=60,placeholder="Sometimes you can fix...                               Elaborate on bla bla bla...") }}</textarea></td></tr>
-					<tr><td colspan="2">Comments: <br/>{{ form.comments(rows=10,cols=60) }}</td></tr>
-					<tr><td colspan="2">Web Site: <br/>{{ form.url(placeholder="http://") }}</td></tr>
+					
+					{% include 'modules/track_submission_form.html' %}	
+					
 					<input name="track_source" type="hidden" value="glitch_studio" />
-
 					<tr><td colspan="2" align="right"><input type="submit" value="submit track" /></td></tr>
 					</table>
 					</form>

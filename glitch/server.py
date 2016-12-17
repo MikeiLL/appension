@@ -257,14 +257,17 @@ def reset_password_post():
 		return redirect("/reset_password")
 	notice = "Password reset link sent. Please check your email."
 	return render_template("account_confirmation.html", notice=notice)
-	
+
 @app.route("/submit")
 @login_required
 def submit_track_get():
+	'''
+	The following two forms are for user to submit a track.
+	'''
 	f = open('fortunes.txt', 'r')
 	fortunes = [line for line in f if not line[0] == '%']
 	saying = random.choice(fortunes)
-	return render_template("submit_track.html", page_title="Infinite Glitch Track Submission Form.", witty_saying=saying)
+	return render_template("submit_track.html", page_title="Infinite Glitch Track Submission Form", witty_saying=saying)
 
 @app.route("/submit", methods=["POST"])
 @login_required
@@ -288,10 +291,29 @@ def submit_track_post():
 	id = database.create_track(file.read(), secure_filename(file.filename), request.form, image, current_user.username)
 	# TODO: Send email to admins requesting curation (with the track ID)
 	return render_template("confirm_submission.html")
+	
+@app.route("/recorder")
+@login_required
+def recorder_get():
+	return render_template("recorder.html", page_title="Infinite Glitch Recording Studio")
+
+@app.route("/recorder", methods=["POST"])
+@login_required
+def recorder_post():
+	#print(request.files.lists)
+	#print(request.files.keys)
+	#print(request.files.values)
+	file = request.files["mp3_file"]
+	print(file)
+	print(111111)
+	print(current_user.username if current_user.username else 'glitch hacker')
+	return render_template("recorder.html")
 
 def run(dev=0):
 	if not os.path.isdir("glitch/static/assets"):
 		os.mkdir("glitch/static/assets")
+	# The following not working. At the moment just setting LOGIN_DISABLED with hard coding
+	# (near top of script) So we don't have to keep loggin in every time we restart the server
 	if dev == 1:
 		app.config['LOGIN_DISABLED'] = True
 	app.run(host="0.0.0.0", port=config.http_port)
