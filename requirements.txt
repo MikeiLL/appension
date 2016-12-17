@@ -40,3 +40,4 @@ sigtools
 flask
 pydub
 flask-login
+aiohttp
