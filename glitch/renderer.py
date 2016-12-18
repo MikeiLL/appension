@@ -25,7 +25,7 @@ async def ffmpeg():
 	# We start it "ten seconds ago" so we get a bit of buffer to start off.
 	rendered_until = time.time() - 10
 	async def render(seg, fn):
-		logging.info("Sending %d bytes of data for %s secs of %s" % (len(seg.raw_data), seg.duration_seconds, fn))
+		logging.info("Sending %d bytes of data for %s secs of %s", len(seg.raw_data), seg.duration_seconds, fn)
 		ffmpeg.stdin.write(seg.raw_data)
 		await ffmpeg.stdin.drain()
 		nonlocal rendered_until; rendered_until += seg.duration_seconds
@@ -33,22 +33,27 @@ async def ffmpeg():
 		if delay > 0:
 			logging.debug("And sleeping for %ds until %s", delay, rendered_until)
 			await asyncio.sleep(delay)
+	def get_track():
+		"""Get a track and load everything we need."""
+		# TODO: Have proper async database calls (if we can do it without
+		# massively breaking encapsulation); psycopg2 has an async mode, and
+		# aiopg links that in with asyncio.
+		nexttrack = database.get_track_to_play()
+		dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
+		# NOTE: Calling amen with a filename invokes a second load from disk,
+		# duplicating work done above. However, it will come straight from the
+		# disk cache, so the only real duplication is the decode-from-MP3; and
+		# timing tests show that this is a measurable but not overly costly
+		# addition on top of the time to do the actual analysis. KISS.
+		t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+		return nexttrack, t2, dub2
 	async def push_stdin():
 		try:
-			# TODO: Have proper async database calls (if we can do it without
-			# massively breaking encapsulation)
-			nexttrack = database.get_track_to_play()
-			dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
-			# NOTE: Calling amen with a filename invokes a second load from disk,
-			# duplicating work done above. However, it will come straight from the
-			# disk cache, so the only real duplication is the decode-from-MP3; and
-			# timing tests show that this is a measurable but not overly costly
-			# addition on top of the time to do the actual analysis. KISS.
-			t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+			nexttrack, t2, dub2 = get_track()
 			skip = 0.0
 			while True:
 				track = nexttrack; t1 = t2; dub1 = dub2
-				nexttrack = database.get_track_to_play()
+				nexttrack, t2, dub2 = get_track()
 				# Combine this into the next track.
 				# 1) Analyze using amen
 				#    t1 = amen.audio.Audio(track.filename)
@@ -76,7 +81,6 @@ async def ffmpeg():
 				beat_ns = sum(b.duration.value for b in t1b[-1-LAST_BEAT_AVG : -1]) // LAST_BEAT_AVG
 				t1_end = (t1b[-1].time.value + beat_ns) // 1000000
 				t1_length = int(t1.duration * 1000)
-				t2 = amen.audio.Audio("audio/" + nexttrack.filename)
 				t2_start = t2.timings['beats'][1].time.value // 1000000
 				# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
 				bulk = dub1[skip : t1_end - t2_start]
@@ -86,7 +90,6 @@ async def ffmpeg():
 				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) ms
 				skip = t2_start + t1_length - t1_end
 				# Dumb fade mode. Doesn't actually fade, just overlays.
-				dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
 				fadeout1 = dub1[t1_end - t2_start : t1_end]
 				fadein1 = dub2[:t2_start]
 				fade1 = fadeout1.overlay(fadein1)
@@ -139,7 +142,7 @@ async def moosic(req):
 		resp.write(songs[pos - position])
 		await resp.drain()
 		pos += 1
-	return resp # in case we ever break
+	return resp
 
 app.router.add_get("/all.mp3", moosic)
 
