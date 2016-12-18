@@ -38,7 +38,7 @@ async def ffmpeg():
 			# TODO: Have proper async database calls (if we can do it without
 			# massively breaking encapsulation)
 			nexttrack = database.get_track_to_play()
-			dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
+			dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
 			# NOTE: Calling amen with a filename invokes a second load from disk,
 			# duplicating work done above. However, it will come straight from the
 			# disk cache, so the only real duplication is the decode-from-MP3; and
@@ -86,7 +86,7 @@ async def ffmpeg():
 				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) ms
 				skip = t2_start + t1_length - t1_end
 				# Dumb fade mode. Doesn't actually fade, just overlays.
-				dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename)
+				dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
 				fadeout1 = dub1[t1_end - t2_start : t1_end]
 				fadein1 = dub2[:t2_start]
 				fade1 = fadeout1.overlay(fadein1)
