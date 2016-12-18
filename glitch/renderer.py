@@ -49,6 +49,8 @@ async def ffmpeg():
 			while True:
 				track = nexttrack; t1 = t2; dub1 = dub2
 				nexttrack = database.get_track_to_play()
+				t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+				dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
 				# Combine this into the next track.
 				# 1) Analyze using amen
 				#    t1 = amen.audio.Audio(track.filename)
@@ -76,7 +78,6 @@ async def ffmpeg():
 				beat_ns = sum(b.duration.value for b in t1b[-1-LAST_BEAT_AVG : -1]) // LAST_BEAT_AVG
 				t1_end = (t1b[-1].time.value + beat_ns) // 1000000
 				t1_length = int(t1.duration * 1000)
-				t2 = amen.audio.Audio("audio/" + nexttrack.filename)
 				t2_start = t2.timings['beats'][1].time.value // 1000000
 				# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
 				bulk = dub1[skip : t1_end - t2_start]
@@ -86,7 +87,6 @@ async def ffmpeg():
 				# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) ms
 				skip = t2_start + t1_length - t1_end
 				# Dumb fade mode. Doesn't actually fade, just overlays.
-				dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
 				fadeout1 = dub1[t1_end - t2_start : t1_end]
 				fadein1 = dub2[:t2_start]
 				fade1 = fadeout1.overlay(fadein1)
