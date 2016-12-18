@@ -36,7 +36,8 @@ async def ffmpeg():
 	def get_track():
 		"""Get a track and load everything we need."""
 		# TODO: Have proper async database calls (if we can do it without
-		# massively breaking encapsulation)
+		# massively breaking encapsulation); psycopg2 has an async mode, and
+		# aiopg links that in with asyncio.
 		nexttrack = database.get_track_to_play()
 		dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
 		# NOTE: Calling amen with a filename invokes a second load from disk,
