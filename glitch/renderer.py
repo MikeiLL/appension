@@ -25,7 +25,7 @@ async def ffmpeg():
 	# We start it "ten seconds ago" so we get a bit of buffer to start off.
 	rendered_until = time.time() - 10
 	async def render(seg, fn):
-		logging.info("Sending %d bytes of data for %s secs of %s" % (len(seg.raw_data), seg.duration_seconds, fn))
+		logging.info("Sending %d bytes of data for %s secs of %s", len(seg.raw_data), seg.duration_seconds, fn)
 		ffmpeg.stdin.write(seg.raw_data)
 		await ffmpeg.stdin.drain()
 		nonlocal rendered_until; rendered_until += seg.duration_seconds
