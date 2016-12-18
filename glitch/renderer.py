@@ -139,7 +139,7 @@ async def moosic(req):
 		resp.write(songs[pos - position])
 		await resp.drain()
 		pos += 1
-	return resp # in case we ever break
+	return resp
 
 app.router.add_get("/all.mp3", moosic)
 
