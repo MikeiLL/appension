@@ -33,24 +33,26 @@ async def ffmpeg():
 		if delay > 0:
 			logging.debug("And sleeping for %ds until %s", delay, rendered_until)
 			await asyncio.sleep(delay)
+	def get_track():
+		"""Get a track and load everything we need."""
+		# TODO: Have proper async database calls (if we can do it without
+		# massively breaking encapsulation)
+		nexttrack = database.get_track_to_play()
+		dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
+		# NOTE: Calling amen with a filename invokes a second load from disk,
+		# duplicating work done above. However, it will come straight from the
+		# disk cache, so the only real duplication is the decode-from-MP3; and
+		# timing tests show that this is a measurable but not overly costly
+		# addition on top of the time to do the actual analysis. KISS.
+		t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+		return nexttrack, t2, dub2
 	async def push_stdin():
 		try:
-			# TODO: Have proper async database calls (if we can do it without
-			# massively breaking encapsulation)
-			nexttrack = database.get_track_to_play()
-			dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
-			# NOTE: Calling amen with a filename invokes a second load from disk,
-			# duplicating work done above. However, it will come straight from the
-			# disk cache, so the only real duplication is the decode-from-MP3; and
-			# timing tests show that this is a measurable but not overly costly
-			# addition on top of the time to do the actual analysis. KISS.
-			t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+			nexttrack, t2, dub2 = get_track()
 			skip = 0.0
 			while True:
 				track = nexttrack; t1 = t2; dub1 = dub2
-				nexttrack = database.get_track_to_play()
-				t2 = amen.audio.Audio("audio/" + nexttrack.filename)
-				dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
+				nexttrack, t2, dub2 = get_track()
 				# Combine this into the next track.
 				# 1) Analyze using amen
 				#    t1 = amen.audio.Audio(track.filename)
