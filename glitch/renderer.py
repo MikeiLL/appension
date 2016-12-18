@@ -17,6 +17,12 @@ app = web.Application()
 songs = []
 position = 0
 
+def route(url):
+	def deco(f):
+		app.router.add_get(url, f)
+		return f
+	return deco
+
 async def ffmpeg():
 	logging.debug("renderer started")
 	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-",
@@ -121,6 +127,7 @@ async def ffmpeg():
 	if ffmpeg.returncode is None:
 		ffmpeg.terminate()
 
+@route("/all.mp3")
 async def moosic(req):
 	logging.debug("/all.mp3 requested")
 	resp = web.StreamResponse()
@@ -143,8 +150,6 @@ async def moosic(req):
 		await resp.drain()
 		pos += 1
 	return resp
-
-app.router.add_get("/all.mp3", moosic)
 
 def run(port=8889):
 	asyncio.ensure_future(ffmpeg())
