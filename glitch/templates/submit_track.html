@@ -32,20 +32,16 @@
 		{% include 'modules/footer.html' %}	
 	</div>				
 	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>				
-		
-		<script type="text/javascript" src='{{ compiled('spin.min.js',		  
-		'soundmanager2-nodebug-jsmin.js',		  
-		'berniecode-animator.js',		  
-		'360player.js',
-		'bar-ui.js',
-		'socket.io.js',
-		'sm-configs.js',
-		'error-messages.js',
-		'validate.js'	  ) }}'>
-		</script>	
+	<script type="text/javascript" src='/static/spin.min.js'></script>
+	<script type="text/javascript" src='/static/soundmanager2-nodebug-jsmin.js'></script>
+	<script type="text/javascript" src='/static/berniecode-animator.js'></script>
+	<script type="text/javascript" src='/static/360player.js'></script>
+	<script type="text/javascript" src='/static/bar-ui.js'></script>
+	<script type="text/javascript" src='/static/sm-configs.js'></script>
+	<script type="text/javascript" src='/static/error-messages.js'></script>
+	<script type="text/javascript" src='/static/validate.js'></script>
 	<script type="text/javascript" src='/static/main.js'></script>
 
-	
 <script type="text/javascript">
 	
 	var validator = new FormValidator('submittrack', [{
