@@ -27,6 +27,8 @@ $(document).ready ->
 					# with the same ID as a previously-seen track will be ignored.
 					# Signed: Chris Angelico (Rosuav).
 				# console.log("Track [" + track.id + "] start " + track.start_time + " end " + (track.start_time + track.details.length) + " now " + info.ts);
+				# TODO: Instead of just using the server's time, incorporate some sort
+				# of "how far are we behind in the playback" figure.
 				if info.ts > track.start_time + track.details.length
 					console.log("Track ["+id+"] is in the past")
 					continue # Voorbij is nu voorbij :)
