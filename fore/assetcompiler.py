@@ -3,10 +3,9 @@ assetcompiler.py
 
 By PSobot
 
-Creates the instance of compiled coffeescript and scss assets used to generate template pages in server.py.
+Creates the instance of compiled scss assets used to generate template pages in server.py.
 """
 import os
-import coffeescript
 import scss as pyScss
 import logging
 import traceback
@@ -79,14 +78,6 @@ class AssetHandler(object):
 			))
 
 
-class __coffeescript(AssetHandler):
-	in_extensions = ["coffee"]
-	out_extension = "js"
-
-	def compile_one(self, filename):
-		return coffeescript.compile(open(filename, 'r').read())
-
-
 class __scss(AssetHandler):
 	in_extensions = ["scss"]  # sass not quite yet supported
 	out_extension = "css"
@@ -95,7 +86,7 @@ class __scss(AssetHandler):
 	def compile_one(self, filename):
 		return self.css.compile(open(filename, 'r').read())
 
-handlers = [__coffeescript, __scss]
+handlers = [__scss]
 
 
 def resolve(*_f):
