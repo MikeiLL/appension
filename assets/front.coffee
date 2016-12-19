@@ -1,7 +1,3 @@
-# Is this needed?
-soundManager.setup
-	url: '/static/flash/'
-
 $(document).ready ->
 	
 	$('body').keyup (e) ->
