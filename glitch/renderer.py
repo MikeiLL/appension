@@ -157,12 +157,12 @@ async def moosic(req):
 		pos += 1
 	return resp
 
-@route("/all.json")
+@route("/status.json")
 async def info(req):
-	logging.debug("/all.json requested")
+	logging.debug("/status.json requested")
 	# TODO: Clean up the track list, ditching entries way in the past.
 	# It doesn't need to be an ever-growing history.
-	return web.json_response(track_list)
+	return web.json_response({"ts": time.time(), "tracks": track_list}, headers={"Access-Control-Allow-Origin": "*"})
 
 def run(port=8889):
 	asyncio.ensure_future(ffmpeg())

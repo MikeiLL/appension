@@ -232,12 +232,22 @@ $(document).ready ->
 				window.threeSixtyPlayer.handleClick {target: $('a.sm2_link')[0]}
 
 	getTrackInfo = ->
-		$.getJSON "/all.json", (segments) ->
+		req_time = new Date/1000
+		$.getJSON "http://localhost:8889/status.json", (info) ->
 			#console.log("getTrackInfo")
-			trackids = []
-			for segment in segments
-				if segment.tracks?
-					id = segment.tracks[0].metadata.id
+			resp_time = new Date/1000
+			# We started the request some time ago, and now it's completed. Assume that
+			# the server did its part of the work mid-way between those two time points,
+			# and assume further that the client clock and server clock tick at the same
+			# rate. This means assuming that there's no mess from clock drift, relativity,
+			# time offset changes (eg DST), or clock changes. If there are, stuff will go
+			# out of sync until the next status query, after which they'll be corrected.
+			window.ping = (resp_time + req_time) / 2 - info.ts
+			tag = 0
+			console.log("req " + req_time + " resp " + resp_time + " ts " + info.ts)
+			for track in info.tracks
+				console.log(track)
+				id = track.id
 					# To the subsequent maintainer: I apologize humbly - this is bad
 					# code. I am not a CoffeeScript programmer, and it shows. The
 					# idea here (and you're *most* welcome to edit the code to better
@@ -245,47 +255,34 @@ $(document).ready ->
 					# artist0, the next new track ID go into artist1, etc; any track
 					# with the same ID as a previously-seen track will be ignored.
 					# Signed: Chris Angelico (Rosuav).
-					now = window.serverTime()/1000
-					if now > segment.time+segment.duration
-						#console.log("Segment ["+id+"] is in the past")
-						continue # Voorbij is nu voorbij :)
-					else
-						#console.log("Segment ["+id+"] is in the future")
-					isnew = 1
-					for t in trackids
-						if t == id
-							isnew = 0
-					if isnew
-						trackids.push(id)
-						tag = trackids.length
-						length = segment.tracks[0].metadata.length
-						if segment.tracks[0].metadata.url.length == 0
-							track_url = ''
-						else
-							track_url = '<a href="http://'+segment.tracks[0].metadata.url+'" target="_blank">'+segment.tracks[0].metadata.url+'</a>'
+				# console.log("Track [" + track.id + "] start " + track.start_time + " end " + (track.start_time + track.details.length) + " now " + info.ts);
+				if info.ts > track.start_time + track.details.length
+					console.log("Track ["+id+"] is in the past")
+					continue # Voorbij is nu voorbij :)
+				else
+					console.log("Track ["+id+"] is in the future")
+				if track.details.url
+					track_url = ''
+				else
+					track_url = '<a href="http://'+track.details.url+'" target="_blank">'+track.details.url+'</a>'
 
-						if segment.tracks[0].metadata.story
-							story = segment.tracks[0].metadata.story
-							#TODO do this using .split and join
-							story = story.replace(/\r?\n|\r+|\r/g, "<br/>");
-						else
-							story = "The story behind this track is still a mystery. Please let us know if you can solve."
-						minutes = Math.floor(length/60)
-						seconds = Math.floor(length%60)
-						if seconds < 10
-							seconds = "0" + seconds
-						#console.log("Recording artist"+tag+" as "+segment.tracks[0].metadata.artist)
-						artist = document.getElementById('artist'+tag)
-						if artist
-							# Eventually we'll run out of objects to stash info into - that's fine.
-							# Assume that every artistN has corresponding other stash-targets lengthN
-							# and (eventually) titleN.
-							artist.innerHTML = segment.tracks[0].metadata.artist
-							document.getElementById('story'+tag).innerHTML = story + '<div class="track_url">' + track_url + '</div>'
-							document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
-				# console.log(segment.tracks[0].metadata)
-			# Sorry, subsequent maintainer, more bad code here. -- Rosuav
-			tag = trackids.length
+				if track.details.story
+					story = track.details.story.replace(/\r?\n|\r+|\r/g, "<br/>");
+				else
+					story = "The story behind this track is still a mystery. Please let us know if you can solve."
+				minutes = Math.floor(track.details.length/60)
+				seconds = Math.floor(track.details.length%60)
+				if seconds < 10
+					seconds = "0" + seconds
+				tag += 1
+				artist = document.getElementById('artist'+tag)
+				if artist
+					# Eventually we'll run out of objects to stash info into - that's fine.
+					# Assume that every artistN has corresponding other stash-targets lengthN
+					# and (eventually) titleN.
+					artist.innerHTML = track.details.artist
+					document.getElementById('story'+tag).innerHTML = story + '<div class="track_url">' + track_url + '</div>'
+					document.getElementById('length'+tag).innerHTML = minutes + ":" + seconds
 			while 1
 				tag = tag + 1
 				artist = document.getElementById('artist'+tag)
@@ -297,15 +294,6 @@ $(document).ready ->
 					break
 	setTimeout getTrackInfo, 1000
 	setInterval getTrackInfo, TIMING_INTERVAL
-
-	getPing = ->
-		start_time = +new Date
-		$.getJSON "/timing.json", (data) ->
-			window.ping = start_time - data.time
-	window.getPing = getPing
-	setInterval getPing, TIMING_INTERVAL
-	getPing()
-
 
 	getTrackDetails = ->
 		s = io.connect ":8193/info.websocket"
