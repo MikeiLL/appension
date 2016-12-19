@@ -1,3 +1,7 @@
+# This is apparently needed. Don't delete it.
+soundManager.setup
+	url: '/static/flash/'
+
 $(document).ready ->
 	
 	$('body').keyup (e) ->
