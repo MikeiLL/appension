@@ -29,10 +29,10 @@
           console.log(track);
           id = track.id;
           if (info.ts > track.start_time + track.details.length) {
-            console.log("Track [" + id + "] is in the past");
+            console.log(`Track #${id} is in the past`);
             continue;
           } else {
-            console.log("Track [" + id + "] is in the future");
+            console.log(`Track #${id} is in the future`);
           }
           if (track.details.url) {
             track_url = '';
