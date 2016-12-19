@@ -11,7 +11,6 @@ $(document).ready ->
 	getTrackInfo = ->
 		$.getJSON "http://localhost:8889/status.json", (info) ->
 			tag = 0
-			console.log("req " + req_time + " resp " + resp_time + " ts " + info.ts)
 			for track in info.tracks
 				console.log(track)
 				id = track.id
