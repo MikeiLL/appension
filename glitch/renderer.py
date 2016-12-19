@@ -16,6 +16,13 @@ app = web.Application()
 
 songs = []
 position = 0
+track_list = []
+
+def route(url):
+	def deco(f):
+		app.router.add_get(url, f)
+		return f
+	return deco
 
 async def ffmpeg():
 	logging.debug("renderer started")
@@ -84,6 +91,11 @@ async def ffmpeg():
 				t2_start = t2.timings['beats'][1].time.value // 1000000
 				# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
 				bulk = dub1[skip : t1_end - t2_start]
+				track_list.append({
+					"id": track.id,
+					"start_time": rendered_until,
+					"details": track.track_details,
+				})
 				await render(bulk, track.filename)
 				# 2) Fade across t2_start ms - this will get us to the downbeat
 				# 3) Fade across (t1_length-t1_end) ms - this nicely rounds out the last track
@@ -121,6 +133,7 @@ async def ffmpeg():
 	if ffmpeg.returncode is None:
 		ffmpeg.terminate()
 
+@route("/all.mp3")
 async def moosic(req):
 	logging.debug("/all.mp3 requested")
 	resp = web.StreamResponse()
@@ -144,7 +157,12 @@ async def moosic(req):
 		pos += 1
 	return resp
 
-app.router.add_get("/all.mp3", moosic)
+@route("/status.json")
+async def info(req):
+	logging.debug("/status.json requested")
+	# TODO: Clean up the track list, ditching entries way in the past.
+	# It doesn't need to be an ever-growing history.
+	return web.json_response({"ts": time.time(), "tracks": track_list}, headers={"Access-Control-Allow-Origin": "*"})
 
 def run(port=8889):
 	asyncio.ensure_future(ffmpeg())

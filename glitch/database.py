@@ -36,8 +36,9 @@ class Track(object):
 			artist_exact = artist
 		self.id = id
 		self.filename = filename
-		# Add some stubby metadata (in an attribute that desperately
-		# wants to be renamed to something mildly useful)
+		# TODO: Tighten up the purposes of these two. As of 20161219,
+		# track_details goes to the client as track status, and the
+		# other is administrative-only... I think. Maybe.
 		self.track_details = {
 			'id': id,
 			'artist': artist,

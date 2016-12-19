@@ -20,13 +20,11 @@
 		<meta property="fb:admins" content="100000460115448" >
         <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
         <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' >
-        <link href='{{ compiled(
-          'bar-ui.css',
-          'sprites.css',
-          'flashblock.css',
-          '360player.css',
-          '360player-visualization.css'
-        ) }}' rel='stylesheet' type='text/css' >
+        <link href='/static/bar-ui.css' rel='stylesheet' type='text/css'>
+        <link href='/static/sprites.css' rel='stylesheet' type='text/css'>
+        <link href='/static/flashblock.css' rel='stylesheet' type='text/css'>
+        <link href='/static/360player.css' rel='stylesheet' type='text/css'>
+        <link href='/static/360player-visualization.css' rel='stylesheet' type='text/css'>
   
   <link href='{{ compiled('style-responsive-players.scss') }}' rel='stylesheet' type='text/css' >
   <meta charset="UTF-8">
@@ -65,7 +63,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       window.ontouchstart = function(){};
     }
   </script>
-	<script type="text/javascript" src='{{ compiled('modernizr.js') }}'></script>
+	<script type="text/javascript" src='/static/modernizr.js'></script>
 
 	</head>
 	{% endblock %}
@@ -121,14 +119,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		{% include 'modules/footer.html' %}	
 	</div>				
 	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
-	<script type="text/javascript" src='{{ compiled('spin.min.js',		  
-		'soundmanager2-nodebug-jsmin.js',		  
-		'berniecode-animator.js',		  
-		'360player.js',
-		'bar-ui.js',
-		'socket.io.js',
-		'sm-configs.js'	  ) }}'>
-	</script>	
+	<script type="text/javascript" src='/static/spin.min.js'></script>
+	<script type="text/javascript" src='/static/soundmanager2-nodebug-jsmin.js'></script>
+	<script type="text/javascript" src='/static/berniecode-animator.js'></script>
+	<script type="text/javascript" src='/static/360player.js'></script>
+	<script type="text/javascript" src='/static/bar-ui.js'></script>
+	<script type="text/javascript" src='/static/sm-configs.js'></script>
 	<script type="text/javascript" >			
 	$(".title").click(function() {
 		window.location = $(this).find("a").attr("href"); 		  
@@ -136,7 +132,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		});		
 	</script>		
 
-		<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
+		<script type="text/javascript" src='/static/main.js'></script>
 		
 		<script type="text/javascript">
 			// Hide all but first tab content

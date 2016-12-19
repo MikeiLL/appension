@@ -51,14 +51,11 @@
 				
 			<script type="text/javascript"
 			  src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
-			<script type="text/javascript" src='{{ compiled(
-			  'spin.min.js',
-			  'soundmanager2-nodebug-jsmin.js',
-		      'bar-ui.js',
-			  'demo.js',
-			  'socket.io.js'
-			  ) }}'></script>
-			<script type="text/javascript" src='{{ compiled('raf.coffee', 'front.coffee') }}'></script>
+			<script type="text/javascript" src='/static/spin.min.js'></script>
+			<script type="text/javascript" src='/static/soundmanager2-nodebug-jsmin.js'></script>
+			<script type="text/javascript" src='/static/bar-ui.js'></script>
+			<script type="text/javascript" src='/static/demo.js'></script>
+			<script type="text/javascript" src='/static/main.js'></script>
 			<script type="text/javascript">
 				$('.confirmation').on('click', function () {
 					return confirm('Are you sure?');
