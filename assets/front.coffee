@@ -1,4 +1,4 @@
-# This is apparently needed. Don't delete it.
+# Link to the Flash files that are used for the visualizations
 soundManager.setup
 	url: '/static/flash/'
 
