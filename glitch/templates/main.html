@@ -20,13 +20,11 @@
 		<meta property="fb:admins" content="100000460115448" >
         <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
         <link href='{{ compiled('style.scss') }}' rel='stylesheet' type='text/css' >
-        <link href='{{ compiled(
-          'bar-ui.css',
-          'sprites.css',
-          'flashblock.css',
-          '360player.css',
-          '360player-visualization.css'
-        ) }}' rel='stylesheet' type='text/css' >
+        <link href='/static/bar-ui.css' rel='stylesheet' type='text/css'>
+        <link href='/static/sprites.css' rel='stylesheet' type='text/css'>
+        <link href='/static/flashblock.css' rel='stylesheet' type='text/css'>
+        <link href='/static/360player.css' rel='stylesheet' type='text/css'>
+        <link href='/static/360player-visualization.css' rel='stylesheet' type='text/css'>
   
   <link href='{{ compiled('style-responsive-players.scss') }}' rel='stylesheet' type='text/css' >
   <meta charset="UTF-8">
@@ -65,7 +63,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       window.ontouchstart = function(){};
     }
   </script>
-	<script type="text/javascript" src='{{ compiled('modernizr.js') }}'></script>
+	<script type="text/javascript" src='/static/modernizr.js'></script>
 
 	</head>
 	{% endblock %}
