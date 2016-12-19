@@ -102,6 +102,8 @@ def resolve(*_f):
 			if all([handler.can_handle(filename) for filename in filenames]):
 				return handler(filenames).compile_and_save()
 
+		# CJA 20161219: Prevent accidental compilation of stuff that shouldn't be.
+		raise ValueError("OOPS: This was supposed to be removed")
 		return AssetHandler(filenames).compile_and_save()
 	except Exception:
 		log.error("Asset compilation failed on file \"%s\":\n%s", filename,
