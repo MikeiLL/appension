@@ -264,6 +264,16 @@ def oracle_get():
 							meta_description=meta_description, og_url=og_url, url_quote_plus=url_quote_plus)
 
 
+# Log 404s to a file, but only once per server start per URL
+known_404 = set()
+@app.errorhandler(404)
+def page_not_found(e):
+	if request.path not in known_404:
+		known_404.add(request.path)
+		with open("404.log", "a") as log:
+			print(datetime.datetime.now(), request.path, file=log)
+	return render_template('404.html'), 404
+
 def run(port=config.http_port, disable_logins=False):
 	if not os.path.isdir("glitch/static/assets"):
 		os.mkdir("glitch/static/assets")
