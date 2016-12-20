@@ -37,11 +37,6 @@ page_title = "Infinite Glitch - The World's Longest Recorded Pop Song, by Chris 
 og_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 meta_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 
-# Import some stuff from the old package
-import fore.assetcompiler
-from . import database
-app.jinja_env.globals["compiled"] = fore.assetcompiler.compiled
-
 def couplet_count(lyrics):
 	total = 0
 	for count in lyrics:
