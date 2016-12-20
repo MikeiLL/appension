@@ -208,12 +208,14 @@ def submit_track_post():
 	id = database.create_track(file.read(), secure_filename(file.filename), request.form, image, current_user.username)
 	# TODO: Send email to admins requesting curation (with the track ID)
 	return render_template("confirm_submission.html")
-	
+
+# Deprecated
 @app.route("/recorder")
 @login_required
 def recorder_get():
 	return render_template("recorder.html", page_title="Infinite Glitch Recording Studio")
 
+# Deprecated and may not be fully working
 @app.route("/recorder", methods=["POST"])
 @login_required
 def recorder_post():
@@ -230,7 +232,7 @@ def recorder_post():
 	print(current_user if current_user else 'glitch hacker')
 	# <flask_login.mixins.AnonymousUserMixin object at 0x111216e80>
 	return render_template("recorder.html")
-	
+
 @app.route("/oracle", methods=["GET"])
 def oracle_get():
 	popular_words = oracle.popular_words(90)
