@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, Response, send_from_directory, jsonify, flash
-from flask_login import LoginManager, current_user, login_user, login_required
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from werkzeug.urls import url_quote_plus
 import os
@@ -137,7 +137,11 @@ def login_post():
 	user = database.User.from_credentials(request.form["email"], request.form["password"])
 	if user: login_user(user)
 	return redirect("/")
-# TODO: /logout
+
+@app.route("/logout")
+def logout():
+	logout_user()
+	return redirect("/")
 
 @app.route("/create_account")
 def create_account_get():
