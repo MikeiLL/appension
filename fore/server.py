@@ -185,7 +185,6 @@ class MainHandler(BaseHandler):
 	def get(self):
 		self.finish(self.__gen())
 
-# UNMIGRATED
 @route("/all\.json")
 class InfoHandler(tornado.web.RequestHandler):
 	actions = []
@@ -321,7 +320,6 @@ class SubmissionForm(Form):
 	track_image = wtforms.FileField(u'track_image', validators=[ImageFile])
 	url = wtforms.TextField(u'url', validators=[wtforms.validators.Optional(), wtforms.validators.url(message=u"Invalid URL. If you don't have one, please just put http://www.google.com.")])
 
-# UNMIGRATED
 @route("/submit")
 class Submissionform(BaseHandler):
 	@authenticated
@@ -400,7 +398,6 @@ class Submissionform(BaseHandler):
 											meta_description=meta_description, og_url=config.server_domain,
 											og_description=og_description))
 
-# UNMIGRATED
 @route("/recorder")
 class Recorder(BaseHandler):
 	@authenticated
@@ -459,6 +456,7 @@ def admin_page(user_name, deleted=0, updated=0, notice=''):
 		user_name=user_name, notice=notice,
 	)
 
+# UNMIGRATED
 @route("/delete/([0-9]+)")
 class DeleteTrack(BaseHandler):
 	@authenticated
@@ -469,6 +467,7 @@ class DeleteTrack(BaseHandler):
 		database.delete_track(input)
 		self.write(admin_page(user_name, deleted=input))
 
+# UNMIGRATED
 @route("/edit/([0-9]+)")
 class EditTrack(BaseHandler):
 	@authenticated
@@ -492,6 +491,7 @@ class EditTrack(BaseHandler):
 		track=track, compiled=compiled, user_name=user_name, check_url=check_url))
 	
 
+# UNMIGRATED
 @route("/sequence")		
 class SequenceHandler(BaseHandler):
 	@authenticated
@@ -543,7 +543,8 @@ class OracleHandler(BaseHandler):
 								show_cloud=show_cloud, og_description=og_description, 
 								page_title=page_title, meta_description=meta_description,
 								og_url=og_url))
-					
+
+# UNMIGRATED
 @route("/share_oracle/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\_\%]*)")
 class ShareOracleHandler(BaseHandler):
 	def get(self, question, answer_one, answer_two, artist):
@@ -577,8 +578,6 @@ class ShareOracleHandler(BaseHandler):
 								show_cloud=show_cloud, og_description=og_description, 
 								page_title=page_title, meta_description=meta_description,
 								og_url=og_url))
-		
-# End UNMIGRATED
 
 @route("/credits")
 class CreditsHandler(BaseHandler):
@@ -718,6 +717,7 @@ class ResetRequestForm(UserForm):
 class ResetPasswordForm(UserForm):
 	email = wtforms.HiddenField('email', validators=[])
 
+# UNMIGRATED
 @route("/confirm/([0-9]+)/([A-Fa-f0-9]+)")
 class ConfirmAccount(tornado.web.RequestHandler):
 	def get(self, id, hex_string):
@@ -1039,6 +1039,7 @@ class Outreach(BaseHandler):
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		database.update_outreach_message(message)
 		self.write(templates.load("outreach.html").generate(compiled=compiled, user_name=user_name, notice="", message=message))
+# End UNMIGRATED
 
 @route("/login")
 class Login(BaseHandler):

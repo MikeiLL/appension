@@ -137,6 +137,7 @@ def login_post():
 	user = database.User.from_credentials(request.form["email"], request.form["password"])
 	if user: login_user(user)
 	return redirect("/")
+# TODO: /logout
 
 @app.route("/create_account")
 def create_account_get():
