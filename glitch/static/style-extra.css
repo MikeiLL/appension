@@ -1,0 +1,88 @@
+body .grid li.wide {
+    background-image: url("/static/img/tile.jpg");
+    border: 4px double gray;
+    border-radius: 12px;
+    box-shadow: 3px 4px 6px #272626;
+    color: black;
+    padding: 0 0 10px 12px;
+}
+BODY .grid LI.wide A {
+    color: #3333B5;
+    margin: 0;
+}
+p.floatRight {
+    border-bottom: 1px solid gray;
+    border-top: 1px solid gray;
+    color: #000000;
+    margin-left: 136px;
+    margin-top: -129px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    position: absolute;
+    text-align: justify;
+    width: 160px;
+}
+P.floatRight-studio {
+    max-width: 94%;
+    display: inline-block;
+    color: #000000;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid gray;
+}
+IMG.floatLeft {
+    padding: 5px;
+    float: left;
+    margin-right: 5px;
+}
+#creditname {
+    border-left: 1px solid teal;
+    border-bottom: 1px solid teal;
+    border-bottom-left-radius: 8px;
+    padding: 0px 0px 0px 3px;
+}
+P.intro-copy {
+    width: 650px;
+    color: #000000;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-weight: normal;
+    max-width: 95%;
+}
+p.infinite-aside {
+    background-color: silver;
+    border: 1px solid gray;
+    border-radius: 12px;
+    color: #000000;
+    font-size: 12px;
+    padding: 10px;
+    text-align: justify;
+    width: 80%;
+}
+@media all and (min-width: 40em) {
+    P.floatRight {
+        width: 200px;
+        margin-left: 226px;
+        margin-top: -149px;
+    }
+    P.floatRight-studio {
+        width: 302px;
+        position: absolute;
+        margin-left: 307px;
+        margin-top: -168px;
+        color: #000000;
+        text-align: left;
+        padding-top: 5px;
+        padding-bottom: 7px;
+        border-bottom: 1px solid gray;
+    }
+}
+@media all and (min-width: 60em) {
+    p.floatRight {
+        width: 300px;
+        margin-left: 306px;
+        margin-top: -149px;
+    }
+}

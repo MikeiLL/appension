@@ -1,0 +1,107 @@
+.accordion {
+    padding: 0 4px;
+    margin: 2em 0;
+    width: 100%;
+    overflow: hidden;
+    font-size: 1em;
+    position: relative;
+}
+.accordion__title {
+    background: url(/static/img/tile3.jpg) #CCC;
+    border-top: 1px solid #C0C0C0;
+    color: #222;
+    float: left;
+    line-height: 3;
+    height: 3em;
+    cursor: pointer;
+    margin-right: 0.25em;
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -khtml-border-radius: 12px;
+    border-radius: 12px;
+    padding: 0 0.4em;
+    font-size: 14px;
+}
+.no-js .accordion__title {
+    float: none;
+    height: auto;
+    cursor: auto;
+    margin: 0;
+    padding: 0 2em;
+}
+.accordion__content {
+    float: right;
+    width: 100%;
+    margin: 2.6em 0 0 -100%;
+    padding: 2em;
+    background: url(/static/img/tile.jpg) transparent;
+    -moz-border-radius: 0px 8px 12px 12px;
+    -webkit-border-radius: 0px 8px 12px 12px;
+    -khtml-border-radius: 0px 8px 12px 12px;
+    border-radius: 0px 8px 12px 12px;
+    color: black;
+}
+.no-js .accordion__content {
+    float: left;
+    margin: 0;
+}
+.accordion__title:hover,
+.accordion__title.active {
+    background: url(/static/img/tile.jpg) silver;
+    color: white;
+}
+.no-js .accordion__title:hover {
+    background-color: #CCC;
+    color: #222;
+}
+.accordion__title.active {
+    border-top-color: white;
+    background-image: url(/static/img/tile.jpg);
+    -moz-border-radius: 12px 12px 0px 0px;
+    -webkit-border-radius: 12px 12px 0px 0px;
+    -khtml-border-radius: 12px 12px 0px 0px;
+    border-radius: 12px 12px 0px 0px;
+}
+@media (max-width: 48em) {
+    .accordion {
+        border: 1px solid grey;
+    }
+    .accordion__title,
+    .accordion__content {
+        float: none;
+        margin: 0;
+    }
+    .accordion__title:first-child {
+        border: none;
+    }
+    .accordion__title.active {
+        border-top-color: #EEE;
+    }
+    .accordion__title.active,
+    .accordion__title:hover {
+        background: #777;
+    }
+    .accordion__title:before {
+        content: "+";
+        text-align: center;
+        width: 2em;
+        display: inline-block;
+    }
+    .accordion__title.active:before {
+        content: "-";
+    }
+    .accordion__content {
+        position: relative;
+        overflow: hidden;
+        padding: 1em;
+    }
+}
+@media (min-width: 65em) {
+    .accordion__title {
+        padding: 0 1em;
+        font-size: 16px;
+    }
+    .accordion__content {
+        margin: 3em 0 0 -100%;
+    }
+}

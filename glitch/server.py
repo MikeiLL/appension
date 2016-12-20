@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, Response, send_from_directory, jsonify, flash
-from flask_login import LoginManager, current_user, login_user, login_required
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from werkzeug.urls import url_quote_plus
+from urllib.parse import urlparse, urljoin
 import os
 import time
 import logging
@@ -30,17 +31,18 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def load_user(id):
 	return database.User.from_id(int(id))
 
+# from http://flask.pocoo.org/snippets/62/
+def is_safe_url(target):
+	ref_url = urlparse(request.host_url)
+	test_url = urlparse(urljoin(request.host_url, target))
+	return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
 
 page_title = "Infinite Glitch - The World's Longest Recorded Pop Song, by Chris Butler."
 og_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 meta_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
-
-# Import some stuff from the old package
-import fore.assetcompiler
-from . import database
-app.jinja_env.globals["compiled"] = fore.assetcompiler.compiled
 
 def couplet_count(lyrics):
 	total = 0
@@ -141,6 +143,13 @@ def login_get():
 def login_post():
 	user = database.User.from_credentials(request.form["email"], request.form["password"])
 	if user: login_user(user)
+	url = request.args.get("next") or "/"
+	if not is_safe_url(url): url = "/"
+	return redirect(url)
+
+@app.route("/logout")
+def logout():
+	logout_user()
 	return redirect("/")
 
 @app.route("/create_account")
@@ -208,12 +217,14 @@ def submit_track_post():
 	id = database.create_track(file.read(), secure_filename(file.filename), request.form, image, current_user.username)
 	# TODO: Send email to admins requesting curation (with the track ID)
 	return render_template("confirm_submission.html")
-	
+
+# Deprecated
 @app.route("/recorder")
 @login_required
 def recorder_get():
 	return render_template("recorder.html", page_title="Infinite Glitch Recording Studio")
 
+# Deprecated and may not be fully working
 @app.route("/recorder", methods=["POST"])
 @login_required
 def recorder_post():
@@ -230,7 +241,7 @@ def recorder_post():
 	print(current_user if current_user else 'glitch hacker')
 	# <flask_login.mixins.AnonymousUserMixin object at 0x111216e80>
 	return render_template("recorder.html")
-	
+
 @app.route("/oracle", methods=["GET"])
 def oracle_get():
 	popular_words = oracle.popular_words(90)
@@ -266,6 +277,16 @@ def oracle_get():
 							show_cloud=show_cloud, og_description=og_description, 
 							meta_description=meta_description, og_url=og_url, url_quote_plus=url_quote_plus)
 
+
+# Log 404s to a file, but only once per server start per URL
+known_404 = set()
+@app.errorhandler(404)
+def page_not_found(e):
+	if request.path not in known_404:
+		known_404.add(request.path)
+		with open("404.log", "a") as log:
+			print(datetime.datetime.now(), request.path, file=log)
+	return render_template('404.html'), 404
 
 def run(port=config.http_port, disable_logins=False):
 	if not os.path.isdir("glitch/static/assets"):

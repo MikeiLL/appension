@@ -1,0 +1,274 @@
+.ui360-vis,
+.ui360-vis .sm2-360ui,
+.sm2-inline-list .ui360-vis {
+    height: 316px;
+    width: 266px;
+    -webkit-border-radius: 230px;
+    -moz-border-radius: 230px;
+    -khtml-border-radius: 230px;
+    border-radius: 230px;
+}
+.ui360 .sm2-canvas.hi-dpi {
+    top: -32%;
+    left: -50%;
+    -moz-transform: scale(0.5);
+    -ms-transform: scale(0.5);
+    -webkit-transform: scale(0.5);
+    transform: scale(0.5);
+    -webkit-border-radius: 230px;
+    -moz-border-radius: 230px;
+    -khtml-border-radius: 230px;
+    border-radius: 230px;
+}
+#Infinite_Chunk_Player {
+    background-image: url(/static/img/Small-Infinite-Chunk-Player.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 310;
+    height: 112px;
+    margin-left: -25px;
+}
+#Infinite_Chunk_Player .sm2-bar-ui.compact {
+    left: 60px;
+    max-width: 14em;
+    min-width: 1em;
+    top: 65px;
+}
+#Infinite_Chunk_Player .sm2-bar-ui.compact .bd a {
+    left: 4px;
+    text-decoration: none;
+}
+#Infinite_Chunk_Player .ui360-vis {
+    padding-left: 253px;
+    padding-top: 36px;
+}
+#Devil_Glitch_Player {
+    background-image: url(/static/img/Small-Devil-Glitch-Player.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 310px;
+    height: 168px;
+    margin-left: -25px;
+}
+#Devil_Glitch_Player .divider {
+    height: 12px;
+    display: block;
+}
+#Devil_Glitch_Player .sm2-bar-ui.compact {
+    border: 2px solid #fff;
+    border-radius: 20px;
+    left: 0;
+    margin-bottom: 5px;
+    max-width: 14em;
+    min-width: 1em;
+    top: 65px;
+}
+#Devil_Glitch_Player .sm2-bar-ui.compact .bd a {
+    left: 4px;
+    text-decoration: none;
+}
+#Devil_Glitch_Player .ui360-vis {
+    padding-left: 253px;
+    padding-top: 3px;
+}
+#Major_Glitch_Player {
+    position: relative;
+    background-image: url(/static/img/Small-Major-Glitch-Player.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 310px;
+    height: 143px;
+    margin-left: -25px;
+}
+#Major_Glitch_Player .sm2-bar-ui.compact {
+    border: 2px solid #fff;
+    border-radius: 20px;
+    left: 10px;
+    max-width: 14em;
+    min-width: 1em;
+    top: 85px;
+}
+#Major_Glitch_Player .sm2-bar-ui.compact .bd a {
+    left: 4px;
+    text-decoration: none;
+}
+#Major_Glitch_Player .ui360-vis {
+    padding-left: 253px;
+    padding-top: 3px;
+}
+@media all and (min-width: 40em) {
+    .ui360-vis,
+    .ui360-vis .sm2-360ui,
+    .sm2-inline-list .ui360-vis {
+        height: 326px;
+        width: 266px;
+    }
+    .ui360 .sm2-canvas.hi-dpi {
+        left: -50%;
+        top: -42%;
+    }
+    .ui360-vis .sm2-360btn,
+    .ui360-vis .sm2-360ui.sm2_paused .sm2-360btn,
+    .ui360-vis .sm2-360ui.sm2_playing .sm2-360btn {
+        margin-left: -23px;
+        margin-top: -55px;
+    }
+    #Infinite_Chunk_Player {
+        background-image: url(/static/img/Infinite-Chunk-Player.png);
+        width: 430px;
+        height: 170px;
+    }
+    #Infinite_Chunk_Player .sm2-bar-ui.compact {
+        left: 80px;
+        max-width: 18em;
+        min-width: 1em;
+        top: 93px;
+        margin-left: 0;
+    }
+    #Infinite_Chunk_Player .sm2-bar-ui.compact .bd a {
+        left: 4px;
+        text-decoration: none;
+    }
+    #Infinite_Chunk_Player .ui360-vis {
+        padding-left: 253px;
+        padding-top: 3px;
+    }
+    #Devil_Glitch_Player {
+        background-image: url(/static/img/Devil-Glitch-Player.png);
+        width: 430px;
+        height: 242px;
+    }
+    #Devil_Glitch_Player .divider {
+        height: 20px;
+        display: block;
+    }
+    #Devil_Glitch_Player .sm2-bar-ui.compact {
+        border: 0;
+        margin-bottom: 15px;
+        left: 0px;
+        max-width: 18em;
+        min-width: 1em;
+        top: 100px;
+    }
+    #Devil_Glitch_Player .sm2-bar-ui.compact .bd a {
+        left: 4px;
+        text-decoration: none;
+    }
+    #Devil_Glitch_Player .ui360-vis {
+        padding-left: 253px;
+        padding-top: 3px;
+    }
+    #Major_Glitch_Player {
+        background-image: url(/static/img/Major-Glitch-Player.png);
+        width: 430px;
+        height: 210px;
+    }
+    #Major_Glitch_Player .sm2-bar-ui.compact {
+        border: 0 none;
+        border-radius: 0;
+        left: 0;
+        max-width: 18em;
+        min-width: 1em;
+        top: 103px;
+    }
+    #Major_Glitch_Player .sm2-bar-ui.compact .bd a {
+        left: 4px;
+        text-decoration: none;
+    }
+    #Major_Glitch_Player .ui360-vis {
+        padding-left: 253px;
+        padding-top: 3px;
+    }
+}
+@media all and (min-width: 60em) {
+    .ui360-vis .sm2-360btn,
+    .ui360-vis .sm2-360ui.sm2_paused .sm2-360btn,
+    .ui360-vis .sm2-360ui.sm2_playing .sm2-360btn {
+        margin-left: -23px;
+        margin-top: -25px;
+    }
+    .ui360 .sm2-canvas.hi-dpi {
+        top: -52%;
+        left: -50%;
+    }
+    .ui360-vis,
+    .ui360-vis .sm2-360ui,
+    .sm2-inline-list .ui360-vis {
+        width: 261px;
+        height: 256px;
+    }
+    #Infinite_Chunk_Player {
+        background-image: url(/static/img/Infinite-Chunk-Player.png);
+        width: 506px;
+        height: 201px;
+        margin-left: 0;
+    }
+    #Infinite_Chunk_Player .ui360-vis {
+        padding-left: 253px;
+        padding-top: 3px;
+    }
+    #Infinite_Chunk_Player .sm2-bar-ui.compact {
+        left: 100px;
+        max-width: 20em;
+        min-width: 1em;
+        top: 112px;
+    }
+    #Infinite_Chunk_Player .sm2-bar-ui.compact .bd a {
+        left: 4px;
+        text-decoration: none;
+    }
+}
+@media all and (min-width: 70em) {
+    #Devil_Glitch_Player {
+        background-image: url(/static/img/Devil-Glitch-Player.png);
+        width: 506px;
+        height: 285px;
+    }
+    #Devil_Glitch_Player .divider {
+        height: 12px;
+        display: block;
+    }
+    #Devil_Glitch_Player .ui360-vis {
+        padding-left: 253px;
+        padding-top: 3px;
+    }
+    #Devil_Glitch_Player .sm2-bar-ui.compact {
+        border: 0 none;
+        left: -2px;
+        margin-bottom: 34px;
+        max-width: 19em;
+        min-width: 1em;
+        top: 119px;
+    }
+    #Devil_Glitch_Player .sm2-bar-ui.compact .bd a {
+        left: 4px;
+        text-decoration: none;
+    }
+    #Major_Glitch_Player {
+        background-image: url(/static/img/Major-Glitch-Player.png);
+        width: 506px;
+        height: 248px;
+    }
+    #Major_Glitch_Player .ui360-vis {
+        padding-left: 253px;
+        padding-top: 3px;
+    }
+    #Major_Glitch_Player .sm2-bar-ui.compact {
+        border: 0 none;
+        border-radius: 0;
+        left: 0;
+        max-width: 18em;
+        min-width: 1em;
+        top: 124px;
+    }
+    #Major_Glitch_Player .sm2-bar-ui.compact .bd a {
+        left: 4px;
+        text-decoration: none;
+    }
+    #Major_Glitch_Player .sm2-inline-duration {
+        display: none;
+    }
+}
