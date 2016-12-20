@@ -10,6 +10,7 @@ import string
 import random
 import operator
 from stop_words import get_stop_words
+from . import database
 
 stop_words = get_stop_words('en')
 
@@ -62,8 +63,8 @@ class Couplet(object):
 					
 def translate_non_alphanumerics(to_translate, translate_to=u'_'):
     not_letters_or_digits = u'!"#%\'()*+,-./:;<=>?@[\]^_`{|}~'
-    if isinstance(to_translate, unicode):
-        translate_table = dict((ord(char), unicode(translate_to))
+    if isinstance(to_translate, str):
+        translate_table = dict((ord(char), str(translate_to))
                                for char in not_letters_or_digits)
     else:
         assert isinstance(to_translate, str)
@@ -73,14 +74,13 @@ def translate_non_alphanumerics(to_translate, translate_to=u'_'):
     return to_translate.translate(translate_table)
     		
 def get_word_list(question):
-	question = string.lower(question)
+	question = question.lower()
 	question = translate_non_alphanumerics(question)
 	return [word for word in question.split() if word not in stop_words]
 		
 def popular_words(wordcount=50):
-	from fore.database import get_all_lyrics
 	popular = {}
-	all_lyrics = get_all_lyrics()
+	all_lyrics = database.get_all_lyrics()
 	for lyric in all_lyrics:
 		broken_words = [line for line in lyric.track_lyrics['couplets'] for line in line.split()]
 		remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
@@ -95,9 +95,8 @@ def popular_words(wordcount=50):
 	return popular_sorted[:wordcount]
 				 	
 def compare_to_lyrics(word):
-	from fore.database import match_lyrics
 	track_couplets = []
-	matching_lyrics = match_lyrics(word)
+	matching_lyrics = database.match_lyrics(word)
 	for lyric in matching_lyrics:
 		for couplet in lyric.track_lyrics['couplets']:
 			couplet_copy = couplet
@@ -107,9 +106,8 @@ def compare_to_lyrics(word):
 		return random.choice(track_couplets)
 				
 def compare_to_keywords(word):
-	from fore.database import match_keywords
 	track_couplets = []
-	matching_lyrics = match_keywords(word)
+	matching_lyrics = database.match_keywords(word)
 	for lyric in matching_lyrics:
 		for couplet in lyric.track_lyrics['couplets']:
 			track_couplets.append(Couplet(lyric.track_lyrics['artist'], couplet))
@@ -117,8 +115,7 @@ def compare_to_keywords(word):
 		return random.choice(track_couplets)
 						 		
 def get_random():
-	from database import random_lyrics
-	lyric = random_lyrics()[0]
+	lyric = database.random_lyrics()[0]
 	for couplet in lyric.track_lyrics['couplets']:
 		return Couplet(lyric.track_lyrics['artist'], couplet)
 		
@@ -126,15 +123,14 @@ def the_oracle_speaks(question):
 	wordlist = get_word_list(question)
 	random.shuffle(wordlist)
 	for word in wordlist:
-		one = compare_to_lyrics(unicode(word))
+		one = compare_to_lyrics(str(word))
 		if one:
 			return one
 	for word in wordlist:
-		two = compare_to_keywords(unicode(word))
+		two = compare_to_keywords(str(word))
 		if two:
 			return two
-	from database import Artist
-	return Couplet(Artist(u"The Glitch Oracle"), random.choice(vague_responses).decode('utf-8') + u'\r ')
+	return Couplet(database.Artist(u"The Glitch Oracle"), random.choice(vague_responses) + u'\r ')
 	 
 	
 		

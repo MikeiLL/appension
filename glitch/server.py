@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, Response, send_from_directory, jsonify, flash
 from flask_login import LoginManager, current_user, login_user, login_required
 from werkzeug.utils import secure_filename
+from werkzeug.urls import url_quote_plus
 import os
 import time
 import logging
@@ -10,13 +11,13 @@ import threading
 import subprocess
 from . import config
 from . import database
+from . import oracle
 from . import utils
 
 app = Flask(__name__)
 
 
 UPLOAD_FOLDER = 'uploads'
-app.config['LOGIN_DISABLED'] = True
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login_get"
@@ -229,6 +230,42 @@ def recorder_post():
 	print(current_user if current_user else 'glitch hacker')
 	# <flask_login.mixins.AnonymousUserMixin object at 0x111216e80>
 	return render_template("recorder.html")
+	
+@app.route("/oracle", methods=["GET"])
+def oracle_get():
+	popular_words = oracle.popular_words(90)
+	random.shuffle(popular_words)
+	question = request.args.get("question")
+	print(question)
+	if not len(question) == 0:
+		question = question
+		show_cloud="block"
+		answer = oracle.the_oracle_speaks(question)
+		if answer.couplet['artist'].name['name_list'][0] == '':
+			artist = answer.couplet['artist'].name['name_list'][1]
+		else:
+			artist = ' name_part_two '.join(answer.couplet['artist'].name['name_list']).strip()
+		og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
+		page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
+		meta_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
+		og_url="http://www.infiniteglitch.net/share_oracle/"+url_quote_plus(question)+"/"+url_quote_plus(answer.couplet['couplet'][0])+"/"+url_quote_plus(answer.couplet['couplet'][1])+"/"+url_quote_plus(artist)
+		print(answer.couplet['artist'].name['display_name'])
+		print(answer.couplet['couplet'][0])
+		print(question)
+		print(111111111)
+		redirect(og_url)
+	else:
+		question, answer = ("","")
+		show_cloud="none"
+		page_title="Ask The Glitch Oracle"
+		og_description="Ask The Glitch Oracle"
+		meta_description="Ask The Glitch Oracle"
+		og_url="http://www.infiniteglitch.net/oracle"
+	return render_template("oracle.html", page_title="Glitch Oracle", question=question, 
+							answer=answer, popular_words=popular_words[:90],
+							show_cloud=show_cloud, og_description=og_description, 
+							meta_description=meta_description, og_url=og_url, url_quote_plus=url_quote_plus)
+
 
 def run(port=config.http_port, disable_logins=False):
 	if not os.path.isdir("glitch/static/assets"):
