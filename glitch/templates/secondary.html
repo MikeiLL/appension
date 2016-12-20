@@ -28,11 +28,11 @@
 
 	<link href='{{ compiled('style-extra.scss') }}' rel='stylesheet' type='text/css' />
 
-	<link href='bar-ui.css' rel='stylesheet' type='text/css' />
-	<link href='sprites.css' rel='stylesheet' type='text/css' />
-	<link href='flashblock.css' rel='stylesheet' type='text/css' />
-	<link href='360player.css' rel='stylesheet' type='text/css' />
-	<link href='360player-visualization.css' rel='stylesheet' type='text/css' />
+	<link href='/static/bar-ui.css' rel='stylesheet' type='text/css' />
+	<link href='/static/sprites.css' rel='stylesheet' type='text/css' />
+	<link href='/static/flashblock.css' rel='stylesheet' type='text/css' />
+	<link href='/static/360player.css' rel='stylesheet' type='text/css' />
+	<link href='/static/360player-visualization.css' rel='stylesheet' type='text/css' />
 	<link href='{{ compiled('style-responsive-players.scss') }}' rel='stylesheet' type='text/css' />
   </head>	
   {% endblock %}
@@ -74,12 +74,11 @@
 		</div>							
 		{% endblock %}
 		<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
-		<script type="text/javascript" src='spin.min.js'></script>		  
-		<script type="text/javascript" src='soundmanager2-nodebug-jsmin.js'></script>			  
-		<script type="text/javascript" src='bar-ui.js'></script>	
-		<script type="text/javascript" src='socket.io.js'></script>	
-		<script type="text/javascript" src='error-messages.js'></script>	
-		<script type="text/javascript" src='validate.js'></script>	
+		<script type="text/javascript" src='/static/spin.min.js'></script>		  
+		<script type="text/javascript" src='/static/soundmanager2-nodebug-jsmin.js'></script>			  
+		<script type="text/javascript" src='/static/bar-ui.js'></script>	
+		<script type="text/javascript" src='/static/error-messages.js'></script>	
+		<script type="text/javascript" src='/static/validate.js'></script>	
 		</script>		
 		{% block load_scripts %}
 

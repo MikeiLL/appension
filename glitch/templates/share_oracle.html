@@ -1,7 +1,5 @@
 {% extends "secondary.html" %}
 
-{% from tornado.escape import url_escape %}
-
 {% block content %}
 <!-- added 14 march -->
 <link rel="prefetch" href="../../../../static/img/oracle-off.png" border="0" width="107" height="104" alt="">
@@ -27,9 +25,9 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 						{% if not answer.couplet['artist'].name['display_name'] == "The Glitch Oracle" %}
 						{{ answer.couplet['couplet'][1] }}.<br/>
 							{% if answer.couplet['artist'].name['name_list'][0] == '' %}
-								<p>-<a href="/view_artist/{{ url_escape(answer.couplet['artist'].name['name_list'][1]) }}">{{ answer.couplet['artist'].name['display_name'] }}</a></p>
+								<p>-<a href="/view_artist/{{ url_quote_plus(answer.couplet['artist'].name['name_list'][1] }}">{{ answer.couplet['artist'].name['display_name']) }}</a></p>
 							{% else %}
-								<p>-<a href="/view_artist/{{ url_escape('sposplit '+answer.couplet['artist'].name['name_list'][0]+' fposplit '+answer.couplet['artist'].name['name_list'][1]) }}">{{ answer.couplet['artist'].name['display_name'] }}</a></p>
+								<p>-<a href="/view_artist/{{ url_quote_plus('sposplit '+answer.couplet['artist'].name['name_list'][0]+' fposplit '+answer.couplet['artist'].name['name_list'][1]) }}">{{ answer.couplet['artist'].name['display_name'] }}</a></p>
 							{% endif %}
 						{% else %}
 						<p>-{{ answer.couplet['artist'].name['display_name'] }}</p>
@@ -40,14 +38,12 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 				{% endif %}
 				<br style="clear:both"/>
 				<div id="oracle_question">
-					{{ form.question(class_="oracle_question_field", value=question) }}
+					{% if question %}
+						<input name=question class="oracle_question_field" value={{ question }}/>
+					{% else %}
+						<input name=question class="oracle_question_field" value="" placeholder="Ask me now..."/>
+					{% endif %}
 				</div>
-		
-
-				{% if form.question.errors %}
-				<ul>
-					{% for error in form.question.errors %}<li class="errors">{{ error }}</li>{% end %}</ul>
-				{% endif %}
 		
 				<p>{{ answer }}</p>
 		  </form>
@@ -108,7 +104,7 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 		);
 		</script>	
 
-		<script type="text/javascript" src='jquery.tagcloud.js'></script>
+		<script type="text/javascript" src='/static/jquery.tagcloud.js'></script>
 		<script type="text/javascript">
 			$.fn.tagcloud.defaults = {
 			  size: {start: 14, end: 28, unit: 'pt'},
