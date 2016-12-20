@@ -399,7 +399,7 @@ body .user p {
     -khtml-border-radius: 12px;
     border-radius: 12px;
     padding: 2px 10px;
-    background-image: url(../img/tile.jpg);
+    background-image: url(/static/img/tile.jpg);
     border: 1px solid #CBCBCB;
     -moz-box-shadow: 2px 3px 4px #514949;
     -webkit-box-shadow: 2px 3px 4px #514949;
@@ -452,7 +452,7 @@ body .grid li > nav {
 }
 body .grid li.wide {
     width: 100%;
-    background-image: url(../img/tile2.jpg);
+    background-image: url(/static/img/tile2.jpg);
     padding: 5px 0px;
     -moz-border-radius: 12px;
     -webkit-border-radius: 12px;
@@ -500,7 +500,7 @@ body footer[role=contentinfo] .nav li a {
 body footer[role=contentinfo] a {
     display: inline-block;
     padding: 0em 0.3em;
-    background-image: url(../img/tile3.jpg);
+    background-image: url(/static/img/tile3.jpg);
     -moz-border-radius: 12px;
     -webkit-border-radius: 12px;
     -khtml-border-radius: 12px;
@@ -511,7 +511,7 @@ body footer[role=contentinfo] a {
 body footer[role=contentinfo] a:hover {
     display: inline-block;
     padding: 0em 0.3em;
-    background-image: url(../img/tile.jpg);
+    background-image: url(/static/img/tile.jpg);
     -moz-border-radius: 12px;
     -webkit-border-radius: 12px;
     -khtml-border-radius: 12px;
@@ -626,7 +626,7 @@ body .secondary-grid li a {
     margin: 0 0 0 19px;
 }
 body .secondary-grid li.wide {
-    background-image: url("../img/tile.jpg");
+    background-image: url("/static/img/tile.jpg");
     border: 4px double gray;
     border-radius: 12px;
     box-shadow: 3px 4px 6px #514949;
@@ -635,7 +635,7 @@ body .secondary-grid li.wide {
     padding: 0 0 10px 12px;
 }
 body table.secondary {
-    background-image: url(../img/tile3.jpg);
+    background-image: url(/static/img/tile3.jpg);
     border: 7px solid transparent;
     border-collapse: collapse;
     border-radius: 10px;
@@ -677,7 +677,7 @@ body #Oracle-02 {
     width: 57px;
 }
 body #Oracle-03 {
-    background-image: url("../img/oracle-off.png");
+    background-image: url("/static/img/oracle-off.png");
     height: 104px;
     left: 57px;
     position: absolute;
@@ -685,7 +685,7 @@ body #Oracle-03 {
     width: 107px;
 }
 body #Oracle-03:hover {
-    background-image: url("../img/oracle-hover.png");
+    background-image: url("/static/img/oracle-hover.png");
     cursor: pointer;
     height: 104px;
     left: 57px;
@@ -694,7 +694,7 @@ body #Oracle-03:hover {
     width: 107px;
 }
 body #Oracle-03:active {
-    background-image: url("../img/oracle-on.png");
+    background-image: url("/static/img/oracle-on.png");
     height: 104px;
     left: 57px;
     position: absolute;
@@ -716,7 +716,7 @@ body #Oracle-05 {
     width: 221px;
 }
 body #oracle_question {
-    background-image: url(../img/oracle-question-box.png);
+    background-image: url(/static/img/oracle-question-box.png);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -855,13 +855,13 @@ body .popup .popup-exit {
     position: absolute;
     top: 10px;
     right: 25px;
-    background: url("../img/quit.png") no-repeat;
+    background: url("/static/img/quit.png") no-repeat;
 }
 body .popup .popup-content {
     overflow-y: scroll;
     background-color: #B06E6C;
     padding: 10px;
-    background-image: url(../img/tile.jpg);
+    background-image: url(/static/img/tile.jpg);
     -moz-border-radius: 12px 0px 0px 12px;
     -webkit-border-radius: 12px 0px 0px 12px;
     -khtml-border-radius: 12px 0px 0px 12px;
