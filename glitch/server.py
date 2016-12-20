@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, Response, 
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from werkzeug.urls import url_quote_plus
+from urllib.parse import urlparse, urljoin
 import os
 import time
 import logging
@@ -29,6 +30,12 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @login_manager.user_loader
 def load_user(id):
 	return database.User.from_id(int(id))
+
+# from http://flask.pocoo.org/snippets/62/
+def is_safe_url(target):
+	ref_url = urlparse(request.host_url)
+	test_url = urlparse(urljoin(request.host_url, target))
+	return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
@@ -136,7 +143,9 @@ def login_get():
 def login_post():
 	user = database.User.from_credentials(request.form["email"], request.form["password"])
 	if user: login_user(user)
-	return redirect("/")
+	url = request.args.get("next") or "/"
+	if not is_safe_url(url): url = "/"
+	return redirect(url)
 
 @app.route("/logout")
 def logout():
