@@ -10,10 +10,10 @@ cookie_monster = "llsfZyohQDa4kRdCCqnoV3gpD8jaHUY0kfkKI3pZlZ4="
 # in Python you can generate like this:
 # import base64
 # import uuid
-# print base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
+# print(base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes))
 # Thanks to https://gist.github.com/didip/823887
 # Alternative way to generate a similar-length nonce:
-# import base64, os; print base64.b64encode(os.urandom(33))
+# import base64, os; print(base64.b64encode(os.urandom(33)))
 
 # These settings are used only for the sending of emails. The server will
 # start with them at the defaults, but all email sending will fail.
