@@ -7,13 +7,8 @@ function glitchErrorMessages(errors, evt) {
 			SELECTOR_ERRORS.append(errors[i].message + '<br />');
 		}
 		SELECTOR_ERRORS.fadeIn(200);
+		evt.preventDefault();
 	} else {
 		SELECTOR_ERRORS.css({ display: 'none' });
-	}
-
-	if (evt && evt.preventDefault) {
-		evt.preventDefault();
-	} else if (event) {
-		event.returnValue = false;
 	}
 }

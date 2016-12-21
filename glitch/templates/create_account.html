@@ -6,7 +6,7 @@
 <img width="125" border="0" height="35" alt="" src="/static/img/sign-up-title.png">
 
 <p></p>
-<form name=createaccount enctype="multipart/form-data" action="/create_account" method="post">
+<form name=createaccount method="post">
 {{ error }}
 <table class="secondary">
 <tr><td width="200px"><label for=username>Your Name:</label></td><td><input name=username></td></tr>
@@ -52,4 +52,4 @@ Ideally, use <a href="http://xkcd.com/936/">four common words</a> for your passw
 	}], glitchErrorMessages
 	);
 </script>
-{% endblock %}	
+{% endblock %}
