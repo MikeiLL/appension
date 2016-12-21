@@ -517,17 +517,18 @@ def get_user_info(id):
 		row = cur.fetchone()
 		return row or (None, 0)
 
-def hex_user_password(email, hex_key):
-	"""Return username and id that matches email."""
+def request_password_reset(email):
+	"""Returns id and hex_key if a match, else None on error"""
+	hex_key = utils.random_hex()
 	with _conn, _conn.cursor() as cur:
-		cur.execute("UPDATE users set hex_key = %s WHERE email=%s RETURNING username, id", (hex_key, email))
-		row = cur.fetchone()
-		return row or (None, 0)
+		cur.execute("UPDATE users set hex_key = %s WHERE email=%s RETURNING id, hex_key", (hex_key, email))
+		return cur.fetchone()
 
 def reset_user_password(id, hex_key, password):
-    with _conn, _conn.cursor() as cur:
-        pwd = utils.hash_password(password)
-        cur.execute("update users set password=%s, hex_key='' where id=%s and hex_key=%s", (pwd, id, hex_key))
+	if not isinstance(password, bytes): password=password.encode("utf-8")
+	with _conn, _conn.cursor() as cur:
+		pwd = utils.hash_password(password)
+		cur.execute("update users set password=%s, hex_key='' where id=%s and hex_key=%s", (pwd, id, hex_key))
 
 def get_analysis(id):
 	with _conn, _conn.cursor() as cur:
