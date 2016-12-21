@@ -14,7 +14,8 @@ cookie_monster = "uqHHRiRIUyCIcB0RJJcv+T/Qc3wJS0p/jsyE1x36qBIa"
 # start with them at the defaults, but all email sending will fail.
 system_email = 'server@example.com'
 admin_email = 'username@example.com'
-# Will use default settings if SMTP_SERVER_PORT == 'localhost'
 SMTP_SERVER_PORT = "smtp.gmail.com:587"
+# Leave these blank if you don't use a password (eg if you use LAN-auth,
+# POP-before-SMTP, or IMAP-before-SMTP).
 SMTP_USERNAME = "email@gmail.com"
 SMTP_PASSWORD = "yourpassword"
