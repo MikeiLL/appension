@@ -163,13 +163,23 @@ def create_account_post():
 		return render_template("create_account.html", page_title="Glitch Account Sign-Up", error=info)
 	# TODO: Send the email
 	# mailer.AlertMessage(admin_message, 'New Account Created')
-	confirmation_url = request.base_url + "confirm/%s/%s" % info
+	confirmation_url = request.base_url + "/confirm/%s/%s" % info # yes, that's "/create_account/confirm"
 	user_message = """Either you or someone else just created an account at InfiniteGlitch.net.
 
 To confirm for %s at %s, please visit %s""" % (request.form["username"], request.form["email"], confirmation_url)
 	mailer.alert_message(user_message, 'Infinite Glitch Account', you=request.form["email"])
 	return render_template("account_confirmation.html")
-	
+
+@app.route("/create_account/confirm/<id>/<nonce>")
+def confirm_account(id, nonce):
+	user_name = database.confirm_user(id, nonce)
+	if user_name is None:
+		flash("Incorrect confirmation link, or link expired. Sorry!")
+	else:
+		login_user(database.User.from_id(id))
+		flash("Welcome, " + user_name + "! Your account has been confirmed.")
+	return redirect("/")
+
 @app.route("/reset_password")
 def reset_password_get():
 	return render_template("reset_password.html", page_title="Reset Glitch Account Password")
@@ -179,6 +189,7 @@ def reset_password_post():
 	if not request.form["email"]:
 		return redirect("/reset_password")
 	notice = "Password reset link sent. Please check your email."
+	# lies, lies, lies, no it wasn't
 	return render_template("account_confirmation.html", notice=notice)
 
 @app.route("/submit")

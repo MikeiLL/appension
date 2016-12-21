@@ -458,11 +458,11 @@ def confirm_user(id, hex_key):
     hex_key: Matching key to the one stored, else the confirmation fails
     """
     with _conn, _conn.cursor() as cur:
-        cur.execute("UPDATE users SET status = 1, hex_key = '' WHERE id = %s AND hex_key = %s RETURNING username, email", (id, hex_key))
+        cur.execute("UPDATE users SET status = 1, hex_key = '' WHERE id = %s AND hex_key = %s RETURNING username", (id, hex_key))
         try:
                 return cur.fetchone()[0]
         except TypeError:
-                return [None, None]
+                return None
                 
 def test_reset_permissions(id, hex_key):
     with _conn, _conn.cursor() as cur:

@@ -80,8 +80,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		<center>
 		<a href="/" style="display:block;">
 		<div id="title">
-		
 		</div></a>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }}">
+    {{ message }}
+</div>
+{% endfor %}
+{% endwith %}
 		</center>
 	</header>
 	<br style="clear:both"/>
