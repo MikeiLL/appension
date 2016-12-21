@@ -112,6 +112,7 @@ async def infinitely_glitch():
 			await _render_output_audio(fade1, "xfade 1")
 			await _render_output_audio(fade2, "xfade 2")
 	finally:
+		logging.warn("Infinite Glitch coroutine terminating due to exception")
 		ffmpeg.stdin.close()
 
 # ------ Main renderer coroutine -------
@@ -142,7 +143,9 @@ async def ffmpeg():
 					position += 1
 	finally:
 		if ffmpeg.returncode is None:
+			logging.warn("Terminating FFMPEG due to renderer exception")
 			ffmpeg.terminate()
+	logging.warn("Main renderer coroutine terminating")
 
 # ------ End of main renderer. Simpler stuff follows. :) -------
 
