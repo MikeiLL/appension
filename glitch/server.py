@@ -10,10 +10,7 @@ import datetime
 import random
 import threading
 import subprocess
-from . import config
-from . import database
-from . import oracle
-from . import utils
+from . import config, database, oracle, utils, mailer
 
 app = Flask(__name__)
 
