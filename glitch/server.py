@@ -167,7 +167,7 @@ def create_account_post():
 	user_message = """Either you or someone else just created an account at InfiniteGlitch.net.
 
 To confirm for %s at %s, please visit %s""" % (request.form["username"], request.form["email"], confirmation_url)
-	mailer.alert_message(user_message, 'Infinite Glitch Account', you=submitter_email)
+	mailer.alert_message(user_message, 'Infinite Glitch Account', you=request.form["email"])
 	return render_template("account_confirmation.html")
 	
 @app.route("/reset_password")
