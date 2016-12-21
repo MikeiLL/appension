@@ -125,22 +125,24 @@ async def ffmpeg():
 	totdata = 0
 	logging.debug("Waiting for data from ffmpeg...")
 	chunk = b""
-	while ffmpeg.returncode is None:
-		data = await ffmpeg.stdout.read(4096)
-		if not data: break
-		totdata += len(data)
-		chunk += data
-		# logging.debug("Received %d bytes [%d]", totdata, len(data))
-		if data.startswith(b"\xFF\xFB") and len(chunk) > 1024*1024:
-			global position
-			songs.append(chunk)
-			logging.debug("Adding another song section [%d, %d bytes]", len(songs) + position, len(chunk))
-			chunk = b""
-			if len(songs) > 32:
-				songs.pop(0)
-				position += 1
-	if ffmpeg.returncode is None:
-		ffmpeg.terminate()
+	try:
+		while ffmpeg.returncode is None:
+			data = await ffmpeg.stdout.read(4096)
+			if not data: break
+			totdata += len(data)
+			chunk += data
+			# logging.debug("Received %d bytes [%d]", totdata, len(data))
+			if data.startswith(b"\xFF\xFB") and len(chunk) > 1024*1024:
+				global position
+				songs.append(chunk)
+				logging.debug("Adding another song section [%d, %d bytes]", len(songs) + position, len(chunk))
+				chunk = b""
+				if len(songs) > 32:
+					songs.pop(0)
+					position += 1
+	finally:
+		if ffmpeg.returncode is None:
+			ffmpeg.terminate()
 
 # ------ End of main renderer. Simpler stuff follows. :) -------
 
