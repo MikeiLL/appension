@@ -24,13 +24,13 @@ def route(url):
 		return f
 	return deco
 
-# ------ Helper functions for ffmpeg() -------
+# ------ Helper functions for infinitely_glitch() -------
 
 # The rate-limiting sleep will wait until the clock catches up to this point.
 # We start it "ten seconds ago" so we get a bit of buffer to start off.
 rendered_until = time.time() - 10
 ffmpeg = None # aio subprocess where we're compressing to MP3
-async def render(seg, fn):
+async def _render_output_audio(seg, fn):
 	logging.info("Sending %d bytes of data for %s secs of %s", len(seg.raw_data), seg.duration_seconds, fn)
 	ffmpeg.stdin.write(seg.raw_data)
 	await ffmpeg.stdin.drain()
@@ -40,7 +40,7 @@ async def render(seg, fn):
 		logging.debug("And sleeping for %ds until %s", delay, rendered_until)
 		await asyncio.sleep(delay)
 
-def get_track():
+def _get_track():
 	"""Get a track and load everything we need."""
 	# TODO: Have proper async database calls (if we can do it without
 	# massively breaking encapsulation); psycopg2 has an async mode, and
@@ -55,13 +55,13 @@ def get_track():
 	t2 = amen.audio.Audio("audio/" + nexttrack.filename)
 	return nexttrack, t2, dub2
 
-async def push_stdin():
+async def infinitely_glitch():
 	try:
-		nexttrack, t2, dub2 = get_track()
+		nexttrack, t2, dub2 = _get_track()
 		skip = 0.0
 		while True:
 			track = nexttrack; t1 = t2; dub1 = dub2
-			nexttrack, t2, dub2 = get_track()
+			nexttrack, t2, dub2 = _get_track()
 			# Combine this into the next track.
 			# 1) Analyze using amen
 			#    t1 = amen.audio.Audio(track.filename)
@@ -97,7 +97,7 @@ async def push_stdin():
 				"start_time": rendered_until,
 				"details": track.track_details,
 			})
-			await render(bulk, track.filename)
+			await _render_output_audio(bulk, track.filename)
 			# 2) Fade across t2_start ms - this will get us to the downbeat
 			# 3) Fade across (t1_length-t1_end) ms - this nicely rounds out the last track
 			# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) ms
@@ -109,8 +109,8 @@ async def push_stdin():
 			fadeout2 = dub1[t1_end:]
 			fadein2 = dub2[t2_start:skip]
 			fade2 = fadeout2.overlay(fadein2)
-			await render(fade1, "xfade 1")
-			await render(fade2, "xfade 2")
+			await _render_output_audio(fade1, "xfade 1")
+			await _render_output_audio(fade2, "xfade 2")
 	finally:
 		ffmpeg.stdin.close()
 
@@ -121,7 +121,7 @@ async def ffmpeg():
 	global ffmpeg
 	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-",
 		stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-	asyncio.ensure_future(push_stdin())
+	asyncio.ensure_future(infinitely_glitch())
 	totdata = 0
 	logging.debug("Waiting for data from ffmpeg...")
 	chunk = b""
