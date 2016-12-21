@@ -277,7 +277,6 @@ class StreamHandler(tornado.web.RequestHandler):
 			self.clients.remove(self)
 			log.info("Removed client at %s", self.request.remote_ip)
 
-# WTForms all UNMIGRATED
 def MpegFile(form, field):
 	"""WTForms Validator"""
 	try:
@@ -717,7 +716,6 @@ class ResetRequestForm(UserForm):
 class ResetPasswordForm(UserForm):
 	email = wtforms.HiddenField('email', validators=[])
 
-# UNMIGRATED
 @route("/confirm/([0-9]+)/([A-Fa-f0-9]+)")
 class ConfirmAccount(tornado.web.RequestHandler):
 	def get(self, id, hex_string):
@@ -775,7 +773,6 @@ To confirm for %s at %s, please visit %s"""%(submitter_name, submitter_email, co
 										meta_description=meta_description,
 										og_description=og_description))
 
-# From here all UNMIGRATED
 # This is stubbed out...
 @route("/reset_password")
 class ResetPassword(tornado.web.RequestHandler):
@@ -858,6 +855,7 @@ class NewPassword(tornado.web.RequestHandler):
 
 
 # Administrative Pages:
+# From here all UNMIGRATED
 
 @route("/gmin")
 class AdminRender(BaseHandler):
@@ -987,6 +985,7 @@ class SandBox(BaseHandler):
 		self.write(templates.load("sandbox.html").generate(compiled=compiled, user_name=user_name,
 								og_description=og_description, page_title=page_title,
 								meta_description=meta_description,og_url=og_url))
+# End UNMIGRATED admin pages
 
 class OutreachForm(Form):
 	message = wtforms.TextField('email', validators=[wtforms.validators.DataRequired()])
@@ -1039,7 +1038,6 @@ class Outreach(BaseHandler):
 		user_name = tornado.escape.xhtml_escape(self.current_user)
 		database.update_outreach_message(message)
 		self.write(templates.load("outreach.html").generate(compiled=compiled, user_name=user_name, notice="", message=message))
-# End UNMIGRATED
 
 @route("/login")
 class Login(BaseHandler):
