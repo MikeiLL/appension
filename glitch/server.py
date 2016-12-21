@@ -168,7 +168,8 @@ def create_account_post():
 
 To confirm for %s at %s, please visit %s""" % (request.form["username"], request.form["email"], confirmation_url)
 	mailer.alert_message(user_message, 'Infinite Glitch Account', you=request.form["email"])
-	return render_template("account_confirmation.html")
+	return render_template("account_confirmation.html",
+		notice="Thanks for joining our little gang. Please check your email for confirmation link... and click it.")
 
 @app.route("/create_account/confirm/<id>/<nonce>")
 def confirm_account(id, nonce):
@@ -188,9 +189,29 @@ def reset_password_get():
 def reset_password_post():
 	if not request.form["email"]:
 		return redirect("/reset_password")
-	notice = "Password reset link sent. Please check your email."
-	# lies, lies, lies, no it wasn't
-	return render_template("account_confirmation.html", notice=notice)
+	info = database.request_password_reset(request.form["email"])
+	if not info:
+		flash("Unrecognized email address.")
+		return redirect("/reset_password")
+	confirmation_url = request.base_url + "/confirm/%s/%s" % info
+	user_message = """Either you or someone else requested a password reset for InfiniteGlitch.net.
+
+To confirm, please visit %s""" % confirmation_url
+	mailer.alert_message(user_message, 'Infinite Glitch Account', you=request.form["email"])
+	return render_template("account_confirmation.html",
+		notice="Password reset link sent. Please check your email.")
+
+@app.route("/reset_password/confirm/<id>/<nonce>")
+def confirm_reset(id, nonce):
+	#### TODO: Generate a new password, or prompt the user
+	new_password = "changeme"
+	user_name = database.reset_user_password(id, nonce, new_password)
+	if user_name is None:
+		flash("Incorrect confirmation link, or link expired. Sorry!")
+	else:
+		login_user(database.User.from_id(id))
+		flash("Your password has been reset. You can now log in.")
+	return redirect("/login")
 
 @app.route("/submit")
 @login_required
