@@ -48,6 +48,9 @@ def _get_track():
 	# aiopg links that in with asyncio.
 	nexttrack = database.get_track_to_play()
 	if not nexttrack.id: return nexttrack, None, None
+	# TODO: Allow an admin-controlled fade at beginning and/or end of a track.
+	# This would be configured with attributes on the track object, and could
+	# be saved long-term, but prob not worth it. See fade_in/fade_out methods.
 	dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
 	# NOTE: Calling amen with a filename invokes a second load from disk,
 	# duplicating work done above. However, it will come straight from the
@@ -79,12 +82,7 @@ async def infinitely_glitch():
 			#    t2_start = t2.timings['beats'][0].time
 			# 4) Count back from the end of the last beat
 			#    t1_end - t2_start
-			# 5) Cross-fade from that point to t1_end to t2_start
-			# Possibly do the cross-fade in two sections, as the times
-			# won't be the same. They're the fade-in duration of t1 and
-			# the fade-out duration of t2. Note that they depend on each
-			# other, so they can't just be stored as-is (although the
-			# beat positions and durations can).
+			# 5) Overlay from that point to t1_end to t2_start
 
 			# Note on units:
 			# The Timedelta that we find in timings['beats'] can provide us
@@ -104,19 +102,19 @@ async def infinitely_glitch():
 				"details": track.track_details,
 			})
 			await _render_output_audio(bulk, track.filename)
-			# 2) Fade across t2_start ms - this will get us to the downbeat
-			# 3) Fade across (t1_length-t1_end) ms - this nicely rounds out the last track
+			# 2) Merge across t2_start ms - this will get us to the downbeat
+			# 3) Merge across (t1_length-t1_end) ms - this nicely rounds out the last track
 			# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) ms
 			skip = t2_start + t1_length - t1_end
-			# Dumb fade mode. Doesn't actually fade, just overlays.
-			fadeout1 = dub1[t1_end - t2_start : t1_end]
-			fadein1 = dub2[:t2_start]
-			fade1 = fadeout1.overlay(fadein1)
-			fadeout2 = dub1[t1_end:]
-			fadein2 = dub2[t2_start:skip]
-			fade2 = fadeout2.overlay(fadein2)
-			await _render_output_audio(fade1, "xfade 1")
-			await _render_output_audio(fade2, "xfade 2")
+			# Overlay the end of one track on the beginning of the other.
+			olayout1 = dub1[t1_end - t2_start : t1_end]
+			olayin1 = dub2[:t2_start]
+			olay1 = olayout1.overlay(olayin1)
+			olayout2 = dub1[t1_end:]
+			olayin2 = dub2[t2_start:skip]
+			olay2 = olayout2.overlay(olayin2)
+			await _render_output_audio(olay1, "overlay 1")
+			await _render_output_audio(olay2, "overlay 2")
 	finally:
 		# Or maybe terminating because we're done rendering the one-shot?
 		logging.warn("Infinite Glitch coroutine terminating due to exception")
