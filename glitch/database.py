@@ -26,7 +26,7 @@ class Track(object):
 	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords,url"
 	def __init__(self, id, filename, artist, title, length, status, 
 				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords, url):
-		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title,
+		log.debug("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title,
 											length, status, story, comments, xfade, itrim, otrim)
 		if len(artist.split(',')) > 1:
 			the_artist = artist.split(',')
