@@ -325,7 +325,7 @@ def oracle_get():
 @app.route("/gmin")
 @admin_required
 def admin():
-	all_tracks = database.get_many_mp3("all", "id")
+	all_tracks = database.get_many_mp3("all", "sequence, id")
 	return render_template("administration.html", all_tracks=all_tracks)
 
 @app.route("/rebuild_glitch")
