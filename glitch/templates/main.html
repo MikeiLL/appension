@@ -26,9 +26,9 @@
         <link href='/static/bar-ui.css' rel='stylesheet' type='text/css'>
         <link href='/static/360player.css' rel='stylesheet' type='text/css'>
         <link href='/static/360player-visualization.css' rel='stylesheet' type='text/css'>
+	<link href='/static/style-responsive-players.css' rel='stylesheet' type='text/css'>
 	{% endblock %}
   
-  <link href='/static/style-responsive-players.css' rel='stylesheet' type='text/css' >
   <meta charset="UTF-8">
 
   <!--
@@ -78,11 +78,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <!--Pattern HTML-->
   <!-- Added 20th June -->
 <div id="pdf"><a href="http://www.thewonder.co.uk/Devil Glitch Registration Certificate.pdf" target="_blank"><img src="/static/img/pdf-link.png" border="0" width="36" height="37" alt=""></a></div><!-- end -->
-			<div class="left-player">
 			{% block sidebar %}
+			<div class="left-player">
 		
-			{% endblock %}
 			</div>
+			{% endblock %}
 	<div class="main">
     <section id="pattern" class="pattern">
   	<ul class="grid">
@@ -111,15 +111,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
 	<script type="text/javascript" src='/static/spin.min.js'></script>
 	<script type="text/javascript" src='/static/soundmanager2-nodebug-jsmin.js'></script>
+	<script type="text/javascript" src='/static/bar-ui.js'></script>
+	{% block scripts %}
 	<script type="text/javascript" src='/static/berniecode-animator.js'></script>
 	<script type="text/javascript" src='/static/360player.js'></script>
-	<script type="text/javascript" src='/static/bar-ui.js'></script>
 	<script type="text/javascript" src='/static/sm-configs.js'></script>
+	{% endblock %}
 	<script type="text/javascript" >			
 	$(".title").click(function() {
 		window.location = $(this).find("a").attr("href"); 		  
 		return false;		
-		});		
+		});
+		$('.confirmation').on('click', function () {
+			return confirm('Are you sure?');
+		});
 	</script>		
 
 		<script type="text/javascript" src='/static/main.js'></script>
