@@ -58,6 +58,7 @@ def _get_track():
 	# timing tests show that this is a measurable but not overly costly
 	# addition on top of the time to do the actual analysis. KISS.
 	t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+	# TODO: Equalize volume?
 	return nexttrack, t2, dub2
 
 async def infinitely_glitch():
