@@ -1,21 +1,25 @@
-{% extends admin_main.html %}
+{% extends "admin_main.html" %}
 
 {% block content %}
 <p><h2>{{ track.filename }}</h2>
 </p>
-<form enctype="multipart/form-data" action="/gmin" method="post">
+<form method="post">
 <table border="1" width="800px" cellpadding="5">
-	<tr><td>id</td><td>Artist</td><td>Filename</td><td>Length</td><td>Status</td><td>Play</td></tr>
+	<tr><td>id</td><td>Artist</td><td>Filename</td><td>Length</td><td>Status</td><td>Position</td></tr>
 	<tr><td>{{ track.id }}</td><td>
-	<input type="text" name="artist" value="{{ track.track_details['artist_exact'] }}"></td>
+	<input type="text" name="artist" value="{{ track.track_details['artist_exact'] }}" size=30></td>
 	<td>{{ track.filename }}</td><td>{{ track.track_details['length'] }}</td>
 	<td>
 		<select name=status>
-		<option value="0" {% if track.track_details['status'] == 0 %}selected{% end %}>Inactive</option>
-		<option value="1" {% if track.track_details['status'] == 1 %}selected{% end %}>Active</option>
+		<option value="0" {{ track.track_details['status'] == 0 and "selected" }}>Inactive</option>
+		<option value="1" {{ track.track_details['status'] == 1 and "selected" }}>Active</option>
 		</select> 
 	</td>
-	<td>
+	<td>0 = default (randomize)<br>
+	<input type="number" name="sequence" value="{{ track.track_details['sequence'] }}"></td>
+	</tr>
+	<tr>
+	<td colspan=6>
 	
 	<!-- Start player -->
 <div class="sm2-bar-ui compact">
@@ -83,8 +87,8 @@
           
 	</td>
 	</tr>
-	<tr><td colspan="6">Lyrics:<br><textarea rows=10 cols=80 name="lyrics">
-	{{ track.track_details['lyrics'] }}</textarea></td></tr>
+	<tr><td colspan="6">Lyrics:<br>
+	<textarea rows=10 cols=80 name="lyrics">{{ track.track_details['lyrics'] }}</textarea></td></tr>
 	<tr><td colspan="6">Story:<br>
 	<textarea rows=10 cols=80 name="story">{{ track.track_details['story'] }}</textarea></td></tr>
 	<tr><td colspan="6">Comments:<br>
@@ -100,11 +104,6 @@
 	<img src="/artwork/{{ track.id }}.jpg" class="track_art"></p></td></tr>
 	<tr><td colspan="6">Update Artwork: <input type="file" name="artwork" size="40"></td></tr>
 	<tr><td colspan="6">Track URL: <input type="text" name="url" size="60" value="{{ track.track_details['url'] }}" placeholder="http://"> 
-	{% if check_url == 'Valid' %} 
-			<em><font color="blue">Link checks good.</font></em>
-	{% elif check_url == 'Invalid' %}
-			<em><font color="red">Link appears to be broken.</font></em>
-	{% endif %}
 	</td></tr>
 	<tr><td colspan="6" align="right"><input type="submit" value="Update"></td></tr>
 </table>

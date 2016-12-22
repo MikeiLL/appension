@@ -26,7 +26,7 @@ class Track(object):
 	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords,url"
 	def __init__(self, id, filename, artist, title, length, status, 
 				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords, url):
-		log.info("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title,
+		log.debug("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title,
 											length, status, story, comments, xfade, itrim, otrim)
 		if len(artist.split(',')) > 1:
 			the_artist = artist.split(',')
@@ -89,25 +89,25 @@ class Submitter(object):
 
 DUMMY_PASSWORD = "5fe87280b1cabccf6b973934ca03ee4e-cf43009757937c46f198b6ad831a0420c78e9b074141b372742cf62755d1866e"
 class User(UserMixin):
-	def __init__(self, id, username, email, status):
+	def __init__(self, id, username, email, status, user_level):
 		self.id = id
 		self.username = username
 		self.email = email
 		self.status = status
+		self.user_level = user_level
 
 	@classmethod
 	def from_id(cls, id, password=None):
 		with _conn, _conn.cursor() as cur:
-			cur.execute("select id, username, email, status from users where id=%s", (id,))
+			cur.execute("select id, username, email, status, user_level from users where id=%s", (id,))
 			data = cur.fetchone()
 		if not data: return None
 		return cls(*data)
 
 	@classmethod
 	def from_credentials(cls, login, password):
-		print("From credentials:", login, password)
 		with _conn, _conn.cursor() as cur:
-			cur.execute("select id, username, email, status, password from users where email=%s or username=%s", (login, login))
+			cur.execute("select id, username, email, status, user_level, password from users where email=%s or username=%s", (login, login))
 			data = cur.fetchone()
 		if not utils.check_password(data[-1] if data else DUMMY_PASSWORD, password):
 			# Passwords do not match. Pretend the user doesn't exist.
@@ -299,10 +299,10 @@ def create_track(mp3data, filename, info, image=None, username=None):
 		)
 		return id
 
-def delete_track(input):
+def delete_track(id):
 	"""Delete the given track ID - no confirmation"""
 	with _conn, _conn.cursor() as cur:
-		cur.execute("""DELETE FROM tracks WHERE id = %s""", (input,))
+		cur.execute("DELETE FROM tracks WHERE id = %s", (id,))
 		
 def reset_played():
     """Reset played for all tracks to 0"""
@@ -312,14 +312,20 @@ def reset_played():
 def update_track(id, info, artwork=None):
 	"""Update the given track ID based on the info mapping.
 
-	This breaks encapsulation just as create_track() does."""
+	info: Mapping with additional info
+
+	artwork: New artwork (will be stored if not None)
+	"""
 	print('****************')
 	log.info(info)
 	with _conn, _conn.cursor() as cur:
 		# Enumerate all updateable fields. If they're not provided, they won't be updated;
 		# any other fields will be ignored. This is basically set intersection on a dict.
-		fields = ("artist", "status", "lyrics", "story", "xfade", "otrim", "itrim", "keywords", "url")
-		param = {k:info[k][0] for k in fields if k in info}
+		fields = ("artist", "status", "lyrics", "story", "keywords", "url", "sequence")
+		param = {k:info[k] for k in fields if k in info}
+		if "status" in param and param["status"] not in {"0", "1"}:
+			# Status has to be either 0 (inactive) or 1 (active).
+			del param["status"]
 		# Artwork comes as a form fill-out, so it's passed in as a third parameter rather than
 		# being picked up by the generic field handler above.
 		if artwork is not None: param['artwork'] = memoryview(artwork)

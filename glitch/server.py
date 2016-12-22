@@ -4,11 +4,12 @@ from werkzeug.utils import secure_filename
 from werkzeug.urls import url_quote_plus
 from urllib.parse import urlparse, urljoin
 import os
+import sys
 import time
 import logging
 import datetime
 import random
-import threading
+import functools
 import subprocess
 from . import config, database, oracle, utils, mailer
 
@@ -28,6 +29,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def load_user(id):
 	return database.User.from_id(int(id))
 
+@app.template_filter()
+def format_seconds(value):
+	return datetime.timedelta(seconds=int(value))
+
 # from http://flask.pocoo.org/snippets/62/
 def is_safe_url(target):
 	ref_url = urlparse(request.host_url)
@@ -40,6 +45,17 @@ started_at = datetime.datetime.utcnow()
 page_title = "Infinite Glitch - The World's Longest Recorded Pop Song, by Chris Butler."
 og_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 meta_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
+
+def admin_required(func):
+	"""Like login_required but also checks for admin access"""
+	@login_required
+	@functools.wraps(func)
+	def wrapper(*args, **kwargs):
+		if current_user.user_level < 2:
+			# TODO: Different error page for non-admin?
+			return login_manager.unauthorized()
+		return func(*args, **kwargs)
+	return wrapper
 
 def couplet_count(lyrics):
 	total = 0
@@ -276,9 +292,7 @@ def oracle_get():
 	popular_words = oracle.popular_words(90)
 	random.shuffle(popular_words)
 	question = request.args.get("question")
-	print(question)
-	if not len(question) == 0:
-		question = question
+	if question:
 		show_cloud="block"
 		answer = oracle.the_oracle_speaks(question)
 		if answer.couplet['artist'].name['name_list'][0] == '':
@@ -288,24 +302,57 @@ def oracle_get():
 		og_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 		page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
 		meta_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
+		# TODO: Turn every bit of this info into plain text, then make it possible to share these things.
 		og_url="http://www.infiniteglitch.net/share_oracle/"+url_quote_plus(question)+"/"+url_quote_plus(answer.couplet['couplet'][0])+"/"+url_quote_plus(answer.couplet['couplet'][1])+"/"+url_quote_plus(artist)
-		print(answer.couplet['artist'].name['display_name'])
-		print(answer.couplet['couplet'][0])
-		print(question)
-		print(111111111)
-		redirect(og_url)
 	else:
-		question, answer = ("","")
-		show_cloud="none"
+		question = answer = ""
+		show_cloud = "none"
 		page_title="Ask The Glitch Oracle"
 		og_description="Ask The Glitch Oracle"
 		meta_description="Ask The Glitch Oracle"
 		og_url="http://www.infiniteglitch.net/oracle"
-	return render_template("oracle.html", page_title="Glitch Oracle", question=question, 
-							answer=answer, popular_words=popular_words[:90],
+	return render_template("oracle.html", page_title="Glitch Oracle", question=question, answer=answer,
+							popular_words=popular_words,
 							show_cloud=show_cloud, og_description=og_description, 
 							meta_description=meta_description, og_url=og_url, url_quote_plus=url_quote_plus)
 
+@app.route("/gmin")
+@admin_required
+def admin():
+	all_tracks = database.get_many_mp3("all", "sequence, id")
+	return render_template("administration.html", all_tracks=all_tracks)
+
+@app.route("/rebuild_glitch")
+@admin_required
+def rebuild_glitch():
+	subprocess.Popen([sys.executable, "-m", "glitch", "major_glitch"], stderr=subprocess.DEVNULL)
+	flash("Major Glitch is being rebuilt. No status is available.")
+	return redirect("/gmin")
+
+@app.route("/delete/<int:id>")
+@admin_required
+def delete_track_get(id):
+	return render_template("delete_track.html", track=database.get_single_track(id))
+
+@app.route("/delete/<int:id>", methods=["POST"])
+@admin_required
+def delete_track_post(id):
+	database.delete_track(id)
+	flash("Track %s deleted." % id)
+	return redirect("/gmin")
+
+@app.route("/edit/<int:id>")
+@admin_required
+def edit_track_get(id):
+	return render_template("track_edit.html", track=database.get_single_track(id))
+
+@app.route("/edit/<int:id>", methods=["POST"])
+@admin_required
+def edit_track_post(id):
+	# TODO: artwork
+	database.update_track(id, request.form)
+	flash("Track %s edited." % id)
+	return redirect("/gmin")
 
 # Log 404s to a file, but only once per server start per URL
 known_404 = set()
