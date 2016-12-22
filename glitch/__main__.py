@@ -2,6 +2,13 @@ from . import config
 from . import apikeys
 import argparse
 
+# Hack: Allow "python -m glitch database" to be the same as "glitch.database"
+import sys
+if len(sys.argv) > 1 and sys.argv[1] == "database":
+	from . import database
+	import clize
+	sys.exit(clize.run(*database.commands, args=sys.argv[1:]))
+
 import logging
 parser = argparse.ArgumentParser(description="Invoke the Infinite Glitch server(s)")
 parser.add_argument("server", help="Server to invoke", choices=["main", "renderer"], nargs="?", default="main")
