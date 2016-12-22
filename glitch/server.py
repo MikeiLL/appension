@@ -327,7 +327,8 @@ def admin():
 @admin_required
 def rebuild_glitch():
 	subprocess.Popen([sys.executable, "-m", "glitch", "major_glitch"], stderr=subprocess.DEVNULL)
-	return render_template("administration.html", notice="Major Glitch is being rebuilt. No status is available.")
+	flash("Major Glitch is being rebuilt. No status is available.")
+	return redirect("/gmin")
 
 # Log 404s to a file, but only once per server start per URL
 known_404 = set()
