@@ -5,7 +5,7 @@
 	{% block head %}
 	<head>
 	  <meta charset="utf-8">
-		<title>Infinite Glitch - The World's Longest Pop Song.</title>
+		<title>Infinite Glitch - {% block title %}The World's Longest Pop Song.{% endblock %}</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" type="image/png" href="/static/img/favicon.ico" >
@@ -20,11 +20,13 @@
 		<meta property="fb:admins" content="100000460115448" >
         <link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
         <link href='/static/style.css' rel='stylesheet' type='text/css' >
-        <link href='/static/bar-ui.css' rel='stylesheet' type='text/css'>
         <link href='/static/sprites.css' rel='stylesheet' type='text/css'>
         <link href='/static/flashblock.css' rel='stylesheet' type='text/css'>
+	{% block stylesheets %}
+        <link href='/static/bar-ui.css' rel='stylesheet' type='text/css'>
         <link href='/static/360player.css' rel='stylesheet' type='text/css'>
         <link href='/static/360player-visualization.css' rel='stylesheet' type='text/css'>
+	{% endblock %}
   
   <link href='/static/style-responsive-players.css' rel='stylesheet' type='text/css' >
   <meta charset="UTF-8">
@@ -49,34 +51,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 -->
 
 
-  <link href='/static/tabs.css' rel='stylesheet' type='text/css' />
-	
-
-  
-
-  <script>
-    window.console = window.console || function(t) {};
-    window.open = function(){ console.log('window.open is disabled.'); };
-    window.print = function(){ console.log('window.print is disabled.'); };
-    // Support hover state for mobile.
-    if (false) {
-      window.ontouchstart = function(){};
-    }
-  </script>
-	<script type="text/javascript" src='/static/modernizr.js'></script>
-
+  <link href='/static/tabs.css' rel='stylesheet' type='text/css' >
 	</head>
 	{% endblock %}
 
 <body>
 
 	<header id="header" role="banner">
-		
-		{% block user %}
 		<div class="user">
 				<p>Hello {{ current_user.username or 'Glitcher' }}!</p>
 		</div>
-		{% endblock %}
 		<center>
 		<a href="/" style="display:block;">
 		<div id="title">
