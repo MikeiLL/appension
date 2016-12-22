@@ -6,7 +6,6 @@ from urllib.parse import urlparse, urljoin
 import os
 import sys
 import time
-import logging
 import datetime
 import random
 import functools
@@ -365,8 +364,6 @@ def page_not_found(e):
 	return render_template('404.html'), 404
 
 def run(port=config.http_port, disable_logins=False):
-	if not os.path.isdir("glitch/static/assets"):
-		os.mkdir("glitch/static/assets")
 	if disable_logins:
 		app.config['LOGIN_DISABLED'] = True
 	app.run(host="0.0.0.0", port=port)
