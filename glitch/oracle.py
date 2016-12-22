@@ -56,10 +56,9 @@ class Couplet(object):
 		couplet = couplet[:1].upper() + couplet[1:]
 		couplet = couplet.splitlines(True)
 		self.couplet = {
-					'artist': artist,
-					'couplet': couplet
-					}
-		print(self.couplet)
+			'artist': artist,
+			'couplet': couplet
+		}
 					
 def translate_non_alphanumerics(to_translate, translate_to=u'_'):
     not_letters_or_digits = u'!"#%\'()*+,-./:;<=>?@[\]^_`{|}~'
@@ -122,15 +121,15 @@ def get_random():
 def the_oracle_speaks(question):
 	wordlist = get_word_list(question)
 	random.shuffle(wordlist)
+	# 1) Try to find a word that comes up in the keywords.
 	for word in wordlist:
-		one = compare_to_lyrics(str(word))
+		one = compare_to_keywords(str(word))
 		if one:
 			return one
+	# 2) Failing that, try to find something in the full lyrics.
 	for word in wordlist:
-		two = compare_to_keywords(str(word))
+		two = compare_to_lyrics(str(word))
 		if two:
 			return two
-	return Couplet(database.Artist(u"The Glitch Oracle"), random.choice(vague_responses) + u'\r ')
-	 
-	
-		
+	# 3) If we still have nothing, be vague.
+	return Couplet(database.Artist(u"The Glitch Oracle"), random.choice(vague_responses) + "\n ")

@@ -292,9 +292,7 @@ def oracle_get():
 	popular_words = oracle.popular_words(90)
 	random.shuffle(popular_words)
 	question = request.args.get("question")
-	print(question)
-	if not len(question) == 0:
-		question = question
+	if question:
 		show_cloud="block"
 		answer = oracle.the_oracle_speaks(question)
 		if answer.couplet['artist'].name['name_list'][0] == '':
@@ -305,20 +303,15 @@ def oracle_get():
 		page_title="The Glitch Oracle - Psychic Answers from the Infinite Glitch"
 		meta_description="Asked the glitch oracle: '"+question+"' and am told '"+answer.couplet['couplet'][0]+answer.couplet['couplet'][1]+"'"
 		og_url="http://www.infiniteglitch.net/share_oracle/"+url_quote_plus(question)+"/"+url_quote_plus(answer.couplet['couplet'][0])+"/"+url_quote_plus(answer.couplet['couplet'][1])+"/"+url_quote_plus(artist)
-		print(answer.couplet['artist'].name['display_name'])
-		print(answer.couplet['couplet'][0])
-		print(question)
-		print(111111111)
-		redirect(og_url)
 	else:
-		question, answer = ("","")
-		show_cloud="none"
+		question = answer = ""
+		show_cloud = "none"
 		page_title="Ask The Glitch Oracle"
 		og_description="Ask The Glitch Oracle"
 		meta_description="Ask The Glitch Oracle"
 		og_url="http://www.infiniteglitch.net/oracle"
-	return render_template("oracle.html", page_title="Glitch Oracle", question=question, 
-							answer=answer, popular_words=popular_words[:90],
+	return render_template("oracle.html", page_title="Glitch Oracle", question=question, answer=answer,
+							popular_words=popular_words,
 							show_cloud=show_cloud, og_description=og_description, 
 							meta_description=meta_description, og_url=og_url, url_quote_plus=url_quote_plus)
 

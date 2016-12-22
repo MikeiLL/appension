@@ -14,26 +14,28 @@
 		<center>
 				<div>
 				<h2>{{ question }}</h2>
+				{% if answer %}
 				<h2>{{ answer.couplet['couplet'][0] }}</h2>
 				<h2>{{ answer.couplet['artist'].name['display_name'] }}</h2>
+				{% endif %}
 				<h2>{{ page_title }}</h2>
-				{% if answer == "" %}
+				{% if not answer %}
 					<center><i>"Questions are a burden to others; answers are a prison for oneself."
 </i><br>
 <p class="intro-copy">The solutions for all the problems we may face are hidden within the twists and turns of the The Infinite Glitch. And it's ever-growing, ever-evolving. Getting <i>smarter</i>.<br><br>
 The Glitch Oracle reaches deep into this accumulated wisdom of human experience and finds the answers to your questions, whatever they may be. Consult The Glitch Oracle anytime you need fast, personal guidance. <br><br>You just know what you need. But it knows what you <i>want</i>. </p></center>
 <center><p><b>Enter your question and then press the Glitch Ball</b></p>
 				{% endif %}
-				{% if not answer == "" %}
+				{% if answer %}
 					<div class="glitch_answer">{{ answer.couplet['couplet'][0] }}<br/>
-						{% if not answer.couplet['artist'].name['display_name'] == "The Glitch Oracle" %}
+						{% if answer.couplet['artist'].name['display_name'] != "The Glitch Oracle" %}
 						{{ answer.couplet['couplet'][1] }}.<br/>
 						<p>-<a href="/view_artist/{{ url_quote_plus('sposplit '+answer.couplet['artist'].name['name_list'][0]+' fposplit '+answer.couplet['artist'].name['name_list'][0]) }}">{{ answer.couplet['artist'].name['display_name'] }}</a></p>
 						{% else %}
-						<p>-{{ answer.couplet['artist'] }}</p>
+						<p>-The Glitch Oracle</p>
 						<br style="clear:both"/>
+						{% endif %}
 					</div>
-					{% endif %}
 				</div>
 				{% endif %}
 				<br style="clear:both"/>
