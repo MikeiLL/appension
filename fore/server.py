@@ -876,7 +876,6 @@ class AdminRender(BaseHandler):
 		database.update_track(track_id, self.request.arguments, artwork)
 		self.write(admin_page(user_name, updated=track_id))
 
-# UNMIGRATED
 @route("/submitters")
 class Submitters(BaseHandler):
 	@authenticated
