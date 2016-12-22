@@ -299,10 +299,10 @@ def create_track(mp3data, filename, info, image=None, username=None):
 		)
 		return id
 
-def delete_track(input):
+def delete_track(id):
 	"""Delete the given track ID - no confirmation"""
 	with _conn, _conn.cursor() as cur:
-		cur.execute("""DELETE FROM tracks WHERE id = %s""", (input,))
+		cur.execute("DELETE FROM tracks WHERE id = %s", (id,))
 		
 def reset_played():
     """Reset played for all tracks to 0"""

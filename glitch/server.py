@@ -335,6 +335,18 @@ def rebuild_glitch():
 	flash("Major Glitch is being rebuilt. No status is available.")
 	return redirect("/gmin")
 
+@app.route("/delete/<int:id>")
+@admin_required
+def delete_track_get(id):
+	return render_template("delete_track.html", track=database.get_single_track(id))
+
+@app.route("/delete/<int:id>", methods=["POST"])
+@admin_required
+def delete_track_post(id):
+	database.delete_track(id)
+	flash("Track %s deleted." % id)
+	return redirect("/gmin")
+
 # Log 404s to a file, but only once per server start per URL
 known_404 = set()
 @app.errorhandler(404)

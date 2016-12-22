@@ -1,0 +1,13 @@
+{% extends "admin_main.html" %}
+{% block content %}
+<form method=post>
+<h2>Are you sure you want to delete this track?</h2>
+<ul>
+<li>ID: {{ track.id }}</li>
+<li>File name: {{ track.filename }}</li>
+<li>Length: {{ track.track_details['length'] | format_seconds }}</li>
+<li>{{ "Active" if track.track_details['status'] else "Inactive" }}</li>
+</ul>
+<input type=submit value="Yes, delete it"> <a href="/gmin">Cancel</a>
+</form>
+{% endblock %}
