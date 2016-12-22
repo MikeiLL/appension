@@ -1,6 +1,7 @@
 from aiohttp import web
 import amen.audio
 import pydub
+import os
 import time
 import asyncio
 import logging
@@ -46,6 +47,7 @@ def _get_track():
 	# massively breaking encapsulation); psycopg2 has an async mode, and
 	# aiopg links that in with asyncio.
 	nexttrack = database.get_track_to_play()
+	if not nexttrack.id: return nexttrack, None, None
 	dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
 	# NOTE: Calling amen with a filename invokes a second load from disk,
 	# duplicating work done above. However, it will come straight from the
@@ -62,6 +64,10 @@ async def infinitely_glitch():
 		while True:
 			track = nexttrack; t1 = t2; dub1 = dub2
 			nexttrack, t2, dub2 = _get_track()
+			if not nexttrack.id:
+				# No more tracks. Render the last track to the very end.
+				await _render_output_audio(dub1[skip:], track.filename)
+				break
 			# Combine this into the next track.
 			# 1) Analyze using amen
 			#    t1 = amen.audio.Audio(track.filename)
@@ -112,6 +118,7 @@ async def infinitely_glitch():
 			await _render_output_audio(fade1, "xfade 1")
 			await _render_output_audio(fade2, "xfade 2")
 	finally:
+		# Or maybe terminating because we're done rendering the one-shot?
 		logging.warn("Infinite Glitch coroutine terminating due to exception")
 		ffmpeg.stdin.close()
 
@@ -182,6 +189,24 @@ async def info(req):
 		"ts": time.time(), "render_time": rendered_until,
 		"tracks": track_list
 	}, headers={"Access-Control-Allow-Origin": "*"})
+
+async def render_all():
+	"""Render the entire track as a one-shot"""
+	global rendered_until; rendered_until = 0 # Disable the delay
+	logging.debug("enqueueing all tracks")
+	database.enqueue_all_tracks()
+	logging.debug("renderer started")
+	global ffmpeg
+	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", "next_glitch.mp3",
+		stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
+	asyncio.ensure_future(infinitely_glitch())
+	await ffmpeg.wait()
+	os.replace("next_glitch.mp3", "major_glitch.mp3")
+
+def major_glitch():
+	loop = asyncio.get_event_loop()
+	loop.run_until_complete(render_all())
+	loop.close()
 
 def run(port=8889):
 	asyncio.ensure_future(ffmpeg())

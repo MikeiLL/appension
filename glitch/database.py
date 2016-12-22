@@ -65,7 +65,14 @@ class Track(object):
 			'comments': comments,
 			'keywords': keywords,
 		}
-		
+
+class EndOfTracks:
+	"""Marker to signal the renderer that we're done.
+
+	It's like a Track but has an ID of zero."""
+	def __init__(self):
+		self.id = 0
+
 class Submitter(object):
     def __init__(self,username,email,userid,artist,track_id,filename,lyrics,story):
         
@@ -175,7 +182,7 @@ def get_track_to_play():
 		except queue.Empty:
 			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY played,random()")
 			row=cur.fetchone()
-			if not row: raise ValueError("Database is empty, cannot enqueue track")
+			if not row: raise ValueError("Database is empty, cannot enqueue track") from None
 			track=Track(*row)
 			log.info("Automatically picking track %s.", track.id)
 		# Record that a track has been played.
@@ -188,6 +195,14 @@ def enqueue_track(id):
 		cur.execute("UPDATE tracks SET enqueued=enqueued+1 WHERE ID=%s RETURNING "+Track.columns, (id,))
 		# Assumes the ID is actually valid (will raise TypeError if not)
 		_track_queue.put(Track(*cur.fetchone()))
+
+def enqueue_all_tracks():
+	"""Enqueue every active track in a random order, followed by an end marker."""
+	with _conn, _conn.cursor() as cur:
+		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY sequence,random()")
+		for track in cur:
+			_track_queue.put(Track(*track))
+	_track_queue.put(EndOfTracks())
 
 def get_single_track(track_id):
 	"""Get details for a single track by its ID"""

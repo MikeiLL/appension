@@ -11,7 +11,7 @@ if len(sys.argv) > 1 and sys.argv[1] == "database":
 
 import logging
 parser = argparse.ArgumentParser(description="Invoke the Infinite Glitch server(s)")
-parser.add_argument("server", help="Server to invoke", choices=["main", "renderer"], nargs="?", default="main")
+parser.add_argument("server", help="Server to invoke", choices=["main", "renderer", "major_glitch"], nargs="?", default="main")
 parser.add_argument("-l", "--log", help="Logging level", type=lambda x: x.upper(),
 	choices=logging._nameToLevel, # NAUGHTY
 	default="INFO")
@@ -23,6 +23,10 @@ logging.basicConfig(level=getattr(logging, arguments.log), format='%(asctime)s:%
 if arguments.server == "renderer":
 	from . import renderer
 	renderer.run() # doesn't return
+elif arguments.server == "major_glitch":
+	from . import renderer
+	renderer.major_glitch()
+	logging.info("Major Glitch built successfully.")
 else:
 	from . import server
 	server.run(disable_logins=arguments.dev) # doesn't return
