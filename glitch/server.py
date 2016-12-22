@@ -6,7 +6,6 @@ from urllib.parse import urlparse, urljoin
 import os
 import sys
 import time
-import logging
 import datetime
 import random
 import functools

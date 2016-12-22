@@ -1,7 +1,7 @@
 DateTime
 docutils
 mutagen
-numpy
+amen
 psycopg2
 pyOpenSSL
 pycparser
