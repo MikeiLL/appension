@@ -852,8 +852,6 @@ class NewPassword(tornado.web.RequestHandler):
 
 
 # Administrative Pages:
-# From here all UNMIGRATED
-
 @route("/gmin")
 class AdminRender(BaseHandler):
 	@authenticated
@@ -879,6 +877,7 @@ class AdminRender(BaseHandler):
 		database.update_track(track_id, self.request.arguments, artwork)
 		self.write(admin_page(user_name, updated=track_id))
 
+# UNMIGRATED
 @route("/submitters")
 class Submitters(BaseHandler):
 	@authenticated
@@ -985,7 +984,6 @@ class SandBox(BaseHandler):
 		self.write(templates.load("sandbox.html").generate(compiled=compiled, user_name=user_name,
 								og_description=og_description, page_title=page_title,
 								meta_description=meta_description,og_url=og_url))
-# End UNMIGRATED admin pages
 
 class OutreachForm(Form):
 	message = wtforms.TextField('email', validators=[wtforms.validators.DataRequired()])
