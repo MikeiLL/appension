@@ -976,7 +976,10 @@ class ConfirmTransition(BaseHandler):
 				
 @route("/sb")
 class SandBox(BaseHandler):
+	@authenticated
 	def get(self):
+		self.get_current_user()
+		if self._user_perms<2: return self.redirect("/")
 		user_name = self.current_user or 'Glitcher'
 		og_description="The world's longest recorded pop song."
 		page_title="Sandbox Page - We Test Stuff Here"
