@@ -540,7 +540,6 @@ class OracleHandler(BaseHandler):
 								page_title=page_title, meta_description=meta_description,
 								og_url=og_url))
 
-# UNMIGRATED
 @route("/share_oracle/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\%]*)/([A-Za-z0-9\+\-\.\_\%]*)")
 class ShareOracleHandler(BaseHandler):
 	def get(self, question, answer_one, answer_two, artist):
