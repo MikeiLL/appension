@@ -3,9 +3,7 @@
 {% block content %}
 <h1>All Tracks</h1>
 <p>Sequence is optional. FIRST CHUNK sequence needs to be any negative number (the only one). LAST CHUNK sequence must be highest number in set.</p>
-<form enctype="multipart/form-data" action="/sequence" method="post">
 <table border="1" cellpadding="3">
-<tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
 <tr>
 	<td>Sequence</td>
 	<td>ID</td>
@@ -19,7 +17,7 @@
 </tr>
 {% for track in all_tracks %}
 <tr>
-	<td><a name="track{{ track.id }}"><input type="text" name="{{ track.id }}" size="5" value="{{ track.track_details['sequence'] }}"/></a></td>
+	<td><a name="track{{ track.id }}">{{ track.track_details['sequence'] or ""}}</a></td>
 	<td>{{ track.id }}</td>
 	<td style="width:300px;word-wrap: break-word;"><a href="/edit/{{ track.id }}" title="file: {{ track.filename }}">{{ track.track_details['artist_exact'] }}</a></td>
 	<td>{{ track.track_details['length'] | format_seconds }}</td>
@@ -97,11 +95,7 @@
 	<td><a href="/delete/{{ track.id }}">delete</a></td>
 </tr>
 {% endfor %}
-<tr><td colspan="10" align="right"><input type="submit" value="Submit"/></td></tr>
 <tr><td colspan="10" align="right"><a href="rebuild_glitch">Generate Major Glitch Track</a></td></tr>
 
 </table>
-</form>
 {% endblock %}
-
-

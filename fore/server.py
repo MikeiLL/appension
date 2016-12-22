@@ -488,7 +488,6 @@ class EditTrack(BaseHandler):
 		track=track, compiled=compiled, user_name=user_name, check_url=check_url))
 	
 
-# UNMIGRATED
 @route("/sequence")		
 class SequenceHandler(BaseHandler):
 	@authenticated
