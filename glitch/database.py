@@ -89,25 +89,25 @@ class Submitter(object):
 
 DUMMY_PASSWORD = "5fe87280b1cabccf6b973934ca03ee4e-cf43009757937c46f198b6ad831a0420c78e9b074141b372742cf62755d1866e"
 class User(UserMixin):
-	def __init__(self, id, username, email, status):
+	def __init__(self, id, username, email, status, user_level):
 		self.id = id
 		self.username = username
 		self.email = email
 		self.status = status
+		self.user_level = user_level
 
 	@classmethod
 	def from_id(cls, id, password=None):
 		with _conn, _conn.cursor() as cur:
-			cur.execute("select id, username, email, status from users where id=%s", (id,))
+			cur.execute("select id, username, email, status, user_level from users where id=%s", (id,))
 			data = cur.fetchone()
 		if not data: return None
 		return cls(*data)
 
 	@classmethod
 	def from_credentials(cls, login, password):
-		print("From credentials:", login, password)
 		with _conn, _conn.cursor() as cur:
-			cur.execute("select id, username, email, status, password from users where email=%s or username=%s", (login, login))
+			cur.execute("select id, username, email, status, user_level, password from users where email=%s or username=%s", (login, login))
 			data = cur.fetchone()
 		if not utils.check_password(data[-1] if data else DUMMY_PASSWORD, password):
 			# Passwords do not match. Pretend the user doesn't exist.

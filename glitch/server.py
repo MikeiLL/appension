@@ -8,6 +8,7 @@ import time
 import logging
 import datetime
 import random
+import functools
 import threading
 import subprocess
 from . import config, database, oracle, utils, mailer
@@ -40,6 +41,17 @@ started_at = datetime.datetime.utcnow()
 page_title = "Infinite Glitch - The World's Longest Recorded Pop Song, by Chris Butler."
 og_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
 meta_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
+
+def admin_required(func):
+	"""Like login_required but also checks for admin access"""
+	@login_required
+	@functools.wraps(func)
+	def wrapper(*args, **kwargs):
+		if current_user.user_level < 2:
+			# TODO: Different error page for non-admin?
+			return login_manager.unauthorized()
+		return func(*args, **kwargs)
+	return wrapper
 
 def couplet_count(lyrics):
 	total = 0
@@ -306,6 +318,10 @@ def oracle_get():
 							show_cloud=show_cloud, og_description=og_description, 
 							meta_description=meta_description, og_url=og_url, url_quote_plus=url_quote_plus)
 
+@app.route("/gmin")
+@admin_required
+def admin():
+	return "You are an admin."
 
 # Log 404s to a file, but only once per server start per URL
 known_404 = set()
