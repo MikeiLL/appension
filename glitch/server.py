@@ -29,6 +29,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def load_user(id):
 	return database.User.from_id(int(id))
 
+@app.template_filter()
+def format_seconds(value):
+	return datetime.timedelta(seconds=int(value))
+
 # from http://flask.pocoo.org/snippets/62/
 def is_safe_url(target):
 	ref_url = urlparse(request.host_url)
@@ -321,7 +325,8 @@ def oracle_get():
 @app.route("/gmin")
 @admin_required
 def admin():
-	return render_template("administration.html")
+	all_tracks = database.get_many_mp3("all", "id")
+	return render_template("administration.html", all_tracks=all_tracks)
 
 @app.route("/rebuild_glitch")
 @admin_required
