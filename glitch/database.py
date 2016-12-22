@@ -383,21 +383,6 @@ def retrieve_outreach_message():
 		except TypeError: 
 			return ''
 
-def get_subsequent_track(track_id):
-    """Return Track Object for next track in sequence."""
-    with _conn, _conn.cursor() as cur:
-        cur.execute("SELECT sequence FROM tracks WHERE id = "+str(track_id))
-        sequence = cur.fetchone()[0]
-        query = "SELECT {cols} FROM tracks WHERE sequence > {seq} ORDER BY sequence limit 1".format(cols=Track.columns, seq=str(sequence))
-        cur.execute(query)
-        try:
-            return Track(*cur.fetchone())
-        except TypeError:
-            query = "SELECT {cols} FROM tracks WHERE sequence >= {seq} ORDER BY sequence limit 1".format(cols=Track.columns, seq=str(sequence))
-            cur.execute(query)
-            return Track(*cur.fetchone())
-            
-        
 def get_track_filename(track_id):
     """Return filename for a specific track, or None"""
     with _conn, _conn.cursor() as cur:
