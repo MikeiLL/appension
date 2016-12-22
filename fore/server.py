@@ -455,7 +455,6 @@ def admin_page(user_name, deleted=0, updated=0, notice=''):
 		user_name=user_name, notice=notice,
 	)
 
-# UNMIGRATED
 @route("/delete/([0-9]+)")
 class DeleteTrack(BaseHandler):
 	@authenticated
@@ -466,7 +465,6 @@ class DeleteTrack(BaseHandler):
 		database.delete_track(input)
 		self.write(admin_page(user_name, deleted=input))
 
-# UNMIGRATED
 @route("/edit/([0-9]+)")
 class EditTrack(BaseHandler):
 	@authenticated

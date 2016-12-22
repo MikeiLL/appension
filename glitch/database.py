@@ -312,14 +312,20 @@ def reset_played():
 def update_track(id, info, artwork=None):
 	"""Update the given track ID based on the info mapping.
 
-	This breaks encapsulation just as create_track() does."""
+	info: Mapping with additional info
+
+	artwork: New artwork (will be stored if not None)
+	"""
 	print('****************')
 	log.info(info)
 	with _conn, _conn.cursor() as cur:
 		# Enumerate all updateable fields. If they're not provided, they won't be updated;
 		# any other fields will be ignored. This is basically set intersection on a dict.
-		fields = ("artist", "status", "lyrics", "story", "xfade", "otrim", "itrim", "keywords", "url")
-		param = {k:info[k][0] for k in fields if k in info}
+		fields = ("artist", "status", "lyrics", "story", "keywords", "url")
+		param = {k:info[k] for k in fields if k in info}
+		if "status" in param and param["status"] not in {"0", "1"}:
+			# Status has to be either 0 (inactive) or 1 (active).
+			del param["status"]
 		# Artwork comes as a form fill-out, so it's passed in as a third parameter rather than
 		# being picked up by the generic field handler above.
 		if artwork is not None: param['artwork'] = memoryview(artwork)

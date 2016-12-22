@@ -347,6 +347,19 @@ def delete_track_post(id):
 	flash("Track %s deleted." % id)
 	return redirect("/gmin")
 
+@app.route("/edit/<int:id>")
+@admin_required
+def edit_track_get(id):
+	return render_template("track_edit.html", track=database.get_single_track(id))
+
+@app.route("/edit/<int:id>", methods=["POST"])
+@admin_required
+def edit_track_post(id):
+	# TODO: artwork
+	database.update_track(id, request.form)
+	flash("Track %s edited." % id)
+	return redirect("/gmin")
+
 # Log 404s to a file, but only once per server start per URL
 known_404 = set()
 @app.errorhandler(404)
