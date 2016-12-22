@@ -11,6 +11,7 @@ import threading, os
 import binascii
 import hashlib
 import collections
+import random
 
 def flatten(l):
 	""" Converts a list of tuples to a flat list.
