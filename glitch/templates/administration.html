@@ -2,26 +2,15 @@
 
 {% block content %}
 <h1>All Tracks</h1>
-<p>Sequence is not necessary. FIRST CHUNK sequence needs to be any negative number (the only one). LAST CHUNK sequence must be highest number in set.</p>
+<p>Sequence is optional. FIRST CHUNK sequence needs to be any negative number (the only one). LAST CHUNK sequence must be highest number in set.</p>
 <form enctype="multipart/form-data" action="/sequence" method="post">
 <table border="1" cellpadding="3">
-{% if deleted %}
-	<h2> Track number {{ deleted }} deleted. </h2>
-{% endif %}
-{% if updated %}
-	<h2> Track info for {{ updated }} updated. </h2>
-{% endif %}
-
-{% if notice %}
-	<h2> {{ notice }} </h2>
-{% endif %}
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"></td></tr>
 <tr>
 	<td>Sequence</td>
 	<td>ID</td>
 	<td>Artist</td>
 	<td>Track Length</td>
-	
 	<td>Status</td>
 	<td>Player</td>
 	<td>Lyrics</td>
@@ -106,11 +95,6 @@
         <td>{% if track.track_details['lyrics'] == '' %}<span class="errors">X</span>{% else %}Yes{% endif %}</td>
         <td>{% if track.track_details['story'] == '' %}<span class="errors">X</span>{% else %}Yes{% endif %}</td>
 	<td><a href="/delete/{{ track.id }}" class="confirmation">delete</a></td>
-</tr>
-<tr>
-	<td colspan="3">Crossfade: {{ track.track_details['xfade'] }}</td>
-	<td colspan="1">iTrim: {{ track.track_details['itrim'] }}</td>
-	<td colspan="5">oTrim: {{ track.track_details['otrim'] }} | <a href="/manage/{{ track.id }}">manage transition</a></td>
 </tr>
 {% endfor %}
 <tr><td colspan="10" align="right"><input type="submit" value="Submit"/></td></tr>
