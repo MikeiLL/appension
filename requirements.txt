@@ -1,5 +1,6 @@
 DateTime
 docutils
+mutagen
 numpy
 psycopg2
 pyOpenSSL
