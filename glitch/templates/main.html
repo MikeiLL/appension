@@ -103,16 +103,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	<div class="container">			
 		{% include 'modules/footer.html' %}	
 	</div>				
+	{% endblock %}	
+	</div>
 	<script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>		
 	<script type="text/javascript" src='/static/spin.min.js'></script>
 	<script type="text/javascript" src='/static/soundmanager2-nodebug-jsmin.js'></script>
 	<script type="text/javascript" src='/static/bar-ui.js'></script>
 	<script type="text/javascript" src='/static/validate.js'></script>
+	<script type="text/javascript" src='/static/error-messages.js'></script>
 	{% block scripts %}
 	<script type="text/javascript" src='/static/berniecode-animator.js'></script>
 	<script type="text/javascript" src='/static/360player.js'></script>
-	<script type="text/javascript" src='/static/sm-configs.js'></script>
+	<script type="text/javascript" src='/static/sm-configs.js'></script>	
+	<script type="text/javascript" src='/static/main.js'></script>
 	{% endblock %}
+	{% block load_scripts %}
 	<script type="text/javascript" >			
 	$(".title").click(function() {
 		window.location = $(this).find("a").attr("href"); 		  
@@ -122,7 +127,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			return confirm('Are you sure?');
 		});
 	</script>		
-	<script type="text/javascript" src='/static/main.js'></script>
 	<script type="text/javascript">
 		// Hide all but first tab content
 		$('.accordion__content:not(:first)').hide();
@@ -136,7 +140,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		$(this).next().show().prev().addClass('active').siblings().removeClass('active');
 		});
 	</script>
-	{% endblock %}	
-	</div>
+	{% endblock %}
 </body>
 </html>

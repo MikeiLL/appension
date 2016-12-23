@@ -4,10 +4,7 @@
 <h1>
 <img width="99" border="0" height="42" alt="" src="/static/img/log-in-title.png">
 </h1>
-<fieldset>
-        <span class="errormessage"></span>
-</fieldset>
-<form method="post">
+<form method=post name=login>
 <table class="secondary">
 {% if notice %}
 	<h4> {{ notice }} </h4>
@@ -23,3 +20,13 @@
 </form>
 {% endblock %}
 
+{% block load_scripts %}
+<script type="text/javascript">		
+	var validator = new FormValidator('login', [{
+		name: 'email',
+		rules: 'required|valid_email'
+	}], glitchErrorMessages
+	);
+</script>
+		
+{% endblock %}	
