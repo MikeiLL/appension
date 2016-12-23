@@ -42,37 +42,37 @@
 	<script type="text/javascript" src='/static/validate.js'></script>
 	<script type="text/javascript" src='/static/main.js'></script>
 
-<script type="text/javascript">
+	<script type="text/javascript">
 	
-	var validator = new FormValidator('submittrack', [{
-		name: 'mp3_file',
-		rules: 'required|callback_spinner'
-	}], glitchErrorMessages
-	);
+		var validator = new FormValidator('submittrack', [{
+			name: 'mp3_file',
+			rules: 'required|callback_spinner'
+		}], glitchErrorMessages
+		);
 	
-	validator.registerCallback('spinner', function(value) {
-		if (validator._hooks.is_file_type(validator.fields.mp3_file, 'mp3') === true) {
-			jQuery("#loading").fadeIn();
-			var opts = {
-				lines: 12, // The number of lines to draw
-				length: 7, // The length of each line
-				width: 4, // The line thickness
-				radius: 10, // The radius of the inner circle
-				color: '#000', // #rgb or #rrggbb
-				speed: 1, // Rounds per second
-				trail: 60, // Afterglow percentage
-				shadow: false, // Whether to render a shadow
-				hwaccel: false // Whether to use hardware acceleration
-			};
-			var target = document.getElementById('loading');
-			var spinner = new Spinner(opts).spin(target);
-			document.getElementById("loading").style.display = "block";
-			return true;
-		}
-		return false;
-	});
+		validator.registerCallback('spinner', function(value) {
+			if (validator._hooks.is_file_type(validator.fields.mp3_file, 'mp3') === true) {
+				jQuery("#loading").fadeIn();
+				var opts = {
+					lines: 12, // The number of lines to draw
+					length: 7, // The length of each line
+					width: 4, // The line thickness
+					radius: 10, // The radius of the inner circle
+					color: '#000', // #rgb or #rrggbb
+					speed: 1, // Rounds per second
+					trail: 60, // Afterglow percentage
+					shadow: false, // Whether to render a shadow
+					hwaccel: false // Whether to use hardware acceleration
+				};
+				var target = document.getElementById('loading');
+				var spinner = new Spinner(opts).spin(target);
+				document.getElementById("loading").style.display = "block";
+				return true;
+			}
+			return false;
+		});
 	
-</script>
+	</script>
 
 
 	{% endblock %}	
