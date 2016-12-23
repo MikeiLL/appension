@@ -148,6 +148,10 @@ def choice_chunks():
 	return render_template("choice_chunks.html", recent_submitters=ordered_submitters, artist_tracks=ordered_artists, letter=letter,
 				og_description=og_description, page_title=page_title, meta_description=meta_description, og_url=og_url)
 
+@app.context_processor
+def inject_now():
+    return {'now': datetime.datetime.utcnow()}
+    
 @app.route("/login")
 def login_get():
 	return render_template("login.html")
