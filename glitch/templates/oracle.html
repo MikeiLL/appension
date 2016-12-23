@@ -13,11 +13,6 @@
 		<form enctype="multipart/form-data" action="/oracle" method="get" id="oracle">
 		<center>
 				<div>
-				<h2>{{ question }}</h2>
-				{% if answer %}
-				<h2>{{ answer.couplet['couplet'][0] }}</h2>
-				<h2>{{ answer.couplet['artist'].name['display_name'] }}</h2>
-				{% endif %}
 				<h2>{{ page_title }}</h2>
 				{% if not answer %}
 					<center><i>"Questions are a burden to others; answers are a prison for oneself."
@@ -29,8 +24,12 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 				{% if answer %}
 					<div class="glitch_answer">{{ answer.couplet['couplet'][0] }}<br/>
 						{% if answer.couplet['artist'].name['display_name'] != "The Glitch Oracle" %}
-						{{ answer.couplet['couplet'][1] }}.<br/>
-						<p>-<a href="/view_artist/{{ url_quote_plus('sposplit '+answer.couplet['artist'].name['name_list'][0]+' fposplit '+answer.couplet['artist'].name['name_list'][0]) }}">{{ answer.couplet['artist'].name['display_name'] }}</a></p>
+							{{ answer.couplet['couplet'][1] }}.<br/>
+							{% if answer.couplet['artist'].name['name_list'][0] == '' %}
+							<p>&mdash;<a href="{{ url_for("tracks_by_artist", artist=answer.couplet['artist'].name['name_list'][1]) }}">{{ answer.couplet['artist'].name['display_name'] }}</a></p>
+							{% else %}
+							<p>&mdash;<a href="{{ url_for("tracks_by_artist", artist='sposplit '+answer.couplet['artist'].name['name_list'][0]+' fposplit '+answer.couplet['artist'].name['name_list'][1]) }}">{{ answer.couplet['artist'].name['display_name'] }}</a></p>
+							{% endif %}
 						{% else %}
 						<p>-The Glitch Oracle</p>
 						<br style="clear:both"/>
@@ -41,13 +40,12 @@ The Glitch Oracle reaches deep into this accumulated wisdom of human experience 
 				<br style="clear:both"/>
 				<div id="oracle_question">
 					{% if question %}
-						<input name=question class="oracle_question_field" value={{ question }}/>
+						<input name=question class="oracle_question_field" value="{{ question }}"/>
 					{% else %}
 						<input name=question class="oracle_question_field" value="" placeholder="Ask me now..."/>
 					{% endif %}
 					
 				</div>
-				<p>{{ answer }}</p>
 		  </form>
 
 		<div id="Table_01">

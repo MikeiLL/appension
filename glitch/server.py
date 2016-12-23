@@ -137,6 +137,7 @@ def choice_chunks():
 	meta_description="You can select any individual chunk of The Infinite Glitch to listen to."
 	og_url=config.server_domain+"/choice_chunks"
 	letter = request.args.get("letters", "")
+	print(letter)
 	if letter:
 		artist_tracks = database.browse_tracks(letter)
 		ordered_artists = utils.alphabetize_ignore_the(artist_tracks)
