@@ -26,7 +26,7 @@
         <link href='/static/bar-ui.css' rel='stylesheet' type='text/css'>
         <link href='/static/360player.css' rel='stylesheet' type='text/css'>
         <link href='/static/360player-visualization.css' rel='stylesheet' type='text/css'>
-	<link href='/static/style-responsive-players.css' rel='stylesheet' type='text/css'>
+		<link href='/static/style-responsive-players.css' rel='stylesheet' type='text/css'>
 	{% endblock %}
   
   <meta charset="UTF-8">
@@ -62,49 +62,44 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				<p>Hello {{ current_user.username or 'Glitcher' }}!</p>
 		</div>
 		<center>
-		<a href="/" style="display:block;">
-		<div id="title">
-		</div></a>
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% for category, message in messages %}
-<div class="alert alert-{{ category }}">
-    {{ message }}
-</div>
-{% endfor %}
-{% endwith %}
+		<a href="/" style="display:block;"><div id="title"></div></a>
+		{% with messages = get_flashed_messages(with_categories=true) %}
+			{% for category, message in messages %}
+				<div class="alert alert-{{ category }}">
+					{{ message }}
+				</div>
+			{% endfor %}
+		{% endwith %}
 		</center>
 	</header>
 	<br style="clear:both"/>
   <!--Pattern HTML-->
   <!-- Added 20th June -->
 <div id="pdf"><a href="http://www.thewonder.co.uk/Devil Glitch Registration Certificate.pdf" target="_blank"><img src="/static/img/pdf-link.png" border="0" width="36" height="37" alt=""></a></div><!-- end -->
-			{% block sidebar %}
-			<div class="left-player">
-		
-			</div>
-			{% endblock %}
-	<div class="main">
-    <section id="pattern" class="pattern">
-  	<ul class="grid">
-		
-	
-	
-	<li class="wide">
-		<div>
-			{% block content %}<p>totally empty page</p>{% endblock %}
-		</div>
-	</li>	
-	
-	{% block rightnav %}
-			<li>
-				{% include 'modules/navigation.html' %}	
-			</li>
-			
-		</ul>
-	</section>	
-	{% endblock %}
+	{% block sidebar %}
+	<div class="left-player">
+
 	</div>
-		{% block footer %}		
+	{% endblock %}
+	{% block main %}
+	<div class="main">
+		<section id="pattern" class="pattern">
+			<ul class="grid">
+				<li class="wide">
+					<div>
+						{% block content %}<p>totally empty page</p>{% endblock %}
+					</div>
+				</li>	
+				{% block rightnav %}
+				<li>
+					{% include 'modules/navigation.html' %}	
+				</li>
+				{% endblock %}
+			</ul>
+		</section>	
+	</div>
+	{% endblock %}
+	{% block footer %}		
 	<div class="container">			
 		{% include 'modules/footer.html' %}	
 	</div>				
@@ -126,26 +121,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			return confirm('Are you sure?');
 		});
 	</script>		
+	<script type="text/javascript" src='/static/main.js'></script>
+	<script type="text/javascript">
+		// Hide all but first tab content
+		$('.accordion__content:not(:first)').hide();
 
-		<script type="text/javascript" src='/static/main.js'></script>
-		
-		<script type="text/javascript">
-			// Hide all but first tab content
-			$('.accordion__content:not(:first)').hide();
+		// Activate first tab
+		$('.accordion__title:first-child').addClass('active');
 
-			// Activate first tab
-			$('.accordion__title:first-child').addClass('active');
-
-			// The clicking / tapping action
-			$('.accordion__title').on('click', function() {
-			$('.accordion__content').hide();
-			$(this).next().show().prev().addClass('active').siblings().removeClass('active');
-			});
-		</script>
-
-
+		// The clicking / tapping action
+		$('.accordion__title').on('click', function() {
+		$('.accordion__content').hide();
+		$(this).next().show().prev().addClass('active').siblings().removeClass('active');
+		});
+	</script>
 	{% endblock %}	
 	</div>
-
 </body>
 </html>

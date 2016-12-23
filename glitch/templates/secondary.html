@@ -1,53 +1,13 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en">	
-{% block head %}	
-	<head>	  <meta charset="utf-8">
-	
-	<title>{{ page_title }}</title>
-
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
-	<meta property="og:title" content="{{ page_title }}" />
-	<meta property="og:type" content="song" />
-	<meta property="og:url" content="{{ og_url }}" />
-	<meta property="og:image" content="http://infiniteglitch.net/static/img/puzzle-stamp.png" />
-	<meta property="og:description" content="{{ og_description }}" />
-	<meta property="fb:admins" content="100000460115448" />
-	
-	<meta name="description" content="{{ meta_description }}">
-
-	<meta name="viewport" content="width=device-width, initial-scale=1">		
-	<link rel="shortcut icon" type="image/png" href="/static/img/favicon.ico" />
-
-	<link rel="image_src" type="image/png" href="/static/img/icon.png" />
-
-	<link href='http://fonts.googleapis.com/css?family=Signika:300' rel='stylesheet' type='text/css'>
-
-	<link href='/static/style.css' rel='stylesheet' type='text/css' />
-
-	<link href='/static/style-extra.css' rel='stylesheet' type='text/css' />
-
-	<link href='/static/bar-ui.css' rel='stylesheet' type='text/css' />
-	<link href='/static/sprites.css' rel='stylesheet' type='text/css' />
-	<link href='/static/flashblock.css' rel='stylesheet' type='text/css' />
-	<link href='/static/360player.css' rel='stylesheet' type='text/css' />
-	<link href='/static/360player-visualization.css' rel='stylesheet' type='text/css' />
-	<link href='/static/style-responsive-players.css' rel='stylesheet' type='text/css' />
-  </head>	
-  {% endblock %}
-	<body>	
-		<header id="secondary_header" role="banner">
-			<br style="clear:both">
-			{% block user %}		
-			<div class="user">				
-				<p>Hello {{ current_user.username or 'Glitcher' }}!</p>
-			</div>		
-			{% endblock %}		
-			<a href="/" style="display:block;"><div id="title-admin"></div></a>	
-		</header>	
-		<br style="clear:both"/>  
-		<!--Pattern HTML-->	
+{% extends "main.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block stylesheets %}
+        <link href='/static/style-extra.css' rel='stylesheet' type='text/css'>
+        <link href='/static/bar-ui.css' rel='stylesheet' type='text/css'>
+        <link href='/static/360player.css' rel='stylesheet' type='text/css'>
+        <link href='/static/360player-visualization.css' rel='stylesheet' type='text/css'>
+		<link href='/static/style-responsive-players.css' rel='stylesheet' type='text/css'>
+{% endblock %}
+		{% block main %}
 		<div class="secondary">
 			<section id="pattern" class="pattern">  	
 				<ul class="grid">
@@ -63,11 +23,12 @@
 					{% block rightnav %}			
 					<li>				
 						{% include 'modules/navigation.html' %}		
-					</li>					
+					</li>	
+					{% endblock %}						
 				</ul>	
-			</section>		
+			</section>	
+		</div>		
 		{% endblock %}	
-		</div>	
 		{% block footer %}		
 		<div class="container">			
 			{% include 'modules/footer.html' %}	
