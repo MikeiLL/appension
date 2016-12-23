@@ -735,6 +735,7 @@ body #oracle_question .oracle_question_field {
     top: 45px;
     width: 320px;
     height: auto;
+    z-index: 1000;
 }
 body #popular_words {
     font-weight: normal;
