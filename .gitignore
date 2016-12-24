@@ -5,3 +5,4 @@ audio/
 glitch/apikeys.py
 *.log
 env
+next_glitch.mp3
