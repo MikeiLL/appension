@@ -367,6 +367,16 @@ def page_not_found(e):
 		with open("404.log", "a") as log:
 			print(datetime.datetime.now(), request.path, file=log)
 	return render_template('404.html'), 404
+	
+# Log 500s to a file, but only once per server start per URL
+known_500 = set()
+@app.errorhandler(500)
+def page_not_found(e):
+	if request.path not in known_500:
+		known_500.add(request.path)
+		with open("500.log", "a") as log:
+			print(datetime.datetime.now(), request.path, file=log)
+	return render_template('500.html'), 500
 
 def run(port=config.http_port, disable_logins=False):
 	if disable_logins:
