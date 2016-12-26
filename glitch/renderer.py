@@ -6,7 +6,7 @@ import time
 import asyncio
 import logging
 import subprocess
-from . import database
+from . import database, config
 
 # To determine the "effective length" of the last beat, we
 # average the last N beats prior to it. Higher numbers give
@@ -207,7 +207,7 @@ def major_glitch():
 	loop.run_until_complete(render_all())
 	loop.close()
 
-def run(port=8889):
+def run(port=config.renderer_port):
 	asyncio.ensure_future(ffmpeg())
 	web.run_app(app, port=port)
 

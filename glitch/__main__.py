@@ -20,6 +20,7 @@ arguments = parser.parse_args()
 log = logging.getLogger(__name__)
 logging.basicConfig(level=getattr(logging, arguments.log), format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
 
+# TODO: Override with port=NNNN if specified by environment
 if arguments.server == "renderer":
 	from . import renderer
 	renderer.run() # doesn't return
