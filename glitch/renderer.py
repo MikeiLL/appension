@@ -201,10 +201,7 @@ async def render_all():
 	asyncio.ensure_future(infinitely_glitch())
 	await ffmpeg.wait()
 	logging.debug("next_glitch.mp3 rendered")
-	try:
-		os.replace("next_glitch.mp3", "major_glitch.mp3")
-	except FileNotFoundError:
-		logging.debug("error moving to major_glitch.mp3")
+	os.replace("next_glitch.mp3", "major_glitch.mp3")
 
 def major_glitch():
 	loop = asyncio.get_event_loop()
