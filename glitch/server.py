@@ -258,7 +258,7 @@ def submit_track_post():
 	if not file.filename:
 		flash('No audio file uploaded')
 		return redirect(request.url)
-	if not file.filename.endswith('.mp3') or file.mimetype != "audio/mp3":
+	if not file.filename.endswith('.mp3') or file.mimetype not in {"audio/mpeg", "audio/mp3"}:
 		# TODO: Support more files
 		# TODO: Test file content, not just extension
 		logging.debug("Rejecting upload of %r [%s]", file.filename, file.mimetype)
