@@ -6,6 +6,7 @@ from urllib.parse import urlparse, urljoin
 import os
 import sys
 import time
+import logging
 import datetime
 import random
 import functools
@@ -260,6 +261,7 @@ def submit_track_post():
 	if not file.filename.endswith('.mp3') or file.mimetype != "audio/mp3":
 		# TODO: Support more files
 		# TODO: Test file content, not just extension
+		logging.debug("Rejecting upload of %r [%s]", file.filename, file.mimetype)
 		flash('Only .mp3 files currently accepted')
 		return redirect(request.url)
 	image = None # TODO
