@@ -20,7 +20,7 @@
       }
     });
     getTrackInfo = function() {
-      return $.getJSON("http://localhost:8889/status.json", function(info) {
+      return $.getJSON(window.location.protocol + "//" + window.location.hostname + ":8889/status.json", function(info) {
         var artist, i, id, len, minutes, ref, results, seconds, story, tag, track, track_url;
         tag = 0;
         ref = info.tracks;
