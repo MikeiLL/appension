@@ -200,6 +200,7 @@ async def render_all():
 		stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
 	asyncio.ensure_future(infinitely_glitch())
 	await ffmpeg.wait()
+	logging.debug("next_glitch.mp3 rendered")
 	os.replace("next_glitch.mp3", "major_glitch.mp3")
 
 def major_glitch():
