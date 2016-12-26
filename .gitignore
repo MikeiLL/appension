@@ -6,3 +6,5 @@ glitch/apikeys.py
 *.log
 env
 next_glitch.mp3
+major_glitch.mp3
+glitch/static/single-audio-files/*.mp3
