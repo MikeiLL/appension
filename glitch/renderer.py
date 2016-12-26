@@ -196,12 +196,12 @@ async def render_all():
 	database.enqueue_all_tracks()
 	logging.debug("renderer started")
 	global ffmpeg
-	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", "next_glitch.mp3",
+	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", "static/single-audio-files/next_glitch.mp3",
 		stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
 	asyncio.ensure_future(infinitely_glitch())
 	await ffmpeg.wait()
 	logging.debug("next_glitch.mp3 rendered")
-	os.replace("next_glitch.mp3", "major_glitch.mp3")
+	os.replace("static/single-audio-files/next_glitch.mp3", "static/single-audio-files/major_glitch.mp3")
 
 def major_glitch():
 	loop = asyncio.get_event_loop()
