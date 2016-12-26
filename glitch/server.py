@@ -68,7 +68,7 @@ def home():
 	complete_length = datetime.timedelta(seconds=int(database.get_complete_length()))
 	return render_template("index.html",
 		open=True, # Can have this check for server load if we ever care
-		endpoint="http://localhost:8889/all.mp3", # TODO: Make configurable (or better still, multiplex the port)
+		endpoint="%s:%d/all.mp3" % (config.server_domain, config.renderer_port),
 		complete_length=complete_length,
 		couplet_count=couplet_count(lyrics),
 		lyrics=lyrics,

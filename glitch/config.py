@@ -2,7 +2,8 @@
 # See also apikeys_sample.py for the configs which are _not_ git-managed.
 server_domain = "http://www.infiniteglitch.net"
 
-http_port = 8888
+http_port = 8888 # Port for the main web site
+renderer_port = 8889 # Port for the renderer (/all.mp3 and friends)
 uid = 0 # User ID and group ID to drop privileges to
 gid = 0 # Set both to 0 to not drop privileges, eg if the server is started without privs
 use_sudo_uid_gid = True # If set, uid/gid will be overridden with SUDO_UID/SUDO_GID if available
