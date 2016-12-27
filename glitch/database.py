@@ -189,6 +189,7 @@ def get_track_to_play(used=[]):
 			if track.id in used or len(used) > MAX_RECENT_TRACKS:
 				# Periodically wipe out the 'used' collection, resetting
 				# all tracks to the same status.
+				log.debug("Wiping the recent track list.")
 				used[:] = []
 			leak = random.randrange(MAX_RECENT_TRACKS * 2)
 			if leak < len(used):
@@ -197,10 +198,13 @@ def get_track_to_play(used=[]):
 				# being "this track's turn" with complete certainty. The
 				# chances of this occurring are N in MAX, where N is the
 				# number of tracks already listed. Leak that one track.
+				log.debug("Leaking one track from recent track list.")
 				used.pop(leak)
 			# Never play the same track twice running. We _always_ have this
 			# track in the 'used' list for next time.
 			used.append(track.id)
+			log.debug("Added track %s to recent track list (now has %s/%s)",
+				track.id, len(used), MAX_RECENT_TRACKS)
 		# Record that a track has been played.
 		# Currently simply increments the counter; may later keep track of how long since played, etc.
 		cur.execute("UPDATE tracks SET played=played+1 WHERE id=%s", (track.id,))
