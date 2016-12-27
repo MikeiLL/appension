@@ -381,6 +381,7 @@ def page_not_found(e):
 	return render_template('500.html'), 500
 
 def run(port=config.http_port, disable_logins=False):
+	# Used only for debug mode; production mode is done by gunicorn.
 	if disable_logins:
 		app.config['LOGIN_DISABLED'] = True
 	app.run(host="0.0.0.0", port=port)

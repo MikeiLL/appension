@@ -4,7 +4,7 @@ Requires=glitch.socket
 
 [Service]
 User=`whoami`
-ExecStart=`which python` -m glitch
+ExecStart=`which gunicorn` glitch.server:app
 WorkingDirectory=`pwd`
 "|sudo tee /etc/systemd/system/glitch.service >/dev/null
 echo "[Socket]
