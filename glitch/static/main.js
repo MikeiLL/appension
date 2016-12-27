@@ -26,9 +26,9 @@
         ref = info.tracks;
         for (i = 0, len = ref.length; i < len; i++) {
           track = ref[i];
-          console.log(track);
           id = track.id;
-          if (info.ts > track.start_time + track.details.length) {
+          console.log(info.ts);
+          if (i >= info.tracks.length - 3) {
             console.log(`Track #${id} is in the past`);
             continue;
           } else {
