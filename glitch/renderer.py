@@ -206,14 +206,23 @@ async def render_all():
 	logging.debug("next_glitch.mp3 rendered")
 	os.replace("static/single-audio-files/next_glitch.mp3", "static/single-audio-files/major_glitch.mp3")
 
+async def serve_http(port):
+	srv = await asyncio.get_event_loop().create_server(app.make_handler(), "0.0.0.0", port)
+	print("Renderer listening on %s:%s" % srv.sockets[0].getsockname())
+
+# ------ Synchronous entry points ------
+
 def major_glitch():
 	loop = asyncio.get_event_loop()
 	loop.run_until_complete(render_all())
 	loop.close()
 
 def run(port=config.renderer_port):
-	asyncio.ensure_future(run_ffmpeg())
-	web.run_app(app, port=port)
+	loop = asyncio.get_event_loop()
+	loop.run_until_complete(serve_http(port))
+	# TODO: Drop privs
+	loop.run_until_complete(run_ffmpeg())
+	loop.close()
 
 if __name__ == '__main__':
 	run()
