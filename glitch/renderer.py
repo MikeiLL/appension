@@ -123,7 +123,7 @@ async def infinitely_glitch():
 
 # ------ Main renderer coroutine -------
 
-async def ffmpeg():
+async def run_ffmpeg():
 	logging.debug("renderer started")
 	global ffmpeg
 	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", "-",
@@ -209,7 +209,7 @@ def major_glitch():
 	loop.close()
 
 def run(port=config.renderer_port):
-	asyncio.ensure_future(ffmpeg())
+	asyncio.ensure_future(run_ffmpeg())
 	web.run_app(app, port=port)
 
 if __name__ == '__main__':
