@@ -220,7 +220,7 @@ def major_glitch():
 def run(port=config.renderer_port):
 	loop = asyncio.get_event_loop()
 	loop.run_until_complete(serve_http(port))
-	# TODO: Drop privs
+	# TODO: Drop privs if necessary
 	loop.run_until_complete(run_ffmpeg())
 	loop.close()
 
