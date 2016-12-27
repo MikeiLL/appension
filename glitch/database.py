@@ -180,7 +180,13 @@ def get_track_to_play(used=[]):
 			log.info("Using enqueued track %s.", track.id)
 		except queue.Empty:
 			# Pick a track that hasn't been played too recently, that hasn't
-			# been played too often, and randomly.
+			# been played too often, and randomly. NOTE: Using a list as the
+			# 'used' collection means PostgreSQL is working with an ARRAY[],
+			# which is searched linearly. Using a Python tuple instead would
+			# mean Postgres works with a ROW[], which *may* outperform this;
+			# however, that would incur efficiency costs in the manipulation
+			# below (pop, append). Question posted on Stack Overflow - check
+			# for more details: http://stackoverflow.com/q/41340837/1236787
 			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY id=any(%s),played,random() limit 1", [used])
 			row=cur.fetchone()
 			if not row: raise ValueError("Database is empty, cannot enqueue track") from None
