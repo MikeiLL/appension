@@ -116,9 +116,12 @@ async def infinitely_glitch():
 			olay2 = olayout2.overlay(olayin2)
 			await _render_output_audio(olay1, "overlay 1")
 			await _render_output_audio(olay2, "overlay 2")
-	finally:
-		# Or maybe terminating because we're done rendering the one-shot?
+	except KeyboardInterrupt:
+		logging.info("Infinite Glitch coroutine terminating at admin request")
+	except BaseException:
 		logging.warn("Infinite Glitch coroutine terminating due to exception")
+		raise
+	finally:
 		ffmpeg.stdin.close()
 
 # ------ Main renderer coroutine -------
