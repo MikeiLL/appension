@@ -7,6 +7,7 @@ from . import apikeys
 import psycopg2
 from . import utils
 import logging
+import random
 import queue
 import os
 import re
@@ -165,26 +166,41 @@ def get_many_mp3(status=1, order_by='length'):
 		return [Track(*row) for row in cur.fetchall()]
 
 _track_queue = queue.Queue()
-		
-def get_track_to_play():
+
+MAX_RECENT_TRACKS = 50
+def get_track_to_play(used=[]):
 	"""Get a track from the database with presumption that it will be played.
 
 	If something has been enqueued with enqueue_track(), that will be the one
 	returned; otherwise, one is picked by magic.
-
-	TODO: Prefer tracks that haven't been played *recently*. Currently, any
-	track added after the system's been up for a while will be played to death.
 	"""
 	with _conn, _conn.cursor() as cur:
 		try:
 			track=_track_queue.get(False)
 			log.info("Using enqueued track %s.", track.id)
 		except queue.Empty:
-			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY played,random()")
+			# Pick a track that hasn't been played too recently, that hasn't
+			# been played too often, and randomly.
+			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY id=any(%s),played,random() limit 1", [used])
 			row=cur.fetchone()
 			if not row: raise ValueError("Database is empty, cannot enqueue track") from None
 			track=Track(*row)
 			log.info("Automatically picking track %s.", track.id)
+			if track.id in used or len(used) > MAX_RECENT_TRACKS:
+				# Periodically wipe out the 'used' collection, resetting
+				# all tracks to the same status.
+				used[:] = []
+			leak = random.randrange(MAX_RECENT_TRACKS * 2)
+			if leak < len(used):
+				# Occasionally, don't expand the 'used' collection. This
+				# gives us a bit of perturbation; you can't depend on it
+				# being "this track's turn" with complete certainty. The
+				# chances of this occurring are N in MAX, where N is the
+				# number of tracks already listed. Leak that one track.
+				used.pop(leak)
+			# Never play the same track twice running. We _always_ have this
+			# track in the 'used' list for next time.
+			used.append(track.id)
 		# Record that a track has been played.
 		# Currently simply increments the counter; may later keep track of how long since played, etc.
 		cur.execute("UPDATE tracks SET played=played+1 WHERE id=%s", (track.id,))
