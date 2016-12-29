@@ -19,7 +19,7 @@ LAST_BEAT_AVG = 10
 # stored track analysis data. Any time this gets incremented,
 # all analysis stored in the database is invalidated, and the
 # full amen.audio.Audio work will be done anew for each track.
-ANALYSIS_VERSION = 1
+ANALYSIS_VERSION = 2
 
 app = web.Application()
 
@@ -65,18 +65,29 @@ def _get_track():
 	except json.JSONDecodeError: a = {"version": 0} # Anything we can't parse, we ignore
 	if a["version"] == ANALYSIS_VERSION:
 		# We have valid analysis. Use it.
-		pass
+		return nexttrack, a, dub2
 
 	# We don't have valid analysis. Call on amen.audio and do all the work.
-	t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+	analysis = amen.audio.Audio("audio/" + nexttrack.filename)
 	# TODO: Equalize volume?
 
-	# Store the analysis back into the database.
+	# Note on units:
+	# The Timedelta that we find in timings['beats'] can provide us
+	# with float total_seconds(), or with a .value in nanoseconds.
+	# We later on will prefer milliseconds, though, so we rescale.
+
+	# Store the interesting parts of the analysis into the database.
+	# Note that this dictionary should be relatively raw and simple,
+	# allowing future changes to infinitely_glitch() to still use the
+	# same analysis data. Bumping ANALYSIS_VERSION will incur a quite
+	# significant performance cost until the new analysis propagates.
 	a = {"version": ANALYSIS_VERSION,
-		# whatever
+		"duration": int(analysis.duration * 1000),
+		"beats": [b.time.value // 1000000 for b in analysis.timings['beats']],
+		"beat_length": [b.duration.value // 1000000 for b in analysis.timings['beats']],
 	}
 	database.save_analysis(nexttrack.id, json.dumps(a))
-	return nexttrack, t2, dub2
+	return nexttrack, a, dub2
 
 async def infinitely_glitch():
 	try:
@@ -102,16 +113,11 @@ async def infinitely_glitch():
 			#    t1_end - t2_start
 			# 5) Overlay from that point to t1_end to t2_start
 
-			# Note on units:
-			# The Timedelta that we find in timings['beats'] can provide us
-			# with float total_seconds(), or with a .value in nanoseconds.
-			# We later on will prefer milliseconds, though, so we rescale.
 			# In this code, all variables store ms unless otherwise stated.
-			t1b = t1.timings['beats']
-			beat_ns = sum(b.duration.value for b in t1b[-1-LAST_BEAT_AVG : -1]) // LAST_BEAT_AVG
-			t1_end = (t1b[-1].time.value + beat_ns) // 1000000
-			t1_length = int(t1.duration * 1000)
-			t2_start = t2.timings['beats'][1].time.value // 1000000
+			avg_beat_len = sum(t1["beat_length"][-1-LAST_BEAT_AVG : -1]) // LAST_BEAT_AVG
+			t1_end = t1["beats"][-1] + avg_beat_len
+			t1_length = t1["duration"]
+			t2_start = t2["beats"][1]
 			# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
 			bulk = dub1[skip : t1_end - t2_start]
 			track_list.append({
