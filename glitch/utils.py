@@ -50,6 +50,7 @@ def timeme(func): return func
 def enable_timer():
 	global timeme
 	def timeme(func):
+		"""Decorator to simply and naively profile one function"""
 		tm = 0.0
 		def wrapper(*a, **kw):
 			t = time.time()
