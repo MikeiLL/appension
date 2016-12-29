@@ -630,7 +630,7 @@ def tables(*, confirm=False):
 
 	confirm: If omitted, will do a dry run.
 	"""
-	tb = None; cols = set(); coldefs = []
+	tb = None; cols = {}; coldefs = []
 	with _conn, _conn.cursor() as cur:
 		def finish():
 			if tb and (coldefs or cols):
@@ -646,16 +646,16 @@ def tables(*, confirm=False):
 			# Flush-left lines are table names
 			if line == line.lstrip():
 				finish()
-				tb = line; cols = set(); coldefs = []
-				cur.execute("select column_name from information_schema.columns where table_name=%s", (tb,))
-				cols = {row[0] for row in cur}
+				tb = line; coldefs = []
+				cur.execute("select column_name, data_type from information_schema.columns where table_name=%s", (tb,))
+				cols = {row[0]:row[1] for row in cur}
 				is_new = not cols
 				continue
 			# Otherwise, it should be a column definition, starting (after whitespace) with the column name.
 			colname, defn = line.strip().split(" ", 1)
 			if colname in cols:
 				# Column already exists. Currently, we assume there's nothing to change.
-				cols.remove(colname)
+				del cols[colname]
 			else:
 				# Column doesn't exist. Add it!
 				# Note that we include a newline here so that a comment will be properly terminated.
