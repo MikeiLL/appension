@@ -10,8 +10,8 @@ tracks
 	artwork bytea not null default ''
 	length double precision not null default 0
 	xfade int not null default 0
-	itrim double precision not null default 0
-	otrim double precision not null default 0
+	itrim int not null default 0
+	otrim int not null default 0
 	lyrics text not null default ''
 	story text not null default ''
 	status smallint not null default 0
