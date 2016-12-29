@@ -670,7 +670,7 @@ def tables(*, confirm=False):
 				}.get(want_type, want_type)
 				have_type = cols[colname]
 				if want_type != have_type:
-					print("Change of type: %s from %s to %s" % (colname, have_type, want_type))
+					coldefs.append("alter %s set type %s" % (colname, want_type))
 				del cols[colname]
 			else:
 				# Column doesn't exist. Add it!
