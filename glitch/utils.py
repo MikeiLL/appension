@@ -12,6 +12,7 @@ import binascii
 import hashlib
 import collections
 import random
+import time
 
 def flatten(l):
 	""" Converts a list of tuples to a flat list.
@@ -115,3 +116,18 @@ def alphabetize_ignore_the(list_of_names):
 		else:
 			ordered_object[item[0].upper()] = ('', item[0])
 	return collections.OrderedDict(sorted(ordered_object.items()))
+
+# Unless enable_timer() is called, @utils.timeme does nothing.
+def timeme(func): return func
+def enable_timer():
+	global timeme
+	def timeme(func):
+		tm = 0.0
+		def wrapper(*a, **kw):
+			t = time.time()
+			nonlocal tm
+			try: return func(*a, **kw)
+			finally: tm += time.time() - t
+		import atexit
+		atexit.register(lambda: print("Total time in %s: %s" % (func.__name__, tm)))
+		return wrapper

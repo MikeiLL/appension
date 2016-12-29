@@ -40,6 +40,7 @@ if arguments.server == "renderer":
 	from . import renderer
 	renderer.run(sock=sock) # doesn't return
 elif arguments.server == "major_glitch":
+	from . import utils; utils.enable_timer()
 	from . import renderer
 	renderer.major_glitch()
 	logging.info("Major Glitch built successfully.")

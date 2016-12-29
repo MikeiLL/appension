@@ -8,7 +8,7 @@ import time
 import asyncio
 import logging
 import subprocess
-from . import database, config
+from . import database, config, utils
 
 # To determine the "effective length" of the last beat, we
 # average the last N beats prior to it. Higher numbers give
@@ -49,6 +49,7 @@ async def _render_output_audio(seg, fn):
 		logging.debug("And sleeping for %ds until %s", delay, rendered_until)
 		await asyncio.sleep(delay)
 
+@utils.timeme
 def _get_track():
 	"""Get a track and load everything we need."""
 	# TODO: Have proper async database calls (if we can do it without
