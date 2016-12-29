@@ -634,9 +634,9 @@ def tables(*, confirm=False):
 	with _conn, _conn.cursor() as cur:
 		def finish():
 			if tb and (coldefs or cols):
-				if is_new: query = "create table "+tb+" ("+", ".join(coldefs)+")"
+				if is_new == "": query = "create table "+tb+" ("+", ".join(coldefs)+")"
 				else:
-					parts = ["add "+c for c in coldefs] + ["drop "+c for c in cols]
+					parts = coldefs + ["drop "+c for c in cols]
 					query = "alter table "+tb+" "+", ".join(parts)
 				if confirm: cur.execute(query)
 				else: print(query)
@@ -649,7 +649,9 @@ def tables(*, confirm=False):
 				tb = line; coldefs = []
 				cur.execute("select column_name, data_type from information_schema.columns where table_name=%s", (tb,))
 				cols = {row[0]:row[1] for row in cur}
-				is_new = not cols
+				# New tables want a series of column definitions; altered tables want any added
+				# columns prefixed with the command "add".
+				is_new = "add" if cols else ""
 				continue
 			# Otherwise, it should be a column definition, starting (after whitespace) with the column name.
 			colname, defn = line.strip().split(" ", 1)
@@ -659,7 +661,7 @@ def tables(*, confirm=False):
 				# the data type "double precision" will be treated as "double".
 				# NOTE: You may not be able to use this to change a data type to or from 'serial',
 				# since that's not (strictly speaking) a data type.
-				want_type = defn.split()[0]
+				want_type = defn.split(" ", 1)[0]
 				want_type = {
 					"double": "double precision",
 					"serial": "integer", "int": "integer",
@@ -674,7 +676,7 @@ def tables(*, confirm=False):
 				# Column doesn't exist. Add it!
 				# Note that we include a newline here so that a comment will be properly terminated.
 				# If you look at the query, it'll have all its commas oddly placed, but that's okay.
-				coldefs.append("%s %s\n"%(colname,defn))
+				coldefs.append("%s %s %s\n" % (is_new, colname, defn))
 		finish()
 	if not confirm: print("Add --confirm to actually make the changes.")
 
