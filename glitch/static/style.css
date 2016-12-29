@@ -887,21 +887,27 @@ body #responsive_paragraphs p:first-of-type {
 .alert {
 	padding: 1em;
 	margin: 0.5em;
+	font-weight: 900;
+	text-shadow: 2px 2px black;
 }
 
-.alert-warning {
+.alert-warning
+{
 	color: yellow;
-	font-weight: 900;
 }
 
 .alert-error {
-	color: red;
-	font-weight: 900;
+	color: yellow;
 }
 
 .alert-message {
 	color: green;
-	font-weight: 900;
+}
+
+#chain
+{
+	position: absolute;
+	margin: -8px 0 0 -21px;
 }
 
 @media all and (max-width: 900px) and (min-width: 600px) {
