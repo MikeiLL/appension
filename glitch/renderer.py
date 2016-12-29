@@ -114,7 +114,7 @@ async def infinitely_glitch():
 			#    t1_end - t2_start
 			# 5) Overlay from that point to t1_end to t2_start
 
-			# In this code, all variables store ms unless otherwise stated.
+			# All times are in milliseconds.
 			avg_beat_len = sum(t1["beat_length"][-1-LAST_BEAT_AVG : -1]) // LAST_BEAT_AVG
 			t1_end = t1["beats"][-1] + avg_beat_len
 			t1_length = t1["duration"]
