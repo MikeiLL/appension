@@ -222,12 +222,13 @@ def enqueue_track(id):
 		# Assumes the ID is actually valid (will raise TypeError if not)
 		_track_queue.put(Track(*cur.fetchone()))
 
-def enqueue_all_tracks():
+def enqueue_all_tracks(count=1):
 	"""Enqueue every active track in a random order, followed by an end marker."""
 	with _conn, _conn.cursor() as cur:
-		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY sequence,random()")
-		for track in cur:
-			_track_queue.put(Track(*track))
+		for _ in range(count):
+			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY sequence,random()")
+			for track in cur:
+				_track_queue.put(Track(*track))
 	_track_queue.put(EndOfTracks())
 
 def get_single_track(track_id):
