@@ -93,7 +93,7 @@ def _get_track():
 async def infinitely_glitch():
 	try:
 		nexttrack, t2, dub2 = _get_track()
-		skip = 0
+		skip = nexttrack.itrim
 		while True:
 			track = nexttrack; t1 = t2; dub1 = dub2
 			nexttrack, t2, dub2 = _get_track()
@@ -118,7 +118,7 @@ async def infinitely_glitch():
 			track_list.append({
 				"id": track.id,
 				"start_time": rendered_until,
-				"details": track.track_details,
+				"details": track.track_details, # NOTE: The length here ignores itrim/otrim and overlay.
 			})
 			await _render_output_audio(bulk, track.filename)
 			# 2) Merge across t2_start ms - this will get us to the downbeat
