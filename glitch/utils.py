@@ -1,6 +1,7 @@
 import os
 import binascii
 import hashlib
+import functools
 import collections
 import random
 import time
@@ -52,6 +53,7 @@ def enable_timer():
 	def timeme(func):
 		"""Decorator to simply and naively profile one function"""
 		tm = 0.0
+		@functools.wraps(func)
 		def wrapper(*a, **kw):
 			t = time.time()
 			nonlocal tm
