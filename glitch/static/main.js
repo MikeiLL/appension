@@ -28,7 +28,7 @@
           track = ref[i];
           id = track.id;
           console.log(info.ts);
-          if (i >= info.tracks.length - 3) {
+          if (i < info.tracks.length - 3) {
             console.log(`Track #${id} is in the past`);
             continue;
           } else {
