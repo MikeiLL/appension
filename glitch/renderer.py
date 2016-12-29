@@ -101,17 +101,11 @@ async def infinitely_glitch():
 				# No more tracks. Render the last track to the very end.
 				await _render_output_audio(dub1[skip:], track.filename)
 				break
-			# Combine this into the next track.
-			# 1) Analyze using amen
-			#    t1 = amen.audio.Audio(track.filename)
+			# Combine this into the next track:
+			# 1) Analyze using amen (cacheable)
 			# 2) Locate the end of the effective last beat
-			#    t1.timings['beats'][-10:-1][*].duration -> avg
-			#    t1_end = t1.timings['beats'][-1].time + avg_duration
 			# 3) Locate the first beat of the next track
-			#    t2 = amen.audio.Audio(nexttrack.filename)
-			#    t2_start = t2.timings['beats'][0].time
 			# 4) Count back from the end of the last beat
-			#    t1_end - t2_start
 			# 5) Overlay from that point to t1_end to t2_start
 
 			# All times are in milliseconds.
