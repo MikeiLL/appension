@@ -42,7 +42,7 @@ if arguments.server == "renderer":
 elif arguments.server == "major_glitch":
 	from . import utils; utils.enable_timer()
 	from . import renderer
-	renderer.major_glitch()
+	renderer.major_glitch(profile=arguments.dev)
 	logging.info("Major Glitch built successfully.")
 else:
 	from . import server

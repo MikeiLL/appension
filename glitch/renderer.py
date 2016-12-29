@@ -216,17 +216,25 @@ async def info(req):
 		"tracks": track_list
 	}, headers={"Access-Control-Allow-Origin": "*"})
 
-async def render_all():
+async def render_all(profile):
 	"""Render the entire track as a one-shot"""
 	global rendered_until; rendered_until = 0 # Disable the delay
 	logging.debug("enqueueing all tracks")
-	database.enqueue_all_tracks()
+	database.enqueue_all_tracks(10 if profile else 1)
 	logging.debug("renderer started")
 	global ffmpeg
 	# TODO: Should the path to next_glitch (and major_glitch, below) be
 	# made relative to the script dir rather than the cwd?
 	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", "glitch/static/single-audio-files/next_glitch.mp3",
 		stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
+	if profile:
+		# Neuter the output ffmpeg process down to a simple "cat >/dev/null"
+		# Allows better performance analysis of the Python code, since we're
+		# not waiting for a subprocess. Note that in a live environment, any
+		# time spent waiting for ffmpeg is time we can spend processing HTTP
+		# requests, so this isn't actually unfair.
+		ffmpeg.stdin.close(); await ffmpeg.wait()
+		ffmpeg = await asyncio.create_subprocess_exec("cat", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
 	asyncio.ensure_future(infinitely_glitch())
 	await ffmpeg.wait()
 	logging.debug("next_glitch.mp3 rendered")
@@ -244,9 +252,9 @@ async def serve_http(loop, port, sock=None):
 
 # ------ Synchronous entry points ------
 
-def major_glitch():
+def major_glitch(profile):
 	loop = asyncio.get_event_loop()
-	loop.run_until_complete(render_all())
+	loop.run_until_complete(render_all(profile))
 	loop.close()
 
 def run(port=config.renderer_port, sock=None):
