@@ -93,7 +93,7 @@ def _get_track():
 async def infinitely_glitch():
 	try:
 		nexttrack, t2, dub2 = _get_track()
-		skip = nexttrack.itrim
+		skip = nexttrack.track_details["itrim"]
 		while True:
 			track = nexttrack; t1 = t2; dub1 = dub2
 			nexttrack, t2, dub2 = _get_track()
