@@ -3,16 +3,23 @@ import amen.audio
 import pydub
 import os
 import sys
+import json
 import time
 import asyncio
 import logging
 import subprocess
-from . import database, config
+from . import database, config, utils
 
 # To determine the "effective length" of the last beat, we
 # average the last N beats prior to it. Higher numbers give
 # smoother results but may have issues with a close-out rall.
 LAST_BEAT_AVG = 10
+
+# Nonzero integer tracking backward-incompatible changes to the
+# stored track analysis data. Any time this gets incremented,
+# all analysis stored in the database is invalidated, and the
+# full amen.audio.Audio work will be done anew for each track.
+ANALYSIS_VERSION = 2
 
 app = web.Application()
 
@@ -42,6 +49,7 @@ async def _render_output_audio(seg, fn):
 		logging.debug("And sleeping for %ds until %s", delay, rendered_until)
 		await asyncio.sleep(delay)
 
+@utils.timeme
 def _get_track():
 	"""Get a track and load everything we need."""
 	# TODO: Have proper async database calls (if we can do it without
@@ -53,19 +61,39 @@ def _get_track():
 	# This would be configured with attributes on the track object, and could
 	# be saved long-term, but prob not worth it. See fade_in/fade_out methods.
 	dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
-	# NOTE: Calling amen with a filename invokes a second load from disk,
-	# duplicating work done above. However, it will come straight from the
-	# disk cache, so the only real duplication is the decode-from-MP3; and
-	# timing tests show that this is a measurable but not overly costly
-	# addition on top of the time to do the actual analysis. KISS.
-	t2 = amen.audio.Audio("audio/" + nexttrack.filename)
+
+	try: a = json.loads(nexttrack.analysis)
+	except json.JSONDecodeError: a = {"version": 0} # Anything we can't parse, we ignore
+	if a["version"] == ANALYSIS_VERSION:
+		# We have valid analysis. Use it.
+		return nexttrack, a, dub2
+
+	# We don't have valid analysis. Call on amen.audio and do all the work.
+	analysis = amen.audio.Audio("audio/" + nexttrack.filename)
 	# TODO: Equalize volume?
-	return nexttrack, t2, dub2
+
+	# Note on units:
+	# The Timedelta that we find in timings['beats'] can provide us
+	# with float total_seconds(), or with a .value in nanoseconds.
+	# We later on will prefer milliseconds, though, so we rescale.
+
+	# Store the interesting parts of the analysis into the database.
+	# Note that this dictionary should be relatively raw and simple,
+	# allowing future changes to infinitely_glitch() to still use the
+	# same analysis data. Bumping ANALYSIS_VERSION will incur a quite
+	# significant performance cost until the new analysis propagates.
+	a = {"version": ANALYSIS_VERSION,
+		"duration": int(analysis.duration * 1000),
+		"beats": [b.time.value // 1000000 for b in analysis.timings['beats']],
+		"beat_length": [b.duration.value // 1000000 for b in analysis.timings['beats']],
+	}
+	database.save_analysis(nexttrack.id, json.dumps(a))
+	return nexttrack, a, dub2
 
 async def infinitely_glitch():
 	try:
 		nexttrack, t2, dub2 = _get_track()
-		skip = 0.0
+		skip = nexttrack.itrim
 		while True:
 			track = nexttrack; t1 = t2; dub1 = dub2
 			nexttrack, t2, dub2 = _get_track()
@@ -73,35 +101,24 @@ async def infinitely_glitch():
 				# No more tracks. Render the last track to the very end.
 				await _render_output_audio(dub1[skip:], track.filename)
 				break
-			# Combine this into the next track.
-			# 1) Analyze using amen
-			#    t1 = amen.audio.Audio(track.filename)
+			# Combine this into the next track:
+			# 1) Analyze using amen (cacheable)
 			# 2) Locate the end of the effective last beat
-			#    t1.timings['beats'][-10:-1][*].duration -> avg
-			#    t1_end = t1.timings['beats'][-1].time + avg_duration
 			# 3) Locate the first beat of the next track
-			#    t2 = amen.audio.Audio(nexttrack.filename)
-			#    t2_start = t2.timings['beats'][0].time
 			# 4) Count back from the end of the last beat
-			#    t1_end - t2_start
 			# 5) Overlay from that point to t1_end to t2_start
 
-			# Note on units:
-			# The Timedelta that we find in timings['beats'] can provide us
-			# with float total_seconds(), or with a .value in nanoseconds.
-			# We later on will prefer milliseconds, though, so we rescale.
-			# In this code, all variables store ms unless otherwise stated.
-			t1b = t1.timings['beats']
-			beat_ns = sum(b.duration.value for b in t1b[-1-LAST_BEAT_AVG : -1]) // LAST_BEAT_AVG
-			t1_end = (t1b[-1].time.value + beat_ns) // 1000000
-			t1_length = int(t1.duration * 1000)
-			t2_start = t2.timings['beats'][1].time.value // 1000000
+			# All times are in milliseconds.
+			avg_beat_len = sum(t1["beat_length"][-1-LAST_BEAT_AVG : -1]) // LAST_BEAT_AVG
+			t1_end = t1["beats"][-1] + avg_beat_len
+			t1_length = t1["duration"]
+			t2_start = t2["beats"][1]
 			# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
 			bulk = dub1[skip : t1_end - t2_start]
 			track_list.append({
 				"id": track.id,
 				"start_time": rendered_until,
-				"details": track.track_details,
+				"details": track.track_details, # NOTE: The length here ignores itrim/otrim and overlay.
 			})
 			await _render_output_audio(bulk, track.filename)
 			# 2) Merge across t2_start ms - this will get us to the downbeat
@@ -193,19 +210,29 @@ async def info(req):
 		"tracks": track_list
 	}, headers={"Access-Control-Allow-Origin": "*"})
 
-async def render_all():
+async def render_all(profile):
 	"""Render the entire track as a one-shot"""
 	global rendered_until; rendered_until = 0 # Disable the delay
 	logging.debug("enqueueing all tracks")
-	database.enqueue_all_tracks()
+	database.enqueue_all_tracks(10 if profile else 1)
 	logging.debug("renderer started")
 	global ffmpeg
-	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", "static/single-audio-files/next_glitch.mp3",
+	# TODO: Should the path to next_glitch (and major_glitch, below) be
+	# made relative to the script dir rather than the cwd?
+	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", "glitch/static/single-audio-files/next_glitch.mp3",
 		stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
+	if profile:
+		# Neuter the output ffmpeg process down to a simple "cat >/dev/null"
+		# Allows better performance analysis of the Python code, since we're
+		# not waiting for a subprocess. Note that in a live environment, any
+		# time spent waiting for ffmpeg is time we can spend processing HTTP
+		# requests, so this isn't actually unfair.
+		ffmpeg.stdin.close(); await ffmpeg.wait()
+		ffmpeg = await asyncio.create_subprocess_exec("cat", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
 	asyncio.ensure_future(infinitely_glitch())
 	await ffmpeg.wait()
 	logging.debug("next_glitch.mp3 rendered")
-	os.replace("static/single-audio-files/next_glitch.mp3", "static/single-audio-files/major_glitch.mp3")
+	os.replace("glitch/static/single-audio-files/next_glitch.mp3", "glitch/static/single-audio-files/major_glitch.mp3")
 
 async def serve_http(loop, port, sock=None):
 	if sock:
@@ -219,9 +246,9 @@ async def serve_http(loop, port, sock=None):
 
 # ------ Synchronous entry points ------
 
-def major_glitch():
+def major_glitch(profile):
 	loop = asyncio.get_event_loop()
-	loop.run_until_complete(render_all())
+	loop.run_until_complete(render_all(profile))
 	loop.close()
 
 def run(port=config.renderer_port, sock=None):

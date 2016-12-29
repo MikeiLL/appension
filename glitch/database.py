@@ -24,9 +24,9 @@ log = logging.getLogger(__name__)
 
 class Track(object):
 	# Select these from the tracks table to construct a track object.
-	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords,url"
+	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords,url,analysis"
 	def __init__(self, id, filename, artist, title, length, status, 
-				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords, url):
+				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords, url, analysis):
 		log.debug("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title,
 											length, status, story, comments, xfade, itrim, otrim)
 		if len(artist.split(',')) > 1:
@@ -37,6 +37,7 @@ class Track(object):
 			artist_exact = artist
 		self.id = id
 		self.filename = filename
+		self.analysis = analysis
 		# TODO: Tighten up the purposes of these two. As of 20161219,
 		# track_details goes to the client as track status, and the
 		# other is administrative-only... I think. Maybe.
@@ -222,12 +223,13 @@ def enqueue_track(id):
 		# Assumes the ID is actually valid (will raise TypeError if not)
 		_track_queue.put(Track(*cur.fetchone()))
 
-def enqueue_all_tracks():
+def enqueue_all_tracks(count=1):
 	"""Enqueue every active track in a random order, followed by an end marker."""
 	with _conn, _conn.cursor() as cur:
-		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY sequence,random()")
-		for track in cur:
-			_track_queue.put(Track(*track))
+		for _ in range(count):
+			cur.execute("SELECT "+Track.columns+" FROM tracks WHERE status=1 ORDER BY sequence,random()")
+			for track in cur:
+				_track_queue.put(Track(*track))
 	_track_queue.put(EndOfTracks())
 
 def get_single_track(track_id):
@@ -628,13 +630,13 @@ def tables(*, confirm=False):
 
 	confirm: If omitted, will do a dry run.
 	"""
-	tb = None; cols = set(); coldefs = []
+	tb = None; cols = {}; coldefs = []
 	with _conn, _conn.cursor() as cur:
 		def finish():
 			if tb and (coldefs or cols):
-				if is_new: query = "create table "+tb+" ("+", ".join(coldefs)+")"
+				if is_new == "": query = "create table "+tb+" ("+", ".join(coldefs)+")"
 				else:
-					parts = ["add "+c for c in coldefs] + ["drop "+c for c in cols]
+					parts = coldefs + ["drop "+c for c in cols]
 					query = "alter table "+tb+" "+", ".join(parts)
 				if confirm: cur.execute(query)
 				else: print(query)
@@ -644,21 +646,37 @@ def tables(*, confirm=False):
 			# Flush-left lines are table names
 			if line == line.lstrip():
 				finish()
-				tb = line; cols = set(); coldefs = []
-				cur.execute("select column_name from information_schema.columns where table_name=%s", (tb,))
-				cols = {row[0] for row in cur}
-				is_new = not cols
+				tb = line; coldefs = []
+				cur.execute("select column_name, data_type from information_schema.columns where table_name=%s", (tb,))
+				cols = {row[0]:row[1] for row in cur}
+				# New tables want a series of column definitions; altered tables want any added
+				# columns prefixed with the command "add".
+				is_new = "add" if cols else ""
 				continue
 			# Otherwise, it should be a column definition, starting (after whitespace) with the column name.
 			colname, defn = line.strip().split(" ", 1)
 			if colname in cols:
-				# Column already exists. Currently, we assume there's nothing to change.
-				cols.remove(colname)
+				# Column already exists. Check its data type.
+				# Assume that all data types are unique within one space-delimited word. For example,
+				# the data type "double precision" will be treated as "double".
+				# NOTE: You may not be able to use this to change a data type to or from 'serial',
+				# since that's not (strictly speaking) a data type.
+				want_type = defn.split(" ", 1)[0]
+				want_type = {
+					"double": "double precision",
+					"serial": "integer", "int": "integer",
+					"varchar": "character varying",
+					"timestamptz": "timestamp with time zone",
+				}.get(want_type, want_type)
+				have_type = cols[colname]
+				if want_type != have_type:
+					coldefs.append("alter %s set data type %s" % (colname, want_type))
+				del cols[colname]
 			else:
 				# Column doesn't exist. Add it!
 				# Note that we include a newline here so that a comment will be properly terminated.
 				# If you look at the query, it'll have all its commas oddly placed, but that's okay.
-				coldefs.append("%s %s\n"%(colname,defn))
+				coldefs.append("%s %s %s\n" % (is_new, colname, defn))
 		finish()
 	if not confirm: print("Add --confirm to actually make the changes.")
 
