@@ -15,6 +15,8 @@ from . import config, database, oracle, utils, mailer
 
 app = Flask(__name__)
 
+# In production mode, the renderer runs on port 81. In debug, it's on 8889.
+renderer_port = 81
 
 UPLOAD_FOLDER = 'uploads'
 login_manager = LoginManager()
@@ -69,7 +71,7 @@ def home():
 	complete_length = datetime.timedelta(seconds=int(database.get_complete_length()))
 	return render_template("index.html",
 		open=True, # Can have this check for server load if we ever care
-		endpoint="%s:%d/all.mp3" % (config.server_domain, config.renderer_port),
+		endpoint="%s:%d/all.mp3" % (config.server_domain, renderer_port),
 		complete_length=complete_length,
 		couplet_count=couplet_count(lyrics),
 		lyrics=lyrics,
@@ -384,6 +386,7 @@ def run(port=config.http_port, disable_logins=False):
 	# Used only for debug mode; production mode is done by gunicorn.
 	if disable_logins:
 		app.config['LOGIN_DISABLED'] = True
+	global renderer_port; renderer_port = config.renderer_port
 	app.run(host="0.0.0.0", port=port)
 
 if __name__ == '__main__':
