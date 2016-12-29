@@ -24,9 +24,9 @@ log = logging.getLogger(__name__)
 
 class Track(object):
 	# Select these from the tracks table to construct a track object.
-	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords,url"
+	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords,url,analysis"
 	def __init__(self, id, filename, artist, title, length, status, 
-				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords, url):
+				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords, url, analysis):
 		log.debug("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title,
 											length, status, story, comments, xfade, itrim, otrim)
 		if len(artist.split(',')) > 1:
@@ -37,6 +37,7 @@ class Track(object):
 			artist_exact = artist
 		self.id = id
 		self.filename = filename
+		self.analysis = analysis
 		# TODO: Tighten up the purposes of these two. As of 20161219,
 		# track_details goes to the client as track status, and the
 		# other is administrative-only... I think. Maybe.

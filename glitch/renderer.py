@@ -3,6 +3,7 @@ import amen.audio
 import pydub
 import os
 import sys
+import json
 import time
 import asyncio
 import logging
@@ -13,6 +14,12 @@ from . import database, config
 # average the last N beats prior to it. Higher numbers give
 # smoother results but may have issues with a close-out rall.
 LAST_BEAT_AVG = 10
+
+# Nonzero integer tracking backward-incompatible changes to the
+# stored track analysis data. Any time this gets incremented,
+# all analysis stored in the database is invalidated, and the
+# full amen.audio.Audio work will be done anew for each track.
+ANALYSIS_VERSION = 1
 
 app = web.Application()
 
@@ -53,13 +60,22 @@ def _get_track():
 	# This would be configured with attributes on the track object, and could
 	# be saved long-term, but prob not worth it. See fade_in/fade_out methods.
 	dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
-	# NOTE: Calling amen with a filename invokes a second load from disk,
-	# duplicating work done above. However, it will come straight from the
-	# disk cache, so the only real duplication is the decode-from-MP3; and
-	# timing tests show that this is a measurable but not overly costly
-	# addition on top of the time to do the actual analysis. KISS.
+
+	try: a = json.loads(nexttrack.analysis)
+	except json.JSONDecodeError: a = {"version": 0} # Anything we can't parse, we ignore
+	if a["version"] == ANALYSIS_VERSION:
+		# We have valid analysis. Use it.
+		pass
+
+	# We don't have valid analysis. Call on amen.audio and do all the work.
 	t2 = amen.audio.Audio("audio/" + nexttrack.filename)
 	# TODO: Equalize volume?
+
+	# Store the analysis back into the database.
+	a = {"version": ANALYSIS_VERSION,
+		# whatever
+	}
+	database.save_analysis(nexttrack.id, json.dumps(a))
 	return nexttrack, t2, dub2
 
 async def infinitely_glitch():
