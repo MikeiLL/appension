@@ -12,8 +12,8 @@ tracks
 	xfade int not null default 0
 	itrim int not null default 0
 	otrim int not null default 0
-	lyrics text not null default ''
-	story text not null default ''
+	lyrics varchar not null default ''
+	story varchar not null default ''
 	status smallint not null default 0
 	submitted timestamptz not null default now()
 	submitter varchar not null default ''
