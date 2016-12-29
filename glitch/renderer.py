@@ -200,12 +200,14 @@ async def render_all():
 	database.enqueue_all_tracks()
 	logging.debug("renderer started")
 	global ffmpeg
-	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", "static/single-audio-files/next_glitch.mp3",
+	# TODO: Should the path to next_glitch (and major_glitch, below) be
+	# made relative to the script dir rather than the cwd?
+	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", "glitch/static/single-audio-files/next_glitch.mp3",
 		stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
 	asyncio.ensure_future(infinitely_glitch())
 	await ffmpeg.wait()
 	logging.debug("next_glitch.mp3 rendered")
-	os.replace("static/single-audio-files/next_glitch.mp3", "static/single-audio-files/major_glitch.mp3")
+	os.replace("glitch/static/single-audio-files/next_glitch.mp3", "glitch/static/single-audio-files/major_glitch.mp3")
 
 async def serve_http(loop, port, sock=None):
 	if sock:
