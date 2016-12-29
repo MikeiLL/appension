@@ -654,7 +654,21 @@ def tables(*, confirm=False):
 			# Otherwise, it should be a column definition, starting (after whitespace) with the column name.
 			colname, defn = line.strip().split(" ", 1)
 			if colname in cols:
-				# Column already exists. Currently, we assume there's nothing to change.
+				# Column already exists. Check its data type.
+				# Assume that all data types are unique within one space-delimited word. For example,
+				# the data type "double precision" will be treated as "double".
+				# NOTE: You may not be able to use this to change a data type to or from 'serial',
+				# since that's not (strictly speaking) a data type.
+				want_type = defn.split()[0]
+				want_type = {
+					"double": "double precision",
+					"serial": "integer", "int": "integer",
+					"varchar": "character varying",
+					"timestamptz": "timestamp with time zone",
+				}.get(want_type, want_type)
+				have_type = cols[colname]
+				if want_type != have_type:
+					print("Change of type: %s from %s to %s" % (colname, have_type, want_type))
 				del cols[colname]
 			else:
 				# Column doesn't exist. Add it!
