@@ -236,9 +236,7 @@ async def render_all(profile):
 
 async def serve_http(loop, port, sock=None):
 	if sock:
-		# NAUGHTY: Shouldn't do this. What's the documented way? I dunno.
-		sock.setblocking(False)
-		loop._start_serving(app.make_handler(), sock)
+		srv = await loop.create_server(app.make_handler(), sock=sock)
 	else:
 		srv = await loop.create_server(app.make_handler(), "0.0.0.0", port)
 		sock = srv.sockets[0]
