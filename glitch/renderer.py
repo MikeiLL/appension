@@ -100,11 +100,11 @@ async def infinitely_glitch():
 			track = nexttrack; t1 = t2; dub1 = dub2
 			nexttrack, t2, dub2 = _get_track()
 			otrim = track.track_details["otrim"] * 1000
-			itrim = nexttrack.track_details["itrim"] * 1000
 			if not nexttrack.id:
 				# No more tracks. Render the last track to the very end.
 				await _render_output_audio(dub1[skip : -otrim if otrim else None], track.filename)
 				break
+			itrim = nexttrack.track_details["itrim"] * 1000
 			# Combine this into the next track:
 			# 1) Analyze using amen (cacheable)
 			# 2) Locate the end of the effective last beat
