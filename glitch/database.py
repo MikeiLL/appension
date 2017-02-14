@@ -2,22 +2,18 @@
 
 Executable using 'python -m glitch.database' - use --help for usage.
 """
+# NOTE: Startup could be sped up some by not importing flask_login if
+# we're not using Flask. Not sure how that should best be done though.
 from flask_login import UserMixin
 from . import apikeys
 import psycopg2
 from . import utils
+from .utils import cmdline
 import logging
 import random
 import queue
 import os
 import re
-from mutagen.mp3 import MP3
-import clize
-
-commands = []
-def cmdline(f):
-	commands.append(f)
-	return f
 
 _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
@@ -232,6 +228,20 @@ def enqueue_all_tracks(count=1):
 				_track_queue.put(Track(*track))
 	_track_queue.put(EndOfTracks())
 
+def enqueue_audition(track1, track2):
+	"""Enqueue two tracks for auditioning, followed by an end marker."""
+	with _conn, _conn.cursor() as cur:
+		# As above, assumes the IDs are actually valid
+		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE id=%s", (track1,))
+		t1 = Track(*cur.fetchone())
+		t1.track_details["itrim"] = int(t1.track_details["length"]) - 10 + t1.track_details["otrim"]
+		_track_queue.put(t1)
+		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE id=%s", (track2,))
+		t2 = Track(*cur.fetchone())
+		t2.track_details["otrim"] = int(t2.track_details["length"]) - 10 + t2.track_details["itrim"]
+		_track_queue.put(t2)
+	_track_queue.put(EndOfTracks())
+
 def get_single_track(track_id):
 	"""Get details for a single track by its ID"""
 	with _conn, _conn.cursor() as cur:
@@ -288,9 +298,10 @@ def create_track(mp3data, filename, info, image=None, username=None):
 	if not mp3data.startswith(b"ID3") and not mp3data.startswith(b"\xFF\xFB"):
 		raise ValueError("Not MP3 data")
 	if not username:
-	    with _conn, _conn.cursor() as cur:
-	        cur.execute("SELECT username FROM users WHERE user_level = 2 LIMIT 1;")
-	        username = cur.fetchone()[0] 
+		with _conn, _conn.cursor() as cur:
+			cur.execute("SELECT username FROM users WHERE user_level = 2 LIMIT 1;")
+			username = cur.fetchone()[0]
+	from mutagen.mp3 import MP3
 	with _conn, _conn.cursor() as cur:
 		# We have a chicken-and-egg problem here. We can't (AFAIK) get the ID3 data
 		# until we have a file, and we want to name the file based on the track ID.
@@ -692,5 +703,3 @@ def testfiles():
 			print(track.id)
 		else:
 			print("BIG ONE - Name: {} Length: {}".format(file.filename, file.track_details['length']))
-
-if __name__ == "__main__": clize.run(*commands)

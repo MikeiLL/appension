@@ -5,6 +5,7 @@ import functools
 import collections
 import random
 import time
+import clize
 
 def random_hex():
 	return binascii.b2a_hex(os.urandom(8)).decode("ascii")
@@ -62,3 +63,39 @@ def enable_timer():
 		import atexit
 		atexit.register(lambda: print("Total time in %s: %s" % (func.__name__, tm)))
 		return wrapper
+
+def systemd_socket():
+	"""Look for a socket provided by systemd"""
+	try:
+		pid = int(os.environ.get("LISTEN_PID", ""))
+		fd_count = int(os.environ.get("LISTEN_FDS", ""))
+	except ValueError:
+		pid = fd_count = 0
+	if pid == os.getpid() and fd_count >= 1:
+		# The PID matches - we've been given at least one socket.
+		# The sd_listen_fds docs say that they should start at FD 3.
+		print("Got %d socket(s)" % fd_count, file=sys.stderr)
+		return socket.socket(fileno=3)
+	return None
+
+_commands = []
+def cmdline(f):
+	# NOTE: functools.wraps, by default, will *replace* the annotations. We want
+	# to merge them.
+	@functools.wraps(f, assigned=('__name__',), updated=('__dict__', '__annotations__'))
+	def wrapper(*a, log:"l"="info", **kw):
+		"""
+	log: Logging level eg info, debug"""
+		import logging
+		try: lvl = logging._nameToLevel[log.upper()] # NAUGHTY
+		except KeyError: raise clize.ArgumentError("Invalid log level %r" % log)
+		logging.basicConfig(level=lvl, format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
+		return f(*a, **kw)
+	# Concatenate the docstrings
+	doc = f.__doc__ or f.__name__
+	if "\n" not in doc: doc += "\n"
+	wrapper.__doc__ = doc + wrapper.__doc__
+	_commands.append(wrapper)
+	return f
+def main():
+	clize.run(*_commands, description="Invoke the Infinite Glitch server(s)")

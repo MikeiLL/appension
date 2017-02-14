@@ -1,49 +1,45 @@
-from . import config
-from . import apikeys
-import os
-import socket
-import argparse
-
-# Hack: Allow "python -m glitch database" to be the same as "glitch.database"
-import sys
-if len(sys.argv) > 1 and sys.argv[1] == "database":
-	from . import database
-	import clize
-	sys.exit(clize.run(*database.commands, args=sys.argv[1:]))
-
-import logging
-parser = argparse.ArgumentParser(description="Invoke the Infinite Glitch server(s)")
-parser.add_argument("server", help="Server to invoke", choices=["main", "renderer", "major_glitch"], nargs="?", default="main")
-parser.add_argument("-l", "--log", help="Logging level", type=lambda x: x.upper(),
-	choices=logging._nameToLevel, # NAUGHTY
-	default="INFO")
-parser.add_argument("--dev", help="Dev mode (no logins)", action='store_true')
-arguments = parser.parse_args()
-log = logging.getLogger(__name__)
-logging.basicConfig(level=getattr(logging, arguments.log), format='%(asctime)s:%(levelname)s:%(name)s:%(message)s')
-
-# Look for a socket provided by systemd
-sock = None
-try:
-	pid = int(os.environ.get("LISTEN_PID", ""))
-	fd_count = int(os.environ.get("LISTEN_FDS", ""))
-except ValueError:
-	pid = fd_count = 0
-if pid == os.getpid() and fd_count >= 1:
-	# The PID matches - we've been given at least one socket.
-	# The sd_listen_fds docs say that they should start at FD 3.
-	sock = socket.socket(fileno=3)
-	print("Got %d socket(s)" % fd_count, file=sys.stderr)
+from . import utils
 
 # TODO: Override with port=NNNN if specified by environment
-if arguments.server == "renderer":
+
+from . import database # Let the database functions register themselves
+
+# Note that these functions lazily import their corresponding modules,
+# otherwise package startup would take three parts of forever.
+
+@utils.cmdline
+def renderer(*, gain:"g"=0.0):
+	"""Invoke the infinite renderer
+
+	gain: dB gain (positive or negative) for volume adjustment
+	"""
 	from . import renderer
-	renderer.run(sock=sock) # doesn't return
-elif arguments.server == "major_glitch":
-	from . import utils; utils.enable_timer()
+	renderer.run(gain=gain) # doesn't return
+
+@utils.cmdline
+def major_glitch(*, dev=False):
+	"""Rebuild the Major Glitch"""
+	utils.enable_timer()
 	from . import renderer
-	renderer.major_glitch(profile=arguments.dev)
-	logging.info("Major Glitch built successfully.")
-else:
+	renderer.major_glitch(profile=dev)
+
+@utils.cmdline
+def audition(id1, id2, fn):
+	"""Audition a transition
+
+	id1: ID of earlier track (will render last 10s)
+
+	id2: ID of later track (will render first 10s)
+
+	fn: File name to save into
+	"""
+	from . import renderer
+	renderer.audition(id1, id2, fn)
+
+@utils.cmdline
+def main(*, dev=False):
+	"""Start the main server (debug mode - production uses gunicorn)"""
 	from . import server
-	server.run(disable_logins=arguments.dev) # doesn't return
+	server.run(disable_logins=dev) # doesn't return
+
+utils.main()

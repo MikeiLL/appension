@@ -1,5 +1,4 @@
 from aiohttp import web
-import amen.audio
 import pydub
 import os
 import sys
@@ -49,6 +48,9 @@ async def _render_output_audio(seg, fn):
 		logging.debug("And sleeping for %ds until %s", delay, rendered_until)
 		await asyncio.sleep(delay)
 
+# dB gain to be added/removed from all tracks
+GAIN = 0.0
+
 @utils.timeme
 def _get_track():
 	"""Get a track and load everything we need."""
@@ -60,7 +62,7 @@ def _get_track():
 	# TODO: Allow an admin-controlled fade at beginning and/or end of a track.
 	# This would be configured with attributes on the track object, and could
 	# be saved long-term, but prob not worth it. See fade_in/fade_out methods.
-	dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
+	dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2) + GAIN
 
 	try: a = json.loads(nexttrack.analysis)
 	except json.JSONDecodeError: a = {"version": 0} # Anything we can't parse, we ignore
@@ -69,6 +71,7 @@ def _get_track():
 		return nexttrack, a, dub2
 
 	# We don't have valid analysis. Call on amen.audio and do all the work.
+	import amen.audio
 	analysis = amen.audio.Audio("audio/" + nexttrack.filename)
 	# TODO: Equalize volume?
 
@@ -97,14 +100,18 @@ async def infinitely_glitch():
 		nexttrack, t2, dub2 = _get_track()
 		skip = nexttrack.track_details["itrim"] * 1000
 		while True:
+			logging.debug("Rendering track id %s itrim %s otrim %s len %s %s",
+				nexttrack.id, nexttrack.track_details["itrim"], nexttrack.track_details["otrim"],
+				nexttrack.track_details["length"], t2["duration"])
 			track = nexttrack; t1 = t2; dub1 = dub2
 			nexttrack, t2, dub2 = _get_track()
 			otrim = track.track_details["otrim"] * 1000
-			itrim = nexttrack.track_details["itrim"] * 1000
 			if not nexttrack.id:
 				# No more tracks. Render the last track to the very end.
 				await _render_output_audio(dub1[skip : -otrim if otrim else None], track.filename)
+				logging.info("Total rendered time: %s", rendered_until)
 				break
+			itrim = nexttrack.track_details["itrim"] * 1000
 			# Combine this into the next track:
 			# 1) Analyze using amen (cacheable)
 			# 2) Locate the end of the effective last beat
@@ -255,8 +262,23 @@ async def render_all(profile):
 	await ffmpeg.wait()
 	logging.debug("next_glitch.mp3 rendered")
 	os.replace("glitch/static/single-audio-files/next_glitch.mp3", "glitch/static/single-audio-files/major_glitch.mp3")
+	logging.info("Major Glitch built successfully.")
 
-async def serve_http(loop, port, sock=None):
+async def render_audition(id1, id2, fn):
+	"""Render the transition from one track into another"""
+	global rendered_until; rendered_until = 0 # Disable the delay
+	logging.debug("enqueueing tracks %s and %s into %r", id1, id2, fn)
+	database.enqueue_audition(id1, id2)
+	logging.debug("renderer started")
+	global ffmpeg
+	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", fn,
+		stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
+	asyncio.ensure_future(infinitely_glitch())
+	await ffmpeg.wait()
+	logging.debug("%r rendered", fn)
+
+async def serve_http(loop, port):
+	sock = utils.systemd_socket()
 	if sock:
 		srv = await loop.create_server(app.make_handler(), sock=sock)
 	else:
@@ -271,11 +293,14 @@ def major_glitch(profile):
 	loop.run_until_complete(render_all(profile))
 	loop.close()
 
-def run(port=config.renderer_port, sock=None):
+def audition(id1, id2, fn):
 	loop = asyncio.get_event_loop()
-	loop.run_until_complete(serve_http(loop, port, sock))
-	loop.run_until_complete(run_ffmpeg())
+	loop.run_until_complete(render_audition(id1, id2, fn))
 	loop.close()
 
-if __name__ == '__main__':
-	run()
+def run(port=config.renderer_port, gain=0.0):
+	global GAIN; GAIN = gain
+	loop = asyncio.get_event_loop()
+	loop.run_until_complete(serve_http(loop, port))
+	loop.run_until_complete(run_ffmpeg())
+	loop.close()
