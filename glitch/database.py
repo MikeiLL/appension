@@ -12,7 +12,6 @@ import random
 import queue
 import os
 import re
-from mutagen.mp3 import MP3
 
 _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
@@ -297,9 +296,10 @@ def create_track(mp3data, filename, info, image=None, username=None):
 	if not mp3data.startswith(b"ID3") and not mp3data.startswith(b"\xFF\xFB"):
 		raise ValueError("Not MP3 data")
 	if not username:
-	    with _conn, _conn.cursor() as cur:
-	        cur.execute("SELECT username FROM users WHERE user_level = 2 LIMIT 1;")
-	        username = cur.fetchone()[0] 
+		with _conn, _conn.cursor() as cur:
+			cur.execute("SELECT username FROM users WHERE user_level = 2 LIMIT 1;")
+			username = cur.fetchone()[0]
+	from mutagen.mp3 import MP3
 	with _conn, _conn.cursor() as cur:
 		# We have a chicken-and-egg problem here. We can't (AFAIK) get the ID3 data
 		# until we have a file, and we want to name the file based on the track ID.
