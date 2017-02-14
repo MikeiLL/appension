@@ -1,5 +1,4 @@
 from aiohttp import web
-import amen.audio
 import pydub
 import os
 import sys
@@ -72,6 +71,7 @@ def _get_track():
 		return nexttrack, a, dub2
 
 	# We don't have valid analysis. Call on amen.audio and do all the work.
+	import amen.audio
 	analysis = amen.audio.Audio("audio/" + nexttrack.filename)
 	# TODO: Equalize volume?
 
