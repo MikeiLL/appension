@@ -260,6 +260,19 @@ async def render_all(profile):
 	logging.debug("next_glitch.mp3 rendered")
 	os.replace("glitch/static/single-audio-files/next_glitch.mp3", "glitch/static/single-audio-files/major_glitch.mp3")
 
+async def render_audition(id1, id2, fn):
+	"""Render the transition from one track into another"""
+	global rendered_until; rendered_until = 0 # Disable the delay
+	logging.debug("enqueueing tracks %s and %s into %r", id1, id2, fn)
+	database.enqueue_audition(id1, id2)
+	logging.debug("renderer started")
+	global ffmpeg
+	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", fn,
+		stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
+	asyncio.ensure_future(infinitely_glitch())
+	await ffmpeg.wait()
+	logging.debug("%r rendered", fn)
+
 async def serve_http(loop, port, sock=None):
 	if sock:
 		srv = await loop.create_server(app.make_handler(), sock=sock)
@@ -273,6 +286,11 @@ async def serve_http(loop, port, sock=None):
 def major_glitch(profile):
 	loop = asyncio.get_event_loop()
 	loop.run_until_complete(render_all(profile))
+	loop.close()
+
+def audition(id1, id2, fn):
+	loop = asyncio.get_event_loop()
+	loop.run_until_complete(render_audition(id1, id2, fn))
 	loop.close()
 
 def run(port=config.renderer_port, sock=None):

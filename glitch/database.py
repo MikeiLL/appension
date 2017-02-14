@@ -232,6 +232,20 @@ def enqueue_all_tracks(count=1):
 				_track_queue.put(Track(*track))
 	_track_queue.put(EndOfTracks())
 
+def enqueue_audition(track1, track2):
+	"""Enqueue two tracks for auditioning, followed by an end marker."""
+	with _conn, _conn.cursor() as cur:
+		# As above, assumes the IDs are actually valid
+		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE id=%s", (track1,))
+		t1 = Track(*cur.fetchone())
+		t1.track_details["itrim"] = int(t1.track_details["length"]) - 10 + t1.track_details["otrim"]
+		_track_queue.put(t1)
+		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE id=%s", (track2,))
+		t2 = Track(*cur.fetchone())
+		t2.track_details["otrim"] = int(t2.track_details["length"]) - 10 + t2.track_details["itrim"]
+		_track_queue.put(t2)
+	_track_queue.put(EndOfTracks())
+
 def get_single_track(track_id):
 	"""Get details for a single track by its ID"""
 	with _conn, _conn.cursor() as cur:
