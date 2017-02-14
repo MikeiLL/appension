@@ -388,6 +388,3 @@ def run(port=config.http_port, disable_logins=False):
 		app.config['LOGIN_DISABLED'] = True
 	global renderer_port; renderer_port = config.renderer_port
 	app.run(host="0.0.0.0", port=port)
-
-if __name__ == '__main__':
-	run()

@@ -6,18 +6,13 @@ from flask_login import UserMixin
 from . import apikeys
 import psycopg2
 from . import utils
+from .utils import cmdline
 import logging
 import random
 import queue
 import os
 import re
 from mutagen.mp3 import MP3
-import clize
-
-commands = []
-def cmdline(f):
-	commands.append(f)
-	return f
 
 _conn = psycopg2.connect(apikeys.db_connect_string)
 log = logging.getLogger(__name__)
@@ -706,5 +701,3 @@ def testfiles():
 			print(track.id)
 		else:
 			print("BIG ONE - Name: {} Length: {}".format(file.filename, file.track_details['length']))
-
-if __name__ == "__main__": clize.run(*commands)

@@ -273,7 +273,8 @@ async def render_audition(id1, id2, fn):
 	await ffmpeg.wait()
 	logging.debug("%r rendered", fn)
 
-async def serve_http(loop, port, sock=None):
+async def serve_http(loop, port):
+	sock = utils.systemd_socket()
 	if sock:
 		srv = await loop.create_server(app.make_handler(), sock=sock)
 	else:
@@ -293,11 +294,8 @@ def audition(id1, id2, fn):
 	loop.run_until_complete(render_audition(id1, id2, fn))
 	loop.close()
 
-def run(port=config.renderer_port, sock=None):
+def run(port=config.renderer_port):
 	loop = asyncio.get_event_loop()
-	loop.run_until_complete(serve_http(loop, port, sock))
+	loop.run_until_complete(serve_http(loop, port))
 	loop.run_until_complete(run_ffmpeg())
 	loop.close()
-
-if __name__ == '__main__':
-	run()
