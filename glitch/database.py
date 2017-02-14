@@ -2,6 +2,8 @@
 
 Executable using 'python -m glitch.database' - use --help for usage.
 """
+# NOTE: Startup could be sped up some by not importing flask_login if
+# we're not using Flask. Not sure how that should best be done though.
 from flask_login import UserMixin
 from . import apikeys
 import psycopg2
