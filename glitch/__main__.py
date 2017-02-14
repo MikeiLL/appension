@@ -3,10 +3,13 @@ from . import utils
 # TODO: Override with port=NNNN if specified by environment
 
 @utils.cmdline
-def renderer():
-	"""Invoke the infinite renderer"""
+def renderer(*, gain:"g"=0.0):
+	"""Invoke the infinite renderer
+
+	gain: dB gain (positive or negative) for volume adjustment
+	"""
 	from . import renderer
-	renderer.run() # doesn't return
+	renderer.run(gain=gain) # doesn't return
 
 @utils.cmdline
 def major_glitch(*, dev=False):

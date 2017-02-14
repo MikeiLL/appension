@@ -49,6 +49,9 @@ async def _render_output_audio(seg, fn):
 		logging.debug("And sleeping for %ds until %s", delay, rendered_until)
 		await asyncio.sleep(delay)
 
+# dB gain to be added/removed from all tracks
+GAIN = 0.0
+
 @utils.timeme
 def _get_track():
 	"""Get a track and load everything we need."""
@@ -60,7 +63,7 @@ def _get_track():
 	# TODO: Allow an admin-controlled fade at beginning and/or end of a track.
 	# This would be configured with attributes on the track object, and could
 	# be saved long-term, but prob not worth it. See fade_in/fade_out methods.
-	dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2)
+	dub2 = pydub.AudioSegment.from_mp3("audio/" + nexttrack.filename).set_channels(2) + GAIN
 
 	try: a = json.loads(nexttrack.analysis)
 	except json.JSONDecodeError: a = {"version": 0} # Anything we can't parse, we ignore
@@ -295,7 +298,8 @@ def audition(id1, id2, fn):
 	loop.run_until_complete(render_audition(id1, id2, fn))
 	loop.close()
 
-def run(port=config.renderer_port):
+def run(port=config.renderer_port, gain=0.0):
+	global GAIN; GAIN = gain
 	loop = asyncio.get_event_loop()
 	loop.run_until_complete(serve_http(loop, port))
 	loop.run_until_complete(run_ffmpeg())
