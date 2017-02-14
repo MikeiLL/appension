@@ -259,6 +259,7 @@ async def render_all(profile):
 	await ffmpeg.wait()
 	logging.debug("next_glitch.mp3 rendered")
 	os.replace("glitch/static/single-audio-files/next_glitch.mp3", "glitch/static/single-audio-files/major_glitch.mp3")
+	logging.info("Major Glitch built successfully.")
 
 async def render_audition(id1, id2, fn):
 	"""Render the transition from one track into another"""

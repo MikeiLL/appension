@@ -1,5 +1,4 @@
 from . import utils
-import logging
 
 # TODO: Override with port=NNNN if specified by environment
 
@@ -15,14 +14,12 @@ def major_glitch(*, dev=False):
 	utils.enable_timer()
 	from . import renderer
 	renderer.major_glitch(profile=dev)
-	logging.info("Major Glitch built successfully.")
 
 @utils.cmdline
 def audition(id1, id2, fn):
 	"""Audition a transition"""
 	from . import renderer
 	renderer.audition(id1, id2, fn)
-	logging.info("Audition file built successfully.")
 
 @utils.cmdline
 def main(*, dev=False):
