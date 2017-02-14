@@ -205,9 +205,11 @@ async def info(req):
 	logging.debug("/status.json requested")
 	# TODO: Clean up the track list, ditching entries way in the past.
 	# It doesn't need to be an ever-growing history.
+	# Currently just returns the last few, regardless of exactly how
+	# far they actually are in the past.
 	return web.json_response({
 		"ts": time.time(), "render_time": rendered_until,
-		"tracks": track_list
+		"tracks": track_list[-5:]
 	}, headers={"Access-Control-Allow-Origin": "*"})
 
 async def render_all(profile):
