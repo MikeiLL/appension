@@ -110,8 +110,14 @@ async def infinitely_glitch():
 
 			# All times are in milliseconds.
 			avg_beat_len = sum(t1["beat_length"][-1-LAST_BEAT_AVG : -1]) // LAST_BEAT_AVG
-			t1_end = t1["beats"][-1] + avg_beat_len
 			t1_length = t1["duration"]
+			# Scan backwards through the beats until we find a "suitable" one.
+			# Suitability is defined as being long enough that it gets an entire
+			# average beat before running into the end of the track (either the
+			# actual physical end, or the trimmed end).
+			for beat in reversed(t1["beats"]):
+				t1_end = beat + avg_beat_len
+				if t1_end <= t1_length: break
 			t2_start = t2["beats"][1]
 			# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
 			bulk = dub1[skip : t1_end - t2_start]
