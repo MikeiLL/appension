@@ -20,7 +20,14 @@ def major_glitch(*, dev=False):
 
 @utils.cmdline
 def audition(id1, id2, fn):
-	"""Audition a transition"""
+	"""Audition a transition
+
+	id1: ID of earlier track (will render last 10s)
+
+	id2: ID of later track (will render first 10s)
+
+	fn: File name to save into
+	"""
 	from . import renderer
 	renderer.audition(id1, id2, fn)
 
