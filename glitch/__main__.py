@@ -2,6 +2,9 @@ from . import utils
 
 # TODO: Override with port=NNNN if specified by environment
 
+# Note that these functions lazily import their corresponding modules,
+# otherwise package startup would take three parts of forever.
+
 @utils.cmdline
 def renderer(*, gain:"g"=0.0):
 	"""Invoke the infinite renderer
