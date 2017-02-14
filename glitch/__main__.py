@@ -1,5 +1,4 @@
 from . import utils
-import os
 import logging
 
 # TODO: Override with port=NNNN if specified by environment
