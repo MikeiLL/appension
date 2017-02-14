@@ -97,12 +97,16 @@ async def infinitely_glitch():
 		nexttrack, t2, dub2 = _get_track()
 		skip = nexttrack.track_details["itrim"] * 1000
 		while True:
+			logging.debug("Rendering track id %s itrim %s otrim %s len %s %s",
+				nexttrack.id, nexttrack.track_details["itrim"], nexttrack.track_details["otrim"],
+				nexttrack.track_details["length"], t2["duration"])
 			track = nexttrack; t1 = t2; dub1 = dub2
 			nexttrack, t2, dub2 = _get_track()
 			otrim = track.track_details["otrim"] * 1000
 			if not nexttrack.id:
 				# No more tracks. Render the last track to the very end.
 				await _render_output_audio(dub1[skip : -otrim if otrim else None], track.filename)
+				logging.info("Total rendered time: %s", rendered_until)
 				break
 			itrim = nexttrack.track_details["itrim"] * 1000
 			# Combine this into the next track:
