@@ -76,6 +76,8 @@ def _get_track():
 	# The Timedelta that we find in timings['beats'] can provide us
 	# with float total_seconds(), or with a .value in nanoseconds.
 	# We later on will prefer milliseconds, though, so we rescale.
+	# The itrim and otrim values are (as of 20170214) stored in the
+	# database in seconds, so they get rescaled in infinitely_glitch.
 
 	# Store the interesting parts of the analysis into the database.
 	# Note that this dictionary should be relatively raw and simple,
@@ -93,13 +95,15 @@ def _get_track():
 async def infinitely_glitch():
 	try:
 		nexttrack, t2, dub2 = _get_track()
-		skip = nexttrack.track_details["itrim"]
+		skip = nexttrack.track_details["itrim"] * 1000
 		while True:
 			track = nexttrack; t1 = t2; dub1 = dub2
 			nexttrack, t2, dub2 = _get_track()
+			otrim = track.track_details["otrim"] * 1000
+			itrim = nexttrack.track_details["itrim"] * 1000
 			if not nexttrack.id:
 				# No more tracks. Render the last track to the very end.
-				await _render_output_audio(dub1[skip:], track.filename)
+				await _render_output_audio(dub1[skip : -otrim if otrim else None], track.filename)
 				break
 			# Combine this into the next track:
 			# 1) Analyze using amen (cacheable)
@@ -109,8 +113,11 @@ async def infinitely_glitch():
 			# 5) Overlay from that point to t1_end to t2_start
 
 			# All times are in milliseconds.
+			# NOTE: Average beat length is defined according to the entire file,
+			# *not* taking otrim into account (nor itrim, fwiw). This may need
+			# to be changed at some point.
 			avg_beat_len = sum(t1["beat_length"][-1-LAST_BEAT_AVG : -1]) // LAST_BEAT_AVG
-			t1_length = t1["duration"]
+			t1_length = t1["duration"] - otrim
 			# Scan backwards through the beats until we find a "suitable" one.
 			# Suitability is defined as being long enough that it gets an entire
 			# average beat before running into the end of the track (either the
@@ -118,7 +125,14 @@ async def infinitely_glitch():
 			for beat in reversed(t1["beats"]):
 				t1_end = beat + avg_beat_len
 				if t1_end <= t1_length: break
-			t2_start = t2["beats"][1]
+			itrim = nexttrack.track_details["itrim"] * 1000
+			# Scan forwards through the beats until we find a suitable one.
+			# In this case, suitability is much simpler: if it starts after
+			# the itrim, it's good enough.
+			for beat in t2["beats"][1:]:
+				t2_start = beat - itrim
+				if t2_start >= 0: break
+			# t2_start does NOT include itrim
 			# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
 			bulk = dub1[skip : t1_end - t2_start]
 			track_list.append({
@@ -130,13 +144,13 @@ async def infinitely_glitch():
 			# 2) Merge across t2_start ms - this will get us to the downbeat
 			# 3) Merge across (t1_length-t1_end) ms - this nicely rounds out the last track
 			# 4) Go get the next track, but skip the first (t2_start+t1_length-t1_end) ms
-			skip = t2_start + t1_length - t1_end
+			skip = itrim + t2_start + t1_length - t1_end
 			# Overlay the end of one track on the beginning of the other.
 			olayout1 = dub1[t1_end - t2_start : t1_end]
-			olayin1 = dub2[:t2_start]
+			olayin1 = dub2[itrim : itrim + t2_start]
 			olay1 = olayout1.overlay(olayin1)
-			olayout2 = dub1[t1_end:]
-			olayin2 = dub2[t2_start:skip]
+			olayout2 = dub1[t1_end : -otrim if otrim else None]
+			olayin2 = dub2[itrim + t2_start : skip]
 			olay2 = olayout2.overlay(olayin2)
 			await _render_output_audio(olay1, "overlay 1")
 			await _render_output_audio(olay2, "overlay 2")
