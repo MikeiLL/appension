@@ -18,6 +18,9 @@ sudo systemctl start glitch glitch-renderer
 ## To View All CMDLINE Commands ##
 python -m glitch --help
 
+## For dev if you want to play tracks more quietly ##
+python3 -m glitch renderer gain=-10 (where -10 is a number of decibels)
+
 # A brief History #
 A few years ago Chris Butler decided to extend The Devil Glitch into infinity. Dozens of artists began writing and recording verses to contribute and re-assembling the gigantic track became rather resource-intensive.
 

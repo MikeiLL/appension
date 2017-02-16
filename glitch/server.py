@@ -329,6 +329,11 @@ def oracle_get():
 def admin():
 	all_tracks = database.get_many_mp3("all", "sequence, id")
 	return render_template("administration.html", all_tracks=all_tracks)
+	
+@app.route("/transition")
+@admin_required
+def manage_transition():
+	return render_template("manage_transition.html")
 
 @app.route("/rebuild_glitch")
 @admin_required
