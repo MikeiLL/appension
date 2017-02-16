@@ -4,7 +4,21 @@ appension
 
 Web player for devil glitch extension
  - Infinite glitch - the longest pop song ever
+ 
+## Start Server ##
+python3 -m glitch main
+ 
+## Start Renderer ##
+python3 -m glitch renderer
 
+## OR: On Unix system with Systemd ##
+Use bash to run the makeservice.sh file, then start both services with command:
+sudo systemctl start glitch glitch-renderer
+
+## To View All CMDLINE Commands ##
+python -m glitch --help
+
+# A brief History #
 A few years ago Chris Butler decided to extend The Devil Glitch into infinity. Dozens of artists began writing and recording verses to contribute and re-assembling the gigantic track became rather resource-intensive.
 
 We looked for an internet Music Player with a gapless playback feature, but found none. Chris' friend Henry Lowengard suggested with do something with the Echonest API and it's python companions, PyEchoNest and Remix. I didn't know Python, but was interested in learning and we decided to forge ahead in this direction.
