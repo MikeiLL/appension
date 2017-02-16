@@ -330,10 +330,12 @@ def admin():
 	all_tracks = database.get_many_mp3("all", "sequence, id")
 	return render_template("administration.html", all_tracks=all_tracks)
 	
-@app.route("/transition")
+@app.route("/transition/<int:id>")
 @admin_required
-def manage_transition():
-	return render_template("manage_transition.html")
+def manage_transition(id):
+	track1 = database.get_single_track(id)
+	track2 = database.next_track_in_sequence(id, track1.track_details['sequence'])
+	return render_template("manage_transition.html", track=track1, next_track=track2)
 
 @app.route("/rebuild_glitch")
 @admin_required

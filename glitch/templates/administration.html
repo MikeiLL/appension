@@ -92,7 +92,7 @@
         </td>
         <td>{% if track.track_details['lyrics'] == '' %}<span class="errors">X</span>{% else %}Yes{% endif %}</td>
         <td>{% if track.track_details['story'] == '' %}<span class="errors">X</span>{% else %}Yes{% endif %}</td>
-	<td><a href="/delete/{{ track.id }}">delete</a></td>
+	<td><a href="/delete/{{ track.id }}">delete</a> | <a href="/transition/{{ track.id }}">transition</a></td>
 </tr>
 {% endfor %}
 <tr><td colspan="10" align="right"><a href="rebuild_glitch">Generate Major Glitch Track</a></td></tr>

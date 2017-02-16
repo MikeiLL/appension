@@ -74,14 +74,15 @@
 	<div class="details">
 	 <p>{{ track.track_details['artist'] }} ({{ track.track_details['title'] }} id: {{ track.id }})</p>
 	 <p>Filename: {{ track.filename }}
-	 Duration: {{ datetime.timedelta(seconds=int(track.track_details['length'])) }}</p>
+	 Duration: {{ track.track_details['length'] }}</p>
  
  
-	 {% if track.track_details['status'] == 0 %}<p class="status_alert">Inactive</p>{% end %}
+	 {% if track.track_details['status'] == 0 %}<p class="status_alert">Inactive</p>{% endif %}
  	<p>
-	 Crossfade time in half-beats (whole numbers only): 
+	 {% if false %}Crossfade time in half-beats (whole numbers only): 
 	<input type="hidden" name="track_id" size="5" value="{{ track.id }}">
 	<input type="text" name="track_xfade" size="5" value="{{ track.track_details['xfade'] }}">
+	 {% endif %}
 	Trim track end in seconds (can be floating point like 0.4): 
 	<input type="text" name="track_otrim" size="5" value="{{ track.track_details['otrim'] }}">
 	Sequence: 
@@ -90,7 +91,7 @@
 	<br class="clear"/>
 	{% if track.id == next_track.id %}
 		<p class="status_alert">NO SUBSEQUENT TRACK IN SEQUENCE</p>
-	{% end %}
+	{% endif %}
 	<!-- Start player -->
 <div class="sm2-bar-ui" style="max-width:68%">
 
@@ -159,14 +160,14 @@
 	<div class="details">
 	<p>{{ next_track.track_details['artist'] }} ({{ next_track.track_details['title'] }} id: {{ next_track.id }})</p>
 	<p>Filename: {{ next_track.filename }}
-	Duration: {{ datetime.timedelta(seconds=int(next_track.track_details['length'])) }}</p>
+	Duration: {{ next_track.track_details['length'] }}</p>
 	
 	<p>Trim track start in seconds (can be floating point): 
 	<input type="hidden" name="next_track_id" size="5" value="{{ next_track.id }}">
 	<input type="text" name="next_track_itrim" size="5" value="{{ next_track.track_details['itrim'] }}">
 	Sequence: 
 	{{ next_track.track_details['sequence'] }}</p>
-	{% if next_track.track_details['status'] == 0 %}<p class="status_alert">Inactive</p>{% end %}
+	{% if next_track.track_details['status'] == 0 %}<p class="status_alert">Inactive</p>{% endif %}
 	<p><a href="/gmin#track{{ track.id }}">Cancel</a> &nbsp; | &nbsp; <input type="submit" value="Audition" id="submitbtn">
 	
 			

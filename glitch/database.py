@@ -372,6 +372,12 @@ def update_track(id, info, artwork=None):
 		if artwork is not None: param['artwork'] = memoryview(artwork)
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
 		
+def next_track_in_sequence(id, sequence):
+	"""Receive track id, sequence and return Track object for subsequent active track in sequence"""
+	with _conn, _conn.cursor() as cur:
+		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE sequence >= %s AND id != %s ORDER BY sequence LIMIT 1", (sequence, id,))
+		return Track(*cur.fetchone())
+
 def sequence_tracks(sequence_object):
 	for id, sequence in sequence_object.items():
 		seq = sequence_object.get(id,'')[0]
