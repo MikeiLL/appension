@@ -375,7 +375,7 @@ def update_track(id, info, artwork=None):
 def next_track_in_sequence(id, sequence):
 	"""Receive track id, sequence and return Track object for subsequent active track in sequence"""
 	with _conn, _conn.cursor() as cur:
-		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE sequence >= %s AND id != %s ORDER BY sequence LIMIT 1", (sequence, id,))
+		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE sequence >= %s AND id != %s ORDER BY sequence, id LIMIT 1", (sequence, id,))
 		return Track(*cur.fetchone())
 
 def sequence_tracks(sequence_object):

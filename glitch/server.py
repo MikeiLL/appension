@@ -334,6 +334,7 @@ def admin():
 @admin_required
 def manage_transition(id):
 	track1 = database.get_single_track(id)
+	# Will TypeError if you pick this on the very last one
 	track2 = database.next_track_in_sequence(id, track1.track_details['sequence'])
 	return render_template("manage_transition.html", track=track1, next_track=track2)
 	
