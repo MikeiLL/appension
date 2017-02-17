@@ -27,6 +27,18 @@ ALLOWED_EXTENSIONS = set(['mp3', 'png', 'jpg', 'jpeg', 'gif'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Clean up the transition_audio directory
+TRANSITION_AUDIO = "glitch/static/transition_audio"
+try:
+	scan = os.scandir(TRANSITION_AUDIO)
+except FileNotFoundError:
+	# If the dir itself doesn't exist, make it
+	os.mkdir(TRANSITION_AUDIO)
+else:
+	# Empty out any files that were there from a previous run
+	for fn in scan:
+		os.remove(fn.path)
+
 @login_manager.user_loader
 def load_user(id):
 	return database.User.from_id(int(id))
@@ -342,11 +354,20 @@ def manage_transition(id):
 @admin_required
 def audition_transition():
 	"""Don't know that we need to send the ID through the url"""
-	database.update_track(request.form["track_id"], {"otrim":request.form["track_otrim"]})
-	database.update_track(request.form["next_track_id"], {"itrim":request.form["next_track_itrim"]})
-	subprocess.Popen([sys.executable, "-m", "glitch", "audition", request.form["track_id"], request.form["next_track_id"], "testfile.mp3"], stderr=subprocess.DEVNULL)
-	flash("Rendering testfile.mp3")
-	return redirect("/gmin")
+	print(request.form)
+	id1 = request.form["track_id"]
+	id2 = request.form["next_track_id"]
+	database.update_track(id1, {"otrim":request.form["track_otrim"]})
+	database.update_track(id2, {"itrim":request.form["next_track_itrim"]})
+	try: os.remove(TRANSITION_AUDIO + "/testfile.mp3")
+	except FileNotFoundError: pass
+	subprocess.Popen([sys.executable, "-m", "glitch", "audition", id1, id2, TRANSITION_AUDIO + "/testfile.mp3"], stderr=subprocess.DEVNULL)
+	return render_template("audition.html",
+		track=database.get_single_track(id1),
+		next_track=database.get_single_track(id2),
+		witty_saying="Curiosity has its own reason for existing. -- Aristotle\n\nMainly to keep a lid on the world's population of cats. -- Anonymous",
+		trackfn="testfile.mp3",
+	)
 
 @app.route("/rebuild_glitch")
 @admin_required
