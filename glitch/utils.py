@@ -74,6 +74,7 @@ def systemd_socket():
 	if pid == os.getpid() and fd_count >= 1:
 		# The PID matches - we've been given at least one socket.
 		# The sd_listen_fds docs say that they should start at FD 3.
+		import sys
 		print("Got %d socket(s)" % fd_count, file=sys.stderr)
 		return socket.socket(fileno=3)
 	return None
