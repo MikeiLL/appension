@@ -361,7 +361,7 @@ def audition_transition():
 	database.update_track(id2, {"itrim":request.form["next_track_itrim"]})
 	try: os.remove(TRANSITION_AUDIO + "/testfile.mp3")
 	except FileNotFoundError: pass
-	subprocess.Popen([sys.executable, "-m", "glitch", "audition", id1, id2, TRANSITION_AUDIO + "/testfile.mp3"], stderr=subprocess.DEVNULL)
+	subprocess.Popen([sys.executable, "-m", "glitch", "audition", id1, id2, TRANSITION_AUDIO + "/testfile.mp3", "-ldebug"])#, stderr=subprocess.DEVNULL)
 	return render_template("audition.html",
 		track=database.get_single_track(id1),
 		next_track=database.get_single_track(id2),
