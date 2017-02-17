@@ -4,7 +4,7 @@
 server_domain = "http://50.116.55.59"
 
 http_port = 8888 # Port for the main web site, in debug mode
-renderer_port = 8889 # Port for the renderer (/all.mp3 and friends)
+renderer_port = 81 # Port for the renderer (/all.mp3 and friends)
 
 # Track limits in seconds
 max_track_length = 400
