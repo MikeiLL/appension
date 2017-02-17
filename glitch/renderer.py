@@ -271,8 +271,8 @@ async def render_audition(id1, id2, fn):
 	database.enqueue_audition(id1, id2)
 	logging.debug("renderer started")
 	global ffmpeg
-	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", fn,
-		stdin=subprocess.PIPE, stdout=subprocess.DEVNULL)
+	ffmpeg = await asyncio.create_subprocess_exec("ffmpeg", "-y", "-ac", "2", "-f", "s16le", "-i", "-", "-f", "mp3", fn,
+		stdin=subprocess.PIPE)
 	asyncio.ensure_future(infinitely_glitch())
 	await ffmpeg.wait()
 	logging.debug("%r rendered", fn)

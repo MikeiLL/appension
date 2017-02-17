@@ -334,19 +334,54 @@ def admin():
 @admin_required
 def manage_transition(id):
 	track1 = database.get_single_track(id)
+	# Will TypeError if you pick this on the very last one
 	track2 = database.next_track_in_sequence(id, track1.track_details['sequence'])
 	return render_template("manage_transition.html", track=track1, next_track=track2)
-	
-@app.route('/audition/<int:id>', methods=["POST"])
+
+_auditionings = {}
+@app.route('/audition', methods=["POST"])
 @admin_required
-def audition_transition(id):
+def audition_transition():
 	"""Don't know that we need to send the ID through the url"""
-	from . import renderer
-	database.update_track(request.form["track_id"], {"otrim":request.form["track_otrim"]})
-	database.update_track(request.form["next_track_id"], {"itrim":request.form["next_track_itrim"]})
-	subprocess.Popen([sys.executable, "-m", "glitch", "audition", request.form["track_id"], request.form["next_track_id"], "testfile.mp3"], stderr=subprocess.DEVNULL)
-	flash("Rendering testfile.mp3")
-	return redirect("/gmin")
+	print(request.form)
+	id1 = request.form["track_id"]
+	id2 = request.form["next_track_id"]
+	database.update_track(id1, {"otrim":request.form["track_otrim"]})
+	database.update_track(id2, {"itrim":request.form["next_track_itrim"]})
+	if len(_auditionings) > 10:
+		# Too many concurrent ones. Drop one (chosen arbitrarily).
+		_auditionings.popitem()
+	token = utils.random_hex()
+	_auditionings[token] = subprocess.Popen([sys.executable, "-m", "glitch", "audition", id1, id2, "-", "-ldebug"], stdout=subprocess.PIPE)
+	_auditionings[token].output = b""
+	return render_template("audition.html",
+		track=database.get_single_track(id1),
+		next_track=database.get_single_track(id2),
+		witty_saying="Curiosity has its own reason for existing. -- Aristotle\n\nMainly to keep a lid on the world's population of cats. -- Anonymous",
+		trackfn="/audition/%s.mp3" % token,
+	)
+
+@app.route("/audition/<token>.mp3")
+@admin_required
+def hear_transition(token):
+	result = _auditionings.get(token)
+	if result is None:
+		# Bad token (maybe server restarted since this was called for)
+		return "Nope", 404
+	if isinstance(result, bytes):
+		# We have the content, nice. TODO: Clean these out periodically.
+		return result
+	# Neither of the above? It should be a subprocess object.
+	if result.poll() is None:
+		# This is a terrible way to prevent deadlocks, but I really don't want
+		# tons of threads sitting around. TODO: Make this entire application
+		# run under asyncio, like the renderer does. Maybe merge it all in,
+		# making the entire server a single asyncio process.
+		while result.stdout.peek(): result.output += result.stdout.read(1024)
+		return "Not yet", 404
+	# It's terminated. Replace it with a string.
+	_auditionings[token] = result.output + result.stdout.read()
+	return _auditionings[token]
 
 @app.route("/rebuild_glitch")
 @admin_required

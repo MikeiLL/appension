@@ -234,11 +234,14 @@ def enqueue_audition(track1, track2):
 		# As above, assumes the IDs are actually valid
 		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE id=%s", (track1,))
 		t1 = Track(*cur.fetchone())
-		t1.track_details["itrim"] = int(t1.track_details["length"]) - 10 + t1.track_details["otrim"]
+		# Try to get ten playable seconds of audio, at the end of the track (not counting otrim).
+		# If there _aren't_ ten playable seconds (if otrim+10 > length), take whatever we get.
+		t1.track_details["itrim"] = max(int(t1.track_details["length"]) - 10 - t1.track_details["otrim"], 0)
 		_track_queue.put(t1)
 		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE id=%s", (track2,))
 		t2 = Track(*cur.fetchone())
-		t2.track_details["otrim"] = int(t2.track_details["length"]) - 10 + t2.track_details["itrim"]
+		# As above but at the beginning of the track (not counting itrim).
+		t2.track_details["otrim"] = max(int(t2.track_details["length"]) - 10 - t2.track_details["itrim"], 0)
 		_track_queue.put(t2)
 	_track_queue.put(EndOfTracks())
 
@@ -375,7 +378,7 @@ def update_track(id, info, artwork=None):
 def next_track_in_sequence(id, sequence):
 	"""Receive track id, sequence and return Track object for subsequent active track in sequence"""
 	with _conn, _conn.cursor() as cur:
-		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE sequence >= %s AND id != %s ORDER BY sequence LIMIT 1", (sequence, id,))
+		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE sequence >= %s AND id != %s ORDER BY sequence, id LIMIT 1", (sequence, id,))
 		return Track(*cur.fetchone())
 
 def sequence_tracks(sequence_object):
