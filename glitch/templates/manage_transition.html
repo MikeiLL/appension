@@ -79,8 +79,8 @@
  
 	 {% if track.track_details['status'] == 0 %}<p class="status_alert">Inactive</p>{% endif %}
  	<p>
-	 {% if false %}Crossfade time in half-beats (whole numbers only): 
 	<input type="hidden" name="track_id" size="5" value="{{ track.id }}">
+	 {% if false %}Crossfade time in half-beats (whole numbers only): 
 	<input type="text" name="track_xfade" size="5" value="{{ track.track_details['xfade'] }}">
 	 {% endif %}
 	Trim track end in seconds: 
