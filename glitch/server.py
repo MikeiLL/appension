@@ -348,6 +348,9 @@ def audition_transition():
 	id2 = request.form["next_track_id"]
 	database.update_track(id1, {"otrim":request.form["track_otrim"]})
 	database.update_track(id2, {"itrim":request.form["next_track_itrim"]})
+	if len(_auditionings) > 10:
+		# Too many concurrent ones. Drop one (chosen arbitrarily).
+		_auditionings.popitem()
 	token = utils.random_hex()
 	_auditionings[token] = subprocess.Popen([sys.executable, "-m", "glitch", "audition", id1, id2, "-", "-ldebug"], stdout=subprocess.PIPE)
 	_auditionings[token].output = b""
