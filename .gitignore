@@ -8,3 +8,4 @@ env
 next_glitch.mp3
 major_glitch.mp3
 glitch/static/single-audio-files/*.mp3
+glitch/static/transition_audio
