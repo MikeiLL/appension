@@ -378,7 +378,7 @@ def hear_transition(token):
 		return "Not yet", 404
 	# It's terminated. Replace it with a string.
 	_auditionings[token] = result.output + result.stdout.read()
-	return _auditionings[token], 201
+	return _auditionings[token]
 
 @app.route("/rebuild_glitch")
 @admin_required
