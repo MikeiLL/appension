@@ -4,7 +4,7 @@
 {% block content %}
 <h2>Manage Transition</h2>
 <h3>{{ track.track_details['artist'] }} into {{ next_track.track_details['artist'] }}</h3>
-<form enctype="multipart/form-data" action="/audition/{{ track.id }}" method="post">
+<form enctype="multipart/form-data" action="/audition" method="post">
 <div id="manage_track">
 <!-- Start player -->
 <div class="sm2-bar-ui" style="max-width:68%">

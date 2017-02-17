@@ -337,11 +337,10 @@ def manage_transition(id):
 	track2 = database.next_track_in_sequence(id, track1.track_details['sequence'])
 	return render_template("manage_transition.html", track=track1, next_track=track2)
 	
-@app.route('/audition/<int:id>', methods=["POST"])
+@app.route('/audition', methods=["POST"])
 @admin_required
-def audition_transition(id):
+def audition_transition():
 	"""Don't know that we need to send the ID through the url"""
-	from . import renderer
 	database.update_track(request.form["track_id"], {"otrim":request.form["track_otrim"]})
 	database.update_track(request.form["next_track_id"], {"itrim":request.form["next_track_itrim"]})
 	subprocess.Popen([sys.executable, "-m", "glitch", "audition", request.form["track_id"], request.form["next_track_id"], "testfile.mp3"], stderr=subprocess.DEVNULL)
