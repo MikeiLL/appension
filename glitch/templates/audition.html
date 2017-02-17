@@ -57,7 +57,7 @@
 
   <div class="sm2-playlist-wrapper">
     <ul class="sm2-playlist-bd">
-     <li><a id="endpoint_link" href="/static/transition_audio/{{ trackfn }}" type="audio/mpeg"></a></li>
+     <li><a id="endpoint_link" href="{{ trackfn }}" type="audio/mpeg"></a></li>
     </ul>
   </div>
 
@@ -107,7 +107,7 @@
 		xhr.send();
 	}
 	my_spinner()
-	probe("/static/transition_audio/{{ trackfn }}");
+	probe("{{ trackfn }}");
 	
 	function my_spinner() {
 			jQuery("#loading").fadeIn();
