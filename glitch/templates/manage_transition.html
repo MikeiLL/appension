@@ -83,14 +83,14 @@
 	<input type="hidden" name="track_id" size="5" value="{{ track.id }}">
 	<input type="text" name="track_xfade" size="5" value="{{ track.track_details['xfade'] }}">
 	 {% endif %}
-	Trim track end in seconds (can be floating point like 0.4): 
+	Trim track end in seconds: 
 	<input type="text" name="track_otrim" size="5" value="{{ track.track_details['otrim'] }}">
 	Sequence: 
 	{{ track.track_details['sequence'] }}</p>
 	</div>
 	<br class="clear"/>
 	{% if track.id == next_track.id %}
-		<p class="status_alert">NO SUBSEQUENT TRACK IN SEQUENCE</p>
+		<p class="status_alert">NO SUBSEQUENT TRACK IN SEQUENCE [won't happen, server will 500]</p>
 	{% endif %}
 	<!-- Start player -->
 <div class="sm2-bar-ui" style="max-width:68%">
@@ -162,7 +162,7 @@
 	<p>Filename: {{ next_track.filename }}
 	Duration: {{ next_track.track_details['length'] }}</p>
 	
-	<p>Trim track start in seconds (can be floating point): 
+	<p>Trim track start in seconds: 
 	<input type="hidden" name="next_track_id" size="5" value="{{ next_track.id }}">
 	<input type="text" name="next_track_itrim" size="5" value="{{ next_track.track_details['itrim'] }}">
 	Sequence: 
