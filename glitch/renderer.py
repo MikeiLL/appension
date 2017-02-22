@@ -25,6 +25,7 @@ app = web.Application()
 songs = []
 position = 0
 track_list = []
+orig_time_offset = time.time() - time.perf_counter()
 
 def route(url):
 	def deco(f):
@@ -36,16 +37,17 @@ def route(url):
 
 # The rate-limiting sleep will wait until the clock catches up to this point.
 # We start it "ten seconds ago" so we get a bit of buffer to start off.
-rendered_until = time.time() - 10
+rendered_until = time.perf_counter() - 10
 ffmpeg = None # aio subprocess where we're compressing to MP3
 async def _render_output_audio(seg, fn):
 	logging.info("Sending %d bytes of data for %s secs of %s", len(seg.raw_data), seg.duration_seconds, fn)
 	ffmpeg.stdin.write(seg.raw_data)
 	await ffmpeg.stdin.drain()
 	global rendered_until; rendered_until += seg.duration_seconds
-	delay = rendered_until - time.time()
+	delay = rendered_until - time.perf_counter()
 	if delay > 0:
-		logging.debug("And sleeping for %ds until %s", delay, rendered_until)
+		logging.debug("And sleeping for %ds until %s [ofs %s=>%s]",
+			delay, rendered_until, time_offset, time.time() - time.perf_counter())
 		await asyncio.sleep(delay)
 
 # dB gain to be added/removed from all tracks
@@ -235,7 +237,7 @@ async def info(req):
 	# Currently just returns the last few, regardless of exactly how
 	# far they actually are in the past.
 	return web.json_response({
-		"ts": time.time(), "render_time": rendered_until,
+		"ts": time.perf_counter(), "render_time": rendered_until,
 		"tracks": track_list[-5:]
 	}, headers={"Access-Control-Allow-Origin": "*"})
 
