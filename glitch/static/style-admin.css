@@ -14,6 +14,7 @@ BODY TABLE {
     box-shadow: 3px 4px 6px #514949;
     background-color: #E7E6E6;
     background-image: url(/static/img/tile.jpg);
+    margin: 1em;
 }
 TD {
     padding: 4px;
@@ -28,4 +29,9 @@ TBODY {
 BODY H1 {
     font-size: 15px;
     color: teal;
+}
+
+.transition-audition a, .transition-audition a:visited{
+	color: #999;
+	margin: 1em;
 }
