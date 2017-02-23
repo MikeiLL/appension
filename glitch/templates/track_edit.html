@@ -87,6 +87,9 @@
           
 	</td>
 	</tr>
+	<tr><td colspan="6">Trim Track Beginning (seconds): <input type="text" name="itrim" size="10" value="{{ track.track_details['itrim'] }}" placeholder="2"> 
+	Trim Track Ending: <input type="text" name="otrim" size="10" value="{{ track.track_details['otrim'] }}" placeholder="2"> 
+	</td></tr>
 	<tr><td colspan="6">Lyrics:<br>
 	<textarea rows=10 cols=80 name="lyrics">{{ track.track_details['lyrics'] }}</textarea></td></tr>
 	<tr><td colspan="6">Story:<br>
@@ -104,9 +107,6 @@
 	<img src="/artwork/{{ track.id }}.jpg" class="track_art"></p></td></tr>
 	<tr><td colspan="6">Update Artwork: <input type="file" name="artwork" size="40"></td></tr>
 	<tr><td colspan="6">Track URL: <input type="text" name="url" size="60" value="{{ track.track_details['url'] }}" placeholder="http://"> 
-	<tr><td colspan="6">Trim Track Beginning (seconds): <input type="text" name="itrim" size="10" value="{{ track.track_details['itrim'] }}" placeholder="2"> 
-	Trim Track Ending: <input type="text" name="otrim" size="10" value="{{ track.track_details['otrim'] }}" placeholder="2"> 
-	</td></tr>
 	<tr><td colspan="6" align="right"><input type="submit" value="Update"></td></tr>
 </table>
 </form>
