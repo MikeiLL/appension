@@ -365,7 +365,7 @@ def update_track(id, info, artwork=None):
 	with _conn, _conn.cursor() as cur:
 		# Enumerate all updateable fields. If they're not provided, they won't be updated;
 		# any other fields will be ignored. This is basically set intersection on a dict.
-		fields = ("artist", "status", "lyrics", "story", "keywords", "url", "sequence", "itrim", "otrim")
+		fields = ("artist", "status", "lyrics", "story", "keywords", "url", "sequence", "itrim", "otrim", "xfade")
 		param = {k:info[k] for k in fields if k in info}
 		if "status" in param and param["status"] not in {"0", "1"}:
 			# Status has to be either 0 (inactive) or 1 (active).

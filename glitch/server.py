@@ -343,10 +343,15 @@ _auditionings = {}
 @admin_required
 def audition_transition():
 	"""Don't know that we need to send the ID through the url"""
+	print("XXXXXXXXXXXXX")
 	print(request.form)
 	id1 = request.form["track_id"]
 	id2 = request.form["next_track_id"]
-	database.update_track(id1, {"otrim":request.form["track_otrim"]})
+	if request.form["track_xfade"]:
+		print("YYYYYYYYYYYYYY")
+		database.update_track(id1, {"otrim":request.form["track_otrim"], "xfade":'-1'})
+	else:
+		database.update_track(id1, {"otrim":request.form["track_otrim"]})
 	database.update_track(id2, {"itrim":request.form["next_track_itrim"]})
 	if len(_auditionings) > 10:
 		# Too many concurrent ones. Drop one (chosen arbitrarily).
