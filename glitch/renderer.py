@@ -149,6 +149,14 @@ async def infinitely_glitch():
 				"start_time": rendered_until,
 				"details": track.track_details, # NOTE: The length here ignores itrim/otrim and overlay.
 			})
+			if nexttrack.track_details["xfade"] == -1:
+				# This track has requested that it not be faded over whatever it
+				# follows. So we'll render the entire current track (barring any
+				# otrim), and set a minimal skip (also counting only itrim).
+				await _render_output_audio(dub1[skip:t1_length], track.filename)
+				logging.info("Overlaying bypassed at request of next track")
+				skip = itrim
+				continue
 			await _render_output_audio(bulk, track.filename)
 			# 2) Merge across t2_start ms - this will get us to the downbeat
 			# 3) Merge across (t1_length-t1_end) ms - this nicely rounds out the last track
