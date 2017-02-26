@@ -46,8 +46,9 @@ async def _render_output_audio(seg, fn):
 	global rendered_until; rendered_until += seg.duration_seconds
 	delay = rendered_until - time.perf_counter()
 	if delay > 0:
-		logging.debug("And sleeping for %ds until %s [ofs %s=>%s]",
-			delay, rendered_until, time_offset, time.time() - time.perf_counter())
+		ofs = time.time() - time.perf_counter()
+		logging.debug("And sleeping for %ds until %s [ofs %s=>%s = %+f]",
+			delay, rendered_until, orig_time_offset, ofs, ofs - orig_time_offset)
 		await asyncio.sleep(delay)
 
 # dB gain to be added/removed from all tracks
@@ -142,13 +143,21 @@ async def infinitely_glitch():
 				t2_start = beat - itrim
 				if t2_start >= 0: break
 			# t2_start does NOT include itrim
-			# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
-			bulk = dub1[skip : t1_end - t2_start]
 			track_list.append({
 				"id": track.id,
 				"start_time": rendered_until,
 				"details": track.track_details, # NOTE: The length here ignores itrim/otrim and overlay.
 			})
+			if nexttrack.track_details["xfade"] == -1:
+				# This track has requested that it not be faded over whatever it
+				# follows. So we'll render the entire current track (barring any
+				# otrim), and set a minimal skip (also counting only itrim).
+				await _render_output_audio(dub1[skip:t1_length], track.filename)
+				logging.info("Overlaying bypassed at request of next track")
+				skip = itrim
+				continue
+			# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
+			bulk = dub1[skip : t1_end - t2_start]
 			await _render_output_audio(bulk, track.filename)
 			# 2) Merge across t2_start ms - this will get us to the downbeat
 			# 3) Merge across (t1_length-t1_end) ms - this nicely rounds out the last track
