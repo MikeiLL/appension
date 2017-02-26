@@ -142,8 +142,6 @@ async def infinitely_glitch():
 				t2_start = beat - itrim
 				if t2_start >= 0: break
 			# t2_start does NOT include itrim
-			# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
-			bulk = dub1[skip : t1_end - t2_start]
 			track_list.append({
 				"id": track.id,
 				"start_time": rendered_until,
@@ -157,6 +155,8 @@ async def infinitely_glitch():
 				logging.info("Overlaying bypassed at request of next track")
 				skip = itrim
 				continue
+			# 1) Render t1 from skip up to (t1_end-t2_start) - the bulk of the track
+			bulk = dub1[skip : t1_end - t2_start]
 			await _render_output_audio(bulk, track.filename)
 			# 2) Merge across t2_start ms - this will get us to the downbeat
 			# 3) Merge across (t1_length-t1_end) ms - this nicely rounds out the last track
