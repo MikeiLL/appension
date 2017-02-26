@@ -47,7 +47,7 @@ async def _render_output_audio(seg, fn):
 	delay = rendered_until - time.perf_counter()
 	if delay > 0:
 		logging.debug("And sleeping for %ds until %s [ofs %s=>%s]",
-			delay, rendered_until, time_offset, time.time() - time.perf_counter())
+			delay, rendered_until, orig_time_offset, time.time() - time.perf_counter())
 		await asyncio.sleep(delay)
 
 # dB gain to be added/removed from all tracks
