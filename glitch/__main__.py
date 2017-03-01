@@ -36,7 +36,7 @@ def audition(id1, id2, fn, *, maxlen:"m"=10):
 	maxlen: Approx length of audio either side (0 = all)
 	"""
 	from . import renderer
-	renderer.audition(id1, id2, fn, maxlen)
+	renderer.audition(id1, id2, fn, maxlen=maxlen)
 
 @utils.cmdline
 def main(*, dev=False):
