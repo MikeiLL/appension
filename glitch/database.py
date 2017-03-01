@@ -228,7 +228,7 @@ def enqueue_all_tracks(count=1):
 				_track_queue.put(Track(*track))
 	_track_queue.put(EndOfTracks())
 
-def enqueue_audition(track1, track2, maxlen=10):
+def enqueue_audition(track1, track2, maxlen=10, hard=False):
 	"""Enqueue two tracks for auditioning, followed by an end marker.
 	
 	If maxlen is nonzero, the tracks' trims will be set to give approximately
@@ -248,6 +248,9 @@ def enqueue_audition(track1, track2, maxlen=10):
 		if maxlen:
 			# As above but at the beginning of the track (not counting itrim).
 			t2.track_details["otrim"] = max(int(t2.track_details["length"]) - maxlen - t2.track_details["itrim"], 0)
+		if hard:
+			# Force a hard transition (no cross-fade)
+			t2.track_details["xfade"] = -1
 		_track_queue.put(t2)
 	_track_queue.put(EndOfTracks())
 
