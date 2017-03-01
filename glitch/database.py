@@ -228,20 +228,29 @@ def enqueue_all_tracks(count=1):
 				_track_queue.put(Track(*track))
 	_track_queue.put(EndOfTracks())
 
-def enqueue_audition(track1, track2):
-	"""Enqueue two tracks for auditioning, followed by an end marker."""
+def enqueue_audition(track1, track2, maxlen=10, hard=False):
+	"""Enqueue two tracks for auditioning, followed by an end marker.
+	
+	If maxlen is nonzero, the tracks' trims will be set to give approximately
+	that many seconds of audio on either side of the transition.
+	"""
 	with _conn, _conn.cursor() as cur:
 		# As above, assumes the IDs are actually valid
 		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE id=%s", (track1,))
 		t1 = Track(*cur.fetchone())
-		# Try to get ten playable seconds of audio, at the end of the track (not counting otrim).
-		# If there _aren't_ ten playable seconds (if otrim+10 > length), take whatever we get.
-		t1.track_details["itrim"] = max(int(t1.track_details["length"]) - 10 - t1.track_details["otrim"], 0)
+		if maxlen:
+			# Try to get ten playable seconds of audio, at the end of the track (not counting otrim).
+			# If there _aren't_ ten playable seconds (if otrim+10 > length), take whatever we get.
+			t1.track_details["itrim"] = max(int(t1.track_details["length"]) - maxlen - t1.track_details["otrim"], 0)
 		_track_queue.put(t1)
 		cur.execute("SELECT "+Track.columns+" FROM tracks WHERE id=%s", (track2,))
 		t2 = Track(*cur.fetchone())
-		# As above but at the beginning of the track (not counting itrim).
-		t2.track_details["otrim"] = max(int(t2.track_details["length"]) - 10 - t2.track_details["itrim"], 0)
+		if maxlen:
+			# As above but at the beginning of the track (not counting itrim).
+			t2.track_details["otrim"] = max(int(t2.track_details["length"]) - maxlen - t2.track_details["itrim"], 0)
+		if hard:
+			# Force a hard transition (no cross-fade)
+			t2.track_details["xfade"] = -1
 		_track_queue.put(t2)
 	_track_queue.put(EndOfTracks())
 
