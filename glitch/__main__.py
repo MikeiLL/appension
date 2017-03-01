@@ -24,7 +24,7 @@ def major_glitch(*, dev=False):
 	renderer.major_glitch(profile=dev)
 
 @utils.cmdline
-def audition(id1, id2, fn):
+def audition(id1, id2, fn, *, maxlen:"m"=10):
 	"""Audition a transition
 
 	id1: ID of earlier track (will render last 10s)
@@ -32,9 +32,11 @@ def audition(id1, id2, fn):
 	id2: ID of later track (will render first 10s)
 
 	fn: File name to save into
+
+	maxlen: Approx length of audio either side (0 = all)
 	"""
 	from . import renderer
-	renderer.audition(id1, id2, fn)
+	renderer.audition(id1, id2, fn, maxlen)
 
 @utils.cmdline
 def main(*, dev=False):
