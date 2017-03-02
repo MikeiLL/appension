@@ -81,9 +81,9 @@
  	<p>
 	<input type="hidden" name="track_id" size="5" value="{{ track.id }}">
 	 {% if false %}Crossfade time in half-beats (whole numbers only): 
-	<input type="text" name="track_xfade" size="5" value="{{ track.track_details['xfade'] }}">
 	 {% endif %}
-	Hard Transition: <input type="checkbox" name="track_xfade"{% if track.track_details['xfade'] == -1 %} checked {% endif %}>
+	<input type="hidden" name="track_xfade" size="5" value="{{ track.track_details['xfade'] }}">
+	Hard Transition: <input type="checkbox" name="track_hard_transition"{% if track.track_details['xfade'] == -1 %} checked {% endif %}>
 	Trim track end in seconds: 
 	<input type="text" name="track_otrim" size="5" value="{{ track.track_details['otrim'] }}">
 	Sequence: 
