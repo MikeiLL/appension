@@ -35,3 +35,10 @@ BODY H1 {
 	color: #999;
 	margin: 1em;
 }
+
+.wide TD {
+    border: 3px outset white;
+    max-width: 40px;
+    overflow-wrap: break-word;
+    padding: 4px;
+}
