@@ -4,7 +4,7 @@
 <p><h2>{{ track.filename }}</h2>
 </p>
 <form method="post">
-<table border="1" width="800px" cellpadding="5">
+<table border="1" width="800px" cellpadding="5" class="trackedit">
 	<tr><td>id</td><td>Artist</td><td>Filename</td><td>Length</td><td>Status</td><td>Position</td></tr>
 	<tr><td>{{ track.id }}</td><td>
 	<input type="text" name="artist" value="{{ track.track_details['artist_exact'] }}" size=30></td>

@@ -36,7 +36,7 @@ BODY H1 {
 	margin: 1em;
 }
 
-.wide TD {
+.trackedit TD {
     border: 3px outset white;
     max-width: 40px;
     overflow-wrap: break-word;
