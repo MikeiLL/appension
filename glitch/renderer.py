@@ -220,7 +220,9 @@ async def moosic(req):
 	resp = web.StreamResponse()
 	resp.content_type = "audio/mpeg"
 	await resp.prepare(req)
-	pos = position
+	# Start at most four chunks behind. If there aren't yet four chunks,
+	# start as far back as we logically can.
+	pos = position + len(songs[:-4])
 	while True:
 		if pos - position >= len(songs):
 			# Not enough content. This should only happen
@@ -249,6 +251,13 @@ async def info(req):
 		"ts": time.perf_counter(), "render_time": rendered_until,
 		"tracks": track_list[-5:]
 	}, headers={"Access-Control-Allow-Origin": "*"})
+
+@route("/debug.json")
+async def info(req):
+	return web.json_response({
+		"ts": time.perf_counter(), "render_time": rendered_until,
+		"tracks": track_list,
+	})
 
 async def render_all(profile):
 	"""Render the entire track as a one-shot"""
