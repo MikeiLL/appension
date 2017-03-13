@@ -252,6 +252,13 @@ async def info(req):
 		"tracks": track_list[-5:]
 	}, headers={"Access-Control-Allow-Origin": "*"})
 
+@route("/debug.json")
+async def info(req):
+	return web.json_response({
+		"ts": time.perf_counter(), "render_time": rendered_until,
+		"tracks": track_list,
+	})
+
 async def render_all(profile):
 	"""Render the entire track as a one-shot"""
 	global rendered_until; rendered_until = 0 # Disable the delay
