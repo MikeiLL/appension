@@ -220,7 +220,9 @@ async def moosic(req):
 	resp = web.StreamResponse()
 	resp.content_type = "audio/mpeg"
 	await resp.prepare(req)
-	pos = position
+	# Start at most four chunks behind. If there aren't yet four chunks,
+	# start as far back as we logically can.
+	pos = position + len(songs[:-4])
 	while True:
 		if pos - position >= len(songs):
 			# Not enough content. This should only happen
