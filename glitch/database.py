@@ -1,6 +1,6 @@
 """Database operations for Appension
 
-Executable using 'python -m glitch.database' - use --help for usage.
+Can be invoked from the top-level CLI ('python -m glitch -h' for info)
 """
 # NOTE: Startup could be sped up some by not importing flask_login if
 # we're not using Flask. Not sure how that should best be done though.
