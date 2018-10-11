@@ -5,6 +5,33 @@ appension
 Web player for devil glitch extension
  - Infinite glitch - the longest pop song ever
  
+## Requirements ##
+
+Postgresql database server (on OSX `brew install postgresql`)
+FFMPEG audio manipulation and rendering (on OSX `brew install ffmpeg`)
+
+## Installation ##
+  * Create a virtualenv `python3 -m venv glitch`
+  * * `cd glitch`
+  * * `source bin/activate`
+  	
+  * Install pip Requirements `pip install -r requirements.txt`
+  
+  * Create an `apikeys.py` file based on `apikeys_sample.py`
+  
+  * Insure postgres is running (on OSX) `brew services start postgresql`
+  
+  * Create the database tables `python -m glitch tables --confirm`
+  * * You can test by running this command without the `--confirm` flag.
+  
+  * Create a new user
+  * * `python3 -m glitch create-user name email password`
+  
+  * Make new user admin
+  * * `psql ``whoami``
+  * * `update users set status=1 where id = 1;`
+  * * `update users set user_level=2 where id = 1;`
+ 
 ## Start Server ##
 python3 -m glitch main
  
