@@ -8,6 +8,6 @@
 <li>Length: {{ track.track_details['length'] | format_seconds }}</li>
 <li>{{ "Active" if track.track_details['status'] else "Inactive" }}</li>
 </ul>
-<input type=submit value="Yes, delete it"> <a href="/gmin">Cancel</a>
+<input type=submit value="Yes, delete it"> <a href="/{{ url }}">Cancel</a>
 </form>
 {% endblock %}

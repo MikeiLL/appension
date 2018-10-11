@@ -22,7 +22,7 @@ FFMPEG audio manipulation and rendering (on OSX `brew install ffmpeg`)
   * Insure postgres is running (on OSX) `brew services start postgresql`
   
   * Create the database tables `python -m glitch tables --confirm`
-  * * You can test by running this command without the `--confirm` flag.
+  * * (You can test by running this command without the `--confirm` flag.)
   
   * Create a new user
   * * `python3 -m glitch create-user name email password`
@@ -31,6 +31,13 @@ FFMPEG audio manipulation and rendering (on OSX `brew install ffmpeg`)
   * * `psql ``whoami``
   * * `update users set status=1 where id = 1;`
   * * `update users set user_level=2 where id = 1;`
+  
+  * Create an audio directory `mkdir audio` and put some mp3 files in it.
+  
+  * Add files to glitchery `python3 -m glitch importmp3 audio/*.mp3`
+  
+  * Visit the address chosen in apikeys for admin_address to make tracks active (or do via psql).
+  
  
 ## Start Server ##
 python3 -m glitch main

@@ -6,6 +6,7 @@ from urllib.parse import urlparse, urljoin
 import os
 import sys
 import time
+from . import apikeys
 import logging
 import datetime
 import random
@@ -324,7 +325,7 @@ def oracle_get():
 							show_cloud=show_cloud, og_description=og_description, 
 							meta_description=meta_description, og_url=og_url, url_quote_plus=url_quote_plus)
 
-@app.route("/gmin")
+@app.route("/" + apikeys.admin_address)
 @admin_required
 def admin():
 	all_tracks = database.get_many_mp3("all", "sequence, id")
@@ -336,7 +337,7 @@ def manage_transition(id):
 	track1 = database.get_single_track(id)
 	# Will TypeError if you pick this on the very last one
 	track2 = database.next_track_in_sequence(id, track1.track_details['sequence'])
-	return render_template("manage_transition.html", track=track1, next_track=track2)
+	return render_template("manage_transition.html", track=track1, next_track=track2, url=apikeys.admin_address)
 
 _auditionings = {}
 @app.route('/audition', methods=["POST"])
@@ -364,6 +365,7 @@ def audition_transition():
 	return render_template("audition.html",
 		track=database.get_single_track(id1),
 		next_track=database.get_single_track(id2),
+		url=apikeys.admin_address,
 		witty_saying="Curiosity has its own reason for existing. -- Aristotle\n\nMainly to keep a lid on the world's population of cats. -- Anonymous",
 		trackfn="/audition/%s.mp3" % token,
 	)
@@ -395,19 +397,19 @@ def hear_transition(token):
 def rebuild_glitch():
 	subprocess.Popen([sys.executable, "-m", "glitch", "major_glitch"], stderr=subprocess.DEVNULL)
 	flash("Major Glitch is being rebuilt. No status is available.")
-	return redirect("/gmin")
+	return redirect("/" + apikeys.admin_address)
 
 @app.route("/delete/<int:id>")
 @admin_required
 def delete_track_get(id):
-	return render_template("delete_track.html", track=database.get_single_track(id))
+	return render_template("delete_track.html", track=database.get_single_track(id), url=apikeys.admin_address)
 
 @app.route("/delete/<int:id>", methods=["POST"])
 @admin_required
 def delete_track_post(id):
 	database.delete_track(id)
 	flash("Track %s deleted." % id)
-	return redirect("/gmin")
+	return redirect("/" + apikeys.admin_address)
 
 @app.route("/edit/<int:id>")
 @admin_required
@@ -420,7 +422,7 @@ def edit_track_post(id):
 	# TODO: artwork
 	database.update_track(id, request.form)
 	flash("Track %s edited." % id)
-	return redirect("/gmin")
+	return redirect("/" + apikeys.admin_address)
 
 # Log 404s to a file, but only once per server start per URL
 known_404 = set()
