@@ -6,13 +6,12 @@ from urllib.parse import urlparse, urljoin
 import os
 import sys
 import time
-from . import apikeys
 import logging
 import datetime
 import random
 import functools
 import subprocess
-from . import config, database, oracle, utils, mailer
+from . import apikeys, config, database, oracle, utils, mailer
 
 app = Flask(__name__)
 
@@ -443,6 +442,29 @@ def page_not_found(e):
 		with open("500.log", "a") as log:
 			print(datetime.datetime.now(), request.path, file=log)
 	return render_template('500.html'), 500
+
+# a route for generating sitemap.xml
+@app.route('/sitemap.xml', methods=['GET'])
+def sitemap():
+	"""Generate sitemap.xml. Makes a list of urls and date modified."""
+	pages=[]
+	ten_days_ago=datetime.datetime.now() # - datetime.timedelta(days=10).date().isoformat()
+	# static pages
+	for rule in app.url_map.iter_rules():
+		if "GET" in rule.methods and len(rule.arguments)==0:
+			if (not rule.rule[1:] in [apikeys.admin_address, 'recorder', 'reset_password', 'timing.json', 'rebuild_glitch']):
+				pages.append(
+					[config.server_domain+rule.rule,ten_days_ago]
+				)
+	
+	for artist in database.all_artists():
+		url=url_for("tracks_by_artist",artist=artist[0])
+		pages.append([config.server_domain+url,ten_days_ago])
+		
+	sitemap_xml = render_template('sitemap_template.xml', pages=pages)
+
+	return Response(sitemap_xml, mimetype='text/xml')
+
 
 def run(port=config.http_port, disable_logins=False):
 	# Used only for debug mode; production mode is done by gunicorn.

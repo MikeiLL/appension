@@ -477,6 +477,14 @@ def browse_tracks(letter):
 	with _conn, _conn.cursor() as cur:
 		cur.execute(query)
 		return [row for row in cur.fetchall()]
+		
+def all_artists():
+	"""Return all artists with active tracks. Used in sitemap."""
+	query = """SELECT DISTINCT artist FROM tracks WHERE status = 1
+		ORDER BY artist""".format(cols=Track.columns)
+	with _conn, _conn.cursor() as cur:
+		cur.execute(query)
+		return [row for row in cur.fetchall()]
 
 def get_recent_tracks(number):
         """Retrieve [number] number of most recently activated tracks"""
