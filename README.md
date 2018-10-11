@@ -36,7 +36,7 @@ FFMPEG audio manipulation and rendering (on OSX `brew install ffmpeg`)
   
   * Add files to glitchery `python3 -m glitch importmp3 audio/*.mp3`
   
-  * Visit the address chosen in apikeys for admin_address to make tracks active (or do via psql).
+  * Visit the address chosen in `apikeys` for `admin_address` to make tracks active (or do via psql).
   
  
 ## Start Server ##
