@@ -8,6 +8,7 @@
 db_connect_string = ""
 cookie_monster = "uqHHRiRIUyCIcB0RJJcv+T/Qc3wJS0p/jsyE1x36qBIa"
 admin_address = "administrator"
+site_url = "http://www.infiniteglitch.net"
 # Generated like this:
 # import base64, os; print(base64.b64encode(os.urandom(33)))
 

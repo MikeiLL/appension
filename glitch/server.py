@@ -454,12 +454,12 @@ def sitemap():
 		if "GET" in rule.methods and len(rule.arguments)==0:
 			if (not rule.rule[1:] in [apikeys.admin_address, 'recorder', 'reset_password', 'timing.json', 'rebuild_glitch']):
 				pages.append(
-					[config.server_domain+rule.rule,ten_days_ago]
+					[apikeys.site_url+rule.rule,ten_days_ago]
 				)
 	
 	for artist in database.all_artists():
 		url=url_for("tracks_by_artist",artist=artist[0])
-		pages.append([config.server_domain+url,ten_days_ago])
+		pages.append([apikeys.site_url+url,ten_days_ago])
 		
 	sitemap_xml = render_template('sitemap_template.xml', pages=pages)
 
