@@ -120,5 +120,13 @@
 {% endfor %}
 </table>
 </form>
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "MusicGroup",
+  "name": "{{ tracks_by[0].track_details['artist'] }}"
+}
+</script>
 {% endblock %}
 
