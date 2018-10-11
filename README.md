@@ -28,7 +28,7 @@ FFMPEG audio manipulation and rendering (on OSX `brew install ffmpeg`)
   * * `python3 -m glitch create-user name email password`
   
   * Make new user admin
-  * * `psql ``whoami``
+  * * ``psql `whoami` ``
   * * `update users set status=1 where id = 1;`
   * * `update users set user_level=2 where id = 1;`
   
