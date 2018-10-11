@@ -2,7 +2,7 @@ DateTime
 docutils
 mutagen
 amen
-psycopg2
+psycopg2-binary
 pyOpenSSL
 pycparser
 pycrypto
