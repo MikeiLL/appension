@@ -465,7 +465,7 @@ def sitemap():
 
 	return Response(sitemap_xml, mimetype='text/xml')
 
-@app.route('google1c870a472b1e6d13.html', methods=['GET'])
+@app.route('/google1c870a472b1e6d13.html', methods=['GET'])
 def google_verification():
     body = 'google-site-verification: google1c870a472b1e6d13.html'
     return Response(body, mimetype='text/plain')
