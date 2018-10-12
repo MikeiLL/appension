@@ -448,7 +448,8 @@ def page_not_found(e):
 def sitemap():
 	"""Generate sitemap.xml. Makes a list of urls and date modified."""
 	pages=[]
-	ten_days_ago=datetime.datetime.now() # - datetime.timedelta(days=10).date().isoformat()
+	ten_days_ago_dt = datetime.datetime.now() - datetime.timedelta(days=10)
+	ten_days_ago = ten_days_ago_dt.strftime("%Y-%m-%d")
 	# static pages
 	for rule in app.url_map.iter_rules():
 		if "GET" in rule.methods and len(rule.arguments)==0:
