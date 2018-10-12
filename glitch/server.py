@@ -465,6 +465,11 @@ def sitemap():
 
 	return Response(sitemap_xml, mimetype='text/xml')
 
+@app.route('google1c870a472b1e6d13.html', methods=['GET'])
+def google_verification():
+    body = 'google-site-verification: google1c870a472b1e6d13.html'
+    return Response(body, mimetype='text/plain')
+
 
 def run(port=config.http_port, disable_logins=False):
 	# Used only for debug mode; production mode is done by gunicorn.
