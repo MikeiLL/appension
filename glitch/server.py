@@ -470,6 +470,10 @@ def sitemap():
 def google_verification():
     body = 'google-site-verification: google1c870a472b1e6d13.html'
     return Response(body, mimetype='text/plain')
+    
+@app.route('/instrumental_track', methods=['GET'])
+def instrumental_track():
+    return redirect('../static/instrumentals/dgacousticlikMP3.mp3')
 
 
 def run(port=config.http_port, disable_logins=False):
