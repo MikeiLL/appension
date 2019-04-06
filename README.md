@@ -49,15 +49,26 @@ python3 -m glitch renderer
 ## Build/Rebuild Major Glitch ##
 python3 -m glitch major-glitch
 
+## For dev if you want to play tracks more quietly ##
+python3 -m glitch renderer --gain=-10 (where -10 is a number of decibels)
+
 ## To View All CMDLINE Commands ##
 python -m glitch --help
 
-## OR: On Unix system with Systemd ##
+## On Unix system with Systemd ##
 Use bash to run the makeservice.sh file, then start both services with command:
 sudo systemctl start glitch glitch-renderer
 
-## For dev if you want to play tracks more quietly ##
-python3 -m glitch renderer --gain=-10 (where -10 is a number of decibels)
+## If using a service with Unicorn and using the Pike Monitor ##
+sudo systemctl start glitch.service
+
+check status:
+systemctl status glitch
+
+run monitor like this:
+sudo pike outage.pike
+OR (chmod +x outage.pike)
+sudo ./outage.pike
 
 # A brief History #
 A few years ago Chris Butler decided to extend The Devil Glitch into infinity. Dozens of artists began writing and recording verses to contribute and re-assembling the gigantic track became rather resource-intensive.
