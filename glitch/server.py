@@ -473,8 +473,7 @@ def google_verification():
     
 @app.route('/instrumental_track', methods=['GET'])
 def instrumental_track():
-    return redirect('../static/instrumentals/dgacousticlikMP3.mp3')
-
+	return send_from_directory("static/single-audio-files", 'dgacousticlikMP3.mp3', mimetype='audio/mpeg', attachment_filename='glitch_instrumental.mp3', as_attachment=True)
 
 def run(port=config.http_port, disable_logins=False):
 	# Used only for debug mode; production mode is done by gunicorn.
