@@ -49,15 +49,12 @@ python3 -m glitch renderer
 ## Build/Rebuild Major Glitch ##
 python3 -m glitch major-glitch
 
-## Helpful Hints on the CMD Link ##
-python3 -m glitch -h
+## To View All CMDLINE Commands ##
+python -m glitch --help
 
 ## OR: On Unix system with Systemd ##
 Use bash to run the makeservice.sh file, then start both services with command:
 sudo systemctl start glitch glitch-renderer
-
-## To View All CMDLINE Commands ##
-python -m glitch --help
 
 ## For dev if you want to play tracks more quietly ##
 python3 -m glitch renderer --gain=-10 (where -10 is a number of decibels)
