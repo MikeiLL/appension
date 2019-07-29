@@ -2,6 +2,9 @@ echo "[Unit]
 Description=Infinite Glitch
 Requires=glitch.socket
 
+[Install]
+WantedBy=multi-user.target
+
 [Service]
 User=`whoami`
 ExecStart=`which gunicorn` glitch.server:app
@@ -14,6 +17,9 @@ echo "[Unit]
 Description=Infinite Glitch Renderer
 Requires=glitch-renderer.socket
 
+[Install]
+WantedBy=multi-user.target
+
 [Service]
 User=`whoami`
 ExecStart=`which python` -m glitch renderer
@@ -25,3 +31,5 @@ ListenStream=0.0.0.0:81
 sudo systemctl daemon-reload
 echo "Service file created. To start:"
 echo sudo systemctl start glitch glitch-renderer
+
+
