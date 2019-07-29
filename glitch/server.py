@@ -474,6 +474,14 @@ def google_verification():
 @app.route('/instrumental_track', methods=['GET'])
 def instrumental_track():
 	return send_from_directory("static/instrumentals", 'dgacousticlikMP3.mp3', mimetype='audio/mpeg', attachment_filename='glitch_instrumental.mp3', as_attachment=True)
+	
+@app.route('/.well-known/acme-challenge/<challenge>')
+def letsencrypt_check(challenge):
+    challenge_response = {
+        "<challenge_token>":"<challenge_response>",
+        "<challenge_token>":"<challenge_response>"
+    }
+    return Response(challenge_response[challenge], mimetype='text/plain')
 
 def run(port=config.http_port, disable_logins=False):
 	# Used only for debug mode; production mode is done by gunicorn.
