@@ -478,8 +478,8 @@ def instrumental_track():
 @app.route('/.well-known/acme-challenge/<challenge>')
 def letsencrypt_check(challenge):
     challenge_response = {
-        "<challenge_token>":"<challenge_response>",
-        "<challenge_token>":"<challenge_response>"
+        "kE5pI95WFzMdmpT-waTpeznppnJxGrMbtwYDu4wHZzw":"kE5pI95WFzMdmpT-waTpeznppnJxGrMbtwYDu4wHZzw.FWWgWn6UerXT9FkxFtZ-PSqsLxkgwwRUWtSrSC20PVU",
+        "_qMZgCEhcfUBv4RhQRTc2Psv1gU3evHxHqj3b9DN_XU":"_qMZgCEhcfUBv4RhQRTc2Psv1gU3evHxHqj3b9DN_XU.FWWgWn6UerXT9FkxFtZ-PSqsLxkgwwRUWtSrSC20PVU"
     }
     return Response(challenge_response[challenge], mimetype='text/plain')
 
