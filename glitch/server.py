@@ -475,7 +475,7 @@ def google_verification():
 def instrumental_track():
 	return send_from_directory("static/instrumentals", 'dgacousticlikMP3.mp3', mimetype='audio/mpeg', attachment_filename='glitch_instrumental.mp3', as_attachment=True)
 	
-@app.route('/.well-known/acme-challenge/<challenge>')
+@app.route('/.well-known/acme-challenge/QXrTI8L6jT43FDzTmHZ65nsR6yEJfsaP8I2BIrlTRBQ')
 def letsencrypt_check(challenge):
     challenge_response = {
         "<challenge_token>":"<challenge_response>",
