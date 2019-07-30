@@ -70,6 +70,23 @@ sudo pike outage.pike
 OR (chmod +x outage.pike)
 sudo ./outage.pike
 
+## SSL Certificates are generated via Let's Enctypt
+
+[See this link](https://certbot.eff.org/lets-encrypt/debianjessie-other)
+Also create a deploy hook for renewal:
+```
+/etc/letsencrypt/renewal-hooks/deploy/appension 
+cp /etc/letsencrypt/live/infiniteglitch.net/fullchain.pem /etc/letsencrypt/live/infiniteglitch.net/privkey.pem /home/mikekilmer/appension
+
+```
+
+## One a New Server ##
+
+In order to have services start automatically on reboot, each service must be symlinked thusly:
+
+sudo systemctl enable glitch glitch-renderer glitch-redirect
+sudo systemctl start glitch glitch-renderer glitch-redirect
+
 # A brief History #
 A few years ago Chris Butler decided to extend The Devil Glitch into infinity. Dozens of artists began writing and recording verses to contribute and re-assembling the gigantic track became rather resource-intensive.
 
