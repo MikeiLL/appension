@@ -13,6 +13,18 @@ WorkingDirectory=`pwd`
 echo "[Socket]
 ListenStream=443
 "|sudo tee /etc/systemd/system/glitch.socket >/dev/null
+
+echo "[Unit]
+Description=Infinite Glitch Redirection Service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+ExecStart=`which python` redirect_all.py
+WorkingDirectory=`pwd`
+"|sudo tee /etc/systemd/system/glitch-redirect.service >/dev/null
+
 echo "[Unit]
 Description=Infinite Glitch Renderer
 Requires=glitch-renderer.socket
