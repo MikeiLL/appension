@@ -88,7 +88,7 @@ def _make_route(dir):
 		response.headers['Pragma'] = 'no-cache'
 		return response
 	app.add_url_rule('/'+dir+'/<path:path>', 'non_caching_'+dir, non_caching_statics)
-for _dir in ("audio", "audition_audio", "transition_audio"):
+for _dir in ("audio", "audition_audio", "transition_audio", ".well-known"):
 	# audition_audio and transition_audio aren't currently used, but
 	# will be part of the admin panel that we haven't yet ported.
 	_make_route(_dir)
@@ -474,14 +474,6 @@ def google_verification():
 @app.route('/instrumental_track', methods=['GET'])
 def instrumental_track():
 	return send_from_directory("static/instrumentals", 'dgacousticlikMP3.mp3', mimetype='audio/mpeg', attachment_filename='glitch_instrumental.mp3', as_attachment=True)
-	
-@app.route('/.well-known/acme-challenge/<challenge>')
-def letsencrypt_check(challenge):
-    challenge_response = {
-        "kE5pI95WFzMdmpT-waTpeznppnJxGrMbtwYDu4wHZzw":"kE5pI95WFzMdmpT-waTpeznppnJxGrMbtwYDu4wHZzw.FWWgWn6UerXT9FkxFtZ-PSqsLxkgwwRUWtSrSC20PVU",
-        "_qMZgCEhcfUBv4RhQRTc2Psv1gU3evHxHqj3b9DN_XU":"_qMZgCEhcfUBv4RhQRTc2Psv1gU3evHxHqj3b9DN_XU.FWWgWn6UerXT9FkxFtZ-PSqsLxkgwwRUWtSrSC20PVU"
-    }
-    return Response(challenge_response[challenge], mimetype='text/plain')
 
 def run(port=config.http_port, disable_logins=False):
 	# Used only for debug mode; production mode is done by gunicorn.
