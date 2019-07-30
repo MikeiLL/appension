@@ -82,7 +82,7 @@ cp /etc/letsencrypt/live/infiniteglitch.net/fullchain.pem /etc/letsencrypt/live/
 
 ## One a New Server ##
 
-In order to have services start automatically on reboot, each service must be symlinked thusly:
+In order to have services start automatically on reboot via systemd, each service must be symlinked thusly:
 
 sudo systemctl enable glitch glitch-renderer glitch-redirect
 sudo systemctl start glitch glitch-renderer glitch-redirect
