@@ -2,8 +2,10 @@ from aiohttp import web
 import pydub
 import os
 import sys
+import ssl
 import json
 import time
+import socket
 import asyncio
 import logging
 import subprocess
@@ -299,11 +301,21 @@ async def render_audition(id1, id2, fn, **kw):
 
 async def serve_http(loop, port):
 	sock = utils.systemd_socket()
-	if sock:
-		srv = await loop.create_server(app.make_handler(), sock=sock)
-	else:
-		srv = await loop.create_server(app.make_handler(), "0.0.0.0", port)
-		sock = srv.sockets[0]
+	if not sock:
+		# If we didn't get one from systemd, create our own.
+		sock = socket.socket()
+		sock.bind(("0.0.0.0", port))
+		sock.listen(5)
+	runner = web.AppRunner(app)
+	await runner.setup()
+	ctx = None
+	# If we have certificates, use them.
+	try:
+		ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+		ctx.load_cert_chain("fullchain.pem", "privkey.pem")
+	except FileNotFoundError:
+		pass # But if we don't, serve on plain HTTP
+	await web.SockSite(runner, sock=sock, ssl_context=ctx).start()
 	print("Renderer listening on %s:%s" % sock.getsockname(), file=sys.stderr)
 
 # ------ Synchronous entry points ------
