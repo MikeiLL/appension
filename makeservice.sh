@@ -7,11 +7,11 @@ WantedBy=multi-user.target
 
 [Service]
 User=`whoami`
-ExecStart=`which gunicorn` glitch.server:app
+ExecStart=`which gunicorn` --certfile=fullchain.pem --keyfile=privkey.pem glitch.server:app
 WorkingDirectory=`pwd`
 "|sudo tee /etc/systemd/system/glitch.service >/dev/null
 echo "[Socket]
-ListenStream=80
+ListenStream=443
 "|sudo tee /etc/systemd/system/glitch.socket >/dev/null
 echo "[Unit]
 Description=Infinite Glitch Renderer
