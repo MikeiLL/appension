@@ -80,12 +80,74 @@ cp /etc/letsencrypt/live/infiniteglitch.net/fullchain.pem /etc/letsencrypt/live/
 
 ```
 
-## One a New Server ##
+## On a Fresh Server ##
 
 In order to have services start automatically on reboot via systemd, each service must be symlinked thusly:
 
 sudo systemctl enable glitch glitch-renderer glitch-redirect
 sudo systemctl start glitch glitch-renderer glitch-redirect
+
+## Environment ##
+
+Running on Debian 10, Buster with Python 3.7.3 
+
+Requirements versions as of 31 July 2019
+
+ * aiohttp         3.5.4      
+ * amen            0.0.3      
+ * asn1crypto      0.24.0     
+ * async-timeout   3.0.1      
+ * attrs           19.1.0     
+ * audioread       2.1.8      
+ * certifi         2019.6.16  
+ * cffi            1.12.3     
+ * chardet         3.0.4      
+ * Click           7.0        
+ * clize           4.0.3      
+ * cryptography    2.7        
+ * DateTime        4.3        
+ * decorator       4.4.0      
+ * docutils        0.15.2     
+ * Flask           1.1.1      
+ * Flask-Login     0.4.1      
+ * gunicorn        19.9.0     
+ * idna            2.8        
+ * itsdangerous    1.1.0      
+ * Jinja2          2.10.1     
+ * joblib          0.13.2     
+ * librosa         0.7.0      
+ * llvmlite        0.29.0     
+ * MarkupSafe      1.1.1      
+ * multidict       4.5.2      
+ * mutagen         1.42.0     
+ * numba           0.45.0     
+ * numpy           1.17.0     
+ * od              1.0        
+ * pandas          0.25.0     
+ * pip             18.1       
+ * pkg-resources   0.0.0      
+ * psycopg2-binary 2.8.3      
+ * pycparser       2.19       
+ * pycrypto        2.6.1      
+ * pydub           0.23.1     
+ * pyOpenSSL       19.0.0     
+ * PySoundFile     0.9.0.post1
+ * python-dateutil 2.8.0      
+ * pytz            2019.1     
+ * requests        2.22.0     
+ * resampy         0.2.1      
+ * scikit-learn    0.21.3     
+ * scipy           1.3.0      
+ * setuptools      40.8.0     
+ * sigtools        2.0.2      
+ * simplejson      3.16.0     
+ * six             1.12.0     
+ * SoundFile       0.10.2     
+ * stop-words      2018.7.23  
+ * urllib3         1.25.3     
+ * Werkzeug        0.15.5     
+ * yarl            1.3.0      
+ * zope.interface  4.6.0 
 
 # A brief History #
 A few years ago Chris Butler decided to extend The Devil Glitch into infinity. Dozens of artists began writing and recording verses to contribute and re-assembling the gigantic track became rather resource-intensive.
