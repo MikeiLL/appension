@@ -19,6 +19,9 @@ FFMPEG audio manipulation and rendering (on OSX `brew install ffmpeg`)
   
   * Create an `apikeys.py` file based on `apikeys_sample.py`
   
+  * Generate a `privkey.pem` file in the main directory, above "glitch"
+  * * `ssh-keygen -f ~/path/to/id_rsa.pub -m 'PEM' -e > privkey.pem`
+  
   * Insure postgres is running (on OSX) `brew services start postgresql`
   * * Usually the package  manager creates a database for you, but if you get an error that database <user> does not exist, try running the command `createdb` ([reference](https://stackoverflow.com/a/17936043/2223106))
   
