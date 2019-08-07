@@ -408,7 +408,7 @@
 .sm2-progress .sm2-progress-ball,
 .sm2-progress .sm2-progress-bar {
  position: relative;
- width: 100%;
+ width: 50px;
  height: 0.65em;
  border-radius: 0.65em;
 }
@@ -902,11 +902,26 @@
 	 left: 110px;
 	 top: 112px;
 	}
+	
+	.sm2-progress .sm2-progress-bar {
+	 width: 120px;
+	}
 }
 
 @media screen and all(min-width:40em){
 	.sm2-bar-ui.compact {
 	 left: 90px;
 	 top: 92px;
+	}
+	
+	.sm2-progress .sm2-progress-bar {
+	 width: 120px;
+	}
+}
+
+@media screen and (min-width:720px){
+
+	.sm2-progress .sm2-progress-bar {
+	 width: 120px !important;
 	}
 }
