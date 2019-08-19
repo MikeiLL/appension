@@ -96,7 +96,8 @@ for _dir in ("audio", "audition_audio", "transition_audio", ".well-known"):
 
 @app.route("/static/flash/soundmanager2_flash9.swf")
 def sm_flash():
-	return redirect("../static/flash/soundmanager2_flash9.swf")
+	return send_from_directory("static/flash", 'soundmanager2_flash9.swf', mimetype='application/x-shockwave-flash', attachment_filename='soundmanager2_flash9.swf', as_attachment=False)
+
 
 @app.route("/artwork/<int:id>.jpg")
 def track_artwork(id):
