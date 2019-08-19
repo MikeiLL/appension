@@ -98,6 +98,9 @@ for _dir in ("audio", "audition_audio", "transition_audio", ".well-known"):
 def sm_flash():
 	return send_from_directory("static/flash", 'soundmanager2_flash9.swf', mimetype='application/x-shockwave-flash', attachment_filename='soundmanager2_flash9.swf', as_attachment=False)
 
+@app.route("/robots.txt")
+def robots_txt():
+	return send_from_directory("static/", 'robots.txt', mimetype='text/*', attachment_filename='robots.txt', as_attachment=False)
 
 @app.route("/artwork/<int:id>.jpg")
 def track_artwork(id):
