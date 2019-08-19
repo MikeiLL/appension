@@ -94,6 +94,10 @@ for _dir in ("audio", "audition_audio", "transition_audio", ".well-known"):
 	# will be part of the admin panel that we haven't yet ported.
 	_make_route(_dir)
 
+@app.route("/static/flash/soundmanager2_flash9.swf")
+def sm_flash():
+	return redirect("../static/flash/soundmanager2_flash9.swf")
+
 @app.route("/artwork/<int:id>.jpg")
 def track_artwork(id):
 	art = database.get_track_artwork(int(id))
