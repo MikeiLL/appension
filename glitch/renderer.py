@@ -311,7 +311,8 @@ async def serve_http(loop, port):
 	ctx = None
 	# If we have certificates, use them.
 	try:
-		ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+		# Source of next line: https://stackoverflow.com/a/40060934/2223106
+		ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
 		ctx.load_cert_chain("fullchain.pem", "privkey.pem")
 	except FileNotFoundError:
 		pass # But if we don't, serve on plain HTTP
