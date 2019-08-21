@@ -305,6 +305,7 @@ async def serve_http(loop, port):
 	if not sock:
 		# If we didn't get one from systemd, create our own.
 		sock = socket.socket()
+		sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		sock.bind(("0.0.0.0", port))
 		sock.listen(5)
 	runner = web.AppRunner(app)
@@ -318,7 +319,7 @@ async def serve_http(loop, port):
 		log.info("Success. CTX is %s", ctx)
 	except FileNotFoundError:
 		log.info("FileNotFoundError for pem file in async. CTX is none.")
-		pass # But if we don't, serve on plain HTTP
+		ctx = None # But if we don't, serve on plain HTTP
 	await web.SockSite(runner, sock=sock, ssl_context=ctx).start()
 	print("Renderer listening on %s:%s" % sock.getsockname(), file=sys.stderr)
 
