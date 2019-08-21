@@ -311,12 +311,14 @@ async def serve_http(loop, port):
 	ctx = None
 	# If we have certificates, use them.
 	try:
-		# Source of next line: https://stackoverflow.com/a/40060934/2223106
-		ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+		# Source of following line: https://stackoverflow.com/a/40060934/2223106
+		# ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+		ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 		ctx.load_cert_chain("fullchain.pem", "privkey.pem")
 	except FileNotFoundError:
 		pass # But if we don't, serve on plain HTTP
 		logging.debug("FileNotFoundError for pem file in async. CTX is %s" % ctx)
+		print("FileNotFoundError for pem file in async. CTX is %s" % ctx)
 	await web.SockSite(runner, sock=sock, ssl_context=ctx).start()
 	print("Renderer listening on %s:%s" % sock.getsockname(), file=sys.stderr)
 
