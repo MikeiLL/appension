@@ -315,7 +315,7 @@ async def serve_http(loop, port):
 		# ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
 		ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 		ctx.load_cert_chain("fullchain.pem", "privkey.pem")
-		logging.debug("Success. CTX is %s" % "good")
+		print("Success. CTX is %s" % "good")
 	except FileNotFoundError:
 		logging.debug("FileNotFoundError for pem file in async. CTX is none.")
 		print("FileNotFoundError for pem file in async. CTX is none.")
