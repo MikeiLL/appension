@@ -238,7 +238,7 @@ async def moosic(req):
 			# really not much we can do; disconnect.
 			break
 		logging.debug("songs %d, pos %d, position %d", len(songs), pos, position)
-		resp.write(songs[pos - position])
+		await resp.write(songs[pos - position])
 		await resp.drain()
 		pos += 1
 	return resp
