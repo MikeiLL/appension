@@ -28,6 +28,7 @@ songs = []
 position = 0
 track_list = []
 orig_time_offset = time.time() - time.perf_counter()
+log = logging.getLogger(__name__)
 
 def route(url):
 	def deco(f):
