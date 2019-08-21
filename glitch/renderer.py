@@ -311,14 +311,11 @@ async def serve_http(loop, port):
 	await runner.setup()
 	ctx = None
 	# If we have certificates, use them
-	log.info("Try creating ssl context")
 	try:
-		# Source of following line: https://stackoverflow.com/a/40060934/2223106
 		log.info("CTX is %s" % "trying")
-		ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-		# ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH) 
+		ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH) 
 		ctx.load_cert_chain("fullchain.pem", "privkey.pem")
-		log.info("Success. CTX is %s" % "good")
+		log.info("Success. CTX is %s", ctx)
 	except FileNotFoundError:
 		log.info("FileNotFoundError for pem file in async. CTX is none.")
 		pass # But if we don't, serve on plain HTTP
