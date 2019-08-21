@@ -310,7 +310,7 @@ async def serve_http(loop, port):
 	await runner.setup()
 	ctx = None
 	# If we have certificates, use them
-	print("Try creating ssl context").
+	print("Try creating ssl context")
 	try:
 		# Source of following line: https://stackoverflow.com/a/40060934/2223106
 		print("CTX is %s" % "trying")
