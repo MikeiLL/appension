@@ -83,6 +83,12 @@ cp /etc/letsencrypt/live/infiniteglitch.net/fullchain.pem /etc/letsencrypt/live/
 
 ```
 
+## To manually renew certificate with certbot:
+```
+sudo certbot renew --webroot -w /home/mikekilmer/appension
+( --dry-run --debug-challenges flags can be useful )
+```
+
 ## On a Fresh Server ##
 
 In order to have services start automatically on reboot via systemd, each service must be symlinked thusly:
