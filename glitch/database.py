@@ -590,18 +590,23 @@ def get_user_info(id):
 		row = cur.fetchone()
 		return row or (None, 0)
 
+@cmdline
 def request_password_reset(email):
 	"""Returns id and hex_key if a match, else None on error"""
 	hex_key = utils.random_hex()
 	with _conn, _conn.cursor() as cur:
 		cur.execute("UPDATE users set hex_key = %s WHERE email=%s RETURNING id, hex_key", (hex_key, email))
 		return cur.fetchone()
-
+		
+@cmdline
 def reset_user_password(id, hex_key, password):
+	"""Requires user ID, most recent request hexkey and new passwd. Returns 1 if a match, else 0"""
 	if not isinstance(password, bytes): password=password.encode("utf-8")
 	with _conn, _conn.cursor() as cur:
 		pwd = utils.hash_password(password)
 		cur.execute("update users set password=%s, hex_key='' where id=%s and hex_key=%s", (pwd, id, hex_key))
+		if cur.rowcount:
+			return True
 
 def get_analysis(id):
 	with _conn, _conn.cursor() as cur:
