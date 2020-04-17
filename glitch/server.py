@@ -199,9 +199,13 @@ def create_account_post():
 	user_message = """Either you or someone else just created an account at InfiniteGlitch.net.
 
 To confirm for %s at %s, please visit %s""" % (request.form["username"], request.form["email"], confirmation_url)
-	mailer.alert_message(user_message, 'Infinite Glitch Account', you=request.form["email"])
-	return render_template("account_confirmation.html",
-		notice="Thanks for joining our little gang. Please check your email for confirmation link... and click it.")
+	result = mailer.alert_message(user_message, 'Infinite Glitch Account', you=request.form["email"])
+	if (result):
+		return render_template("account_confirmation.html",
+			notice="Thanks for joining our little gang. Please check your email for confirmation link... and click it.")
+	else:
+		return render_template("whoops.html",
+			notice="There was a problem emailing the administrator.", admin=apikeys.admin_email)
 
 @app.route("/create_account/confirm/<id>/<nonce>")
 def confirm_account(id, nonce):
@@ -229,10 +233,14 @@ def reset_password_post():
 	user_message = """Either you or someone else requested a password reset for InfiniteGlitch.net.
 
 To confirm, please visit %s""" % confirmation_url
-	mailer.alert_message(user_message, 'Infinite Glitch Account', you=request.form["email"])
-	return render_template("account_confirmation.html",
-		notice="Password reset link sent. Please check your email.")
-
+	result = mailer.alert_message(user_message, 'Infinite Glitch Account', you=request.form["email"])
+	if (result):
+		return render_template("account_confirmation.html",
+			notice="Password reset link sent. Please check your email.")
+	else:
+		return render_template("whoops.html",
+			notice="There was a problem emailing the administrator.", admin=apikeys.admin_email)
+			
 @app.route("/reset_password/confirm/<id>/<nonce>")
 def confirm_reset(id, nonce):
 	#### TODO: Generate a new password, or prompt the user

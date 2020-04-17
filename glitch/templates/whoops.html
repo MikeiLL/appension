@@ -1,0 +1,15 @@
+{% extends "secondary.html" %}
+
+{% block content %}
+<div id="chain"><img src="static/assets/img/chain.png" border="0" width="298" height="239" alt="" align="left"></div>
+<div>
+<br/>  
+
+<div class="alert alert-error">
+<br/><br/><br/><br/>  
+	<p>Whoops. Something seems to have gone slightly <font color="#9396C0">wrong</font>.</p>
+	<p>{{ notice }}</p>
+	<p>If you are seeing this message, we'd love it if you'd <a href="mailto:{{ admin }}">let us know</a>.</p>
+</div>
+{% endblock %}
+
