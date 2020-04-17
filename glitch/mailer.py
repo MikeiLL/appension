@@ -17,6 +17,6 @@ def alert_message(message, subject='Glitch System Message', me=apikeys.system_em
 			s.login(apikeys.SMTP_USERNAME, apikeys.SMTP_PASSWORD)
 		s.sendmail(me, [you], msg.as_string())
 		s.quit()
-	return True
+		return True
 	except smtplib.SMTPAuthenticationError:
 		return False
