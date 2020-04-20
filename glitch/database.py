@@ -597,6 +597,13 @@ def request_password_reset(email):
 	with _conn, _conn.cursor() as cur:
 		cur.execute("UPDATE users set hex_key = %s WHERE email=%s RETURNING id, hex_key", (hex_key, email))
 		return cur.fetchone()
+			
+def select_new_password(id, hex_key):
+	"""Requires user ID, most recent request hexkey. Returns 1 if a match, else 0"""
+	with _conn, _conn.cursor() as cur:
+		cur.execute("select id from users where id=%s and hex_key=%s", (id, hex_key))
+		if cur.rowcount:
+			return True
 		
 @cmdline
 def reset_user_password(id, hex_key, password):

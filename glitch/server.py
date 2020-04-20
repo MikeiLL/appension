@@ -242,14 +242,20 @@ To confirm, please visit %s""" % confirmation_url
 			notice="There was a problem emailing the administrator.", admin=apikeys.admin_email)
 			
 @app.route("/reset_password/confirm/<id>/<nonce>")
-def confirm_reset(id, nonce):
-	#### TODO: Generate a new password, or prompt the user
-	new_password = "changeme"
-	user_name = database.reset_user_password(id, nonce, new_password)
-	if user_name is None:
+def select_password(id, nonce):
+	valid_reset_link = database.select_new_password(id, nonce)
+	if valid_reset_link is None:
 		flash("Incorrect confirmation link, or link expired. Sorry!")
 	else:
-		login_user(database.User.from_id(id))
+		return render_template("select_password.html",
+			id=id, hex_key=nonce)
+
+@app.route("/update_password/<id>/<nonce>", methods=['POST'])
+def update_user_pass(id, nonce):
+	user_update = database.reset_user_password(id, nonce, request.form["password"])
+	if user_update is None:
+		flash("Something went wrong. Sorry!")
+	else:
 		flash("Your password has been reset. You can now log in.")
 	return redirect("/login")
 
