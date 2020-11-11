@@ -7,7 +7,7 @@ WantedBy=multi-user.target
 
 [Service]
 User=`whoami`
-ExecStart=`which gunicorn` --certfile=fullchain.pem --keyfile=privkey.pem glitch.server:app
+ExecStart=`which gunicorn` --certfile=fullchain.pem --keyfile=privkey.pem glitch.server:app --workers=4
 WorkingDirectory=`pwd`
 "|sudo tee /etc/systemd/system/glitch.service >/dev/null
 echo "[Socket]
