@@ -120,13 +120,14 @@
 {% endfor %}
 </table>
 </form>
-
+{% for track in tracks_by %}
 <script type="application/ld+json">
 {
   "@context": "http://schema.org",
   "@type": "MusicGroup",
-  "name": "{{ tracks_by[0].track_details['artist'] }}"
+  "name": "{{ track.track_details['artist'] }}"
 }
 </script>
+{% endfor %}
 {% endblock %}
 
