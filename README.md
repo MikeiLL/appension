@@ -157,6 +157,13 @@ Requirements versions as of 31 July 2019
  * Werkzeug        0.15.5     
  * yarl            1.3.0      
  * zope.interface  4.6.0 
+ 
+ # Troubleshooting #
+ 
+ * Check CPU Usage with `top`
+ * `systemctl status glitch glitch-renderer`
+ * `sudo journalctl -f -u glitch`
+ * `sudo journalctl -f -u glitch-renderer`
 
 # A brief History #
 A few years ago Chris Butler decided to extend The Devil Glitch into infinity. Dozens of artists began writing and recording verses to contribute and re-assembling the gigantic track became rather resource-intensive.
