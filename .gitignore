@@ -11,4 +11,8 @@ glitch/lib/
 glitch/pyvenv.cfg
 glitch/share/
 glitch/static/single-audio-files/short.mp3
-
+bin/
+lib/
+logfile
+pyvenv.cfg
+share/
