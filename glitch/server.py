@@ -170,9 +170,14 @@ def login_get():
 
 @app.route("/login", methods=["POST"])
 def login_post():
+	print("in login post")
 	user = database.User.from_credentials(request.form["email"], request.form["password"])
+	print(user)
 	if user: login_user(user)
 	url = request.args.get("next") or "/"
+	print(url)
+	url_test = is_safe_url(url)
+	print("url test result: %r" % (url_test))
 	if not is_safe_url(url): url = "/"
 	return redirect(url)
 
