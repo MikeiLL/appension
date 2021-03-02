@@ -53,6 +53,7 @@ def admin_required(func):
 	@login_required
 	@functools.wraps(func)
 	def wrapper(*args, **kwargs):
+		logging.warn("Current user being checked")
 		if current_user.user_level < 2:
 			logging.warn("Current user is less than level two: %r" % (current_user))
 			# TODO: Different error page for non-admin?
