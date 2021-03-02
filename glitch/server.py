@@ -54,10 +54,10 @@ def admin_required(func):
 	@functools.wraps(func)
 	def wrapper(*args, **kwargs):
 		if current_user.user_level < 2:
-	        logging.warn("Current user is less than level two: %r" % (current_user))
+			logging.warn("Current user is less than level two: %r" % (current_user))
 			# TODO: Different error page for non-admin?
 			return login_manager.unauthorized()
-	    logging.warn("Current user is at least level two: %r" % (current_user))
+		logging.warn("Current user is at least level two: %r" % (current_user))
 		return func(*args, **kwargs)
 	return wrapper
 
