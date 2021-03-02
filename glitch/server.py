@@ -54,8 +54,10 @@ def admin_required(func):
 	@functools.wraps(func)
 	def wrapper(*args, **kwargs):
 		if current_user.user_level < 2:
+	        logging.info("Current user is less than level two: %r" % (current_user))
 			# TODO: Different error page for non-admin?
 			return login_manager.unauthorized()
+	    logging.info("Current user is at least level two: %r" % (current_user))
 		return func(*args, **kwargs)
 	return wrapper
 
@@ -355,6 +357,7 @@ def oracle_get():
 @app.route("/" + apikeys.admin_address)
 @admin_required
 def admin():
+	return render_template("mini2.html")
 	all_tracks = database.get_many_mp3("all", "sequence, id")
 	return render_template("administration.html", all_tracks=all_tracks)
 	
