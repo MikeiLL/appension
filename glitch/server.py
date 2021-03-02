@@ -355,6 +355,7 @@ def oracle_get():
 @app.route("/" + apikeys.admin_address)
 @admin_required
 def admin():
+	return render_template("mini.html")
 	all_tracks = database.get_many_mp3("all", "sequence, id")
 	return render_template("administration.html", all_tracks=all_tracks)
 	
