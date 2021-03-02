@@ -353,7 +353,7 @@ def oracle_get():
 							meta_description=meta_description, og_url=og_url, url_quote_plus=url_quote_plus)
 
 @app.route("/" + apikeys.admin_address)
-@admin_required
+# @admin_required
 def admin():
 	all_tracks = database.get_many_mp3("all", "sequence, id")
 	return render_template("administration.html", all_tracks=all_tracks)
