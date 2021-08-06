@@ -22,7 +22,7 @@ UPLOAD_FOLDER = 'uploads'
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login_get"
-app.config["SECRET_KEY"] = os.urandom(12)
+app.config["SECRET_KEY"] = apikeys.cookie_monster
 ALLOWED_EXTENSIONS = set(['mp3', 'png', 'jpg', 'jpeg', 'gif'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -45,8 +45,8 @@ started_at_timestamp = time.time()
 started_at = datetime.datetime.utcnow()
 
 page_title = "Infinite Glitch - The World's Longest Recorded Pop Song, by Chris Butler."
-og_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
-meta_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""	
+og_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""
+meta_description = """I don't remember if he said it or if I said it or if the caffeine said it but suddenly we're both giggling 'cause the problem with the song isn't that it's too long it's that it's too short."""
 
 def admin_required(func):
 	"""Like login_required but also checks for admin access"""
@@ -141,7 +141,7 @@ def tracks_by_artist(artist):
 	page_title=artist+": Infinite Glitch - the world's longest recorded pop song, by Chris Butler."
 	meta_description="Browse the artists who have added to the Infinite Glitch - the world's longest recorded pop song."
 	og_url = url_for("tracks_by_artist", artist=url_artist)
-	return render_template("view_artist.html", tracks_by=tracks_by, og_description=og_description, 
+	return render_template("view_artist.html", tracks_by=tracks_by, og_description=og_description,
 				page_title=page_title, meta_description=meta_description, og_url=og_url)
 
 
@@ -166,7 +166,7 @@ def choice_chunks():
 @app.context_processor
 def inject_now():
     return {'now': datetime.datetime.utcnow()}
-    
+
 @app.route("/login")
 def login_get():
 	return render_template("login.html")
@@ -248,7 +248,7 @@ To confirm, please visit %s""" % confirmation_url
 	else:
 		return render_template("whoops.html",
 			notice="There was a problem emailing the administrator.", admin=apikeys.admin_email)
-			
+
 @app.route("/reset_password/confirm/<id>/<nonce>")
 def select_password(id, nonce):
 	valid_reset_link = database.select_new_password(id, nonce)
@@ -352,7 +352,7 @@ def oracle_get():
 		og_url="http://www.infiniteglitch.net/oracle"
 	return render_template("oracle.html", page_title="Glitch Oracle", question=question, answer=answer,
 							popular_words=popular_words,
-							show_cloud=show_cloud, og_description=og_description, 
+							show_cloud=show_cloud, og_description=og_description,
 							meta_description=meta_description, og_url=og_url, url_quote_plus=url_quote_plus)
 
 @app.route("/" + apikeys.admin_address)
@@ -360,7 +360,7 @@ def oracle_get():
 def admin():
 	all_tracks = database.get_many_mp3("all", "sequence, id")
 	return render_template("administration.html", all_tracks=all_tracks)
-	
+
 @app.route("/transition/<int:id>")
 @admin_required
 def manage_transition(id):
@@ -380,7 +380,7 @@ def audition_transition():
 	if "track_hard_transition" in request.form:
 		database.update_track(id1, {"otrim":request.form["track_otrim"], "xfade":'-1'})
 	else:
-	# if track_hard_transition is not checked, override xfade if set to -1 
+	# if track_hard_transition is not checked, override xfade if set to -1
 		if database.get_single_track(id1).track_details['xfade'] == -1:
 			database.update_track(id1, {"otrim":request.form["track_otrim"], "xfade":0})
 		else:
@@ -463,7 +463,7 @@ def page_not_found(e):
 		with open("404.log", "a") as log:
 			print(datetime.datetime.now(), request.path, file=log)
 	return render_template('404.html'), 404
-	
+
 # Log 500s to a file, but only once per server start per URL
 known_500 = set()
 @app.errorhandler(500)
@@ -488,11 +488,11 @@ def sitemap():
 				pages.append(
 					[apikeys.site_url+rule.rule,ten_days_ago]
 				)
-	
+
 	for artist in database.all_artists():
 		url=url_for("tracks_by_artist",artist=artist[0])
 		pages.append([apikeys.site_url+url,ten_days_ago])
-		
+
 	sitemap_xml = render_template('sitemap_template.xml', pages=pages)
 
 	return Response(sitemap_xml, mimetype='text/xml')
@@ -501,7 +501,7 @@ def sitemap():
 def google_verification():
     body = 'google-site-verification: google1c870a472b1e6d13.html'
     return Response(body, mimetype='text/plain')
-    
+
 @app.route('/instrumental_track', methods=['GET'])
 def instrumental_track():
 	return send_from_directory("static/instrumentals", 'dgacousticlikMP3.mp3', mimetype='audio/mpeg', attachment_filename='glitch_instrumental.mp3', as_attachment=True)
