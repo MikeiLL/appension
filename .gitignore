@@ -16,3 +16,4 @@ lib/
 logfile
 pyvenv.cfg
 share/
+.python-version
