@@ -7,7 +7,7 @@ WantedBy=multi-user.target
 
 [Service]
 User=`whoami`
-ExecStart=`which gunicorn` --certfile=fullchain.pem --keyfile=privkey.pem glitch.server:app --workers=4
+ExecStart=`which gunicorn` --certfile=fullchain.pem --keyfile=privkey.pem glitch.server:app --workers=4 --log-level=debug
 WorkingDirectory=`pwd`
 "|sudo tee /etc/systemd/system/glitch.service >/dev/null
 echo "[Socket]
@@ -43,5 +43,3 @@ ListenStream=0.0.0.0:81
 sudo systemctl daemon-reload
 echo "Service file created. To start:"
 echo sudo systemctl start glitch glitch-renderer
-
-
