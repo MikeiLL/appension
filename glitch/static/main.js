@@ -72,6 +72,7 @@
         return results;
       });
     };
+    if (!window.status_url) return; //On pages that don't need status, don't fetch it
     setTimeout(getTrackInfo, 1000);
     return setInterval(getTrackInfo, 30000);
   });
