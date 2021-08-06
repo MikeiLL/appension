@@ -72,7 +72,7 @@ def couplet_count(lyrics):
 def home():
 	lyrics = database.get_all_lyrics()
 	complete_length = datetime.timedelta(seconds=int(database.get_complete_length()))
-	prot = "https" if os.stat("privkey.pem") else "http" # TODO: See if the incoming request was over HTTPS instead
+	prot = "https" if os.path.exists("privkey.pem") else "http" # TODO: See if the incoming request was over HTTPS instead
 	return render_template("index.html",
 		open=True, # Can have this check for server load if we ever care
 		renderer="%s://%s:%d/" % (prot, urlparse(request.url_root).netloc.split(":")[0], renderer_port),
