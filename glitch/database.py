@@ -312,7 +312,10 @@ def create_track(mp3data, filename, info, image=None, username=None):
 	if not username:
 		with _conn, _conn.cursor() as cur:
 			cur.execute("SELECT username FROM users WHERE user_level = 2 LIMIT 1;")
-			username = cur.fetchone()[0]
+			try:
+				username = cur.fetchone()[0]
+			except TypeError:
+				raise Exception("Could not find an admin user to assign to import.")
 	from mutagen.mp3 import MP3
 	with _conn, _conn.cursor() as cur:
 		# We have a chicken-and-egg problem here. We can't (AFAIK) get the ID3 data
