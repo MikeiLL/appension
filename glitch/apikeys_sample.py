@@ -16,8 +16,7 @@ site_url = "http://www.infiniteglitch.net"
 # start with them at the defaults, but all email sending will fail.
 system_email = 'server@example.com'
 admin_email = 'username@example.com'
-SMTP_SERVER_PORT = "smtp.gmail.com:587"
-# Leave these blank if you don't use a password (eg if you use LAN-auth,
-# POP-before-SMTP, or IMAP-before-SMTP).
-SMTP_USERNAME = "email@gmail.com"
-SMTP_PASSWORD = "yourpassword"
+
+# Use https://pypi.org/project/Flask-SendGrid/ to implement SendGrid
+SENDGRID_DEFAULT_FROM = "me@my.com"
+SENDGRID_API_KEY = "SG.random-string-from-sendgrid"
