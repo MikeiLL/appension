@@ -201,8 +201,6 @@ def create_account_post():
 	if isinstance(info, str):
 		# There's an error.
 		return render_template("create_account.html", page_title="Glitch Account Sign-Up", error=info)
-	# TODO: Send the email
-	# mailer.AlertMessage(admin_message, 'New Account Created')
 	confirmation_url = request.base_url + "/confirm/%s/%s" % info # yes, that's "/create_account/confirm"
 	user_message = """Either you or someone else just created an account at InfiniteGlitch.net.
 
@@ -217,12 +215,18 @@ To confirm for %s at %s, please visit %s""" % (request.form["username"], request
 
 @app.route("/create_account/confirm/<id>/<nonce>")
 def confirm_account(id, nonce):
-	user_name = database.confirm_user(id, nonce)
+	user_name, user_email = database.confirm_user(id, nonce)
 	if user_name is None:
 		flash("Incorrect confirmation link, or link expired. Sorry!")
+		return redirect("/")
 	else:
 		login_user(database.User.from_id(id))
-		flash("Welcome, " + user_name + "! Your account has been confirmed.")
+		print(database.User.from_id(id))
+		admin_message = "New user " + user_name + " created with email: " + user_email + "."
+	mailer.alert_message(admin_message, 'New Infinite Glitch Account Created')
+	user_message = """Welcome to the party, %s. Any questions, write to %s.""" % (user_name, apikeys.system_email)
+	result = mailer.alert_message(user_message, 'Welcome, Infinite Glitch Participant', you=user_email)
+	flash("Welcome, " + user_name + "! Your account has been confirmed.")
 	return redirect("/")
 
 @app.route("/reset_password")

@@ -21,7 +21,7 @@ log = logging.getLogger(__name__)
 class Track(object):
 	# Select these from the tracks table to construct a track object.
 	columns = "id,filename,artist,title,length,status,submitter,submitteremail,submitted,lyrics,story,comments,xfade,itrim,otrim,sequence,keywords,url,analysis"
-	def __init__(self, id, filename, artist, title, length, status, 
+	def __init__(self, id, filename, artist, title, length, status,
 				submitter, submitteremail, submitted, lyrics, story, comments, xfade, itrim, otrim, sequence, keywords, url, analysis):
 		log.debug("Rendering Track(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)", id, filename, artist, title,
 											length, status, story, comments, xfade, itrim, otrim)
@@ -46,7 +46,7 @@ class Track(object):
 			'status': status,
 			'story': story,
 			'lyrics': lyrics,
-			'xfade': xfade, 
+			'xfade': xfade,
 			'itrim': itrim,
 			'otrim': otrim,
 			'comments': comments,
@@ -73,7 +73,7 @@ class EndOfTracks:
 
 class Submitter(object):
     def __init__(self,username,email,userid,artist,track_id,filename,lyrics,story):
-        
+
         self.userid = userid
         self.username = username
         self.email = email
@@ -132,7 +132,7 @@ class Artist(object):
 class Lyric(object):
 	# Select these from the tracks table to construct a track object.
 	columns = "id,artist,lyrics"
-	
+
 	def __init__(self, id, artist, lyrics):
 		couplets = [block for block in re.split(r'(?:\r\n){2,}', lyrics) if block.count('\r\n') == 1]
 		couplet_count = len(couplets)
@@ -147,7 +147,7 @@ class Lyric(object):
 			'couplet_count': couplet_count,
 			'couplets': couplets
 		}
-		
+
 	def get_couplets(self, lyrics):
 		return lyrics.splitlines(True)
 
@@ -230,7 +230,7 @@ def enqueue_all_tracks(count=1):
 
 def enqueue_audition(track1, track2, maxlen=10, hard=False):
 	"""Enqueue two tracks for auditioning, followed by an end marker.
-	
+
 	If maxlen is nonzero, the tracks' trims will be set to give approximately
 	that many seconds of audio on either side of the transition.
 	"""
@@ -265,23 +265,23 @@ def get_complete_length():
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT coalesce(sum(length),0) FROM tracks WHERE status = 1")
 		return cur.fetchone()[0]
-		
+
 def get_all_lyrics():
 	"""Get the lyrics from all active tracks.."""
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE status = 1 AND lyrics != ''")
 		return [Lyric(*row) for row in cur.fetchall()]
-		
+
 def match_lyrics(word):
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE lyrics ILIKE %s", ('%'+word+'%',))
 		return [Lyric(*row) for row in cur.fetchall()]
-		
+
 def match_keywords(word):
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE keywords ILIKE %s", ('%'+word+'%',))
 		return [Lyric(*row) for row in cur.fetchall()]
-		
+
 def random_lyrics():
 	with _conn, _conn.cursor() as cur:
 		cur.execute("SELECT id, artist, lyrics FROM tracks WHERE lyrics != '' ORDER BY random() limit 1")
@@ -355,8 +355,8 @@ def delete_track(id):
 	"""Delete the given track ID - no confirmation"""
 	with _conn, _conn.cursor() as cur:
 		cur.execute("DELETE FROM tracks WHERE id = %s", (id,))
-	
-		
+
+
 def reset_played():
     """Reset played for all tracks to 0"""
     with _conn, _conn.cursor() as cur:
@@ -383,7 +383,7 @@ def update_track(id, info, artwork=None):
 		# being picked up by the generic field handler above.
 		if artwork is not None: param['artwork'] = memoryview(artwork)
 		cur.execute("UPDATE tracks SET "+",".join(x+"=%("+x+")s" for x in param)+" WHERE id="+str(id),param)
-		
+
 def next_track_in_sequence(id, sequence):
 	"""Receive track id, sequence and return Track object for subsequent active track in sequence"""
 	with _conn, _conn.cursor() as cur:
@@ -395,7 +395,7 @@ def sequence_tracks(sequence_object):
 		seq = sequence_object.get(id,'')[0]
 		with _conn, _conn.cursor() as cur:
 			cur.execute("UPDATE tracks SET sequence = "+str(seq)+", played = 0 WHERE id="+str(id))
-	
+
 def get_track_submitter_info():
     with _conn, _conn.cursor() as cur:
         query = '''SELECT a.username, a.email, a.id as userid, b.artist, b.id as track_id, b.filename,
@@ -405,7 +405,7 @@ def get_track_submitter_info():
                 CASE WHEN b.story !='' THEN 1
                 ELSE 0
                 END as story
-                FROM tracks b 
+                FROM tracks b
                 join users a
                 on a.id=b.userid GROUP by a.username, a.email, a.id, b.artist, b.id'''
         cur.execute(query)
@@ -433,14 +433,14 @@ def add_dummy_users():
             userid = cur.fetchone()
             print(artist[0], userid)
             cur.execute("UPDATE tracks SET userid = %s WHERE artist LIKE %s", (userid, artist[0]))
-        
-        
+
+
 
 def create_outreach_message(message):
 	with _conn, _conn.cursor() as cur:
 		cur.execute("INSERT INTO outreach (message) VALUES (%s) RETURNING id, message", (message,))
 		return [row for row in cur.fetchone()]
-											
+
 def update_outreach_message(message):
     if retrieve_outreach_message() == '':
         return create_outreach_message(message)
@@ -460,7 +460,7 @@ def retrieve_outreach_message():
 		cur.execute("SELECT id, message FROM outreach ORDER BY id LIMIT 1")
 		try:
 			return cur.fetchone()[0]
-		except TypeError: 
+		except TypeError:
 			return ''
 
 def get_track_filename(track_id):
@@ -477,7 +477,7 @@ def browse_tracks(letter):
 	with _conn, _conn.cursor() as cur:
 		cur.execute(query)
 		return [row for row in cur.fetchall()]
-		
+
 def all_artists():
 	"""Return all artists with active tracks. Used in sitemap."""
 	query = """SELECT DISTINCT artist FROM tracks WHERE status = 1
@@ -492,7 +492,7 @@ def get_recent_tracks(number):
         with _conn, _conn.cursor() as cur:
                 cur.execute(query)
                 return [row for row in cur.fetchall()]
-        
+
 def tracks_by(artist):
     """Return artist, id for tracks, where artist name starts with letter in expression"""
     with _conn, _conn.cursor() as cur:
@@ -531,12 +531,9 @@ def confirm_user(id, hex_key):
     hex_key: Matching key to the one stored, else the confirmation fails
     """
     with _conn, _conn.cursor() as cur:
-        cur.execute("UPDATE users SET status = 1, hex_key = '' WHERE id = %s AND hex_key = %s RETURNING username", (id, hex_key))
-        try:
-                return cur.fetchone()[0]
-        except TypeError:
-                return None
-                
+        cur.execute("UPDATE users SET status = 1, hex_key = '' WHERE id = %s AND hex_key = %s RETURNING username, email", (id, hex_key))
+        return cur.fetchone() or (None, '')
+
 def test_reset_permissions(id, hex_key):
     with _conn, _conn.cursor() as cur:
         cur.execute("SELECT id, username, email FROM users WHERE id = %s AND hex_key = %s", (id, hex_key))
@@ -561,7 +558,7 @@ def set_user_password(user_or_email, password):
 		rows=cur.fetchall()
 		if len(rows)!=1: return "There is already an account for that email."
 		cur.execute("update users set password=%s where id=%s", (pwd, rows[0][0]))
-		
+
 def check_db_for_user(user_or_email):
 	"""Change a user's password (administratively) - returns None on success, or error message"""
 	user_or_email = user_or_email.lower()
@@ -597,14 +594,14 @@ def request_password_reset(email):
 	with _conn, _conn.cursor() as cur:
 		cur.execute("UPDATE users set hex_key = %s WHERE email=%s RETURNING id, hex_key", (hex_key, email))
 		return cur.fetchone()
-			
+
 def select_new_password(id, hex_key):
 	"""Requires user ID, most recent request hexkey. Returns 1 if a match, else 0"""
 	with _conn, _conn.cursor() as cur:
 		cur.execute("select id from users where id=%s and hex_key=%s", (id, hex_key))
 		if cur.rowcount:
 			return True
-		
+
 @cmdline
 def reset_user_password(id, hex_key, password):
 	"""Requires user ID, most recent request hexkey and new passwd. Returns 1 if a match, else 0"""
@@ -661,7 +658,7 @@ def transfer_track_details(from_id=0, to_id=0):
 			for line in cur.fetchall():
 				print(line)
 		else:
-			query = """UPDATE tracks SET 
+			query = """UPDATE tracks SET
 					lyrics = (SELECT lyrics FROM tracks WHERE id = {from_id}),
 					artist = (SELECT artist FROM tracks WHERE id = {from_id}),
 					story = (SELECT story FROM tracks WHERE id = {from_id}),
