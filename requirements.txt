@@ -16,3 +16,4 @@ flask
 flask-login
 aiohttp
 gunicorn
+sendgrid
