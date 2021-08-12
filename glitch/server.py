@@ -221,7 +221,6 @@ def confirm_account(id, nonce):
 		return redirect("/")
 	else:
 		login_user(database.User.from_id(id))
-		print(database.User.from_id(id))
 		admin_message = "New user " + user_name + " created with email: " + user_email + "."
 	mailer.alert_message(admin_message, 'New Infinite Glitch Account Created')
 	user_message = """Welcome to the party, %s. Any questions, write to %s.""" % (user_name, apikeys.system_email)
