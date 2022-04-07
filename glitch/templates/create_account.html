@@ -7,31 +7,67 @@
 
 <p></p>
 <form name=createaccount method="post">
-<div class="errors">{{ error }}</div>
-<table class="secondary">
-<tr><td width="200px"><label for=username>Your Name:</label></td><td><input name=username></td></tr>
-<tr><td><label for=email>Email:</label></td><td><input name=email></td></tr>
-<tr><td><label for=password>Password:</label></td><td><input type=password name=password></td></tr>
-<tr><td colspan="2"><p>(At least eight characters, please.
-Ideally, use <a href="http://xkcd.com/936/">four common words</a> for your password.)</p></td></tr>
-<tr><td><label for=password2>Password again:</label></td><td><input type=password name=password2></td></tr>
-<tr><td colspan="2">
+	<div class="errors">{{ error }}</div>
+	<table class="secondary">
+		<tr>
+			<td width="200px"><label for=username>Your Name:</label></td>
+			<td><input name=username></td>
+		</tr>
+		<tr>
+			<td><label for=email>Email:</label></td>
+			<td><input name=email></td>
+		</tr>
+		<tr>
+			<td><label for=password>Password:</label></td>
+			<td><input type=password name=password></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<p>(At least eight characters, please.
+					Ideally, use <a href="http://xkcd.com/936/">four common words</a> for your password.)</p>
+			</td>
+		</tr>
+		<tr>
+			<td><label for=password2>Password again:</label></td>
+			<td><input type=password name=password2></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<p>Now we weed out the spammers:</p>
+			</td>
+		</tr>
+		<tr>
+			<td><label for=spamtest>Fill in the blank: John, Paul, George and:</label></td>
+			<td><input name=spamtest></td>
+		</tr>
+		<tr>
+			<td colspan="2">
 
-<p>Legal stuff. You own your contribution, period - but by submitting it, you are allowing me to use it in this project in perpetuity. If you want to register it with the Library of Congress or any other performance right organization in your country, that is your business. There is a chance that some other media (TV, radio, etc.) might do a news piece on this project and use some of what you've submitted. </p>
+				<p>Legal stuff. You own your contribution, period - but by submitting it, you are allowing me to use it in this
+					project in perpetuity. If you want to register it with the Library of Congress or any other performance right
+					organization in your country, that is your business. There is a chance that some other media (TV, radio, etc.)
+					might do a news piece on this project and use some of what you've submitted. </p>
 
-<p>If this happens, I will do my best to get you a cue sheet so if there is any dough generated, you get it. To that end, you must include some info about yourself, personal web page URL and/or contact info with your submission or it can't be used. You also grant me the right to use this info in the project, but I will not give or sell your info to any third party, so don't get all nutzparanoid about this. Also, you warrant that your submission does not violate the rights of any third party.</p>
+				<p>If this happens, I will do my best to get you a cue sheet so if there is any dough generated, you get it. To
+					that end, you must include some info about yourself, personal web page URL and/or contact info with your
+					submission or it can't be used. You also grant me the right to use this info in the project, but I will not
+					give or sell your info to any third party, so don't get all nutzparanoid about this. Also, you warrant that
+					your submission does not violate the rights of any third party.</p>
 
 
-<input type=checkbox name=agree>I agree with the legal stuff
-	</td></tr>
-<tr><td colspan="2" align="right"><input type="submit" value="Create Account" /></td></tr>
-</table>
+				<input type=checkbox name=agree>I agree with the legal stuff
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right"><input type="submit" value="Create Account" /></td>
+		</tr>
+	</table>
 </form>
 
 {% endblock %}
 
 {% block load_scripts %}
-<script type="text/javascript">		
+<script type="text/javascript">
 	var validator = new FormValidator('createaccount', [{
 		name: 'username',
 		rules: 'required'

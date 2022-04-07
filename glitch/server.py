@@ -195,6 +195,8 @@ def create_account_get():
 
 @app.route("/create_account", methods=["POST"])
 def create_account_post():
+	if request.form["spamtest"] != "Ringo":
+		return redirect("/create_account")
 	if request.form["password"] != request.form["password2"]:
 		return redirect("/create_account")
 	info = database.create_user(request.form["username"], request.form["email"], request.form["password"])
